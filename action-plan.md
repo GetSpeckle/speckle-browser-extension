@@ -18,3 +18,26 @@
 * Implement function for user to create new keypairs or forget existing keypairs in an account 
 * Implement function to backup wallet with keystore file.
 * Implement function to backup wallet with seed (mnemonic)
+
+### Asset Dashboard
+
+* Create asset dashboard component and UI
+  * Display balance
+  * Display account info
+* Get asset balance by RPC call
+
+### Transaction Management
+
+* Create react UI for send test-net DOTs
+* Implement the API to send test-net DOTs
+* Create react UI to show the result of the send (success and wrong)
+* Create react UI to show the address for receiving test-net DOTs and also show the QR Code
+* Create react UI to display the transaction history of the account (receive/send)
+* Implement the API to retrieve the transaction history from the test-net
+* Create a staking UI to show the current validator list
+* Make sure the UI and the function works on Chrome, Firefox, Brave 
+
+### Message Signing
+
+* Create message signing UI and function
+
