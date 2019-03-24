@@ -28,8 +28,8 @@
 
 ### Transaction Management
 
-* Create react UI for send test-net DOTs
-* Implement the API to send test-net DOTs
+* Create react UI for send testnet DOTs
+* Implement the API to send testnet DOTs
 * Create react UI to show the result of the send (success and wrong)
 * Create react UI to show the address for receiving test-net DOTs and also show the QR Code
 * Create react UI to display the transaction history of the account (receive/send)
