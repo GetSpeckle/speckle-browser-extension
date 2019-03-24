@@ -1,0 +1,1 @@
+# speckleos-extension
