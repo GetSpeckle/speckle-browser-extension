@@ -1,7 +1,7 @@
 
-### Development action items
+# Development action items
 
-# Account Management
+### Account Management
 
 * Setup a new project to support development using react, typescript and webpack. 
   * I18N needs to be supported. 
