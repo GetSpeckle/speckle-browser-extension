@@ -28,12 +28,12 @@
 
 ### Transaction Management
 
-* Create react UI for send testnet DOTs
-* Implement the API to send testnet DOTs
-* Create react UI to show the result of the send (success and wrong)
-* Create react UI to show the address for receiving test-net DOTs and also show the QR Code
-* Create react UI to display the transaction history of the account (receive/send)
-* Implement the API to retrieve the transaction history from the test-net
+* Create UI for send testnet DOTs
+* Call API to send testnet DOTs
+* Create UI to show the result of the send (success and wrong)
+* Create UI to show the address for receiving test-net DOTs and also show the QR Code
+* Create UI to display the transaction history of the account (receive/send)
+* Call API to retrieve the transaction history from the testnet
 * Create a staking UI to show the current validator list
 * Make sure the UI and the function works on Chrome, Firefox, Brave 
 
