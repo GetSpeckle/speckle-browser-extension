@@ -1,0 +1,45 @@
+{
+    "name": "speckleos-extension",
+    "author": "speckeos",
+    "version": "0.0.1",
+    "description": "Universal browser extension for Web 3 and the Polkadot ecosystem.",
+    "icons": {
+        "128": "assets/icon-128.png"
+    },
+    
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+    "permissions": [
+        "activeTab",
+        "alarms",
+        "bookmarks",
+        "cookies",
+        "storage",
+        "tabs",
+        "webRequest",
+        "webRequestBlocking",
+        "*://*/*"
+    ],
+    "manifest_version": 2,
+    
+    "background": {
+        "scripts": [
+            "background.js"
+        ],
+        "persistent": true
+    },
+    "browser_action": {
+        "default_title": "speckleos extension",
+        "default_icon": "assets/icon-48.png",
+        "default_popup": "popup.html"
+    },
+    "options_ui": {
+        "page": "options.html",
+        "open_in_tab": true
+    },
+    "content_scripts": [
+        {
+            "js": ["counter.js"],
+            "matches": ["*://*/*"]
+        }
+    ]
+}
