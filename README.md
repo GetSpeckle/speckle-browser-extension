@@ -39,4 +39,4 @@ yarn run dev
 5. Thats it.
 
 ## License
-MIT
+Apache License 2.0
