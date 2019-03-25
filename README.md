@@ -1,10 +1,9 @@
 <div align="center">
 
-# Web Extension Starter
-
+# speckleos-extension
+### Introduction
+Universal browser for Web 3 and the Polkadot ecosystem. 
 </div>
-
-This project containes a minimal setup for developing a performant and well structured web extension. The extension contains a demonstration counter that is displayed on the popup and options pages as well as any open tab. 
 
 ## Good to know before using:
 * [Typescript](https://www.typescriptlang.org/)
@@ -22,9 +21,9 @@ This project containes a minimal setup for developing a performant and well stru
 ## How to run:
 ### In terminal or command prompt
 ```
-npm install
-npm run dev 
-	or npm run watch (to watch code changes)
+yarn install
+yarn run dev 
+	or yarn run watch (to watch code changes)
 ```
 
 ### In Chrome web browser - v71.0
