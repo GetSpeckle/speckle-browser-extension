@@ -1,9 +1,7 @@
-<div align="center">
-
 # speckleos-extension
 ### Introduction
 Universal browser for Web 3 and the Polkadot ecosystem. 
-</div>
+
 
 ## Good to know before using:
 * [Typescript](https://www.typescriptlang.org/)
