@@ -1,6 +1,6 @@
 # speckleos-extension
 ### Introduction
-Universal browser for Web 3 and the Polkadot ecosystem. 
+Universal browser extension for Web 3 and the Polkadot ecosystem. 
 
 
 ## Good to know before using:
@@ -24,14 +24,14 @@ yarn run dev
 	or yarn run watch (to watch code changes)
 ```
 
-### In Chrome web browser - v71.0
+### In Chrome web browser
 1. Go to: [**chrome://extensions**](chrome://extensions)
 2. Toggle: "**developer mode**" on.
 3. Click on: "**Load unpacked**"
 4. Select the newly created folder "**dist**" from the project folder.
 5. Thats it.
 
-### In Firefox web browser - v64.0
+### In Firefox web browser
 1. Go to: [**about:debugging**](about:debugging)
 2. Select: "**Enable add-on debugging**"
 3. Click on: "**Load Temporary Add-on…**"
