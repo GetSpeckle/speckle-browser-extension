@@ -21,7 +21,7 @@ Universal browser extension for Web 3 and the Polkadot ecosystem.
 ```
 yarn install
 yarn run dev 
-	or yarn run watch (to watch code changes)
+yarn run watch (to watch code changes)
 ```
 
 ### In Chrome web browser
