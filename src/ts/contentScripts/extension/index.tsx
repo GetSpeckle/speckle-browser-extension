@@ -2,11 +2,11 @@ import * as React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { Store } from 'react-chrome-redux';
-import SpeckleOsApp from './containers/SpeckleOsApp';
+import SpeckleApp from './containers/SpeckleApp';
 
 import { createDomAnchor } from '../../scripts/dom';
 
-createDomAnchor('speckleos-root')
+createDomAnchor('speckle-root')
 
 const store = new Store({
     portName: 'ExPort' // Communication port between the background component and views such as browser tabs.
@@ -15,7 +15,7 @@ const store = new Store({
 store.ready().then(() => {
     ReactDOM.render(
         <Provider store={store}>
-            <SpeckleOsApp />
+            <SpeckleApp />
         </Provider>
-        , document.getElementById('speckleos-root'))
+        , document.getElementById('speckle-root'))
 });

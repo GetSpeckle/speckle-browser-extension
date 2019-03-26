@@ -7,20 +7,20 @@ import Home from '../../../containers/Home';
 import { themes, ThemeTypes } from '../../../components/styles/themes';
 
 
-interface ISpeckleOsApp {
+interface ISpeckleApp {
     theme: ThemeTypes;
     dispatch: Dispatch;
 }
 
-class SpeckleOsApp extends React.Component<ISpeckleOsApp> {
+class SpeckleApp extends React.Component<ISpeckleApp> {
 
     render() {
         return (
             <ThemeProvider theme={themes[this.props.theme]}>
                 <React.Fragment>
-                    <SpeckleOsAppContainer >
+                    <SpeckleAppContainer >
                         <Home />
-                    </SpeckleOsAppContainer>
+                    </SpeckleAppContainer>
                 </React.Fragment>
             </ThemeProvider>
         );
@@ -33,9 +33,9 @@ const mapStateToProps = (state: IAppState) => {
     };
 };
 
-export default connect(mapStateToProps)(SpeckleOsApp);
+export default connect(mapStateToProps)(SpeckleApp);
 
-const SpeckleOsAppContainer = styled('div')`
+const SpeckleAppContainer = styled('div')`
     position: fixed;
     z-index: 9;
     bottom: 0;

@@ -1,5 +1,5 @@
 {
-	"name": "speckleos-extension",
+	"name": "speckle-browser-extension",
 	"version": "1.0.0",
 	"description": "Universal browser extension for Web 3 and the Polkadot ecosystem.",
 	"main": "index.js",
@@ -46,6 +46,6 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git@github.com:SpeckleOS/speckleos-extension.git"
+		"url": "git@github.com:SpeckleOS/speckle-browser-extension.git"
 	}
 }

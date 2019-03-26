@@ -1,6 +1,6 @@
 {
-    "name": "speckleos-extension",
-    "author": "speckeos",
+    "name": "speckle-browser-extension",
+    "author": "speckle",
     "version": "0.0.1",
     "description": "Universal browser extension for Web 3 and the Polkadot ecosystem.",
     "icons": {
@@ -28,7 +28,7 @@
         "persistent": true
     },
     "browser_action": {
-        "default_title": "speckleos extension",
+        "default_title": "Speckle Browser Extension",
         "default_icon": "assets/icon-48.png",
         "default_popup": "popup.html"
     },
