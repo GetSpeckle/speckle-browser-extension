@@ -17,7 +17,7 @@ module.exports = {
         options: path.join(sourceRootPath, 'ts', 'options', 'index.tsx'),
         popup: path.join(sourceRootPath, 'ts', 'popup', 'index.tsx'),
         // Content Scripts
-        counter: path.join(sourceRootPath, 'ts', 'contentScripts', 'counter', 'index.tsx'),
+        extension: path.join(sourceRootPath, 'ts', 'contentScripts', 'extension', 'index.tsx'),
     },
     output: {
         path: distRootPath,
@@ -76,7 +76,7 @@ if (nodeEnv === 'watch') {
             background: 'background',
             options: 'options',
             popup: 'popup',
-            contentScript: ['counter'],
+            contentScript: ['extension'],
         }
     })
     );

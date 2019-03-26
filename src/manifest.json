@@ -38,7 +38,7 @@
     },
     "content_scripts": [
         {
-            "js": ["counter.js"],
+            "js": ["extension.js"],
             "matches": ["*://*/*"]
         }
     ]
