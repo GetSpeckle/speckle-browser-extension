@@ -38,5 +38,12 @@ yarn run watch (to watch code changes)
 4. Open the newly created folder "**dist**" from the project folder, and choose the "**manifest.json**" file.
 5. Thats it.
 
+### In Brave web browser
+1. Go to: [**brave://extensions**](brave://extensions)
+2. Toggle: "**developer mode**" on.
+3. Click on: "**Load unpacked**"
+4. Select the newly created folder "**dist**" from the project folder.
+5. Thats it.
+
 ## License
 Apache License 2.0
