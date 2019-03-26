@@ -12,5 +12,5 @@
     "jsx-alignment": true,
     "semicolon": [true, "always"]
   },
-  "rulesDirectory": "tslint-react/rules/"
+  "rulesDirectory": []
 }
