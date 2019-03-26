@@ -39,6 +39,7 @@
 		"react-test-renderer": "^16.8.4",
 		"ts-jest": "^24.0.0",
 		"tslint": "^5.13.1",
+		"tslint-config-standard": "^8.0.1",
 		"typescript": "^3.3.3333",
 		"webpack": "^4.29.6",
 		"webpack-chrome-extension-reloader": "^1.2.0",
