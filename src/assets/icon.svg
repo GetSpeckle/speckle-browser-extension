@@ -1,12 +1,34 @@
-<!DOCTYPE svg >
-<svg id="icon" width="500px" height="500px" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" version="1.1">
-	<g id="logo">
-		<circle fill="rgb(190, 190, 190)" cx="50" cy="50" r="50" />
-		<circle fill="rgb(135, 153, 217)" cx="47" cy="50" r="44" />
-		<path   fill="rgb(240, 240, 240)" 
-				d=" M 81, 45 
-					A 50, 50 0 0,0 58, 17
-					A 30, 30 0 0,1 42, 18
-					A 50, 50 0 0,1 81, 45" />
-	</g>
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
+    <defs>
+        <radialGradient id="a" cy="22.572%" r="84.639%" fx="50%" fy="22.572%">
+            <stop offset="0%" stop-color="#44C5EE"/>
+            <stop offset="100%" stop-color="#4AABE0"/>
+        </radialGradient>
+        <radialGradient id="b" cy="27.105%" r="72.895%" fx="50%" fy="27.105%">
+            <stop offset="0%" stop-color="#FF7396"/>
+            <stop offset="100%" stop-color="#F3536D"/>
+        </radialGradient>
+        <radialGradient id="c" cy="27.517%" r="72.483%" fx="50%" fy="27.517%">
+            <stop offset="0%" stop-color="#D396FF"/>
+            <stop offset="100%" stop-color="#B279F9"/>
+        </radialGradient>
+        <radialGradient id="d" r="49.823%" fx="50%" fy="50%">
+            <stop offset="0%" stop-color="#FFC10B"/>
+            <stop offset="100%" stop-color="#FFB200"/>
+        </radialGradient>
+        <radialGradient id="e" cy="19.249%" r="80.751%" fx="50%" fy="19.249%">
+            <stop offset="0%" stop-color="#51DFB0"/>
+            <stop offset="100%" stop-color="#52C48D"/>
+        </radialGradient>
+    </defs>
+    <g fill="none" fill-rule="evenodd" transform="translate(-4 -4)">
+        <rect width="26" height="26" x="5" y="5" fill="#FFF" stroke="#F8F8F8" stroke-width=".5" rx="5"/>
+        <g fill-rule="nonzero" transform="rotate(-45 21.851 8.627)">
+            <circle cx="12.516" cy="12.516" r="3.5" fill="url(#a)"/>
+            <circle cx="12.515" cy="2.515" r="2" fill="url(#b)"/>
+            <circle cx="22.516" cy="12.516" r="2" fill="url(#c)"/>
+            <circle cx="12.516" cy="22.516" r="2" fill="url(#d)"/>
+            <circle cx="2.515" cy="12.515" r="2" fill="url(#e)"/>
+        </g>
+    </g>
 </svg>
