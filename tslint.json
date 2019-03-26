@@ -1,13 +1,16 @@
 {
-    "defaultSeverity": "error",
-    "extends": [
-        "tslint:recommended"
-    ],
-    "jsRules": {},
-    "rules": {
-        "max-line-length": {
-            "options": [80]
-        }
+  "extends": [
+    "tslint-config-standard"
+  ],
+  "jsRules": {},
+  "rules": {
+    "max-line-length": {
+      "options": [
+        80
+      ]
     },
-    "rulesDirectory": []
+    "jsx-alignment": true,
+    "semicolon": [true, "always"]
+  },
+  "rulesDirectory": "tslint-react/rules/"
 }
