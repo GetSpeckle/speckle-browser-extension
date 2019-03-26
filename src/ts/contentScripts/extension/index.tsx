@@ -6,7 +6,7 @@ import SpeckleOsApp from './containers/SpeckleOsApp';
 
 import { createDomAnchor } from '../../scripts/dom';
 
-createDomAnchor('counter-root')
+createDomAnchor('speckleos-root')
 
 const store = new Store({
     portName: 'ExPort' // Communication port between the background component and views such as browser tabs.
