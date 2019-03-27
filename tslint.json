@@ -6,11 +6,11 @@
   "rules": {
     "max-line-length": {
       "options": [
-        80
+        100
       ]
     },
     "jsx-alignment": true,
-    "semicolon": [true, "always"]
+    "semicolon": [true, "never"]
   },
   "rulesDirectory": []
 }
