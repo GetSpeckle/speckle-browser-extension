@@ -10,7 +10,7 @@
       ]
     },
     "jsx-alignment": true,
-    "semicolon": [true, "always"]
+    "semicolon": [true, "never"]
   },
   "rulesDirectory": []
 }

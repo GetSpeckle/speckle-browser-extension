@@ -1,5 +1,5 @@
-import * as React from 'react';
-import styled from 'styled-components';
+import * as React from 'react'
+import styled from 'styled-components'
 
 class Home extends React.Component {
 
@@ -8,11 +8,11 @@ class Home extends React.Component {
             <HomeContainer >
                <div>Hello Speckle OS </div>
             </HomeContainer>
-    );
+    )
   }
 }
 
-export default Home;
+export default Home
 
 const HomeContainer = styled('div')`
     display: flex;
@@ -23,4 +23,4 @@ const HomeContainer = styled('div')`
     padding: 5px;
     margin: 5px;
     background-color: ${p => p.theme.backgroundColor};
-`;
+`
