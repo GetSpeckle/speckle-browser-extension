@@ -1,19 +1,20 @@
-import * as React from 'react';
-import styled from 'styled-components';
-
+import { browser } from 'webextension-polyfill-ts'
+import * as React from 'react'
+import styled from 'styled-components'
 
 class Home extends React.Component {
 
-    render() {
-        return (
-            <HomeContainer >
-               <div>Hello Speckle OS </div>
-            </HomeContainer>
-        );
-    }
+  render () {
+    let hello = browser.i18n.getMessage('welcome')
+    return (
+      <HomeContainer>
+        <div>{hello} </div>
+      </HomeContainer>
+    )
+  }
 }
 
-export default Home;
+export default Home
 
 const HomeContainer = styled('div')`
     display: flex;
@@ -24,4 +25,4 @@ const HomeContainer = styled('div')`
     padding: 5px;
     margin: 5px;
     background-color: ${p => p.theme.backgroundColor};
-`;
+`
