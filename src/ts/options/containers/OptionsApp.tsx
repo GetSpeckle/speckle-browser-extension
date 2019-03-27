@@ -8,14 +8,14 @@ import GlobalStyle from '../../components/styles/GlobalStyle';
 import { themes, ThemeTypes } from '../../components/styles/themes';
 
 interface IOptionsApp {
-    theme: ThemeTypes;
-    dispatch: Dispatch;
+  theme: ThemeTypes;
+  dispatch: Dispatch;
 }
 
 class OptionsApp extends React.Component<IOptionsApp> {
-   
-    render() {
-        return (
+
+  render () {
+    return (
             <ThemeProvider theme={themes[this.props.theme]}>
                 <React.Fragment>
                     <GlobalStyle />
@@ -24,14 +24,14 @@ class OptionsApp extends React.Component<IOptionsApp> {
                     </OptionsAppContainer>
                 </React.Fragment>
             </ThemeProvider>
-        );
-    }
+    );
+  }
 }
 
 const mapStateToProps = (state: IAppState) => {
-    return {
-        theme: state.settings.theme
-    };
+  return {
+    theme: state.settings.theme
+  };
 };
 
 export default connect(mapStateToProps)(OptionsApp);
@@ -42,7 +42,7 @@ const OptionsAppContainer = styled('div')`
     flex-direction: row;
     justify-content: center;
     justify-items: center;
-    align-items: center;  
+    align-items: center;
     height: 90vh;
     width: 90vw;
     left: 5vw;

@@ -6,7 +6,7 @@
   "rules": {
     "max-line-length": {
       "options": [
-        80
+        100
       ]
     },
     "jsx-alignment": true,

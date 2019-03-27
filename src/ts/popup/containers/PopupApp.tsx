@@ -8,14 +8,14 @@ import GlobalStyle from '../../components/styles/GlobalStyle';
 import { themes, ThemeTypes } from '../../components/styles/themes';
 
 interface IPopupApp {
-	theme: ThemeTypes;
-	dispatch: Dispatch;
+  theme: ThemeTypes;
+  dispatch: Dispatch;
 }
 
 class PopupApp extends React.Component<IPopupApp> {
 
-	render() {
-		return (
+  render () {
+    return (
 			<ThemeProvider theme={themes[this.props.theme]}>
 				<React.Fragment>
 					<GlobalStyle />
@@ -24,14 +24,14 @@ class PopupApp extends React.Component<IPopupApp> {
 					</PopupAppContainer>
 				</React.Fragment>
 			</ThemeProvider>
-		);
-	}
+    );
+  }
 }
 
 const mapStateToProps = (state: IAppState) => {
-	return {
-		theme: state.settings.theme
-	};
+  return {
+    theme: state.settings.theme
+  };
 };
 
 export default connect(mapStateToProps)(PopupApp);
@@ -41,7 +41,7 @@ const PopupAppContainer = styled('div')`
     flex-direction: row;
     justify-content: center;
     justify-items: center;
-    align-items: center;  
+    align-items: center;
     height: 200px;
     width: 300px;
     margin: 10px;

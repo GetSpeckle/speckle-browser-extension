@@ -6,16 +6,17 @@ import SpeckleApp from './containers/SpeckleApp';
 
 import { createDomAnchor } from '../../scripts/dom';
 
-createDomAnchor('speckle-root')
+createDomAnchor('speckle-root');
 
 const store = new Store({
-    portName: 'ExPort' // Communication port between the background component and views such as browser tabs.
-})
+  // Communication port between the background component and views such as browser tabs.
+  portName: 'ExPort'
+});
 
 store.ready().then(() => {
-    ReactDOM.render(
+  ReactDOM.render(
         <Provider store={store}>
             <SpeckleApp />
         </Provider>
-        , document.getElementById('speckle-root'))
+        , document.getElementById('speckle-root'));
 });

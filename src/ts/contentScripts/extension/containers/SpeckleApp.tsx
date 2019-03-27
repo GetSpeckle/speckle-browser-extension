@@ -6,16 +6,15 @@ import { IAppState } from '../../../background/store';
 import Home from '../../../containers/Home';
 import { themes, ThemeTypes } from '../../../components/styles/themes';
 
-
 interface ISpeckleApp {
-    theme: ThemeTypes;
-    dispatch: Dispatch;
+  theme: ThemeTypes;
+  dispatch: Dispatch;
 }
 
 class SpeckleApp extends React.Component<ISpeckleApp> {
 
-    render() {
-        return (
+  render () {
+    return (
             <ThemeProvider theme={themes[this.props.theme]}>
                 <React.Fragment>
                     <SpeckleAppContainer >
@@ -23,14 +22,14 @@ class SpeckleApp extends React.Component<ISpeckleApp> {
                     </SpeckleAppContainer>
                 </React.Fragment>
             </ThemeProvider>
-        );
-    }
+    );
+  }
 }
 
 const mapStateToProps = (state: IAppState) => {
-    return {
-        theme: state.settings.theme
-    };
+  return {
+    theme: state.settings.theme
+  };
 };
 
 export default connect(mapStateToProps)(SpeckleApp);
