@@ -1,0 +1,20 @@
+{
+  "appName": {
+    "message": "Speckle"
+  },
+  "appShortName": {
+    "message": "Speckle"
+  },
+  "appDescription": {
+    "message": "Universal browser extension for Web 3 and the Polkadot ecosystem"
+  },
+  "browserActionTitle": {
+    "message": "Speckle"
+  },
+  "welcome": {
+    "message": "Welcome to Speckle"
+  },
+  "continue": {
+    "message": "Continue"
+  }
+}
