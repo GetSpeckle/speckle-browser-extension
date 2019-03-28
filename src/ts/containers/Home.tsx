@@ -1,14 +1,13 @@
-import { browser } from 'webextension-polyfill-ts'
+import t from '../services/i18n'
 import * as React from 'react'
 import styled from 'styled-components'
 
 class Home extends React.Component {
 
   render () {
-    let hello = browser.i18n.getMessage('welcome')
     return (
       <HomeContainer>
-        <div>{hello} </div>
+        <div>{t('welcome')} </div>
       </HomeContainer>
     )
   }
