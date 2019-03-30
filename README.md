@@ -14,7 +14,7 @@ Universal browser extension for Web 3 and the Polkadot ecosystem.
 ## Requirements:
 * [NodeJS](https://nodejs.org/en/) - Javascript runtime
 * [VSCode](https://code.visualstudio.com/) - Recomended editor
-* [Chrome](https://www.google.com/chrome/) or [Firefox](https://www.mozilla.org/en-US/firefox/) - Web browser
+* [Brave](https://brave.com/) or [Chrome](https://www.google.com/chrome/) or [Firefox](https://www.mozilla.org/en-US/firefox/) - Web browser
 
 ## How to run:
 ### In terminal or command prompt
@@ -23,6 +23,12 @@ yarn install
 yarn run dev 
 yarn run watch (to watch code changes)
 ```
+### In Brave web browser
+1. Go to: [**brave://extensions**](brave://extensions)
+2. Toggle: "**developer mode**" on.
+3. Click on: "**Load unpacked**"
+4. Select the newly created folder "**dist**" from the project folder.
+5. That's it.
 
 ### In Chrome web browser
 1. Go to: [**chrome://extensions**](chrome://extensions)
@@ -36,13 +42,6 @@ yarn run watch (to watch code changes)
 2. Select: "**Enable add-on debugging**"
 3. Click on: "**Load Temporary Add-on…**"
 4. Open the newly created folder "**dist**" from the project folder, and choose the "**manifest.json**" file.
-5. That's it.
-
-### In Brave web browser
-1. Go to: [**brave://extensions**](brave://extensions)
-2. Toggle: "**developer mode**" on.
-3. Click on: "**Load unpacked**"
-4. Select the newly created folder "**dist**" from the project folder.
 5. That's it.
 
 ## License
