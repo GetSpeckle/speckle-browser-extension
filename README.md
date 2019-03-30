@@ -14,7 +14,7 @@ Universal browser extension for Web 3 and the Polkadot ecosystem.
 ## Requirements:
 * [NodeJS](https://nodejs.org/en/) - Javascript runtime
 * [VSCode](https://code.visualstudio.com/) - Recomended editor
-* [Chrome](https://www.google.com/chrome/) or [Firefox](https://www.mozilla.org/en-US/firefox/) - Web browser
+* [Brave](https://brave.com/) or [Chrome](https://www.google.com/chrome/) or [Firefox](https://www.mozilla.org/en-US/firefox/) - Web browser
 
 ## How to run:
 ### In terminal or command prompt
