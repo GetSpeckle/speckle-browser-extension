@@ -7,4 +7,3 @@ export interface SpeckleAction<T = any, P = any> extends Action {
   type: T
   payload?: P
 }
-
