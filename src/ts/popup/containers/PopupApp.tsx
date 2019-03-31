@@ -3,9 +3,11 @@ import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import styled, { ThemeProvider } from 'styled-components'
 import { IAppState } from '../../background/store'
-import Home from '../../containers/Home'
+
 import GlobalStyle from '../../components/styles/GlobalStyle'
 import { themes, ThemeTypes } from '../../components/styles/themes'
+import { HashRouter as Router } from 'react-router-dom'
+import { Routes } from '../../routes'
 
 interface IPopupApp {
   theme: ThemeTypes
@@ -16,14 +18,16 @@ class PopupApp extends React.Component<IPopupApp> {
 
   render () {
     return (
-			<ThemeProvider theme={themes[this.props.theme]}>
-				<React.Fragment>
-					<GlobalStyle />
-					<PopupAppContainer>
-						<Home />
-					</PopupAppContainer>
-				</React.Fragment>
-			</ThemeProvider>
+      <ThemeProvider theme={themes[this.props.theme]}>
+        <React.Fragment>
+          <GlobalStyle/>
+          <PopupAppContainer>
+            <Router>
+              <Routes/>
+            </Router>
+          </PopupAppContainer>
+        </React.Fragment>
+      </ThemeProvider>
     )
   }
 }
@@ -42,9 +46,8 @@ const PopupAppContainer = styled('div')`
     justify-content: center;
     justify-items: center;
     align-items: center;
-    height: 200px;
-    width: 300px;
-    margin: 10px;
+    min-width: 375px;
+    min-height: 667px;
     background-color: ${p => p.theme.backgroundColor};
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 `
