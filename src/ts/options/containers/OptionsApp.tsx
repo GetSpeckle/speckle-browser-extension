@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import styled, { ThemeProvider } from 'styled-components'
 import { IAppState } from '../../background/store'
-import Home from '../../containers/Home'
+import App from '../../containers/App'
 import GlobalStyle from '../../components/styles/GlobalStyle'
 import { themes, ThemeTypes } from '../../components/styles/themes'
 
@@ -20,7 +20,7 @@ class OptionsApp extends React.Component<IOptionsApp> {
                 <React.Fragment>
                     <GlobalStyle />
                     <OptionsAppContainer>
-                        <Home/>
+                        <App/>
                     </OptionsAppContainer>
                 </React.Fragment>
             </ThemeProvider>

@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="208" height="208" viewBox="0 0 208 208">
+    <defs>
+        <radialGradient id="c" cy="22.572%" r="84.639%" fx="50%" fy="22.572%">
+            <stop offset="0%" stop-color="#44C5EE"/>
+            <stop offset="100%" stop-color="#4AABE0"/>
+        </radialGradient>
+        <circle id="b" cx="94" cy="94" r="40"/>
+        <filter id="a" width="193.8%" height="193.8%" x="-46.9%" y="-46.9%" filterUnits="objectBoundingBox">
+            <feOffset in="SourceAlpha" result="shadowOffsetOuter1"/>
+            <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="12.5"/>
+            <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0.223431156 0 0 0 0 0.734036715 0 0 0 0 0.974888393 0 0 0 0.601704031 0"/>
+        </filter>
+        <radialGradient id="f" cy="27.105%" r="72.895%" fx="50%" fy="27.105%">
+            <stop offset="0%" stop-color="#FF7396"/>
+            <stop offset="100%" stop-color="#F3536D"/>
+        </radialGradient>
+        <circle id="e" cx="163" cy="26" r="25"/>
+        <filter id="d" width="164%" height="164%" x="-32%" y="-28%" filterUnits="objectBoundingBox">
+            <feOffset dy="2" in="SourceAlpha" result="shadowOffsetOuter1"/>
+            <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="5"/>
+            <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0.956862745 0 0 0 0 0.333333333 0 0 0 0 0.435294118 0 0 0 0.5 0"/>
+        </filter>
+        <radialGradient id="i" cy="27.517%" r="72.483%" fx="50%" fy="27.517%">
+            <stop offset="0%" stop-color="#D396FF"/>
+            <stop offset="100%" stop-color="#B279F9"/>
+        </radialGradient>
+        <circle id="h" cx="162" cy="163" r="25"/>
+        <filter id="g" width="164%" height="164%" x="-32%" y="-28%" filterUnits="objectBoundingBox">
+            <feOffset dy="2" in="SourceAlpha" result="shadowOffsetOuter1"/>
+            <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="5"/>
+            <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0.717647059 0 0 0 0 0.494117647 0 0 0 0 0.980392157 0 0 0 0.501075634 0"/>
+        </filter>
+        <radialGradient id="l" r="49.823%" fx="50%" fy="50%">
+            <stop offset="0%" stop-color="#FFC10B"/>
+            <stop offset="100%" stop-color="#FFB200"/>
+        </radialGradient>
+        <circle id="k" cx="25" cy="162" r="25"/>
+        <filter id="j" width="164%" height="164%" x="-32%" y="-28%" filterUnits="objectBoundingBox">
+            <feOffset dy="2" in="SourceAlpha" result="shadowOffsetOuter1"/>
+            <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="5"/>
+            <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0.996078431 0 0 0 0 0.8 0 0 0 0 0 0 0 0 0.6 0"/>
+        </filter>
+        <radialGradient id="o" cy="19.249%" r="80.751%" fx="50%" fy="19.249%">
+            <stop offset="0%" stop-color="#51DFB0"/>
+            <stop offset="100%" stop-color="#52C48D"/>
+        </radialGradient>
+        <circle id="n" cx="26" cy="25" r="25"/>
+        <filter id="m" width="164%" height="164%" x="-32%" y="-28%" filterUnits="objectBoundingBox">
+            <feOffset dy="2" in="SourceAlpha" result="shadowOffsetOuter1"/>
+            <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="5"/>
+            <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0.321568627 0 0 0 0 0.77254902 0 0 0 0 0.560784314 0 0 0 0.5 0"/>
+        </filter>
+    </defs>
+    <g fill="none" fill-rule="nonzero">
+        <g transform="rotate(-90 103 95)">
+            <use fill="#000" filter="url(#a)" xlink:href="#b"/>
+            <use fill="url(#c)" xlink:href="#b"/>
+        </g>
+        <g transform="rotate(-90 103 95)">
+            <use fill="#000" filter="url(#d)" xlink:href="#e"/>
+            <use fill="url(#f)" xlink:href="#e"/>
+        </g>
+        <g transform="rotate(-90 103 95)">
+            <use fill="#000" filter="url(#g)" xlink:href="#h"/>
+            <use fill="url(#i)" xlink:href="#h"/>
+        </g>
+        <g transform="rotate(-90 103 95)">
+            <use fill="#000" filter="url(#j)" xlink:href="#k"/>
+            <use fill="url(#l)" xlink:href="#k"/>
+        </g>
+        <g transform="rotate(-90 103 95)">
+            <use fill="#000" filter="url(#m)" xlink:href="#n"/>
+            <use fill="url(#o)" xlink:href="#n"/>
+        </g>
+    </g>
+</svg>
