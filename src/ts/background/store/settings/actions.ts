@@ -1,5 +1,19 @@
-import { Action } from 'redux'
+import { SpeckleAction } from '../util'
 
-export type ThemeActionTypes = 'DARK_THEME' | 'LIGHT_THEME'
+export type SettingsActionType = 'CHANGE_THEME' | 'CHANGE_COLOR'
 
-export type SettingsActions = Action<ThemeActionTypes>
+export type SettingsAction = SpeckleAction<SettingsActionType>
+
+export function changeTheme (theme: string): SettingsAction {
+  return {
+    type: 'CHANGE_THEME',
+    payload: theme
+  }
+}
+
+export function changeColor (color: string): SettingsAction {
+  return {
+    type: 'CHANGE_COLOR',
+    payload: color
+  }
+}
