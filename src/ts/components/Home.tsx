@@ -3,6 +3,7 @@ import * as React from 'react'
 import { Image } from 'semantic-ui-react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
+import { TERM_SERVICE_ROUTE } from '../constants/routes'
 
 class Home extends React.Component {
 
@@ -14,7 +15,7 @@ class Home extends React.Component {
           <div>
             {t('welcome')}
           </div>
-          <Link to='/term'>Term</Link>
+          <Link to={TERM_SERVICE_ROUTE}>Term</Link>
         </LandingContainer>
     )
   }

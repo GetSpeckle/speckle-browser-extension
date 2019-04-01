@@ -3,12 +3,17 @@ import { Route, Switch } from 'react-router-dom'
 import App from '../containers/App'
 import Term from '../components/account/Term'
 
+import {
+  DEFAULT_ROUTE,
+  TERM_SERVICE_ROUTE
+} from '../constants/routes'
+
 export class Routes extends React.Component {
   renderRoutes () {
     return (
       <Switch>
-        <Route path='/' component={App} exact={true} />
-        <Route path='/term' component={Term} exact={true} />
+        <Route path={DEFAULT_ROUTE} component={App} exact={true} />
+        <Route path={TERM_SERVICE_ROUTE} component={Term} exact={true} />
       </Switch>
     )
   }
