@@ -1,19 +1,21 @@
-import { SpeckleAction } from '../util'
+import { AnyAction } from 'redux'
+import { LocalStore } from '../../../services/local-store'
 
-export type SettingsActionType = 'CHANGE_THEME' | 'CHANGE_COLOR'
+export const ACTION_TYPES = {
+  CHANGE_THEME: 'CHANGE_THEME',
+  CHANGE_COLOR: 'CHANGE_COLOR'
+}
 
-export type SettingsAction = SpeckleAction<SettingsActionType>
-
-export function changeTheme (theme: string): SettingsAction {
+export function changeTheme (theme: string): AnyAction {
   return {
-    type: 'CHANGE_THEME',
-    payload: theme
+    type: ACTION_TYPES.CHANGE_THEME,
+    payload: LocalStore.setValue('theme', theme)
   }
 }
 
-export function changeColor (color: string): SettingsAction {
+export function changeColor (color: string): AnyAction {
   return {
-    type: 'CHANGE_COLOR',
-    payload: color
+    type: ACTION_TYPES.CHANGE_COLOR,
+    payload: LocalStore.setValue('color', color)
   }
 }

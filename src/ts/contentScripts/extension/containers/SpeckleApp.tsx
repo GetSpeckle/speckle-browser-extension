@@ -2,7 +2,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
 import styled, { ThemeProvider } from 'styled-components'
-import { IAppState } from '../../../background/store'
+import { IAppState } from '../../../background/store/all'
 import App from '../../../containers/App'
 import { themes, ThemeTypes } from '../../../components/styles/themes'
 
