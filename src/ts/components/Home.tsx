@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import { IAppState } from '../background/store/all'
 import { connect } from 'react-redux'
 import { changeColor } from '../background/store/settings'
+import { TERM_SERVICE_ROUTE } from '../constants/routes'
 
 interface IHomeProp extends StateProps, DispatchProps {}
 
@@ -34,7 +35,7 @@ class Home extends React.Component<IHomeProp, IHomeState> {
             <div>Current color: {this.props.color}</div>
             <Button onClick={this.handleChangeColor}>Chage color to red</Button>
           </div>
-          <Link to='/term'>Term</Link>
+          <Link to={TERM_SERVICE_ROUTE}>Term</Link>
         </LandingContainer>
     )
   }
