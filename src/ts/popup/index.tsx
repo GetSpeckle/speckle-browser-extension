@@ -1,18 +1,19 @@
 import * as React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-import { Store } from 'react-chrome-redux'
 import PopupApp from './containers/PopupApp'
+import initializeStore from '../background/store'
 
-const store = new Store({
-  // Communication port between the background component and views such as browser tabs.
-  portName: 'ExPort'
-})
+const store = initializeStore()
 
-store.ready().then(() => {
-  ReactDOM.render(
-        <Provider store={store}>
-            <PopupApp />
-        </Provider>
-        , document.getElementById('popup-root'))
-})
+const rootEl = document.getElementById('popup-root')
+
+ReactDOM.render(
+  <Provider store={store}>
+    <div>
+      <PopupApp />
+    </div>
+  </Provider>
+  ,
+  rootEl
+)

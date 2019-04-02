@@ -1,5 +1,5 @@
 import { createStore } from 'redux'
-import reducers, { IAppState, loadState } from './store'
+import reducers, { IAppState, loadState } from './store/all'
 import { wrapStore, Store } from 'react-chrome-redux'
 import { configureApp } from './AppConfig'
 
