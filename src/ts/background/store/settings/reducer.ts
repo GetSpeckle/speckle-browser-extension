@@ -1,7 +1,7 @@
 import { Reducer, AnyAction } from 'redux'
-import { ThemeTypes } from './../../../components/styles/themes'
 import { ACTION_TYPES } from './actions'
 import { SUCCESS, REQUEST } from '../util'
+import { ThemeTypes } from '../../../components/styles/themes'
 
 /**
  * Settings state
@@ -29,19 +29,17 @@ const initialState: IAppSettings = {
  */
 const settings: Reducer<IAppSettings, AnyAction> = (state = initialState, action) => {
   switch (action.type) {
-    case REQUEST(ACTION_TYPES.CHANGE_COLOR):
-      return { ...state, updating: true }
-
-    case SUCCESS(ACTION_TYPES.CHANGE_COLOR):
-      console.log('new color is %s', action.payload)
-      return { ...state, color: action.payload, updating: false }
-
     case REQUEST(ACTION_TYPES.GET_SETTINGS):
+    case REQUEST(ACTION_TYPES.SAVE_SETTINGS):
       return { ...state, updating: true }
 
     case SUCCESS(ACTION_TYPES.GET_SETTINGS):
       console.log('got the setting', action.payload)
       return { ...state, ...action.payload.settings }
+
+    case SUCCESS(ACTION_TYPES.SAVE_SETTINGS):
+      console.log('got the saved settings', action.payload)
+      return { ...state, ...action.payload }
 
     default:
       return state

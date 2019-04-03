@@ -7,7 +7,7 @@ import GlobalStyle from '../../components/styles/GlobalStyle'
 import { themes } from '../../components/styles/themes'
 import { HashRouter as Router } from 'react-router-dom'
 import { Routes } from '../../routes'
-import { getSettings } from '../../background/store/settings';
+import { getSettings } from '../../background/store/settings'
 
 interface IPopupApp extends StateProps, DispatchProps {}
 

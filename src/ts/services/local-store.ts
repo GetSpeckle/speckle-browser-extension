@@ -15,14 +15,13 @@ export class LocalStore {
   }
 
   /**
-   * Set the object to the local store and return a value in the promise.
-   * Make sure the value is the one set in the store
+   * Set the value to the local store using the given key and return the value in the promise.
    *
-   * @param obj the object that already contain the value
-   * @param value the value to be returned in the promise
+   * @param key the key mapped to the value
+   * @param value the value to be set and returned in the promise
    */
-  static setValue (obj: any, value: any): Promise<any> {
-    return LocalStore.set(obj).then(() => {
+  static setValue (key: string, value: any): Promise<any> {
+    return LocalStore.set({ [key]: value }).then(() => {
       return value
     })
   }
