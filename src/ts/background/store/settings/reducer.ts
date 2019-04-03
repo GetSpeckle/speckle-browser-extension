@@ -9,13 +9,16 @@ import { SUCCESS, REQUEST } from '../util'
 export interface IAppSettings {
   updating: boolean,
   theme: ThemeTypes,
-  color: string
+  color: string,
+  // welcome if first time user
+  welcome: boolean
 }
 
 const initialState: IAppSettings = {
   updating: false,
   theme: 'light',
-  color: 'blue'
+  color: 'blue',
+  welcome: true
 }
 
 /**
@@ -32,6 +35,13 @@ const settings: Reducer<IAppSettings, AnyAction> = (state = initialState, action
     case SUCCESS(ACTION_TYPES.CHANGE_COLOR):
       console.log('new color is %s', action.payload)
       return { ...state, color: action.payload, updating: false }
+
+    case REQUEST(ACTION_TYPES.GET_SETTINGS):
+      return { ...state, updating: true }
+
+    case SUCCESS(ACTION_TYPES.GET_SETTINGS):
+      console.log('got the setting', action.payload)
+      return { ...state, ...action.payload.settings }
 
     default:
       return state

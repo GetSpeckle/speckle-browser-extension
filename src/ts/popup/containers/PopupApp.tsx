@@ -1,24 +1,25 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { Dispatch } from 'redux'
 import styled, { ThemeProvider } from 'styled-components'
 import { IAppState } from '../../background/store/all'
 
 import GlobalStyle from '../../components/styles/GlobalStyle'
-import { themes, ThemeTypes } from '../../components/styles/themes'
+import { themes } from '../../components/styles/themes'
 import { HashRouter as Router } from 'react-router-dom'
 import { Routes } from '../../routes'
+import { getSettings } from '../../background/store/settings';
 
-interface IPopupApp {
-  theme: ThemeTypes
-  dispatch: Dispatch
-}
+interface IPopupApp extends StateProps, DispatchProps {}
 
 class PopupApp extends React.Component<IPopupApp> {
 
+  componentDidMount () {
+    this.props.getSettings()
+  }
+
   render () {
     return (
-      <ThemeProvider theme={themes[this.props.theme]}>
+      <ThemeProvider theme={themes[this.props.settings.theme]}>
         <React.Fragment>
           <GlobalStyle/>
           <PopupAppContainer>
@@ -34,11 +35,16 @@ class PopupApp extends React.Component<IPopupApp> {
 
 const mapStateToProps = (state: IAppState) => {
   return {
-    theme: state.settings.theme
+    settings: state.settings
   }
 }
 
-export default connect(mapStateToProps)(PopupApp)
+const mapDispatchToProps = { getSettings }
+
+type StateProps = ReturnType<typeof mapStateToProps>
+type DispatchProps = typeof mapDispatchToProps
+
+export default connect(mapStateToProps, mapDispatchToProps)(PopupApp)
 
 const PopupAppContainer = styled('div')`
     display: flex;
