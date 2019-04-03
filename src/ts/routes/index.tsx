@@ -7,13 +7,14 @@ import {
   DEFAULT_ROUTE,
   TERM_SERVICE_ROUTE
 } from '../constants/routes'
+import LoginLayoutRoute from '../layouts/LoginLayout'
 
 export class Routes extends React.Component {
   renderRoutes () {
     return (
       <Switch>
         <Route path={DEFAULT_ROUTE} component={App} exact={true} />
-        <Route path={TERM_SERVICE_ROUTE} component={Term} exact={true} />
+        <LoginLayoutRoute path={TERM_SERVICE_ROUTE} component={Term} exact={true} />
       </Switch>
     )
   }
