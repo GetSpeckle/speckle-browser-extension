@@ -1,6 +1,6 @@
 import t from '../services/i18n'
 import * as React from 'react'
-import { Image, Button } from 'semantic-ui-react'
+import { Image } from 'semantic-ui-react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { TERM_SERVICE_ROUTE } from '../constants/routes'
@@ -25,13 +25,13 @@ class Welcome extends React.Component<IWelcomeProp, IWelcomeState> {
   }
 
   imageMap = {
-    name: "image-map",
+    name: 'image-map',
     areas: [
-      { name: "blue", shape: "circle", coords: [103, 104, 40 ], fillColor: "#44C5EE"},
-      { name: "purple", shape: "circle", coords: [173, 36, 25 ], fillColor: "#D396FF" },
-      { name: "orange", shape: "circle", coords: [170, 173, 25 ], fillColor: "FFC10B"  },
-      { name: "green", shape: "circle", coords: [33, 172, 25 ], fillColor: "51DFB0" },
-      { name: "red", shape: "circle", coords: [34, 35, 25 ], fillColor: "#FF7396" },
+      { name: 'blue', shape: 'circle', coords: [103, 104, 40 ], fillColor: '#44C5EE' },
+      { name: 'purple', shape: 'circle', coords: [173, 36, 25 ], fillColor: '#D396FF' },
+      { name: 'orange', shape: 'circle', coords: [170, 173, 25 ], fillColor: 'FFC10B' },
+      { name: 'green', shape: 'circle', coords: [33, 172, 25 ], fillColor: '51DFB0' },
+      { name: 'red', shape: 'circle', coords: [34, 35, 25 ], fillColor: '#FF7396' }
     ]
   }
 
