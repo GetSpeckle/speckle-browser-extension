@@ -8,6 +8,7 @@ import { IAppState } from '../background/store/all'
 import { connect } from 'react-redux'
 import { saveSettings } from '../background/store/settings'
 import { ThemeTypes } from './styles/themes'
+import ImageMapper from 'react-image-mapper'
 
 interface IWelcomeProp extends StateProps, DispatchProps {}
 
@@ -21,6 +22,17 @@ class Welcome extends React.Component<IWelcomeProp, IWelcomeState> {
   state: IWelcomeState = {
     color: 'red',
     theme: 'light'
+  }
+
+  imageMap = {
+    name: "image-map",
+    areas: [
+      { name: "blue", shape: "circle", coords: [94, 94, 40 ], preFillColor: "blue", fillColor: "blue"  },
+      { name: "red", shape: "circle", coords: [170, 100, 25 ], preFillColor: "red", fillColor: "red" },
+      { name: "purple", shape: "circle", coords: [170, 100, 25 ], preFillColor: "purple", fillColor: "purple" },
+      { name: "orange", shape: "circle", coords: [170, 100, 25 ], preFillColor: "orange", fillColor: "orange"  },
+      { name: "green", shape: "circle", coords: [170, 100, 25 ], preFillColor: "green", fillColor: "green" },
+    ]
   }
 
   handleChangeColor = () => {
@@ -37,6 +49,7 @@ class Welcome extends React.Component<IWelcomeProp, IWelcomeState> {
        <WelcomeContainer>
           <Image src='/assets/logo-3-x.svg' size='tiny' />
           <Image src='/assets/icon-dots.svg' size='small' />
+          <ImageMapper src={'/assets/icon-doWhileStatement.svg'} map={this.imageMap} width={208}></ImageMapper>
           <div>
             {t('welcome')}
             <div>Current color: {this.props.settings.color}</div>
