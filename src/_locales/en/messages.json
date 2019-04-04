@@ -16,5 +16,12 @@
   },
   "continue": {
     "message": "Continue"
+  },
+  "pickColorTitle": {
+    "message": "Pick your favorite color"
+  },
+  "pickColorDescription": {
+    "message": "This can be changed in the settings"
   }
+
 }

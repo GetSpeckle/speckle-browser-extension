@@ -1,21 +1,22 @@
 import { AnyAction } from 'redux'
 import { LocalStore } from '../../../services/local-store'
+import { IAppSettings } from './reducer'
 
 export const ACTION_TYPES = {
-  CHANGE_THEME: 'CHANGE_THEME',
-  CHANGE_COLOR: 'CHANGE_COLOR'
+  GET_SETTINGS: 'GET_SETTINGS',
+  SAVE_SETTINGS: 'SAVE_SETTINGS'
 }
 
-export function changeTheme (theme: string): AnyAction {
+export function saveSettings (settings: IAppSettings): AnyAction {
   return {
-    type: ACTION_TYPES.CHANGE_THEME,
-    payload: LocalStore.setValue('theme', theme)
+    type: ACTION_TYPES.SAVE_SETTINGS,
+    payload: LocalStore.setValue('settings', settings)
   }
 }
 
-export function changeColor (color: string): AnyAction {
+export function getSettings (): AnyAction {
   return {
-    type: ACTION_TYPES.CHANGE_COLOR,
-    payload: LocalStore.setValue('color', color)
+    type: ACTION_TYPES.GET_SETTINGS,
+    payload: LocalStore.get('settings')
   }
 }
