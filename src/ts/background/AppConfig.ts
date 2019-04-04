@@ -1,5 +1,5 @@
 import { Store } from 'redux'
-import { IAppState, saveState } from './store'
+import { IAppState, saveState } from './store/all'
 
 const autoSaveAppState = (store: Store<IAppState>) => {
   chrome.tabs.onRemoved.addListener(() => saveState(store.getState()))

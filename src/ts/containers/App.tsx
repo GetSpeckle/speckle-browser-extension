@@ -1,13 +1,14 @@
-import * as React from 'react'
-import Home from '../components/Home'
+import { IAppState } from '../background/store/all'
+import { changeColor } from '../background/store/settings'
+import { connect } from 'react-redux'
+import App from '../components/App'
 
-class App extends React.Component {
-
-  render () {
-    return (
-        <Home/>
-    )
+const mapStateToProps = (state: IAppState) => {
+  return {
+    color: state.settings.color
   }
 }
 
-export default App
+const mapDispatchToProps = { changeColor }
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)
