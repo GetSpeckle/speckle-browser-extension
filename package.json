@@ -13,6 +13,7 @@
 	},
 	"license": "MIT",
 	"dependencies": {
+		"@polkadot/keyring": "^0.75.1",
 		"react": "^16.8.4",
 		"react-chrome-redux": "^2.0.0-alpha.5",
 		"react-dom": "^16.8.4",
