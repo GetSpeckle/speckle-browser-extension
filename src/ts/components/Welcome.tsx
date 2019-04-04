@@ -11,14 +11,14 @@ import { ThemeTypes } from './styles/themes'
 
 interface IWelcomeProp extends StateProps, DispatchProps {}
 
-interface IHomeState {
+interface IWelcomeState {
   color: string,
   theme: ThemeTypes
 }
 
-class Welcome extends React.Component<IWelcomeProp, IHomeState> {
+class Welcome extends React.Component<IWelcomeProp, IWelcomeState> {
 
-  state: IHomeState = {
+  state: IWelcomeState = {
     color: 'red',
     theme: 'light'
   }
@@ -34,7 +34,7 @@ class Welcome extends React.Component<IWelcomeProp, IHomeState> {
 
   render () {
     return (
-       <LandingContainer>
+       <WelcomeContainer>
           <Image src='/assets/logo-3-x.svg' size='tiny' />
           <Image src='/assets/icon-dots.svg' size='small' />
           <div>
@@ -47,12 +47,12 @@ class Welcome extends React.Component<IWelcomeProp, IHomeState> {
 
           </div>
           <Link to={TERM_SERVICE_ROUTE}>Term</Link>
-        </LandingContainer>
+        </WelcomeContainer>
     )
   }
 }
 
-const LandingContainer = styled('div')`
+const WelcomeContainer = styled('div')`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
