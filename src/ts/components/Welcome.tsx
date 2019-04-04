@@ -27,17 +27,17 @@ class Welcome extends React.Component<IWelcomeProp, IWelcomeState> {
   imageMap = {
     name: "image-map",
     areas: [
-      { name: "blue", shape: "circle", coords: [94, 94, 40 ], preFillColor: "blue", fillColor: "blue"  },
-      { name: "red", shape: "circle", coords: [170, 100, 25 ], preFillColor: "red", fillColor: "red" },
-      { name: "purple", shape: "circle", coords: [170, 100, 25 ], preFillColor: "purple", fillColor: "purple" },
-      { name: "orange", shape: "circle", coords: [170, 100, 25 ], preFillColor: "orange", fillColor: "orange"  },
-      { name: "green", shape: "circle", coords: [170, 100, 25 ], preFillColor: "green", fillColor: "green" },
+      { name: "blue", shape: "circle", coords: [103, 104, 40 ], fillColor: "#44C5EE"},
+      { name: "purple", shape: "circle", coords: [173, 36, 25 ], fillColor: "#D396FF" },
+      { name: "orange", shape: "circle", coords: [170, 173, 25 ], fillColor: "FFC10B"  },
+      { name: "green", shape: "circle", coords: [33, 172, 25 ], fillColor: "51DFB0" },
+      { name: "red", shape: "circle", coords: [34, 35, 25 ], fillColor: "#FF7396" },
     ]
   }
 
-  handleChangeColor = () => {
-    console.log('Color is changed to %s', this.state.color)
-    this.props.saveSettings({ ...this.props.settings, color: this.state.color })
+  handleChangeColor = (area: any) => {
+    console.log('Color is changed to %s', area.name)
+    this.props.saveSettings({ ...this.props.settings, color: area.name })
   }
 
   handleChangeTheme = () => {
@@ -48,17 +48,23 @@ class Welcome extends React.Component<IWelcomeProp, IWelcomeState> {
     return (
        <WelcomeContainer>
           <Image src='/assets/logo-3-x.svg' size='tiny' />
-          <Image src='/assets/icon-dots.svg' size='small' />
-          <ImageMapper src={'/assets/icon-doWhileStatement.svg'} map={this.imageMap} width={208}></ImageMapper>
+          <ImageMapper
+            src={'/assets/icon-dots.svg'}
+            map={this.imageMap}
+            width={208}
+            imgWidth={208}
+            onClick={this.handleChangeColor}
+          />
           <div>
-            {t('welcome')}
-            <div>Current color: {this.props.settings.color}</div>
-            <Button onClick={this.handleChangeColor}>Change color to red</Button>
-
-            <div>Current theme: {this.props.settings.theme}</div>
-            <Button onClick={this.handleChangeTheme}>Change them to light</Button>
-
+            {t('pickColorTitle')}
           </div>
+
+          <div>
+            {t('pickColorDescription')}
+          </div>
+
+          <div>Click above to change color. Current color: {this.props.settings.color}</div>
+
           <Link to={TERM_SERVICE_ROUTE}>Term</Link>
         </WelcomeContainer>
     )
