@@ -12,7 +12,7 @@ class KeyringVault {
   private _password?: string
   private _mnemonic?: string
 
-  get keyring (): KeyringInstance {
+  private get keyring (): KeyringInstance {
     if (this._keyring) {
       return this._keyring
     }
