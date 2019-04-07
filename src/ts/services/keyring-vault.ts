@@ -93,6 +93,18 @@ class KeyringVault {
     })
   }
 
+  removeAccount (address: string) {
+    if (this.isLocked()) throw new Error(t('error.wallet.locked'))
+    this.keyring.removePair(address)
+    LocalStore.get(this._vaultKey).then((vault) => {
+      if (vault && vault[this._vaultKey]) {
+        delete vault[this._vaultKey][address]
+        return LocalStore.set(vault[this._vaultKey])
+      }
+      return
+    })
+  }
+
   isMnemonicValid (mnemonic: string): boolean {
     return mnemonicValidate(mnemonic)
   }
