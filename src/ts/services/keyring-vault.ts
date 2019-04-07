@@ -47,6 +47,15 @@ class KeyringVault {
     })
   }
 
+  getAccounts (): Array<KeyringPair$Json> {
+    if (this.isLocked()) throw new Error(t('error.wallet.locked'))
+    let accounts = new Array<KeyringPair$Json>()
+    this.keyring.getPairs().forEach((pair) => {
+      accounts.push(pair.toJson(this._password))
+    })
+    return accounts
+  }
+
   lock () {
     this._password = undefined
     this._mnemonic = undefined
