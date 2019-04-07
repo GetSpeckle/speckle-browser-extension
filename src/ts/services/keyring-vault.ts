@@ -4,15 +4,16 @@ import {
 } from '@polkadot/keyring/types'
 import Keyring from '@polkadot/keyring'
 import { Prefix } from '@polkadot/keyring/address/types'
-import createPair from '@polkadot/keyring/pair'
-import { hexToU8a } from '@polkadot/util'
 import { LocalStore } from './local-store'
+import { mnemonicGenerate, cryptoWaitReady } from '@polkadot/util-crypto'
+import t from './i18n'
 
-export class KeyringVault {
+class KeyringVault {
 
   private _vaultKey: string = 'speckle-vault'
   private _keyring?: KeyringInstance
   private _password?: string
+  private _mnemonic?: string
 
   get keyring (): KeyringInstance {
     if (this._keyring) {
@@ -21,94 +22,98 @@ export class KeyringVault {
     throw new Error(`Keyring is not initialised yet`)
   }
 
-  initKeyring (addressPrefix: Prefix): void {
-    this._keyring = new Keyring({ addressPrefix, type: 'sr25519' })
-  }
-
-  unlock (password: string): Promise<boolean> {
-    this._password = password
-    return LocalStore.get(this._vaultKey).then((vault) => {
-      if (!vault) return false
-      let values = Object.values(vault)
-      if (values.length === 0) return false
-      try {
-        return this.restoreAccount(values[0], password).then(() => {
-          return true
-        })
-      } catch (error) {
-        this._password = undefined
-        return new Promise<boolean>(() => {
-          return false
-        })
+  unlock (password: string, addressPrefix?: Prefix): Promise<void> {
+    if (this.isUnlocked()) throw new Error(t('error.account.unlocked'))
+    if (!password.length) throw new Error(t('error.password'))
+    // this will be redundant if we have polkadot js api initialisation
+    return cryptoWaitReady().then(async () => {
+      this._keyring = new Keyring({ addressPrefix, type: 'sr25519' })
+      let vault = await LocalStore.get(this._vaultKey)
+      if (vault) {
+        let accounts = Object.values(vault[this._vaultKey])
+        try {
+          accounts.forEach((account) => {
+            let pair = this.keyring.addFromJson(account as KeyringPair$Json)
+            pair.decodePkcs8(password)
+            this.keyring.addPair(pair)
+          })
+        } catch (e) {
+          this.keyring.getPairs().forEach((pair) => {
+            this.keyring.removePair(pair.address())
+          })
+          throw new Error(t('error.password'))
+        }
       }
+      this._password = password
     })
   }
 
-  decodeAddress (key: string | Uint8Array, ignoreChecksum?: boolean): Uint8Array {
-    return this.keyring.decodeAddress(key, ignoreChecksum)
+  lock () {
+    this._password = undefined
+    this._mnemonic = undefined
+    this._keyring = undefined
   }
 
-  restoreAccount (json: KeyringPair$Json, password: string): Promise<KeyringPair> {
-    const pair = createPair(
-      this.keyring.type,
-      {
-        // FIXME Just for the transition period (ignoreChecksum)
-        publicKey: this.decodeAddress(json.address, true)
-      },
-      json.meta,
-      hexToU8a(json.encoded)
-    )
+  generateMnemonic (): string {
+    if (this.isLocked()) {
+      throw new Error(t('error.account.locked'))
+    }
+    this._mnemonic = mnemonicGenerate()
+    return this._mnemonic
+  }
 
-    // unlock, save account and then lock (locking cleans secretKey, so needs to be last)
-    pair.decodePkcs8(password)
-    return this.addPair(pair, password).then((result: CreateResult) => {
-      result.pair.lock()
-      return result.pair
+  createAccount (mnemonic: string, accountName: string): Promise<KeyringPair$Json> {
+    if (this.isLocked()) throw new Error(t('error.account.locked'))
+    if (this._mnemonic !== mnemonic) throw new Error(t('error.mnemonic'))
+    let pair = this.keyring.addFromMnemonic(mnemonic, { name: accountName })
+    this._mnemonic = undefined
+    return this.saveAccount(pair).then((keyringPair$Json: KeyringPair$Json) => {
+      return keyringPair$Json
     })
   }
 
-  addPair (pair: KeyringPair, password: string): Promise<CreateResult> {
+  updateAccountName (address: string, accountName: string): Promise<KeyringPair$Json> {
+    if (this.isLocked()) throw new Error(t('error.account.locked'))
+    const pair = this.keyring.getPair(address)
+    if (!pair) throw new Error(t('error.account.notFound'))
+    let meta = pair.getMeta()
+    meta.name = accountName
+    pair.setMeta(meta)
     this.keyring.addPair(pair)
-    return this.saveAccount(pair, password).then((json) => {
-      return {
-        json,
-        pair
-      }
-    })
-  }
-
-  saveAccount (pair: KeyringPair, password?: string): Promise<KeyringPair$Json> {
-    this.addTimestamp(pair)
-    const json = pair.toJson(password)
-    this.keyring.addFromJson(json)
-    return this.store(json.address, json).then((json) => {
+    return this.saveAccount(pair).then((json) => {
       return json
     })
   }
 
-  protected addTimestamp (pair: KeyringPair): void {
-    if (!pair.getMeta().whenCreated) {
-      pair.setMeta({  whenCreated: Date.now() })
-    }
+  isLocked (): boolean {
+    return !this._password
   }
 
-  private store (address: string, json: KeyringPair$Json): Promise<KeyringPair$Json> {
+  isUnlocked (): boolean {
+    return !this.isLocked()
+  }
+
+  private saveAccount (pair: KeyringPair): Promise<KeyringPair$Json> {
+    this.addTimestamp(pair)
+    const json = pair.toJson(this._password)
     return LocalStore.get(this._vaultKey).then((vault: any) => {
-      if (vault) {
-        vault[address] = json
-        return LocalStore.setValue(this._vaultKey, vault)
-      } else {
+      if (!vault) {
         vault = {}
-        vault[address] = json
-        return LocalStore.setValue(this._vaultKey, vault)
+      } else {
+        vault = vault[this._vaultKey]
       }
+      vault[json.address] = json
+      return LocalStore.setValue(this._vaultKey, vault).then(() => {
+        return json
+      })
     })
   }
-}
 
-export type CreateResult = {
-  json: KeyringPair$Json,
-  pair: KeyringPair
+  private addTimestamp (pair: KeyringPair): void {
+    if (!pair.getMeta().whenCreated) {
+      pair.setMeta({ ...pair.getMeta(), whenCreated: Date.now() })
+    }
+  }
 }
 
 const keyringVault = new KeyringVault()

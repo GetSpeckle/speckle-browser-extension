@@ -11,9 +11,12 @@
 		"test": "jest",
 		"test:coverage": "jest --collect-coverage"
 	},
-	"license": "MIT",
+  "resolutions": {
+    "@polkadot/types": "^0.76.1",
+    "@polkadot/util-crypto": "^0.76.1"
+  },
 	"dependencies": {
-		"@polkadot/keyring": "^0.75.1",
+		"@polkadot/keyring": "^0.76.1",
 		"@polkadot/util": "^0.76.1",
 		"react": "^16.8.4",
 		"react-chrome-redux": "^2.0.0-alpha.5",
@@ -52,7 +55,7 @@
 		"tslint": "^5.14.0",
 		"tslint-config-standard": "^8.0.1",
 		"tslint-react": "^4.0.0",
-		"typescript": "^3.3.3333",
+		"typescript": "^3.4.1",
 		"webpack": "^4.29.6",
 		"webpack-chrome-extension-reloader": "^1.2.0",
 		"webpack-cli": "^3.2.3"
