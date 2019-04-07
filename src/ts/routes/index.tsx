@@ -8,7 +8,7 @@ import {
   TERM_SERVICE_ROUTE
 } from '../constants/routes'
 import { RouteWithLayout } from './withLayout'
-import { LoginLayout } from '../layouts/LoginLayout'
+import LoginLayout from '../layouts/LoginLayout'
 
 export class Routes extends React.Component {
   renderRoutes () {
