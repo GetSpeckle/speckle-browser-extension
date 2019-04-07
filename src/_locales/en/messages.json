@@ -17,22 +17,22 @@
   "continue": {
     "message": "Continue"
   },
-  "error.wallet.unlocked": {
+  "errorWalletUnlocked": {
     "message": "Wallet is already unlocked"
   },
-  "error.wallet.locked": {
+  "errorWalletLocked": {
     "message": "Wallet is locked"
   },
-  "error.password": {
+  "errorPassword": {
     "message": "Empty or wrong password"
   },
-  "error.mnemonic.unmatched": {
+  "errorMnemonicUnmatched": {
     "message": "Mnemonic not matched with generated one"
   },
-  "error.account.notFound": {
+  "errorAccountNotFound": {
     "message": "Account not found"
   },
-  "error.mnemonic.invalid": {
+  "errorMnemonicInvalid": {
     "message": "Invalid mnemonic"
   },
   "pickColorTitle": {
