@@ -1,28 +1,23 @@
 import React, { Component } from 'react'
-import { Route, RouteProps } from 'react-router-dom'
-import { Image } from 'semantic-ui-react'
+import styled from 'styled-components'
+import Image from 'semantic-ui-react/dist/commonjs/elements/Image/Image'
 
-const LoginLayout = ({ children }) => (
-  <div>
-    <Image src='/assets/header_blue.svg' size='tiny' />
-    {children}
-  </div>
-)
-
-const LoginLayoutRoute = ({ component, ...rest }) => {
-  const renderFn = (Component?: Component) => (props: RouteProps) => {
-    if (!Component) {
-      return null
-    }
-    return <LoginLayout><Component {...props} /></LoginLayout>
+export class LoginLayout extends Component {
+  render () {
+    return (
+    <LoginStyleContainer>
+      <Image src='/assets/header_blue.svg' size='tiny'/>
+      {this.props.children}
+    </LoginStyleContainer>
+    )
   }
-
-  return (
-    <Route
-      {...rest}
-      render={renderFn(component)}
-    />
-  )
 }
 
-export default LoginLayoutRoute
+const LoginStyleContainer = styled('div')`
+    width: 375px;
+    height: 667px;
+    border-radius: 4px;
+    box-shadow: 0 6px 30px 0 rgba(0, 0, 0, 0.08);
+    border: solid 1px #e7e7e7;
+    background-color: #ffffff;
+`

@@ -47,23 +47,25 @@ class Welcome extends React.Component<IWelcomeProp, IWelcomeState> {
   render () {
     return (
        <WelcomeContainer>
-          <Image src='/assets/logo-3-x.svg' size='tiny' />
-          <ImageMapper
+         <LogoContainer><Image src='/assets/logo-3-x.svg' size='tiny' /></LogoContainer>
+         <ColorPickerContainer><ImageMapper
             src={'/assets/icon-dots.svg'}
             map={this.imageMap}
             width={208}
             imgWidth={208}
             onClick={this.handleChangeColor}
-          />
-          <div>
+         /></ColorPickerContainer>
+          <Title>
             {t('pickColorTitle')}
-          </div>
+          </Title>
 
-          <div>
+          <Text>
             {t('pickColorDescription')}
-          </div>
+          </Text>
 
-          <div>Click above to change color. Current color: {this.props.settings.color}</div>
+          <Text>Click above to change color. Current color: {this.props.settings.color}</Text>
+
+          <Text>{t('speckleIntroduction')}</Text>
 
           <Link to={TERM_SERVICE_ROUTE}>Term</Link>
         </WelcomeContainer>
@@ -72,14 +74,47 @@ class Welcome extends React.Component<IWelcomeProp, IWelcomeState> {
 }
 
 const WelcomeContainer = styled('div')`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px;
-    margin: 5px;
-    background-color: ${p => p.theme.backgroundColor};
+    text-align: center;
+    width: 375px;
+    height: 667px;
+    border-radius: 4px;
+    box-shadow: 0 6px 30px 0 rgba(0, 0, 0, 0.08);
+    border: solid 1px #e7e7e7;
+    background-color: #ffffff;
 `
+const LogoContainer = styled(Image)`
+    margin: 36px auto 68px;
+    width: 150px;
+    height: 65px;
+    object-fit: contain;
+`
+const ColorPickerContainer = styled('div')`
+    width:208px;
+    height: 208px;
+    margin: 0 auto 68px;
+`
+const Text = styled.p`
+    width: 327px;
+    margin:18px auto;
+    opacity: 0.6;
+    font-family: Nunito;
+    font-size: 14px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: #3e5860;
+`
+const Title = styled(Text)`
+    width: 311px;
+    height: 26px;
+    font-size: 19px;
+    font-weight: bold;
+    color: #30383B;
+`
+
 const mapStateToProps = (state: IAppState) => {
   return {
     settings: state.settings

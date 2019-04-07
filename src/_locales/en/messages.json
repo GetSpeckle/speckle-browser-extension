@@ -22,6 +22,9 @@
   },
   "pickColorDescription": {
     "message": "This can be changed in the settings"
+  },
+  "speckleIntroduction": {
+    "message": "Speckle is a Web 3 wallet and browser built for Polkadot. You can interact with multiple chains and manage their accounts."
   }
 
 }
