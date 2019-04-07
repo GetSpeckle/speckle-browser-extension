@@ -20,7 +20,7 @@ class KeyringVault {
   }
 
   unlock (password: string, addressPrefix?: Prefix): Promise<void> {
-    if (this.isUnlocked()) throw new Error(t('error.account.unlocked'))
+    if (this.isUnlocked()) throw new Error(t('error.wallet.unlocked'))
     if (!password.length) throw new Error(t('error.password'))
     // this will be redundant if we have polkadot js api initialisation
     return cryptoWaitReady().then(async () => {
@@ -61,7 +61,7 @@ class KeyringVault {
 
   createAccount (mnemonic: string, accountName: string): Promise<KeyringPair$Json> {
     if (this.isLocked()) throw new Error(t('error.wallet.locked'))
-    if (this._mnemonic !== mnemonic) throw new Error(t('error.mnemonic'))
+    if (this._mnemonic !== mnemonic) throw new Error(t('error.mnemonic.unmatched'))
     let pair = this.keyring.addFromMnemonic(mnemonic, { name: accountName })
     this._mnemonic = undefined
     return this.saveAccount(pair).then((keyringPair$Json: KeyringPair$Json) => {
@@ -86,12 +86,28 @@ class KeyringVault {
     return mnemonicValidate(mnemonic)
   }
 
-  importAccount (mnemonic: string, accountName: string): Promise<KeyringPair$Json> {
+  importAccountFromMnemonic (mnemonic: string, accountName: string): Promise<KeyringPair$Json> {
     if (this.isLocked()) throw new Error(t('error.wallet.locked'))
     if (!this.isMnemonicValid(mnemonic)) throw new Error(t('error.mnemonic.invalid'))
     let pair = this.keyring.createFromUri(mnemonic, { name: accountName, imported: true })
+    this.keyring.addPair(pair)
     return this.saveAccount(pair).then((keyringPair$Json: KeyringPair$Json) => {
       return keyringPair$Json
+    })
+  }
+
+  importAccountFromJson (json: KeyringPair$Json, password?: string): Promise<KeyringPair$Json> {
+    if (this.isLocked()) throw new Error(t('error.wallet.locked'))
+    let pair = this.keyring.addFromJson(json)
+    let meta = pair.getMeta()
+    meta.imported = true
+    pair.setMeta(meta)
+    if (password) {
+      pair.decodePkcs8(password)
+    }
+    this.keyring.addPair(pair)
+    return this.saveAccount(pair).then((json) => {
+      return json
     })
   }
 

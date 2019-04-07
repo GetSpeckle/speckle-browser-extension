@@ -16,5 +16,23 @@
   },
   "continue": {
     "message": "Continue"
+  },
+  "error.wallet.unlocked": {
+    "message": "Wallet is already unlocked"
+  },
+  "error.wallet.locked": {
+    "message": "Wallet is locked"
+  },
+  "error.password": {
+    "message": "Empty or wrong password"
+  },
+  "error.mnemonic.unmatched": {
+    "message": "Mnemonic not matched with generated one"
+  },
+  "error.account.notFound": {
+    "message": "Account not found"
+  },
+  "error.mnemonic.invalid": {
+    "message": "Invalid mnemonic"
   }
 }
