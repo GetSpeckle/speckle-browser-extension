@@ -17,6 +17,7 @@
   "continue": {
     "message": "Continue"
   },
+<<<<<<< HEAD
   "error.wallet.unlocked": {
     "message": "Wallet is already unlocked"
   },
@@ -34,5 +35,16 @@
   },
   "error.mnemonic.invalid": {
     "message": "Invalid mnemonic"
+=======
+  "pickColorTitle": {
+    "message": "Pick your favorite color"
+  },
+  "pickColorDescription": {
+    "message": "This can be changed in the settings"
+  },
+  "speckleIntroduction": {
+    "message": "Speckle is a Web 3 wallet and browser built for Polkadot. You can interact with multiple chains and manage their accounts."
+>>>>>>> master
   }
+
 }

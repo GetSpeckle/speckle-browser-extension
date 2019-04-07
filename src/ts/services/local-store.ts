@@ -14,9 +14,14 @@ export class LocalStore {
     return browser.storage.local.set(obj)
   }
 
+  /**
+   * Set the value to the local store using the given key and return the value in the promise.
+   *
+   * @param key the key mapped to the value
+   * @param value the value to be set and returned in the promise
+   */
   static setValue (key: string, value: any): Promise<any> {
-    const obj = { [key]: value }
-    return LocalStore.set(obj).then(() => {
+    return LocalStore.set({ [key]: value }).then(() => {
       return value
     })
   }

@@ -1,7 +1,7 @@
 
 # Development action items
 
-### Account Management
+### Milestone 1: Account Management
 
 * Setup a new project to support development using react, typescript and webpack. 
   * I18N needs to be supported. 
@@ -19,14 +19,14 @@
 * Implement function to backup wallet with keystore file.
 * Implement function to backup wallet with seed (mnemonic)
 
-### Asset Dashboard
+### Milestone 2: Asset Dashboard
 
 * Create asset dashboard component and UI
   * Display balance
   * Display account info
 * Get asset balance by RPC call
 
-### Transaction Management
+### Milestone 3: Transaction Management
 
 * Create UI for send testnet DOTs
 * Call API to send testnet DOTs
@@ -37,7 +37,7 @@
 * Create a staking UI to show the current validator list
 * Make sure the UI and the function works on Chrome, Firefox, Brave 
 
-### Message Signing
+### Milestone 4: Message Signing
 
 * Create message signing UI and function
 
