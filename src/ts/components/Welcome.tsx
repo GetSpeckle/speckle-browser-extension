@@ -2,15 +2,18 @@ import t from '../services/i18n'
 import * as React from 'react'
 import { Image } from 'semantic-ui-react'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
 import { TERM_SERVICE_ROUTE } from '../constants/routes'
 import { IAppState } from '../background/store/all'
 import { connect } from 'react-redux'
 import { saveSettings } from '../background/store/settings'
 import { ThemeTypes } from './styles/themes'
 import ImageMapper from 'react-image-mapper'
+import { withRouter } from 'react-router'
+import { compose } from 'redux'
 
-interface IWelcomeProp extends StateProps, DispatchProps {}
+interface IWelcomeProp extends StateProps, DispatchProps {
+  history: any
+}
 
 interface IWelcomeState {
   color: string,
@@ -18,11 +21,6 @@ interface IWelcomeState {
 }
 
 class Welcome extends React.Component<IWelcomeProp, IWelcomeState> {
-
-  state: IWelcomeState = {
-    color: 'red',
-    theme: 'light'
-  }
 
   imageMap = {
     name: 'image-map',
@@ -36,12 +34,9 @@ class Welcome extends React.Component<IWelcomeProp, IWelcomeState> {
   }
 
   handleChangeColor = (area: any) => {
-    console.log('Color is changed to %s', area.name)
+    const { history } = this.props
     this.props.saveSettings({ ...this.props.settings, color: area.name })
-  }
-
-  handleChangeTheme = () => {
-    this.props.saveSettings({ ...this.props.settings, theme: this.state.theme })
+    history.push(TERM_SERVICE_ROUTE)
   }
 
   render () {
@@ -67,7 +62,6 @@ class Welcome extends React.Component<IWelcomeProp, IWelcomeState> {
 
           <Text>{t('speckleIntroduction')}</Text>
 
-          <Link to={TERM_SERVICE_ROUTE}>Term</Link>
         </WelcomeContainer>
     )
   }
@@ -126,4 +120,4 @@ const mapDispatchToProps = { saveSettings }
 type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps
 
-export default connect(mapStateToProps, mapDispatchToProps)(Welcome)
+export default compose(withRouter, connect(mapStateToProps, mapDispatchToProps))(Welcome)
