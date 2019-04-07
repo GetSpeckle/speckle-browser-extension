@@ -1,11 +1,8 @@
-import {
-  KeyringInstance,
-  KeyringPair, KeyringPair$Json
-} from '@polkadot/keyring/types'
+import { KeyringInstance, KeyringPair, KeyringPair$Json } from '@polkadot/keyring/types'
 import Keyring from '@polkadot/keyring'
 import { Prefix } from '@polkadot/keyring/address/types'
 import { LocalStore } from './local-store'
-import { mnemonicGenerate, cryptoWaitReady } from '@polkadot/util-crypto'
+import { mnemonicGenerate, cryptoWaitReady, mnemonicValidate } from '@polkadot/util-crypto'
 import t from './i18n'
 
 class KeyringVault {
@@ -56,14 +53,14 @@ class KeyringVault {
 
   generateMnemonic (): string {
     if (this.isLocked()) {
-      throw new Error(t('error.account.locked'))
+      throw new Error(t('error.wallet.locked'))
     }
     this._mnemonic = mnemonicGenerate()
     return this._mnemonic
   }
 
   createAccount (mnemonic: string, accountName: string): Promise<KeyringPair$Json> {
-    if (this.isLocked()) throw new Error(t('error.account.locked'))
+    if (this.isLocked()) throw new Error(t('error.wallet.locked'))
     if (this._mnemonic !== mnemonic) throw new Error(t('error.mnemonic'))
     let pair = this.keyring.addFromMnemonic(mnemonic, { name: accountName })
     this._mnemonic = undefined
@@ -73,7 +70,7 @@ class KeyringVault {
   }
 
   updateAccountName (address: string, accountName: string): Promise<KeyringPair$Json> {
-    if (this.isLocked()) throw new Error(t('error.account.locked'))
+    if (this.isLocked()) throw new Error(t('error.wallet.locked'))
     const pair = this.keyring.getPair(address)
     if (!pair) throw new Error(t('error.account.notFound'))
     let meta = pair.getMeta()
@@ -82,6 +79,19 @@ class KeyringVault {
     this.keyring.addPair(pair)
     return this.saveAccount(pair).then((json) => {
       return json
+    })
+  }
+
+  isMnemonicValid (mnemonic: string): boolean {
+    return mnemonicValidate(mnemonic)
+  }
+
+  importAccount (mnemonic: string, accountName: string): Promise<KeyringPair$Json> {
+    if (this.isLocked()) throw new Error(t('error.wallet.locked'))
+    if (!this.isMnemonicValid(mnemonic)) throw new Error(t('error.mnemonic.invalid'))
+    let pair = this.keyring.createFromUri(mnemonic, { name: accountName, imported: true })
+    return this.saveAccount(pair).then((keyringPair$Json: KeyringPair$Json) => {
+      return keyringPair$Json
     })
   }
 
