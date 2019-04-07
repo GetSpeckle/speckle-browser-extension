@@ -34,6 +34,7 @@ class KeyringVault {
             pair.decodePkcs8(password)
             this.keyring.addPair(pair)
           })
+          this._password = password
           return accounts as Array<KeyringPair$Json>
         } catch (e) {
           this.keyring.getPairs().forEach((pair) => {

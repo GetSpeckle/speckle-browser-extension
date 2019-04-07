@@ -34,6 +34,7 @@
   },
   "error.mnemonic.invalid": {
     "message": "Invalid mnemonic"
+  },
   "pickColorTitle": {
     "message": "Pick your favorite color"
   },
