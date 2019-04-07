@@ -19,7 +19,7 @@ class KeyringVault {
     throw new Error(`Keyring is not initialised yet`)
   }
 
-  unlock (password: string, addressPrefix?: Prefix): Promise<void> {
+  unlock (password: string, addressPrefix?: Prefix): Promise<Array<KeyringPair$Json>> {
     if (this.isUnlocked()) throw new Error(t('error.wallet.unlocked'))
     if (!password.length) throw new Error(t('error.password'))
     // this will be redundant if we have polkadot js api initialisation
@@ -34,6 +34,7 @@ class KeyringVault {
             pair.decodePkcs8(password)
             this.keyring.addPair(pair)
           })
+          return accounts as Array<KeyringPair$Json>
         } catch (e) {
           this.keyring.getPairs().forEach((pair) => {
             this.keyring.removePair(pair.address())
@@ -42,6 +43,7 @@ class KeyringVault {
         }
       }
       this._password = password
+      return []
     })
   }
 
