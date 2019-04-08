@@ -39,10 +39,4 @@ const Text = styled.p`
     text-align: center;
     color: #3e5860;
 `
-const PasswordContainer = styled.div`
-  width: 311px;
-  height: 42px;
-  background-color: #cad3d7;
-`
-
 export default CreatePassword

@@ -8,10 +8,9 @@ import { connect } from 'react-redux'
 import { saveSettings } from '../background/store/settings'
 import { ThemeTypes } from './styles/themes'
 import ImageMapper from 'react-image-mapper'
-import { withRouter } from 'react-router'
-import { compose } from 'redux'
+import { withRouter, RouteComponentProps } from 'react-router'
 
-interface IWelcomeProp extends StateProps, DispatchProps {
+interface IWelcomeProp extends StateProps, DispatchProps, RouteComponentProps {
   history: any
 }
 
@@ -120,4 +119,4 @@ const mapDispatchToProps = { saveSettings }
 type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps
 
-export default compose(withRouter, connect(mapStateToProps, mapDispatchToProps))(Welcome)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Welcome))
