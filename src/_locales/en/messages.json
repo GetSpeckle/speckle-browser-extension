@@ -37,5 +37,28 @@
   },
   "passwordDescription": {
     "message": "To make a secure entry to your wallet, create a new password"
+  },
+  "error": {
+    "wallet": {
+      "locked": {
+        "message": "Wallet is locked"
+      }
+    },
+    "password": {
+      "message": "Empty or wrong password"
+    },
+    "account": {
+      "notFound": {
+        "message": "Account not found"
+      }
+    },
+    "mnemonic": {
+      "unmatched": {
+        "message": "Mnemonic not matched with the generated one"
+      },
+      "invalid": {
+        "message": "Mnemonic is invalid"
+      }
+    }
   }
 }
