@@ -2,17 +2,26 @@ import * as React from 'react'
 import styled from 'styled-components'
 import t from '../../services/i18n'
 import Progress from './Progress'
+import { IAppState } from '../../background/store/all'
+import keyringVault from '../../services/keyring-vault'
 
-class CreatePassword extends React.Component {
+interface ICreatePasswordProps extends StateProps {}
+
+interface ICreatePasswordState {
+  newPassword: string,
+  confirmPassword: string
+}
+
+class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswordState> {
 
   handleClick () {
-    // TODO: create account
+    keyringVault.unlock(this.state.newPassword)
   }
 
   render () {
     return (
         <div>
-          <Progress color={'blue'} progress={1} />
+          <Progress color={this.props.settings.color} progress={1} />
           <Text>
             {t('passwordDescription')}
           </Text>
@@ -34,6 +43,14 @@ class CreatePassword extends React.Component {
     )
   }
 }
+
+const mapStateToProps = (state: IAppState) => {
+  return {
+    settings: state.settings
+  }
+}
+
+type StateProps = ReturnType<typeof mapStateToProps>
 
 const Text = styled.p`
     width: 327px;
