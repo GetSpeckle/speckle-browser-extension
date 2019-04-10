@@ -4,18 +4,39 @@ import t from '../../services/i18n'
 import Progress from './Progress'
 import { IAppState } from '../../background/store/all'
 import keyringVault from '../../services/keyring-vault'
+import { withRouter, RouteComponentProps } from 'react-router'
+import { connect } from 'react-redux'
 
-interface ICreatePasswordProps extends StateProps {}
+interface ICreatePasswordProps extends StateProps, RouteComponentProps {}
 
 interface ICreatePasswordState {
   newPassword: string,
-  confirmPassword: string
+  confirmPassword: string,
+  errorMessage?: string
 }
 
 class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswordState> {
 
+  state: ICreatePasswordState = {
+    newPassword: '',
+    confirmPassword: ''
+  }
+
   handleClick () {
-    keyringVault.unlock(this.state.newPassword)
+    if (this.state.newPassword !== this.state.confirmPassword) {
+      this.setState({errorMessage: t('Password mismatch')})
+      return
+    }
+    if (this.state.newPassword.length<8) {
+      this.setState({errorMessage: t('Password minimum length is 8')})
+      return
+    }
+
+    keyringVault.unlock(this.state.newPassword).then(
+      keyringPairs => {
+        console.log('Should have empty keyring pairs ', keyringPairs)
+      }
+    )
   }
 
   render () {
@@ -26,15 +47,29 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
             {t('passwordDescription')}
           </Text>
           <Text>
-            <StyledPassword type='password' placeholder={t('Create new password')} />
+            <StyledPassword
+              type='password'
+              placeholder={t('Create new password')}
+              value={this.state.newPassword}
+              onChange={evt => this.setState({newPassword: evt.target.value})}/>
           </Text>
 
           <Text>
-            <StyledPassword type='password' placeholder={t('Repeat password')} />
+            <StyledPassword
+              type='password'
+              placeholder={t('Repeat password')}
+              value={this.state.confirmPassword}
+              onChange={evt => this.setState({confirmPassword: evt.target.value})}
+              />
           </Text>
 
+          <div className={'ui negative message '+this.state.errorMessage?'':'hidden'}>
+            <i className='close icon'></i>
+            <p>{this.state.errorMessage}</p>
+          </div>
+
           <Text>
-            <StyledButton onClick={this.handleClick}>
+            <StyledButton onClick={this.handleClick.bind(this)}>
               {t('Create Account')}
             </StyledButton>
           </Text>
@@ -87,4 +122,4 @@ const StyledButton = styled.button`
   color: #ffffff;
 `
 
-export default CreatePassword
+export default withRouter(connect(mapStateToProps)(CreatePassword))
