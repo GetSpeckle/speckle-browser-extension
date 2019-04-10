@@ -3,8 +3,9 @@ import styled from 'styled-components'
 import t from '../../services/i18n'
 import KeyringVault from '../../services/keyring-vault'
 import { ACCOUNT_IMPORTED_ROUTE } from '../../constants/routes'
+import { RouteComponentProps, withRouter } from 'react-router'
 
-interface ImportMnemonicProp {
+interface ImportMnemonicProp extends RouteComponentProps {
   history: any
 }
 interface ImportMnemonicState {
@@ -59,4 +60,4 @@ const StyledButton = styled.button`
   text-align: center;
   color: #ffffff;`
 
-export default ImportMnemonic
+export default withRouter(ImportMnemonic)
