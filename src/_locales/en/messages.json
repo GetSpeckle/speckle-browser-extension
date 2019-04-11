@@ -32,7 +32,14 @@
   "termDescription": {
     "message": "Information Automatically Collected. We may automatically record certain information about how you use our Site (we refer to this information as “Log Data“). Log Data may include information such as a user’s Internet Protocol (IP) address, device and browser type, operating system, the pages or features of our Site to which a user browsed and the time spent on those pages or features, the frequency with which the Site is used by a user, search terms, the links on our Site that a user clicked on or used, and other statistics. We use this information to administer the Service and we analyze (and may engage third parties to analyze) this information to improve and enhance the Service by expanding its features and functionality and tailoring it to our users’ needs and preferences. We may use cookies or similar technologies to analyze trends, administer the website, track users’ movements around the website, and to gather demographic information about our user base as a whole. Users can control the use of cookies at the individual browser level. For more information, please see the section entitled “Cookies Policy” below."
   },
+  "termAcceptButton": {
+    "message": "I Accept Terms Of Service"
+  },
+  "passwordDescription": {
+    "message": "To make a secure entry to your wallet, create a new password"
+  },
   "error": {
+    "message": "error",
     "wallet": {
       "locked": {
         "message": "Wallet is locked"

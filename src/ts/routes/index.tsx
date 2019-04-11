@@ -5,10 +5,12 @@ import Term from '../components/account/Term'
 
 import {
   DEFAULT_ROUTE,
-  TERM_SERVICE_ROUTE
+  TERM_SERVICE_ROUTE,
+  CREATE_PASSWORD_ROUTE
 } from '../constants/routes'
 import { RouteWithLayout } from './withLayout'
 import LoginLayout from '../layouts/LoginLayout'
+import CreatePassword from '../components/account/CreatePassword';
 
 export class Routes extends React.Component {
   renderRoutes () {
@@ -23,6 +25,12 @@ export class Routes extends React.Component {
           layout={LoginLayout}
           path={TERM_SERVICE_ROUTE}
           component={Term}
+          exact={true}
+        />
+        <RouteWithLayout
+          layout={LoginLayout}
+          path={CREATE_PASSWORD_ROUTE}
+          component={CreatePassword}
           exact={true}
         />
       </Switch>

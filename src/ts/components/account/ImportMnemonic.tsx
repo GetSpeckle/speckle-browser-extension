@@ -39,8 +39,8 @@ class ImportMnemonic extends React.Component<ImportMnemonicProp, ImportMnemonicS
 }
 
 const MnemonicPad = styled.textarea`
-  width: 600px;
-  height: 400px;
+  width: 311;
+  height: 200px;
   font-family: Nunito;
 `
 
