@@ -2,15 +2,16 @@ import * as React from 'react'
 import { Route, Switch } from 'react-router-dom'
 import App from '../containers/App'
 import Term from '../components/account/Term'
-
 import {
   DEFAULT_ROUTE,
   TERM_SERVICE_ROUTE,
-  CREATE_PASSWORD_ROUTE
+  CREATE_PASSWORD_ROUTE,
+  IMPORT_MNEMONIC_ROUTE
 } from '../constants/routes'
 import { RouteWithLayout } from './withLayout'
 import LoginLayout from '../layouts/LoginLayout'
-import CreatePassword from '../components/account/CreatePassword';
+import CreatePassword from '../components/account/CreatePassword'
+import ImportMnemonic from '../components/account/ImportMnemonic'
 
 export class Routes extends React.Component {
   renderRoutes () {
@@ -31,6 +32,12 @@ export class Routes extends React.Component {
           layout={LoginLayout}
           path={CREATE_PASSWORD_ROUTE}
           component={CreatePassword}
+          exact={true}
+        />
+        <RouteWithLayout
+          layout={LoginLayout}
+          path={IMPORT_MNEMONIC_ROUTE}
+          component={ImportMnemonic}
           exact={true}
         />
       </Switch>

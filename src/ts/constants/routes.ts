@@ -1,4 +1,5 @@
 export const DEFAULT_ROUTE = '/'
 export const TERM_SERVICE_ROUTE = '/term-service'
 export const CREATE_PASSWORD_ROUTE = '/create-password'
+export const IMPORT_MNEMONIC_ROUTE = '/import-mnemonic'
 export const ACCOUNT_IMPORTED_ROUTE = '/account-imported'

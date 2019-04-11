@@ -2,24 +2,51 @@ import * as React from 'react'
 import styled from 'styled-components'
 import t from '../../services/i18n'
 import KeyringVault from '../../services/keyring-vault'
-import { ACCOUNT_IMPORTED_ROUTE } from '../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router'
+import { KeyringPair$Json } from '@polkadot/keyring/types'
+import { Message } from 'semantic-ui-react'
 
 interface ImportMnemonicProp extends RouteComponentProps {
   history: any
 }
 interface ImportMnemonicState {
-  mnemonic: string
+  mnemonic: string,
+  accountName: string,
+  errorMessage?: string
 }
 
 class ImportMnemonic extends React.Component<ImportMnemonicProp, ImportMnemonicState> {
 
+  constructor (props) {
+    super(props)
+    this.changeMnemonic = this.changeMnemonic.bind(this)
+    this.changeAccountName = this.changeAccountName.bind(this)
+    this.handleImport = this.handleImport.bind(this)
+    this.isMnemonicComplete = this.isMnemonicComplete.bind(this)
+  }
+
+  state: ImportMnemonicState = {
+    mnemonic: '',
+    accountName: t('importedAccount')
+  }
+
   handleImport () {
-    KeyringVault.importAccountFromMnemonic(
-      this.state.mnemonic,
-      'Imported Account').then(() => {
-        this.props.history.push(ACCOUNT_IMPORTED_ROUTE)
-      })
+    try {
+      KeyringVault.importAccountFromMnemonic(
+        this.state.mnemonic, this.state.accountName).then((json: KeyringPair$Json) => {
+          console.log(json)
+        })
+    } catch (e) {
+      this.setState({ ...this.state, errorMessage: e.message })
+    }
+  }
+
+  changeMnemonic (event) {
+    this.setState({ ...this.state, mnemonic: event.target.value })
+  }
+
+  changeAccountName (event) {
+    this.setState({ ...this.state, accountName: event.target.value })
   }
 
   isMnemonicComplete () {
@@ -29,22 +56,54 @@ class ImportMnemonic extends React.Component<ImportMnemonicProp, ImportMnemonicS
   render () {
     return (
       <div>
-        <MnemonicPad value={this.state.mnemonic} />
-        <StyledButton onClick={this.handleImport} disabled={!this.isMnemonicComplete()}>
-          {t('import')}
-        </StyledButton>
+        <Section>
+          <span>{t('accountName')}</span>
+          <AccountName value={this.state.accountName} onChange={this.changeAccountName}/>
+        </Section>
+        <Section>
+          <span>{t('mnemonic')}</span>
+          <MnemonicPad value={this.state.mnemonic} onChange={this.changeMnemonic}/>
+        </Section>
+        <Message negative={true} hidden={!this.state.errorMessage} style={error}>
+          {this.state.errorMessage}
+        </Message>
+        <Section>
+          <ImportButton onClick={this.handleImport} disabled={!this.isMnemonicComplete()}>
+            {t('import')}
+          </ImportButton>
+        </Section>
       </div>
     )
   }
 }
 
+const Section = styled.p`
+    width: 311px;
+    margin:18px auto;
+    opacity: 0.6;
+    font-family: Nunito;
+    font-size: 14px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #3e5860;
+`
 const MnemonicPad = styled.textarea`
-  width: 311;
+  width: 311px;
   height: 200px;
   font-family: Nunito;
+  padding: 10px;
+`
+const AccountName = styled.input`
+  width: 311px;
+  height: 42px;
+  font-family: Nunito;
+  padding: 10px;
 `
 
-const StyledButton = styled.button`
+const ImportButton = styled.button`
   width: 311px;
   height: 45px;
   border-radius: 4px;
@@ -59,5 +118,10 @@ const StyledButton = styled.button`
   letter-spacing: normal;
   text-align: center;
   color: #ffffff;`
+
+const error = {
+  width: 311,
+  margin: 'auto'
+}
 
 export default withRouter(ImportMnemonic)
