@@ -41,7 +41,7 @@ class Welcome extends React.Component<IWelcomeProp, IWelcomeState> {
   render () {
     return (
        <WelcomeContainer>
-         <LogoContainer><Image src='/assets/logo-3-x.svg' size='tiny' /></LogoContainer>
+         <LogoContainer><Image src='/assets/logo-3-x.svg' /></LogoContainer>
          <ColorPickerContainer><ImageMapper
             src={'/assets/icon-dots.svg'}
             map={this.imageMap}

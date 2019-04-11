@@ -6,6 +6,7 @@ import { IAppState } from '../../background/store/all'
 import keyringVault from '../../services/keyring-vault'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
+import { Message } from 'semantic-ui-react';
 
 interface ICreatePasswordProps extends StateProps, RouteComponentProps {}
 
@@ -23,6 +24,8 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
   }
 
   handleClick () {
+    this.setState({errorMessage: ''})
+
     if (this.state.newPassword !== this.state.confirmPassword) {
       this.setState({errorMessage: t('Password mismatch')})
       return
@@ -63,10 +66,9 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
               />
           </Text>
 
-          <div className={'ui negative message '+this.state.errorMessage?'':'hidden'}>
-            <i className='close icon'></i>
-            <p>{this.state.errorMessage}</p>
-          </div>
+          <Message negative hidden={!this.state.errorMessage}>
+            {this.state.errorMessage}
+          </Message>
 
           <Text>
             <StyledButton onClick={this.handleClick.bind(this)}>
