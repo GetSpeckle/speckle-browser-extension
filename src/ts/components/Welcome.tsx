@@ -8,10 +8,9 @@ import { connect } from 'react-redux'
 import { saveSettings } from '../background/store/settings'
 import { ThemeTypes } from './styles/themes'
 import ImageMapper from 'react-image-mapper'
-import { withRouter } from 'react-router'
-import { compose } from 'redux'
+import { withRouter, RouteComponentProps } from 'react-router'
 
-interface IWelcomeProp extends StateProps, DispatchProps {
+interface IWelcomeProp extends StateProps, DispatchProps, RouteComponentProps {
   history: any
 }
 
@@ -42,7 +41,7 @@ class Welcome extends React.Component<IWelcomeProp, IWelcomeState> {
   render () {
     return (
        <WelcomeContainer>
-         <LogoContainer><Image src='/assets/logo-3-x.svg' size='tiny' /></LogoContainer>
+         <LogoContainer><Image src='/assets/logo-3-x.svg' /></LogoContainer>
          <ColorPickerContainer><ImageMapper
             src={'/assets/icon-dots.svg'}
             map={this.imageMap}
@@ -120,4 +119,4 @@ const mapDispatchToProps = { saveSettings }
 type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps
 
-export default compose(withRouter, connect(mapStateToProps, mapDispatchToProps))(Welcome)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Welcome))

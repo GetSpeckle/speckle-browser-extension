@@ -19,7 +19,7 @@ class LoginLayout extends Component<ILoginLayoutProp, ILoginLayoutState> {
   render () {
     return (
     <LoginStyleContainer>
-      <Image src={this.getHeaderImageUrl()} size='tiny'/>
+      <Image src={this.getHeaderImageUrl()} />
       {this.props.children}
     </LoginStyleContainer>
     )

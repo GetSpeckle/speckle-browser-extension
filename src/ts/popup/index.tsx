@@ -4,6 +4,8 @@ import { Provider } from 'react-redux'
 import PopupApp from './containers/PopupApp'
 import initializeStore from '../background/store'
 
+import 'semantic-ui-css/semantic.min.css'
+
 const store = initializeStore()
 
 const rootEl = document.getElementById('popup-root')
