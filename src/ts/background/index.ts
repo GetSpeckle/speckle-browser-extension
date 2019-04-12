@@ -3,8 +3,7 @@ import reducers, { IAppState, loadState } from './store/all'
 import { wrapStore, Store } from 'react-chrome-redux'
 import { configureApp } from './AppConfig'
 import { browser } from 'webextension-polyfill-ts'
-import keyringVault from '../services/keyring-vault';
-
+import keyringVault from '../services/keyring-vault'
 
 const preloadedState = loadState()
 const store: Store<IAppState> = createStore(reducers, preloadedState)
@@ -18,16 +17,80 @@ wrapStore(store, {
 })
 
 // listen to the port
-browser.runtime.onConnect.addListener(function(port) {
-  console.assert(port.name === '__SPECKLE__');
-  port.onMessage.addListener(function(msg) {
-    if (msg.method === 'isLocked')
-      port.postMessage({method: 'isLocked', result: keyringVault.isLocked()})
-    else if (msg.method === 'unlock') {
-      keyringVault.unlock(msg.password).then(keys => {
-        console.log('got keys: ', keys)
-        port.postMessage({result: true})
-      })
+browser.runtime.onConnect.addListener(function (port) {
+  console.assert(port.name === '__SPECKLE__')
+  port.onMessage.addListener(function (msg) {
+    switch (msg.method) {
+      case 'isLocked':
+        port.postMessage({ method: 'isLocked', result: keyringVault.isLocked() })
+        break
+      case 'unlock':
+        keyringVault.unlock(msg.password).then(keys => {
+          port.postMessage({ method: 'unlock', result: keys })
+        })
+        break
+      case 'walletExists':
+        keyringVault.walletExists().then((result) => {
+          port.postMessage({ method: 'unlock', result: result })
+        })
+        break
+      case 'getAccounts':
+        try {
+          port.postMessage({
+            method: 'getAccounts',
+            result: keyringVault.getAccounts()
+          })
+        } catch (e) {
+          port.postMessage({
+            method: 'getAccounts',
+            error: e
+          })
+        }
+        break
+      case 'lock':
+        keyringVault.lock()
+        port.postMessage({ method: 'lock', result: true })
+        break
+      case 'generateMnemonic':
+        try {
+          port.postMessage({ method: 'generateMnemonic', result: keyringVault.generateMnemonic() })
+        } catch (e) {
+          port.postMessage({ method: 'generateMnemonic', error: e })
+        }
+        break
+      case 'createAccount':
+        try {
+          keyringVault.createAccount(msg.mnemonic, msg.accountName).then((pairJson) => {
+            port.postMessage({ method: 'createAccount', result: pairJson })
+          })
+        } catch (e) {
+          port.postMessage({ method: 'createAccount', error: e })
+        }
+        break
+      case 'updateAccountName':
+        try {
+          keyringVault.updateAccountName(msg.address, msg.accountName).then((pairJson) => {
+            port.postMessage({ method: 'updateAccountName', result: pairJson })
+          })
+        } catch (e) {
+          port.postMessage({ method: 'updateAccountName', error: e })
+        }
+        break
+      case 'removeAccount':
+        try {
+          keyringVault.removeAccount(msg.address)
+        } catch (e) {
+          port.postMessage({ method: 'removeAccount', error: e })
+        }
+        break
+      case 'isMnemonicValid':
+        port.postMessage({
+          method: 'isMnemonicValid',
+          result: keyringVault.isMnemonicValid(msg.mnemonic)
+        })
+        break
+      default:
+        break
     }
   })
 })

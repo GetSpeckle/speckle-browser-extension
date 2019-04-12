@@ -53,6 +53,12 @@ class KeyringVault {
     })
   }
 
+  walletExists (): Promise<boolean> {
+    return LocalStore.get(VAULT_KEY).then((vault) => {
+      return !!vault
+    })
+  }
+
   getAccounts (): Array<KeyringPair$Json> {
     if (this.isLocked()) throw new Error(t('error.wallet.locked'))
     let accounts = new Array<KeyringPair$Json>()
@@ -96,9 +102,9 @@ class KeyringVault {
     if (this.isLocked()) throw new Error(t('error.wallet.locked'))
     this.keyring.removePair(address)
     LocalStore.get(VAULT_KEY).then(async (vault) => {
-      if (vault && vault[VAULT_KEY]) {
-        delete vault[VAULT_KEY][address]
-        await LocalStore.set(vault[VAULT_KEY])
+      if (vault) {
+        delete vault[address]
+        await LocalStore.set({ VAULT_KEY: vault })
       }
     })
   }
@@ -138,8 +144,6 @@ class KeyringVault {
     return LocalStore.get(VAULT_KEY).then((vault) => {
       if (!vault) {
         vault = {}
-      } else {
-        vault = vault[VAULT_KEY]
       }
       vault[keyringPair$Json.address] = keyringPair$Json
       return LocalStore.setValue(VAULT_KEY, vault).then(() => {

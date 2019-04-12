@@ -9,7 +9,7 @@ import { HashRouter as Router } from 'react-router-dom'
 import { Routes } from '../../routes'
 import { getSettings } from '../../background/store/settings'
 import { browser } from 'webextension-polyfill-ts'
-import { setLocked } from '../../background/store/account';
+import { setLocked } from '../../background/store/account'
 
 interface IPopupApp extends StateProps, DispatchProps {}
 
@@ -18,8 +18,8 @@ class PopupApp extends React.Component<IPopupApp> {
   componentDidMount () {
     this.props.getSettings()
 
-    const port = browser.runtime.connect(undefined, {name: '__SPECKLE__'})
-    port.postMessage({method: 'isLocked'})
+    const port = browser.runtime.connect(undefined, { name: '__SPECKLE__' })
+    port.postMessage({ method: 'isLocked' })
     console.log('message posted')
     port.onMessage.addListener((msg) => {
       console.log('Got message ', msg)
