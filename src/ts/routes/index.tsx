@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Switch } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import Term from '../components/account/Term'
 import CreatePassword from '../components/account/CreatePassword'
 import Login from '../components/account/Login'
@@ -7,13 +7,14 @@ import Login from '../components/account/Login'
 import {
   DEFAULT_ROUTE,
   TERM_SERVICE_ROUTE,
-  CREATE_PASSWORD_ROUTE, UNLOCK_ROUTE
+  CREATE_PASSWORD_ROUTE, UNLOCK_ROUTE, INITIALIZE_ROUTE
 } from '../constants/routes'
 import { RouteWithLayout } from './withLayout'
 import LoginLayout from '../layouts/LoginLayout'
 import Authenticated from './authenticated/index'
 import DashboardLayout from '../layouts/DashboardLayout'
 import Dashboard from '../components/dashboard/Dashboard'
+import Welcome from '../components/Welcome'
 
 export class Routes extends React.Component {
   renderRoutes () {
@@ -41,6 +42,11 @@ export class Routes extends React.Component {
           layout={LoginLayout}
           path={UNLOCK_ROUTE}
           component={Login}
+          exact={true}
+        />
+        <Route
+          path={INITIALIZE_ROUTE}
+          component={Welcome}
           exact={true}
         />
       </Switch>
