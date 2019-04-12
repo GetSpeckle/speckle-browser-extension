@@ -8,6 +8,8 @@ import { themes } from '../../components/styles/themes'
 import { HashRouter as Router } from 'react-router-dom'
 import { Routes } from '../../routes'
 import { getSettings } from '../../background/store/settings'
+import { browser } from 'webextension-polyfill-ts'
+import { setLocked } from '../../background/store/account';
 
 interface IPopupApp extends StateProps, DispatchProps {}
 
@@ -15,6 +17,16 @@ class PopupApp extends React.Component<IPopupApp> {
 
   componentDidMount () {
     this.props.getSettings()
+
+    const port = browser.runtime.connect(undefined, {name: '__SPECKLE__'})
+    port.postMessage({method: 'isLocked'})
+    console.log('message posted')
+    port.onMessage.addListener((msg) => {
+      console.log('Got message ', msg)
+      if (msg.method === 'isLocked') {
+        this.props.setLocked(msg.result)
+      }
+    })
   }
 
   render () {
@@ -35,11 +47,12 @@ class PopupApp extends React.Component<IPopupApp> {
 
 const mapStateToProps = (state: IAppState) => {
   return {
-    settings: state.settings
+    settings: state.settings,
+    accountStatus: state.accountStatus
   }
 }
 
-const mapDispatchToProps = { getSettings }
+const mapDispatchToProps = { getSettings, setLocked }
 
 type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps
