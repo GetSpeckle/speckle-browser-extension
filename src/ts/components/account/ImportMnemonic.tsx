@@ -1,7 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import t from '../../services/i18n'
-import KeyringVault from '../../services/keyring-vault'
+import { importAccountFromMnemonic } from '../../services/keyring-vault-proxy'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import { Message } from 'semantic-ui-react'
@@ -31,14 +31,13 @@ class ImportMnemonic extends React.Component<ImportMnemonicProp, ImportMnemonicS
   }
 
   handleImport () {
-    try {
-      KeyringVault.importAccountFromMnemonic(
-        this.state.mnemonic, this.state.accountName).then((json: KeyringPair$Json) => {
-          console.log(json)
-        })
-    } catch (e) {
-      this.setState({ ...this.state, errorMessage: e.message })
-    }
+
+    importAccountFromMnemonic(this.state.mnemonic, this.state.accountName)
+      .then((json: KeyringPair$Json) => {
+        console.log(json)
+      }).catch((reason) => {
+        this.setState({ ...this.state, errorMessage: reason })
+      })
   }
 
   changeMnemonic (event) {
