@@ -24,8 +24,11 @@ browser.runtime.onConnect.addListener(function (port) {
       case 'isLocked':
         port.postMessage({ method: 'isLocked', result: keyringVault.isLocked() })
         break
+      case 'isUnlocked':
+        port.postMessage({ method: 'isUnlocked', result: keyringVault.isUnlocked() })
+        break
       case 'unlock':
-        keyringVault.unlock(msg.password).then(keys => {
+        keyringVault.unlock(msg.password, msg.addressPrefix).then(keys => {
           port.postMessage({ method: 'unlock', result: keys })
         })
         break
@@ -106,9 +109,6 @@ browser.runtime.onConnect.addListener(function (port) {
         } catch (e) {
           port.postMessage({ method: 'importAccountFromJson', error: e })
         }
-        break
-      case 'isUnlocked':
-        port.postMessage({ method: 'isUnlocked', result: keyringVault.isUnlocked() })
         break
       default:
         break
