@@ -20,6 +20,20 @@ class KeyringVault {
     throw new Error(`Keyring is not initialised yet`)
   }
 
+  isLocked (): boolean {
+    return !this._password
+  }
+
+  isUnlocked (): boolean {
+    return !this.isLocked()
+  }
+
+  lock () {
+    this._password = undefined
+    this._mnemonic = undefined
+    this._keyring = undefined
+  }
+
   unlock (password: string, addressPrefix?: Prefix): Promise<Array<KeyringPair$Json>> {
     if (this.isUnlocked()) {
       return new Promise<Array<KeyringPair$Json>>(() => this.keyring.getPairs().map((pair) => {
@@ -53,19 +67,10 @@ class KeyringVault {
     })
   }
 
-  getAccounts (): Array<KeyringPair$Json> {
-    if (this.isLocked()) throw new Error(t('error.wallet.locked'))
-    let accounts = new Array<KeyringPair$Json>()
-    this.keyring.getPairs().forEach((pair) => {
-      accounts.push(pair.toJson(this._password))
+  walletExists (): Promise<boolean> {
+    return LocalStore.get(VAULT_KEY).then((vault) => {
+      return !!vault
     })
-    return accounts
-  }
-
-  lock () {
-    this._password = undefined
-    this._mnemonic = undefined
-    this._keyring = undefined
   }
 
   generateMnemonic (): string {
@@ -74,6 +79,19 @@ class KeyringVault {
     }
     this._mnemonic = mnemonicGenerate()
     return this._mnemonic
+  }
+
+  isMnemonicValid (mnemonic: string): boolean {
+    return mnemonicValidate(mnemonic)
+  }
+
+  getAccounts (): Array<KeyringPair$Json> {
+    if (this.isLocked()) throw new Error(t('error.wallet.locked'))
+    let accounts = new Array<KeyringPair$Json>()
+    this.keyring.getPairs().forEach((pair) => {
+      accounts.push(pair.toJson(this._password))
+    })
+    return accounts
   }
 
   createAccount (mnemonic: string, accountName: string): Promise<KeyringPair$Json> {
@@ -96,15 +114,11 @@ class KeyringVault {
     if (this.isLocked()) throw new Error(t('error.wallet.locked'))
     this.keyring.removePair(address)
     LocalStore.get(VAULT_KEY).then(async (vault) => {
-      if (vault && vault[VAULT_KEY]) {
-        delete vault[VAULT_KEY][address]
-        await LocalStore.set(vault[VAULT_KEY])
+      if (vault) {
+        delete vault[address]
+        await LocalStore.set({ VAULT_KEY: vault })
       }
     })
-  }
-
-  isMnemonicValid (mnemonic: string): boolean {
-    return mnemonicValidate(mnemonic)
   }
 
   importAccountFromMnemonic (mnemonic: string, accountName: string): Promise<KeyringPair$Json> {
@@ -124,22 +138,12 @@ class KeyringVault {
     return this.saveAccount(pair)
   }
 
-  isLocked (): boolean {
-    return !this._password
-  }
-
-  isUnlocked (): boolean {
-    return !this.isLocked()
-  }
-
   private saveAccount (pair: KeyringPair): Promise<KeyringPair$Json> {
     this.addTimestamp(pair)
     const keyringPair$Json: KeyringPair$Json = pair.toJson(this._password)
     return LocalStore.get(VAULT_KEY).then((vault) => {
       if (!vault) {
         vault = {}
-      } else {
-        vault = vault[VAULT_KEY]
       }
       vault[keyringPair$Json.address] = keyringPair$Json
       return LocalStore.setValue(VAULT_KEY, vault).then(() => {
