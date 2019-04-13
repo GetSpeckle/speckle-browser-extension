@@ -8,6 +8,8 @@ import { themes } from '../../components/styles/themes'
 import { HashRouter as Router } from 'react-router-dom'
 import { Routes } from '../../routes'
 import { getSettings } from '../../background/store/settings'
+import { isWalletLocked } from '../../services/keyring-vault-proxy'
+import { setLocked } from '../../background/store/account'
 
 interface IPopupApp extends StateProps, DispatchProps {}
 
@@ -15,6 +17,8 @@ class PopupApp extends React.Component<IPopupApp> {
 
   componentDidMount () {
     this.props.getSettings()
+    // TODO delete the function call below. It's a test
+    isWalletLocked().then(result => console.log(result))
   }
 
   render () {
@@ -35,11 +39,12 @@ class PopupApp extends React.Component<IPopupApp> {
 
 const mapStateToProps = (state: IAppState) => {
   return {
-    settings: state.settings
+    settings: state.settings,
+    accountStatus: state.accountStatus
   }
 }
 
-const mapDispatchToProps = { getSettings }
+const mapDispatchToProps = { getSettings, setLocked }
 
 type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps
