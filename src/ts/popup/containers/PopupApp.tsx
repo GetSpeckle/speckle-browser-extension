@@ -32,7 +32,6 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
         loading: false
       })
     })
-    console.log(`ddddd${this.props.getSettings()}`)
     // TODO delete the function call below. It's a test
     isWalletLocked().then(result => console.log(result))
   }

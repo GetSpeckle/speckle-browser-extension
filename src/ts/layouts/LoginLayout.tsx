@@ -9,8 +9,6 @@ interface ILoginLayoutProp extends StateProps, DispatchProps {}
 class LoginLayout extends Component<ILoginLayoutProp> {
 
   getHeaderImageUrl = () => {
-
-    console.log(`dddd${this.props.settings.welcome}`)
     return `/assets/header/header_${this.props.settings.color}.svg`
   }
 
