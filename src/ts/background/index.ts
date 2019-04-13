@@ -92,6 +92,7 @@ browser.runtime.onConnect.addListener(function (port) {
       case FUNCS.REMOVE_ACCOUNT:
         try {
           keyringVault.removeAccount(msg.address)
+          port.postMessage({ method: FUNCS.REMOVE_ACCOUNT })
         } catch (e) {
           port.postMessage({ method: FUNCS.REMOVE_ACCOUNT, error: e })
         }
