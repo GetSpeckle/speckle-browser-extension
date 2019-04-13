@@ -1,8 +1,10 @@
 import settings, { IAppSettings } from './settings/reducer'
 import { combineReducers } from 'redux'
+import account, { IAccountStatus } from './account'
 
 export interface IAppState {
-  settings: IAppSettings
+  settings: IAppSettings,
+  accountStatus: IAccountStatus
 }
 
 /**
@@ -35,8 +37,8 @@ export const saveState = (appstate: IAppState,
   }
 }
 
-const reducers = combineReducers<IAppState>({
-  settings
+const reducers = combineReducers({
+  settings, account
 })
 
 export default reducers
