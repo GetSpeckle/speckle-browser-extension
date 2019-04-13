@@ -3,12 +3,14 @@ import styled from 'styled-components'
 import t from '../../services/i18n'
 import Progress from './Progress'
 import { IAppState } from '../../background/store/all'
-import keyringVault from '../../services/keyring-vault'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
 import { Message } from 'semantic-ui-react'
+import { unlockWallet } from '../../services/keyring-vault-proxy'
+import { GENERATE_PHRASE_ROUTE } from '../../constants/routes'
+import { setLocked } from '../../background/store/account'
 
-interface ICreatePasswordProps extends StateProps, RouteComponentProps {}
+interface ICreatePasswordProps extends StateProps, DispatchProps, RouteComponentProps {}
 
 interface ICreatePasswordState {
   newPassword: string,
@@ -35,9 +37,12 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
       return
     }
 
-    keyringVault.unlock(this.state.newPassword).then(
+    unlockWallet(this.state.newPassword).then(
       keyringPairs => {
         console.log('Should have empty keyring pairs ', keyringPairs)
+        this.props.setLocked(false)
+        this.props.history.push(GENERATE_PHRASE_ROUTE)
+
       }
     )
   }
@@ -83,11 +88,17 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
 
 const mapStateToProps = (state: IAppState) => {
   return {
-    settings: state.settings
+    settings: state.settings,
+    accountStatus: state.account
   }
 }
 
+const mapDispatchToProps = { setLocked }
+
 type StateProps = ReturnType<typeof mapStateToProps>
+
+type DispatchProps = typeof mapDispatchToProps
+
 
 const Text = styled.p`
     width: 327px;
@@ -124,4 +135,4 @@ const StyledButton = styled.button`
   color: #ffffff;
 `
 
-export default withRouter(connect(mapStateToProps)(CreatePassword))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CreatePassword))

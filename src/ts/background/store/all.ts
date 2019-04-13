@@ -3,11 +3,11 @@ import { combineReducers } from 'redux'
 import account, { IAccountStatus } from './account'
 
 export interface IAppState {
-  settings: IAppSettings,
-  accountStatus: IAccountStatus
+  settings: IAppSettings
+  account: IAccountStatus
 }
 
-const reducers = combineReducers({
+const reducers = combineReducers<IAppState>({
   settings, account
 })
 

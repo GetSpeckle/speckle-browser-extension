@@ -58,7 +58,7 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
 const mapStateToProps = (state: IAppState) => {
   return {
     settings: state.settings,
-    accountStatus: state.accountStatus
+    accountStatus: state.account
   }
 }
 
