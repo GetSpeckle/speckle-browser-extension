@@ -89,6 +89,27 @@ browser.runtime.onConnect.addListener(function (port) {
           result: keyringVault.isMnemonicValid(msg.mnemonic)
         })
         break
+      case 'importAccountFromMnemonic':
+        try {
+          keyringVault.importAccountFromMnemonic(msg.mnemonic, msg.accountName).then((pairJson) => {
+            port.postMessage({ method: 'importAccountFromMnemonic', result: pairJson })
+          })
+        } catch (e) {
+          port.postMessage({ method: 'importAccountFromMnemonic', error: e })
+        }
+        break
+      case 'importAccountFromJson':
+        try {
+          keyringVault.importAccountFromJson(msg.json, msg.password).then((pairJson) => {
+            port.postMessage({ method: 'importAccountFromJson', resutl: pairJson })
+          })
+        } catch (e) {
+          port.postMessage({ method: 'importAccountFromJson', error: e })
+        }
+        break
+      case 'isUnlocked':
+        port.postMessage({ method: 'isUnlocked', result: keyringVault.isUnlocked() })
+        break
       default:
         break
     }
