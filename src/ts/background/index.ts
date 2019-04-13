@@ -1,23 +1,19 @@
 import { createStore } from 'redux'
-import reducers, { IAppState, loadState } from './store/all'
+import reducers, { IAppState } from './store/all'
 import { wrapStore, Store } from 'react-chrome-redux'
-import { configureApp } from './AppConfig'
 import { browser } from 'webextension-polyfill-ts'
 import keyringVault from '../services/keyring-vault'
 import * as FUNCS from '../constants/keyring-vault-funcs'
 
-const preloadedState = loadState()
-const store: Store<IAppState> = createStore(reducers, preloadedState)
-
-configureApp(store)
+const store: Store<IAppState> = createStore(reducers)
 
 wrapStore(store, {
-  // Communication port between the background component
-  // nd views such as browser tabs.
+      // Communication port between the background component
+      // nd views such as browser tabs.
   portName: 'ExPort'
 })
 
-// listen to the port
+    // listen to the port
 browser.runtime.onConnect.addListener(function (port) {
   if (port.name !== '__SPECKLE__') return
   port.onMessage.addListener(function (msg) {
@@ -99,9 +95,10 @@ browser.runtime.onConnect.addListener(function (port) {
         break
       case FUNCS.IMPORT_MNEMONIC:
         try {
-          keyringVault.importAccountFromMnemonic(msg.mnemonic, msg.accountName).then((pairJson) => {
-            port.postMessage({ method: FUNCS.IMPORT_MNEMONIC, result: pairJson })
-          })
+          keyringVault.importAccountFromMnemonic(msg.mnemonic, msg.accountName).
+              then((pairJson) => {
+                port.postMessage({ method: FUNCS.IMPORT_MNEMONIC, result: pairJson })
+              })
         } catch (e) {
           port.postMessage({ method: FUNCS.IMPORT_MNEMONIC, error: e })
         }

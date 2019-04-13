@@ -1,16 +1,22 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import t from '../../services/i18n'
-import { CREATE_PASSWORD_ROUTE } from '../../constants/routes';
+import { CREATE_PASSWORD_ROUTE } from '../../constants/routes'
+import { IAppState } from '../../background/store/all'
+import { connect } from 'react-redux'
+import { saveSettings } from '../../background/store/settings'
+import { RouteComponentProps, withRouter } from 'react-router'
 
-interface ITermProp {
+interface ITermProp extends StateProps, DispatchProps, RouteComponentProps {
   history: any
 }
 
 class Term extends React.Component<ITermProp> {
 
   handleClick = () => {
-    this.props.history.push(CREATE_PASSWORD_ROUTE)
+    const { history, settings } = this.props
+    this.props.saveSettings({ ...settings, welcome: false })
+    history.push(CREATE_PASSWORD_ROUTE)
   }
 
   render () {
@@ -74,4 +80,16 @@ const StyledButton = styled.button`
   text-align: center;
   color: #ffffff;
 `
-export default Term
+
+const mapStateToProps = (state: IAppState) => {
+  return {
+    settings: state.settings
+  }
+}
+
+const mapDispatchToProps = { saveSettings }
+
+type StateProps = ReturnType<typeof mapStateToProps>
+type DispatchProps = typeof mapDispatchToProps
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Term))

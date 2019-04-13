@@ -6,8 +6,8 @@ import { IAppState } from '../../background/store/all'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
 import { Message } from 'semantic-ui-react'
-import { unlockWallet } from '../../services/keyring-vault-proxy';
-import { GENERATE_PHRASE_ROUTE } from '../../constants/routes';
+import { unlockWallet } from '../../services/keyring-vault-proxy'
+import { GENERATE_PHRASE_ROUTE } from '../../constants/routes'
 import { setLocked } from '../../background/store/account'
 
 interface ICreatePasswordProps extends StateProps, DispatchProps, RouteComponentProps {}
@@ -26,14 +26,14 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
   }
 
   handleClick () {
-    this.setState({errorMessage: ''})
+    this.setState({ errorMessage: '' })
 
     if (this.state.newPassword !== this.state.confirmPassword) {
-      this.setState({errorMessage: t('Password mismatch')})
+      this.setState({ errorMessage: t('Password mismatch') })
       return
     }
-    if (this.state.newPassword.length<8) {
-      this.setState({errorMessage: t('Password minimum length is 8')})
+    if (this.state.newPassword.length < 8) {
+      this.setState({ errorMessage: t('Password minimum length is 8') })
       return
     }
 
@@ -59,7 +59,7 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
               type='password'
               placeholder={t('Create new password')}
               value={this.state.newPassword}
-              onChange={evt => this.setState({newPassword: evt.target.value})}/>
+              onChange={evt => this.setState({ newPassword: evt.target.value })}/>
           </Text>
 
           <Text>
@@ -67,11 +67,11 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
               type='password'
               placeholder={t('Repeat password')}
               value={this.state.confirmPassword}
-              onChange={evt => this.setState({confirmPassword: evt.target.value})}
+              onChange={evt => this.setState({ confirmPassword: evt.target.value })}
               />
           </Text>
 
-          <Message negative hidden={!this.state.errorMessage}>
+          <Message negative={true} hidden={!this.state.errorMessage}>
             {this.state.errorMessage}
           </Message>
 
