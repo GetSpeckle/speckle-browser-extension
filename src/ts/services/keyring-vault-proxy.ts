@@ -1,153 +1,138 @@
 import { browser } from 'webextension-polyfill-ts'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
+import * as FUNCS from '../constants/keyring-vault-funcs'
+
+const port = browser.runtime.connect(undefined, { name: '__SPECKLE__' })
 
 export function isWalletLocked (): Promise<boolean> {
-  const port = browser.runtime.connect(undefined, { name: '__SPECKLE__' })
   return new Promise<boolean>(resolve => {
     port.onMessage.addListener((msg) => {
-      if (msg.method === 'isLocked') {
+      if (msg.method === FUNCS.IS_LOCKED) {
         resolve(msg.result)
-        port.disconnect()
       }
     })
-    port.postMessage({ method: 'isLocked' })
+    port.postMessage({ method: FUNCS.IS_LOCKED })
   })
 }
 
 export function isWalletUnlocked (): Promise<boolean> {
-  const port = browser.runtime.connect(undefined, { name: '__SPECKLE__' })
   return new Promise<boolean>(resolve => {
     port.onMessage.addListener((msg) => {
-      if (msg.method === 'isWalletUnlocked') {
+      if (msg.method === FUNCS.IS_UNLOCKED) {
         resolve(msg.result)
-        port.disconnect()
       }
     })
-    port.postMessage({ method: 'isWalletUnlocked' })
+    port.postMessage({ method: FUNCS.IS_UNLOCKED })
   })
 }
 export function unlockWallet (password: string, addressPrefix?: string):
   Promise<Array<KeyringPair$Json>> {
-  const port = browser.runtime.connect(undefined, { name: '__SPECKLE__' })
   return new Promise<Array<KeyringPair$Json>>(resolve => {
     port.onMessage.addListener((msg) => {
-      if (msg.method === 'unlock') {
+      if (msg.method === FUNCS.UNLOCK) {
         resolve(msg.result)
-        port.disconnect()
       }
     })
-    port.postMessage({ method: 'unlock', password: password, addressPrefix: addressPrefix })
+    port.postMessage({ method: FUNCS.UNLOCK, password: password, addressPrefix: addressPrefix })
   })
 }
 
 export function walletExists (): Promise<boolean> {
-  const port = browser.runtime.connect(undefined, { name: '__SPECKLE__' })
   return new Promise<boolean>(resolve => {
     port.onMessage.addListener((msg) => {
-      if (msg.method === 'walletExists') {
+      if (msg.method === FUNCS.WALLET_EXISTS) {
         resolve(msg.result)
-        port.disconnect()
       }
     })
-    port.postMessage({ method: 'walletExists' })
+    port.postMessage({ method: FUNCS.WALLET_EXISTS })
   })
 }
 
 export function getAccounts (): Promise<Array<KeyringPair$Json>> {
-  const port = browser.runtime.connect(undefined, { name: '__SPECKLE__' })
   return new Promise<Array<KeyringPair$Json>>((resolve, reject) => {
     port.onMessage.addListener((msg) => {
-      if (msg.method === 'getAccounts') {
+      if (msg.method === FUNCS.GET_ACCOUNTS) {
         if (msg.result) resolve(msg.result)
         else reject(msg.error)
-        port.disconnect()
       }
     })
-    port.postMessage({ method: 'getAccounts' })
+    port.postMessage({ method: FUNCS.GET_ACCOUNTS })
   })
 }
 
 export function generateMnemonic (): Promise<string> {
-  const port = browser.runtime.connect(undefined, { name: '__SPECKLE__' })
   return new Promise<string>(resolve => {
     port.onMessage.addListener((msg) => {
-      if (msg.method === 'generateMnemonic') {
+      if (msg.method === FUNCS.GENERATE_MNEMONIC) {
         resolve(msg.result)
-        port.disconnect()
       }
     })
-    port.postMessage({ method: 'generateMnemonic' })
+    port.postMessage({ method: FUNCS.GENERATE_MNEMONIC })
   })
 }
 
 export function createAccount (mnemonic: string, accountName: string): Promise<KeyringPair$Json> {
-  const port = browser.runtime.connect(undefined, { name: '__SPECKLE__' })
   return new Promise<KeyringPair$Json>((resolve, reject) => {
     port.onMessage.addListener((msg) => {
-      if (msg.method === 'createAccount') {
+      if (msg.method === FUNCS.CREATE_ACCOUNT) {
         if (msg.result) resolve(msg.result)
         else reject(msg.error)
-        port.disconnect()
       }
     })
-    port.postMessage({ method: 'createAccount', mnemonic: mnemonic, accountName: accountName })
+    port.postMessage({ method: FUNCS.CREATE_ACCOUNT, mnemonic: mnemonic, accountName: accountName })
   })
 }
 
 export function updateAccountName (address: string, accountName: string):
   Promise<KeyringPair$Json> {
-  const port = browser.runtime.connect(undefined, { name: '__SPECKLE__' })
   return new Promise<KeyringPair$Json>((resolve, reject) => {
     port.onMessage.addListener((msg) => {
-      if (msg.method === 'updateAccountName') {
+      if (msg.method === FUNCS.UPDATE_ACCOUNT_NAME) {
         if (msg.result) resolve(msg.result)
         else reject(msg.error)
-        port.disconnect()
       }
     })
-    port.postMessage({ method: 'updateAccountName', address: address, accountName: accountName })
+    port.postMessage({
+      method: FUNCS.UPDATE_ACCOUNT_NAME,
+      address: address,
+      accountName: accountName
+    })
   })
 }
 
 export function removeAccount (address: string): Promise<void> {
-  const port = browser.runtime.connect(undefined, { name: '__SPECKLE__' })
   return new Promise<void>(resolve => {
     port.onMessage.addListener((msg) => {
-      if (msg.method === 'removeAccount') {
+      if (msg.method === FUNCS.REMOVE_ACCOUNT) {
         resolve()
-        port.disconnect()
       }
     })
-    port.postMessage({ method: 'removeAccount', address: address })
+    port.postMessage({ method: FUNCS.REMOVE_ACCOUNT, address: address })
   })
 }
 
 export function isMnemonicValid (mnemonic: string): Promise<boolean> {
-  const port = browser.runtime.connect(undefined, { name: '__SPECKLE__' })
   return new Promise<boolean>(resolve => {
     port.onMessage.addListener((msg) => {
-      if (msg.method === 'isMnemonicValid') {
+      if (msg.method === FUNCS.IS_MNEMONIC_VALID) {
         resolve(msg.result)
-        port.disconnect()
       }
     })
-    port.postMessage({ method: 'isMnemonicValid', mnemonic: mnemonic })
+    port.postMessage({ method: FUNCS.IS_MNEMONIC_VALID, mnemonic: mnemonic })
   })
 }
 
 export function importAccountFromMnemonic (mnemonic: string, accountName: string):
   Promise<KeyringPair$Json> {
-  const port = browser.runtime.connect(undefined, { name: '__SPECKLE__' })
   return new Promise<KeyringPair$Json>((resolve, reject) => {
     port.onMessage.addListener((msg) => {
-      if (msg.method === 'importAccountFromMnemonic') {
+      if (msg.method === FUNCS.IMPORT_MNEMONIC) {
         if (msg.result) resolve(msg.result)
         else reject(msg.error)
-        port.disconnect()
       }
     })
     port.postMessage({
-      method: 'importAccountFromMnemonic',
+      method: FUNCS.IMPORT_MNEMONIC,
       mnemonic: mnemonic,
       accountName: accountName
     })
@@ -156,17 +141,15 @@ export function importAccountFromMnemonic (mnemonic: string, accountName: string
 
 export function importAccountFromJson (json: KeyringPair$Json, password?: string):
   Promise<KeyringPair$Json> {
-  const port = browser.runtime.connect(undefined, { name: '__SPECKLE__' })
   return new Promise<KeyringPair$Json>((resolve, reject) => {
     port.onMessage.addListener((msg) => {
-      if (msg.method === 'importAccountFromJson') {
+      if (msg.method === FUNCS.IMPORT_JSON) {
         if (msg.result) resolve(msg.result)
         else reject(msg.error)
-        port.disconnect()
       }
     })
     port.postMessage({
-      method: 'importAccountFromJson',
+      method: FUNCS.IMPORT_JSON,
       json: json,
       password: password
     })

@@ -4,6 +4,7 @@ import { wrapStore, Store } from 'react-chrome-redux'
 import { configureApp } from './AppConfig'
 import { browser } from 'webextension-polyfill-ts'
 import keyringVault from '../services/keyring-vault'
+import * as FUNCS from '../constants/keyring-vault-funcs'
 
 const preloadedState = loadState()
 const store: Store<IAppState> = createStore(reducers, preloadedState)
@@ -18,96 +19,99 @@ wrapStore(store, {
 
 // listen to the port
 browser.runtime.onConnect.addListener(function (port) {
-  console.assert(port.name === '__SPECKLE__')
+  if (port.name !== '__SPECKLE__') return
   port.onMessage.addListener(function (msg) {
     switch (msg.method) {
-      case 'isLocked':
-        port.postMessage({ method: 'isLocked', result: keyringVault.isLocked() })
+      case FUNCS.IS_LOCKED:
+        port.postMessage({ method: FUNCS.IS_LOCKED, result: keyringVault.isLocked() })
         break
-      case 'isUnlocked':
-        port.postMessage({ method: 'isUnlocked', result: keyringVault.isUnlocked() })
+      case FUNCS.IS_UNLOCKED:
+        port.postMessage({ method: FUNCS.IS_UNLOCKED, result: keyringVault.isUnlocked() })
         break
-      case 'unlock':
+      case FUNCS.UNLOCK:
+        keyringVault.lock()
+        port.postMessage({ method: FUNCS.UNLOCK, result: true })
+        break
+      case FUNCS.UNLOCK:
         keyringVault.unlock(msg.password, msg.addressPrefix).then(keys => {
-          port.postMessage({ method: 'unlock', result: keys })
+          port.postMessage({ method: FUNCS.UNLOCK, result: keys })
         })
         break
-      case 'walletExists':
+      case FUNCS.WALLET_EXISTS:
         keyringVault.walletExists().then((result) => {
-          port.postMessage({ method: 'unlock', result: result })
+          port.postMessage({ method: FUNCS.WALLET_EXISTS, result: result })
         })
         break
-      case 'getAccounts':
+      case FUNCS.GET_ACCOUNTS:
         try {
           port.postMessage({
-            method: 'getAccounts',
+            method: FUNCS.GET_ACCOUNTS,
             result: keyringVault.getAccounts()
           })
         } catch (e) {
           port.postMessage({
-            method: 'getAccounts',
+            method: FUNCS.GET_ACCOUNTS,
             error: e
           })
         }
         break
-      case 'lock':
-        keyringVault.lock()
-        port.postMessage({ method: 'lock', result: true })
-        break
-      case 'generateMnemonic':
+      case FUNCS.GENERATE_MNEMONIC:
         try {
-          port.postMessage({ method: 'generateMnemonic', result: keyringVault.generateMnemonic() })
-        } catch (e) {
-          port.postMessage({ method: 'generateMnemonic', error: e })
-        }
-        break
-      case 'createAccount':
-        try {
-          keyringVault.createAccount(msg.mnemonic, msg.accountName).then((pairJson) => {
-            port.postMessage({ method: 'createAccount', result: pairJson })
+          port.postMessage({
+            method: FUNCS.GENERATE_MNEMONIC,
+            result: keyringVault.generateMnemonic()
           })
         } catch (e) {
-          port.postMessage({ method: 'createAccount', error: e })
+          port.postMessage({ method: FUNCS.GENERATE_MNEMONIC, error: e })
         }
         break
-      case 'updateAccountName':
-        try {
-          keyringVault.updateAccountName(msg.address, msg.accountName).then((pairJson) => {
-            port.postMessage({ method: 'updateAccountName', result: pairJson })
-          })
-        } catch (e) {
-          port.postMessage({ method: 'updateAccountName', error: e })
-        }
-        break
-      case 'removeAccount':
-        try {
-          keyringVault.removeAccount(msg.address)
-        } catch (e) {
-          port.postMessage({ method: 'removeAccount', error: e })
-        }
-        break
-      case 'isMnemonicValid':
+      case FUNCS.IS_MNEMONIC_VALID:
         port.postMessage({
-          method: 'isMnemonicValid',
+          method: FUNCS.IS_MNEMONIC_VALID,
           result: keyringVault.isMnemonicValid(msg.mnemonic)
         })
         break
-      case 'importAccountFromMnemonic':
+      case FUNCS.CREATE_ACCOUNT:
         try {
-          keyringVault.importAccountFromMnemonic(msg.mnemonic, msg.accountName).then((pairJson) => {
-            port.postMessage({ method: 'importAccountFromMnemonic', result: pairJson })
+          keyringVault.createAccount(msg.mnemonic, msg.accountName).then((pairJson) => {
+            port.postMessage({ method: FUNCS.CREATE_ACCOUNT, result: pairJson })
           })
         } catch (e) {
-          port.postMessage({ method: 'importAccountFromMnemonic', error: e })
+          port.postMessage({ method: FUNCS.CREATE_ACCOUNT, error: e })
         }
         break
-      case 'importAccountFromJson':
+      case FUNCS.UPDATE_ACCOUNT_NAME:
         try {
-          keyringVault.importAccountFromJson(msg.json, msg.password).then((pairJson) => {
-            port.postMessage({ method: 'importAccountFromJson', resutl: pairJson })
+          keyringVault.updateAccountName(msg.address, msg.accountName).then((pairJson) => {
+            port.postMessage({ method: FUNCS.UPDATE_ACCOUNT_NAME, result: pairJson })
           })
         } catch (e) {
-          port.postMessage({ method: 'importAccountFromJson', error: e })
+          port.postMessage({ method: FUNCS.UPDATE_ACCOUNT_NAME, error: e })
+        }
+        break
+      case FUNCS.REMOVE_ACCOUNT:
+        try {
+          keyringVault.removeAccount(msg.address)
+        } catch (e) {
+          port.postMessage({ method: FUNCS.REMOVE_ACCOUNT, error: e })
+        }
+        break
+      case FUNCS.IMPORT_MNEMONIC:
+        try {
+          keyringVault.importAccountFromMnemonic(msg.mnemonic, msg.accountName).then((pairJson) => {
+            port.postMessage({ method: FUNCS.IMPORT_MNEMONIC, result: pairJson })
+          })
+        } catch (e) {
+          port.postMessage({ method: FUNCS.IMPORT_MNEMONIC, error: e })
+        }
+        break
+      case FUNCS.IMPORT_JSON:
+        try {
+          keyringVault.importAccountFromJson(msg.json, msg.password).then((pairJson) => {
+            port.postMessage({ method: FUNCS.IMPORT_JSON, result: pairJson })
+          })
+        } catch (e) {
+          port.postMessage({ method: FUNCS.IMPORT_JSON, error: e })
         }
         break
       default:

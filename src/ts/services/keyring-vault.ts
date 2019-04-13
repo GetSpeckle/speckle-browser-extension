@@ -20,6 +20,20 @@ class KeyringVault {
     throw new Error(`Keyring is not initialised yet`)
   }
 
+  isLocked (): boolean {
+    return !this._password
+  }
+
+  isUnlocked (): boolean {
+    return !this.isLocked()
+  }
+
+  lock () {
+    this._password = undefined
+    this._mnemonic = undefined
+    this._keyring = undefined
+  }
+
   unlock (password: string, addressPrefix?: Prefix): Promise<Array<KeyringPair$Json>> {
     if (this.isUnlocked()) {
       return new Promise<Array<KeyringPair$Json>>(() => this.keyring.getPairs().map((pair) => {
@@ -59,6 +73,18 @@ class KeyringVault {
     })
   }
 
+  generateMnemonic (): string {
+    if (this.isLocked()) {
+      throw new Error(t('error.wallet.locked'))
+    }
+    this._mnemonic = mnemonicGenerate()
+    return this._mnemonic
+  }
+
+  isMnemonicValid (mnemonic: string): boolean {
+    return mnemonicValidate(mnemonic)
+  }
+
   getAccounts (): Array<KeyringPair$Json> {
     if (this.isLocked()) throw new Error(t('error.wallet.locked'))
     let accounts = new Array<KeyringPair$Json>()
@@ -66,20 +92,6 @@ class KeyringVault {
       accounts.push(pair.toJson(this._password))
     })
     return accounts
-  }
-
-  lock () {
-    this._password = undefined
-    this._mnemonic = undefined
-    this._keyring = undefined
-  }
-
-  generateMnemonic (): string {
-    if (this.isLocked()) {
-      throw new Error(t('error.wallet.locked'))
-    }
-    this._mnemonic = mnemonicGenerate()
-    return this._mnemonic
   }
 
   createAccount (mnemonic: string, accountName: string): Promise<KeyringPair$Json> {
@@ -109,10 +121,6 @@ class KeyringVault {
     })
   }
 
-  isMnemonicValid (mnemonic: string): boolean {
-    return mnemonicValidate(mnemonic)
-  }
-
   importAccountFromMnemonic (mnemonic: string, accountName: string): Promise<KeyringPair$Json> {
     if (this.isLocked()) throw new Error(t('error.wallet.locked'))
     if (!this.isMnemonicValid(mnemonic)) throw new Error(t('error.mnemonic.invalid'))
@@ -128,14 +136,6 @@ class KeyringVault {
       pair.decodePkcs8(password)
     }
     return this.saveAccount(pair)
-  }
-
-  isLocked (): boolean {
-    return !this._password
-  }
-
-  isUnlocked (): boolean {
-    return !this.isLocked()
   }
 
   private saveAccount (pair: KeyringPair): Promise<KeyringPair$Json> {
