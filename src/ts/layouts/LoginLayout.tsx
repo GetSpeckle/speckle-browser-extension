@@ -6,13 +6,11 @@ import { IAppState } from '../background/store/all'
 
 interface ILoginLayoutProp extends StateProps, DispatchProps {}
 
-interface ILoginLayoutState {
-  color: string
-}
-
-class LoginLayout extends Component<ILoginLayoutProp, ILoginLayoutState> {
+class LoginLayout extends Component<ILoginLayoutProp> {
 
   getHeaderImageUrl = () => {
+
+    console.log(`dddd${this.props.settings.welcome}`)
     return `/assets/header/header_${this.props.settings.color}.svg`
   }
 

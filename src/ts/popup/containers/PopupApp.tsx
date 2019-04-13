@@ -12,27 +12,46 @@ import { isWalletLocked } from '../../services/keyring-vault-proxy'
 import { setLocked } from '../../background/store/account'
 
 interface IPopupApp extends StateProps, DispatchProps {}
+interface IPopupState {
+  loading: boolean
+}
 
-class PopupApp extends React.Component<IPopupApp> {
+class PopupApp extends React.Component<IPopupApp, IPopupState> {
 
-  componentDidMount () {
-    this.props.getSettings()
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      loading: true
+    }
+  }
+
+  componentWillMount () {
+    this.props.getSettings().then(() => {
+      this.setState({
+        loading: false
+      })
+    })
+    console.log(`ddddd${this.props.getSettings()}`)
     // TODO delete the function call below. It's a test
     isWalletLocked().then(result => console.log(result))
   }
 
   render () {
+    if (this.state.loading) {
+      return (null)
+    }
     return (
-      <ThemeProvider theme={themes[this.props.settings.theme]}>
-        <React.Fragment>
-          <GlobalStyle/>
-          <PopupAppContainer>
-            <Router>
-              <Routes/>
-            </Router>
-          </PopupAppContainer>
-        </React.Fragment>
-      </ThemeProvider>
+        <ThemeProvider theme={themes[this.props.settings.theme]}>
+          <React.Fragment>
+            <GlobalStyle/>
+            <PopupAppContainer>
+              <Router>
+                <Routes/>
+              </Router>
+            </PopupAppContainer>
+          </React.Fragment>
+        </ThemeProvider>
     )
   }
 }
