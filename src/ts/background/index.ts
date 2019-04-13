@@ -28,7 +28,7 @@ browser.runtime.onConnect.addListener(function (port) {
       case FUNCS.IS_UNLOCKED:
         port.postMessage({ method: FUNCS.IS_UNLOCKED, result: keyringVault.isUnlocked() })
         break
-      case FUNCS.UNLOCK:
+      case FUNCS.LOCK:
         keyringVault.lock()
         port.postMessage({ method: FUNCS.UNLOCK, result: true })
         break
