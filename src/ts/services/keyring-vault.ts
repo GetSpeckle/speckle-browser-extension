@@ -47,8 +47,8 @@ class KeyringVault {
     return cryptoWaitReady().then(async () => {
       this._keyring = new Keyring({ addressPrefix, type: 'sr25519' })
       let vault = await LocalStore.get(VAULT_KEY)
-      if (vault) {
-        let accounts = Object.values(vault)
+      if (vault && vault[VAULT_KEY]) {
+        let accounts = Object.values(vault[VAULT_KEY])
         try {
           accounts.forEach((account) => {
             let pair = this.keyring.addFromJson(account as KeyringPair$Json)

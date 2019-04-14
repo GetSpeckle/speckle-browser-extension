@@ -2,15 +2,14 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { IAppState } from '../../background/store/all'
-import keyringVault from '../../services/keyring-vault'
 import { connect } from 'react-redux'
-import { CREATE_PASSWORD_ROUTE } from '../../constants/routes'
+import { unlockWallet } from '../../services/keyring-vault-proxy'
+import { DEFAULT_ROUTE } from '../../constants/routes'
+import { setLocked } from '../../background/store/account'
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
-interface ILoginProps extends StateProps, RouteComponentProps {
-  history: any
-}
+interface ILoginProps extends StateProps, DispatchProps, RouteComponentProps {}
 
 interface ILoginState {
   password: string,
@@ -26,16 +25,15 @@ class Login extends React.Component<ILoginProps, ILoginState> {
   handleLogin () {
     this.setState({ errorMessage: '' })
     // for testing only
-    keyringVault.unlock(this.state.password).then(
+    unlockWallet(this.state.password).then(
       keyringPairs => {
-        console.log('Should have empty keyring pairs ', keyringPairs)
+        if (keyringPairs.length && keyringPairs.length > 0) {
+          this.props.setLocked(false).then(
+            this.props.history.push(DEFAULT_ROUTE)
+          )
+        }
       }
     )
-  }
-
-  handleSignUp () {
-    this.setState({ errorMessage: '' })
-    this.props.history.push(CREATE_PASSWORD_ROUTE)
   }
 
   render () {
@@ -55,9 +53,6 @@ class Login extends React.Component<ILoginProps, ILoginState> {
           <StyledButton onClick={this.handleLogin.bind(this)}>
             login
           </StyledButton>
-          <StyledButton onClick={this.handleSignUp.bind(this)}>
-            Sign up
-          </StyledButton>
         </Text>
       </div>
     )
@@ -69,6 +64,10 @@ const mapStateToProps = (state: IAppState) => {
     settings: state.settings
   }
 }
+
+const mapDispatchToProps = { setLocked }
+
+type DispatchProps = typeof mapDispatchToProps
 
 const StyledPassword = styled.input`
   width: 311px;
@@ -115,4 +114,4 @@ const Title = styled(Text)`
     color: #30383B;
 `
 
-export default withRouter(connect(mapStateToProps)(Login))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login))

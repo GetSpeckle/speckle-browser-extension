@@ -25,17 +25,17 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
     color: 'blue'
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     // generate the mnemonic
     generateMnemonic().then(phrase => {
-      this.setState({mnemonic: phrase})
+      this.setState({ mnemonic: phrase })
     })
   }
 
   handleClick = () => {
-    this.setState({message: ''})
+    this.setState({ message: '' })
     this.props.setNewPhrase(this.state.mnemonic)
     this.props.history.push(CONFIRM_PHRASE_ROUTE)
   }
@@ -85,7 +85,7 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
 
           <Text>
             <div>{t('phraseTitle')}</div>
-            <MnemonicPad value={this.state.mnemonic} readOnly onClick={this.selectAll}/>
+            <MnemonicPad value={this.state.mnemonic} readOnly={true} onClick={this.selectAll}/>
           </Text>
 
           <Message color={this.state.color} hidden={!this.state.message} style={alignMiddle}>
@@ -134,7 +134,6 @@ const mapDispatchToProps = { setNewPhrase }
 type StateProps = ReturnType<typeof mapStateToProps>
 
 type DispatchProps = typeof mapDispatchToProps
-
 
 const Text = styled.div`
     width: 327px;
