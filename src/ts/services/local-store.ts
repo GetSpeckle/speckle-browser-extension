@@ -24,7 +24,8 @@ export class LocalStore {
   }
 
   /**
-   * Set the value to the local store using the given key and return the value in the promise.
+   * Set the value to the local store using the given key
+   * and return the promise that resolves to the value.
    *
    * @param key the key mapped to the value
    * @param value the value to be set and returned in the promise
