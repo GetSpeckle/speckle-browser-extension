@@ -9,9 +9,7 @@ import { Message, List } from 'semantic-ui-react'
 import { createAccount } from '../../services/keyring-vault-proxy'
 import { DEFAULT_ROUTE } from '../../constants/routes'
 
-interface IConfirmPhraseProps extends StateProps, RouteComponentProps {
-  history: any
-}
+interface IConfirmPhraseProps extends StateProps, RouteComponentProps {}
 
 interface IConfirmPhraseState {
   inputPhrase: string,

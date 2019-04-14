@@ -10,9 +10,7 @@ import { ThemeTypes } from './styles/themes'
 import ImageMapper from 'react-image-mapper'
 import { withRouter, RouteComponentProps } from 'react-router'
 
-interface IWelcomeProp extends StateProps, DispatchProps, RouteComponentProps {
-  history: any
-}
+interface IWelcomeProp extends StateProps, DispatchProps, RouteComponentProps {}
 
 interface IWelcomeState {
   color: string,

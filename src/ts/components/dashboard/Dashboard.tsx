@@ -4,9 +4,7 @@ import { lockWallet } from '../../services/keyring-vault-proxy'
 import { UNLOCK_ROUTE } from '../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router'
 
-interface IDashboardProp extends RouteComponentProps {
-  history: any
-}
+interface IDashboardProp extends RouteComponentProps {}
 
 class Dashboard extends React.Component<IDashboardProp> {
 

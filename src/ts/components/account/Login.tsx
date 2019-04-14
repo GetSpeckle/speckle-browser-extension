@@ -9,9 +9,7 @@ import { setLocked } from '../../background/store/account'
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
-interface ILoginProps extends StateProps, DispatchProps, RouteComponentProps {
-  history: any
-}
+interface ILoginProps extends StateProps, DispatchProps, RouteComponentProps {}
 
 interface ILoginState {
   password: string,
