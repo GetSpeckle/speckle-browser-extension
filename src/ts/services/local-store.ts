@@ -43,6 +43,6 @@ export class LocalStore {
    * @param key the key mapped to the value
    */
   static getValue (key: string): Promise<any> {
-    return browser.storage.local.get(key).then(obj => obj[key])
+    return browser.storage.local.get(key).then(obj => obj ? obj[key] : undefined)
   }
 }
