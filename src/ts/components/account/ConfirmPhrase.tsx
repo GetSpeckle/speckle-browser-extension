@@ -6,7 +6,8 @@ import { IAppState } from '../../background/store/all'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
 import { Message, List } from 'semantic-ui-react'
-import { createAccount } from '../../services/keyring-vault-proxy';
+import { createAccount } from '../../services/keyring-vault-proxy'
+import { DEFAULT_ROUTE } from '../../constants/routes'
 
 interface IConfirmPhraseProps extends StateProps, RouteComponentProps {}
 
@@ -23,39 +24,40 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
     wordList: []
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.changePhrase = this.changePhrase.bind(this)
     this.isPhraseConfirmed = this.isPhraseConfirmed.bind(this)
     this.createAccount = this.createAccount.bind(this)
   }
 
-  componentDidMount() {
+  componentDidMount () {
     // split the new phrase to be a list
     if (this.props.accountStatus.newPhrase) {
-      this.setState({wordList: this.props.accountStatus.newPhrase.split(/\s+/)})
+      this.setState({ wordList: this.props.accountStatus.newPhrase.split(/\s+/) })
     }
   }
 
-  changePhrase(event) {
+  changePhrase (event) {
     const val = event.target.value
     let formatted = val.trim().split(/\s+/).join(' ')
     if (val.endsWith(' ')) {
       formatted = formatted + ' '
     }
-    this.setState({inputPhrase: formatted})
+    this.setState({ inputPhrase: formatted })
   }
 
-  isPhraseConfirmed(): boolean {
+  isPhraseConfirmed (): boolean {
     return !!this.props.accountStatus && !!this.props.accountStatus.newPhrase
         && this.props.accountStatus.newPhrase === this.state.inputPhrase
   }
 
   createAccount () {
-    this.setState({errorMessage: ''})
+    this.setState({ errorMessage: '' })
     if (this.props.accountStatus.newPhrase) {
       createAccount(this.props.accountStatus.newPhrase, '').then(keyringPair => {
         console.log('Account created! ', keyringPair)
+        this.props.history.push(DEFAULT_ROUTE)
       })
     }
   }
@@ -74,10 +76,10 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
           </Text>
 
           <Text>
-            <List horizontal items={this.state.wordList} />
+            <List horizontal={true} items={this.state.wordList} />
           </Text>
 
-          <Message negative hidden={!this.state.errorMessage} style={error}>
+          <Message negative={true} hidden={!this.state.errorMessage} style={error}>
             {this.state.errorMessage}
           </Message>
 

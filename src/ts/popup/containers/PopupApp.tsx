@@ -27,13 +27,19 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
   }
 
   componentWillMount () {
-    this.props.getSettings().then(() => {
-      this.setState({
-        loading: false
-      })
+    const loadAppSetting = this.props.getSettings()
+    const checkAppState = isWalletLocked().then(result => {
+      console.log(result)
+      this.props.setLocked(result)
     })
-    // TODO delete the function call below. It's a test
-    isWalletLocked().then(result => console.log(result))
+
+    Promise.all([loadAppSetting, checkAppState]).then(
+      () => {
+        this.setState({
+          loading: false
+        })
+      }
+    )
   }
 
   render () {

@@ -7,9 +7,7 @@ import { connect } from 'react-redux'
 import { saveSettings } from '../../background/store/settings'
 import { RouteComponentProps, withRouter } from 'react-router'
 
-interface ITermProp extends StateProps, DispatchProps, RouteComponentProps {
-  history: any
-}
+interface ITermProp extends StateProps, DispatchProps, RouteComponentProps {}
 
 class Term extends React.Component<ITermProp> {
 

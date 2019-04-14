@@ -15,6 +15,17 @@ export function isWalletLocked (): Promise<boolean> {
   })
 }
 
+export function lockWallet (): Promise<boolean> {
+  return new Promise<boolean>(resolve => {
+    port.onMessage.addListener((msg) => {
+      if (msg.method === FUNCS.LOCK) {
+        resolve(msg.result)
+      }
+    })
+    port.postMessage({ method: FUNCS.LOCK })
+  })
+}
+
 export function isWalletUnlocked (): Promise<boolean> {
   return new Promise<boolean>(resolve => {
     port.onMessage.addListener((msg) => {
