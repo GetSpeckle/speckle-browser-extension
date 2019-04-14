@@ -15,6 +15,15 @@ export class LocalStore {
   }
 
   /**
+   * Retrieve the objects from the local store for the given key or keys
+   * @param keys
+   */
+  static get (keys?: string | string[] | {[s: string]: any;} | null | undefined):
+      Promise<{[s: string]: any}> {
+    return browser.storage.local.get(keys)
+  }
+
+  /**
    * Set the value to the local store using the given key and return the value in the promise.
    *
    * @param key the key mapped to the value
@@ -25,12 +34,14 @@ export class LocalStore {
       return value
     })
   }
+
   /**
-   * Retrieve the value from the local store for the given key or keys
-   * @param keys
+   * Get the value to the local store using the given key
+   * and return the promise that resolves to the value.
+   *
+   * @param key the key mapped to the value
    */
-  static get (keys?: string | string[] | {[s: string]: any;} | null | undefined):
-      Promise<{[s: string]: any}> {
-    return browser.storage.local.get(keys)
+  static getValue (key: string): Promise<any> {
+    return browser.storage.local.get(key).then(obj => obj[key])
   }
 }
