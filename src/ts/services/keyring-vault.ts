@@ -38,8 +38,7 @@ class KeyringVault {
     if (this.isUnlocked()) {
       return new Promise<Array<KeyringPair$Json>>(
         resolve => {
-          resolve(this.keyring.getPairs().map(pair => pair.toJson(this._password)
-          ))
+          resolve(this.keyring.getPairs().map(pair => pair.toJson(this._password)))
         }
       )
     }
