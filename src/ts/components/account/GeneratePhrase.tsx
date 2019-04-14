@@ -5,7 +5,7 @@ import Progress from './Progress'
 import { IAppState } from '../../background/store/all'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
-import { Message, Container, Grid, Button } from 'semantic-ui-react'
+import { Message, Container, Grid, Button, Icon } from 'semantic-ui-react'
 import { generateMnemonic } from '../../services/keyring-vault-proxy'
 import { setNewPhrase } from '../../background/store/account'
 import { CONFIRM_PHRASE_ROUTE } from '../../constants/routes'
@@ -96,11 +96,16 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
             <Grid>
               <Grid.Row columns={2}>
                 <Grid.Column>
-                  <Button onClick={this.copyText}>{t('copyText')}</Button>
+                  <Button onClick={this.copyText}>
+                    <Icon name='copy' />
+                    {t('copyText')}
+                  </Button>
                 </Grid.Column>
 
                 <Grid.Column>
-                  <Button onClick={this.downloadFile}>{t('downloadFile')}</Button>
+                  <Button onClick={this.downloadFile}>
+                    <Icon name='download' />
+                    {t('downloadFile')}</Button>
                 </Grid.Column>
               </Grid.Row>
             </Grid>
