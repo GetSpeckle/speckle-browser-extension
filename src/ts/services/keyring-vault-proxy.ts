@@ -1,6 +1,8 @@
 import { browser } from 'webextension-polyfill-ts'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import * as FUNCS from '../constants/keyring-vault-funcs'
+import { cryptoWaitReady } from '@polkadot/util-crypto'
+import Keyring from '@polkadot/keyring'
 
 const port = browser.runtime.connect(undefined, { name: '__SPECKLE__' })
 
@@ -165,5 +167,12 @@ export function importAccountFromJson (json: KeyringPair$Json, password?: string
       json: json,
       password: password
     })
+  })
+}
+
+export function decodeAddress (key: string | Uint8Array, ignoreChecksum?: boolean):
+  Promise<Uint8Array> {
+  return cryptoWaitReady().then(() => {
+    return new Keyring({ type: 'sr25519' }).decodeAddress(key, ignoreChecksum)
   })
 }

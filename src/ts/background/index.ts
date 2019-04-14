@@ -112,7 +112,7 @@ browser.runtime.onConnect.addListener(function (port) {
             port.postMessage({ method: FUNCS.IMPORT_JSON, result: pairJson })
           })
         } catch (e) {
-          port.postMessage({ method: FUNCS.IMPORT_JSON, error: e })
+          port.postMessage({ method: FUNCS.IMPORT_JSON, error: e.message })
         }
         break
       default:

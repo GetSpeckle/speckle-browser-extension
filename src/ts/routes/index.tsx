@@ -6,12 +6,14 @@ import {
   DEFAULT_ROUTE,
   TERM_SERVICE_ROUTE,
   CREATE_PASSWORD_ROUTE,
-  IMPORT_MNEMONIC_ROUTE
+  IMPORT_MNEMONIC_ROUTE,
+  IMPORT_JSON_ROUTE
 } from '../constants/routes'
 import { RouteWithLayout } from './withLayout'
 import LoginLayout from '../layouts/LoginLayout'
 import CreatePassword from '../components/account/CreatePassword'
 import ImportMnemonic from '../components/account/ImportMnemonic'
+import ImportJson from '../components/account/ImportJson'
 
 export class Routes extends React.Component {
   renderRoutes () {
@@ -38,6 +40,12 @@ export class Routes extends React.Component {
           layout={LoginLayout}
           path={IMPORT_MNEMONIC_ROUTE}
           component={ImportMnemonic}
+          exact={true}
+        />
+        <RouteWithLayout
+          layout={LoginLayout}
+          path={IMPORT_JSON_ROUTE}
+          component={ImportJson}
           exact={true}
         />
       </Switch>

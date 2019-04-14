@@ -47,6 +47,12 @@
   "accountName": {
     "message": "Account Name"
   },
+  "password": {
+    "message": "Password"
+  },
+  "fileUpload": {
+    "message": "Drag n' drop the keystore file and click here to choose one"
+  },
   "error": {
     "message": "error",
     "wallet": {
@@ -68,6 +74,11 @@
       },
       "invalid": {
         "message": "Mnemonic is invalid"
+      }
+    },
+    "keystore": {
+      "invalid": {
+        "message": "Keystore file is invalid"
       }
     }
   }
