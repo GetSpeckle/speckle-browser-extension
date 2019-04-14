@@ -5,29 +5,28 @@ import Progress from './Progress'
 import { IAppState } from '../../background/store/all'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
-import { Message } from 'semantic-ui-react'
+import { Message, Container, Grid, Button } from 'semantic-ui-react'
 import { generateMnemonic } from '../../services/keyring-vault-proxy'
 import { setNewPhrase } from '../../background/store/account'
-import { CONFIRM_PHRASE_ROUTE } from '../../constants/routes';
+import { CONFIRM_PHRASE_ROUTE } from '../../constants/routes'
 
 interface IGeneratePhraseProps extends StateProps, DispatchProps, RouteComponentProps {}
 
 interface IGeneratePhraseState {
   mnemonic: string,
-  errorMessage?: string
+  message?: string,
+  color: 'blue'|'red'
 }
 
 class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhraseState> {
 
   state: IGeneratePhraseState = {
-    mnemonic: ''
+    mnemonic: '',
+    color: 'blue'
   }
 
   constructor(props) {
     super(props)
-
-    this.selectAll = this.selectAll.bind(this)
-    this.handleClick = this.handleClick.bind(this)
 
     // generate the mnemonic
     generateMnemonic().then(phrase => {
@@ -35,14 +34,45 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
     })
   }
 
-  handleClick () {
-    this.setState({errorMessage: ''})
+  handleClick = () => {
+    this.setState({message: ''})
     this.props.setNewPhrase(this.state.mnemonic)
     this.props.history.push(CONFIRM_PHRASE_ROUTE)
   }
 
-  selectAll (event) {
+  selectAll = (event) => {
     event.target.select()
+  }
+
+  copyText = () => {
+    const el = document.createElement('textarea')
+    el.value = this.state.mnemonic
+    el.setAttribute('readonly', '')
+    el.style.position = 'absolute'
+    el.style.left = '-9999px'
+    document.body.appendChild(el)
+    el.select()
+    document.execCommand('copy')
+    document.body.removeChild(el)
+
+    this.setState({message: t('copyTextMessage')})
+    setTimeout(()=> {
+      this.setState({message: ''})
+    }, 3000)
+  }
+
+  downloadFile = () => {
+    var element = document.createElement('a');
+    element.setAttribute('href',
+        'data:text/plain;charset=utf-8,' + encodeURIComponent(this.state.mnemonic))
+    element.setAttribute('download', 'secret-phrase.txt')
+
+    element.style.display = 'none'
+    document.body.appendChild(element)
+
+    element.click()
+
+    document.body.removeChild(element)
   }
 
   render () {
@@ -58,13 +88,27 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
             <MnemonicPad value={this.state.mnemonic} readOnly onClick={this.selectAll}/>
           </Text>
 
-          <Message negative hidden={!this.state.errorMessage} style={error}>
-            {this.state.errorMessage}
+          <Message color={this.state.color} hidden={!this.state.message} style={alignMiddle}>
+            {this.state.message}
           </Message>
+
+          <Container style={alignMiddle}>
+            <Grid>
+              <Grid.Row columns={2}>
+                <Grid.Column>
+                  <Button onClick={this.copyText}>{t('copyText')}</Button>
+                </Grid.Column>
+
+                <Grid.Column>
+                  <Button onClick={this.downloadFile}>{t('downloadFile')}</Button>
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </Container>
 
           <Text>
             <StyledButton onClick={this.handleClick}>
-              {t('Create Account')}
+              {t('createAccount')}
             </StyledButton>
           </Text>
 
@@ -129,7 +173,7 @@ const StyledButton = styled.button`
   text-align: center;
   color: #ffffff;
 `
-const error = {
+const alignMiddle = {
   width: 311,
   margin: 'auto'
 }

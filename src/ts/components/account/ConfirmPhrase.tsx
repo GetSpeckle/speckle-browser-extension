@@ -56,6 +56,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
     if (this.props.accountStatus.newPhrase) {
       createAccount(this.props.accountStatus.newPhrase, '').then(keyringPair => {
         console.log('Account created! ', keyringPair)
+
       })
     }
   }
@@ -64,12 +65,9 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
     return (
         <div>
           <Progress color={this.props.settings.color} progress={2} />
-          <Text>
-            {t('phraseDescription')}
-          </Text>
 
           <Text>
-            <div>{t('phraseTitle')}</div>
+            <div>{t('phraseConfirmTitle')}</div>
             <MnemonicPad value={this.state.inputPhrase} onChange={this.changePhrase}/>
           </Text>
 
