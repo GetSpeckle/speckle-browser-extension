@@ -47,6 +47,9 @@
   "copyText": {
     "message": "Copy Text"
   },
+  "copyTextMessage": {
+    "message": "Phrase copied to clipboard. You can then paste and save it to a secure place."
+  },
   "downloadFile": {
     "message": "Download"
   },
