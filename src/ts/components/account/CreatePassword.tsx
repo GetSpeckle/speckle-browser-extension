@@ -42,7 +42,6 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
         console.log('Should have empty keyring pairs ', keyringPairs)
         this.props.setLocked(false)
         this.props.history.push(GENERATE_PHRASE_ROUTE)
-
       }
     )
   }

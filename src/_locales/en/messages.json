@@ -38,6 +38,30 @@
   "passwordDescription": {
     "message": "To make a secure entry to your wallet, create a new password"
   },
+  "phraseDescription": {
+    "message": "Store your secret phrase in a safe location. It is required to restore you account."
+  },
+  "phraseTitle": {
+    "message": "Secret backup phrase"
+  },
+  "copyText": {
+    "message": "Copy Text"
+  },
+  "copyTextMessage": {
+    "message": "Phrase copied to clipboard. You can then paste and save it to a secure place."
+  },
+  "downloadFile": {
+    "message": "Download"
+  },
+  "createAccount": {
+    "message": "Create Account"
+  },
+  "phraseConfirmTitle": {
+    "message": "Enter your backup phrase"
+  },
+  "confirmPhraseButton": {
+    "message": "Confirm Backup Phrase"
+  },
   "error": {
     "message": "error",
     "wallet": {
