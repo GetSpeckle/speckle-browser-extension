@@ -1,11 +1,22 @@
 import * as React from 'react'
 import styled from 'styled-components'
+import { lockWallet } from '../../services/keyring-vault-proxy'
+import { UNLOCK_ROUTE } from '../../constants/routes'
+import { RouteComponentProps, withRouter } from 'react-router'
 
-interface IDashboardProp {
+interface IDashboardProp extends RouteComponentProps {
   history: any
 }
 
 class Dashboard extends React.Component<IDashboardProp> {
+
+  handleClick = () => {
+    const { history } = this.props
+    lockWallet().then(result => {
+      console.log(result)
+      history.push(UNLOCK_ROUTE)
+    })
+  }
 
   render () {
     return (
@@ -13,6 +24,11 @@ class Dashboard extends React.Component<IDashboardProp> {
         <Title>
           Dashboard goes here
         </Title>
+        <Text>
+          <StyledButton onClick={this.handleClick}>
+            Logout
+          </StyledButton>
+        </Text>
       </div>
     )
   }
@@ -39,4 +55,20 @@ const Title = styled(Text)`
     font-weight: bold;
     color: #30383B;
 `
-export default Dashboard
+const StyledButton = styled.button`
+  width: 311px;
+  height: 45px;
+  border-radius: 4px;
+  box-shadow: 0 3px 10px 0 rgba(72, 178, 228, 0.21);
+  background-color: #24b6e8;
+  font-family: Nunito;
+  font-size: 16px;
+  font-weight: 800;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.31;
+  letter-spacing: normal;
+  text-align: center;
+  color: #ffffff;
+`
+export default withRouter(Dashboard)

@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { Message } from 'semantic-ui-react'
 import { generateMnemonic } from '../../services/keyring-vault-proxy'
 import { setNewPhrase } from '../../background/store/account'
-import { CONFIRM_PHRASE_ROUTE } from '../../constants/routes';
+import { CONFIRM_PHRASE_ROUTE } from '../../constants/routes'
 
 interface IGeneratePhraseProps extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -23,7 +23,7 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
     mnemonic: ''
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.selectAll = this.selectAll.bind(this)
@@ -31,12 +31,12 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
 
     // generate the mnemonic
     generateMnemonic().then(phrase => {
-      this.setState({mnemonic: phrase})
+      this.setState({ mnemonic: phrase })
     })
   }
 
   handleClick () {
-    this.setState({errorMessage: ''})
+    this.setState({ errorMessage: '' })
     this.props.setNewPhrase(this.state.mnemonic)
     this.props.history.push(CONFIRM_PHRASE_ROUTE)
   }
@@ -55,10 +55,10 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
 
           <Text>
             <div>{t('phraseTitle')}</div>
-            <MnemonicPad value={this.state.mnemonic} readOnly onClick={this.selectAll}/>
+            <MnemonicPad value={this.state.mnemonic} readOnly={true} onClick={this.selectAll}/>
           </Text>
 
-          <Message negative hidden={!this.state.errorMessage} style={error}>
+          <Message negative={true} hidden={!this.state.errorMessage} style={error}>
             {this.state.errorMessage}
           </Message>
 
@@ -85,7 +85,6 @@ const mapDispatchToProps = { setNewPhrase }
 type StateProps = ReturnType<typeof mapStateToProps>
 
 type DispatchProps = typeof mapDispatchToProps
-
 
 const Text = styled.div`
     width: 327px;

@@ -7,17 +7,17 @@ import { INITIALIZE_ROUTE, UNLOCK_ROUTE } from '../../constants/routes'
 
 const mapStateToProps = (state: IAppState) => {
   return {
-    settings: state.settings,
-    isUnblocked: false
+    welcome: state.settings.welcome,
+    isLocked: state.account.locked
   }
 }
 
 export class AuthenticatedRoute extends React.Component<StateProps & IRouteProps & RouteProps> {
   renderRoute (props: StateProps & IRouteProps & RouteProps) {
     switch (true) {
-      case props.isUnblocked && !props.settings.welcome:
+      case !props.isLocked && !props.welcome:
         return <RouteWithLayout {...props} />
-      case this.props.settings.welcome:
+      case this.props.welcome:
         return <Redirect to={{ pathname: INITIALIZE_ROUTE }} />
       default:
         return <Redirect to={{ pathname: UNLOCK_ROUTE }} />
