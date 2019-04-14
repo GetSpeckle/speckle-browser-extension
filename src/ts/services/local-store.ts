@@ -31,9 +31,7 @@ export class LocalStore {
    * @param value the value to be set and returned in the promise
    */
   static setValue (key: string, value: any): Promise<any> {
-    return LocalStore.set({ [key]: value }).then(() => {
-      return value
-    })
+    return LocalStore.set({ [key]: value }).then(() => value)
   }
 
   /**
