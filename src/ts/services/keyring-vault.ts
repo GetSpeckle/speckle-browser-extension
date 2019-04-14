@@ -36,9 +36,12 @@ class KeyringVault {
 
   unlock (password: string, addressPrefix?: Prefix): Promise<Array<KeyringPair$Json>> {
     if (this.isUnlocked()) {
-      return new Promise<Array<KeyringPair$Json>>(() => this.keyring.getPairs().map((pair) => {
-        pair.toJson(this._password)
-      }))
+      return new Promise<Array<KeyringPair$Json>>(
+        resolve => {
+          resolve(this.keyring.getPairs().map(pair => pair.toJson(this._password)
+          ))
+        }
+      )
     }
     if (!password.length) throw new Error(t('error.password'))
     // this will be redundant if we have polkadot js api initialisation
