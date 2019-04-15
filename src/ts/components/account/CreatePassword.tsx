@@ -23,11 +23,21 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
   constructor (props: ICreatePasswordProps) {
     super(props)
     this.handleClick = this.handleClick.bind(this)
+    this.setNewPassword = this.setNewPassword.bind(this)
+    this.setConfirmPassword = this.setConfirmPassword.bind(this)
   }
 
   state: ICreatePasswordState = {
     newPassword: '',
     confirmPassword: ''
+  }
+
+  setNewPassword (event) {
+    this.setState({ ...this.state, newPassword: event.target.value })
+  }
+
+  setConfirmPassword (event) {
+    this.setState({ ...this.state, confirmPassword: event.target.value })
   }
 
   handleClick () {
@@ -63,15 +73,16 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
               type='password'
               placeholder={t('Create new password')}
               value={this.state.newPassword}
-              onChange={evt => this.setState({ newPassword: evt.target.value })}/>
+              onChange={this.setNewPassword}
+            />
           </Section>
           <Section>
             <StyledPassword
               type='password'
               placeholder={t('Repeat password')}
               value={this.state.confirmPassword}
-              onChange={evt => this.setState({ confirmPassword: evt.target.value })}
-              />
+              onChange={this.setConfirmPassword}
+            />
           </Section>
           <Section>
             <Message negative={true} hidden={!this.state.errorMessage}>
