@@ -2,7 +2,7 @@ import { createStore } from 'redux'
 import reducers, { IAppState } from './store/all'
 import { wrapStore, Store } from 'react-chrome-redux'
 import { browser } from 'webextension-polyfill-ts'
-import keyringVault from '../services/keyring-vault'
+import keyringVault from './services/keyring-vault'
 import * as FUNCS from '../constants/keyring-vault-funcs'
 
 const store: Store<IAppState> = createStore(reducers)
