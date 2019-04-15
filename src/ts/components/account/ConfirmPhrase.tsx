@@ -58,6 +58,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
     const { accountStatus } = this.props
     if (accountStatus.newPassword) {
       unlockWallet(accountStatus.newPassword).then (kp => {
+        console.log('wallet unlocked')
         console.assert(kp.length==0, 'Should be an empty array')
         if (accountStatus.newPhrase) {
           createAccount(accountStatus.newPhrase, '').then(keyringPair => {
@@ -65,9 +66,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
             this.setState({ keyringPair: keyringPair })
             // this.props.history.push(DEFAULT_ROUTE)
           })
-
         }
-
       })
     }
   }

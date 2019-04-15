@@ -37,7 +37,7 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
     }
 
     // set the new password to the store for later use
-    setNewPassword(this.state.newPassword)
+    this.props.setNewPassword(this.state.newPassword)
     this.props.history.push(GENERATE_PHRASE_ROUTE)
 
   }
