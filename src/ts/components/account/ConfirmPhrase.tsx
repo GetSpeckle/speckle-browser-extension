@@ -6,29 +6,30 @@ import { IAppState } from '../../background/store/all'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
 import { Message, List } from 'semantic-ui-react'
-import { createAccount } from '../../services/keyring-vault-proxy'
+import { createAccount, unlockWallet } from '../../services/keyring-vault-proxy'
 import { DEFAULT_ROUTE } from '../../constants/routes'
+import { KeyringPair$Json } from '@polkadot/keyring/types';
 
 interface IConfirmPhraseProps extends StateProps, RouteComponentProps {}
 
 interface IConfirmPhraseState {
   inputPhrase: string,
   wordList: Array<string>,
-  errorMessage?: string
+  keyringPair: KeyringPair$Json | null,
+  errorMessage: string
 }
 
 class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseState> {
 
   state: IConfirmPhraseState = {
     inputPhrase: '',
-    wordList: []
+    wordList: [],
+    keyringPair: null,
+    errorMessage: ''
   }
 
   constructor (props) {
     super(props)
-    this.changePhrase = this.changePhrase.bind(this)
-    this.isPhraseConfirmed = this.isPhraseConfirmed.bind(this)
-    this.createAccount = this.createAccount.bind(this)
   }
 
   componentDidMount () {
@@ -38,7 +39,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
     }
   }
 
-  changePhrase (event) {
+  changePhrase = event => {
     const val = event.target.value
     let formatted = val.trim().split(/\s+/).join(' ')
     if (val.endsWith(' ')) {
@@ -47,17 +48,26 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
     this.setState({ inputPhrase: formatted })
   }
 
-  isPhraseConfirmed (): boolean {
+  isPhraseConfirmed = (): boolean => {
     return !!this.props.accountStatus && !!this.props.accountStatus.newPhrase
         && this.props.accountStatus.newPhrase === this.state.inputPhrase
   }
 
-  createAccount () {
+  createAccount = () => {
     this.setState({ errorMessage: '' })
-    if (this.props.accountStatus.newPhrase) {
-      createAccount(this.props.accountStatus.newPhrase, '').then(keyringPair => {
-        console.log('Account created! ', keyringPair)
-        this.props.history.push(DEFAULT_ROUTE)
+    const { accountStatus } = this.props
+    if (accountStatus.newPassword) {
+      unlockWallet(accountStatus.newPassword).then (kp => {
+        console.assert(kp.length==0, 'Should be an empty array')
+        if (accountStatus.newPhrase) {
+          createAccount(accountStatus.newPhrase, '').then(keyringPair => {
+            console.log('Account created! ', keyringPair)
+            this.setState({ keyringPair: keyringPair })
+            // this.props.history.push(DEFAULT_ROUTE)
+          })
+
+        }
+
       })
     }
   }
