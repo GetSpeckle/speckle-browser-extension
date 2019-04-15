@@ -1,5 +1,4 @@
 import * as React from 'react'
-import styled from 'styled-components'
 import t from '../../services/i18n'
 import Progress from './Progress'
 import { IAppState } from '../../background/store/all'
@@ -9,7 +8,7 @@ import { Message } from 'semantic-ui-react'
 import { unlockWallet } from '../../services/keyring-vault-proxy'
 import { GENERATE_PHRASE_ROUTE } from '../../constants/routes'
 import { setLocked } from '../../background/store/account'
-import { Button, Section } from '../basic-components'
+import { Button, Section, StyledPassword } from '../basic-components'
 
 interface ICreatePasswordProps extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -66,7 +65,6 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
               value={this.state.newPassword}
               onChange={evt => this.setState({ newPassword: evt.target.value })}/>
           </Section>
-
           <Section>
             <StyledPassword
               type='password'
@@ -75,17 +73,17 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
               onChange={evt => this.setState({ confirmPassword: evt.target.value })}
               />
           </Section>
-
-          <Message negative={true} hidden={!this.state.errorMessage}>
-            {this.state.errorMessage}
-          </Message>
+          <Section>
+            <Message negative={true} hidden={!this.state.errorMessage}>
+              {this.state.errorMessage}
+            </Message>
+          </Section>
 
           <Section>
             <Button onClick={this.handleClick}>
               {t('Create Account')}
             </Button>
           </Section>
-
         </div>
     )
   }
@@ -103,10 +101,5 @@ const mapDispatchToProps = { setLocked }
 type StateProps = ReturnType<typeof mapStateToProps>
 
 type DispatchProps = typeof mapDispatchToProps
-
-const StyledPassword = styled.input`
-  width: 311px;
-  height: 42px;
-`
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CreatePassword))

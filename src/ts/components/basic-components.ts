@@ -62,3 +62,8 @@ export const MnemonicPad = styled.textarea`
   letter-spacing: normal;
   color: #30383b;
 `
+
+export const StyledPassword = styled.input`
+  width: 311px;
+  height: 42px;
+`

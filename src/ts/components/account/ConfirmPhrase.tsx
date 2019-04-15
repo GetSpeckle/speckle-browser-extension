@@ -76,9 +76,11 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
             <List horizontal={true} items={this.state.wordList} />
           </Section>
 
-          <Message negative={true} hidden={!this.state.errorMessage} style={error}>
-            {this.state.errorMessage}
-          </Message>
+          <Section>
+            <Message negative={true} hidden={!this.state.errorMessage}>
+              {this.state.errorMessage}
+            </Message>
+          </Section>
 
           <Section>
             <Button onClick={this.createAccount} disabled={!this.isPhraseConfirmed()}>
@@ -99,10 +101,5 @@ const mapStateToProps = (state: IAppState) => {
 }
 
 type StateProps = ReturnType<typeof mapStateToProps>
-
-const error = {
-  width: 311,
-  margin: 'auto'
-}
 
 export default withRouter(connect(mapStateToProps)(ConfirmPhrase))

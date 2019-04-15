@@ -1,5 +1,4 @@
 import * as React from 'react'
-import styled from 'styled-components'
 import t from '../../services/i18n'
 import Progress from './Progress'
 import { IAppState } from '../../background/store/all'
@@ -9,7 +8,7 @@ import { Message, Container, Grid, Button, Icon } from 'semantic-ui-react'
 import { generateMnemonic } from '../../services/keyring-vault-proxy'
 import { setNewPhrase } from '../../background/store/account'
 import { CONFIRM_PHRASE_ROUTE } from '../../constants/routes'
-import { Button as StyledButton, Section } from '../basic-components'
+import { Button as StyledButton, Section, MnemonicPad } from '../basic-components'
 
 interface IGeneratePhraseProps extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -89,28 +88,31 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
             <MnemonicPad value={this.state.mnemonic} readOnly={true} onClick={this.selectAll}/>
           </Section>
 
-          <Message color={this.state.color} hidden={!this.state.message} style={alignMiddle}>
-            {this.state.message}
-          </Message>
+          <Section>
+            <Message color={this.state.color} hidden={!this.state.message}>
+              {this.state.message}
+            </Message>
+          </Section>
 
-          <Container style={alignMiddle}>
-            <Grid>
-              <Grid.Row columns={2}>
-                <Grid.Column>
-                  <Button onClick={this.copyText}>
-                    <Icon name='copy' />
-                    {t('copyText')}
-                  </Button>
-                </Grid.Column>
-
-                <Grid.Column>
-                  <Button onClick={this.downloadFile}>
-                    <Icon name='download' />
-                    {t('downloadFile')}</Button>
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
-          </Container>
+          <Section>
+            <Container>
+              <Grid>
+                <Grid.Row columns={2}>
+                  <Grid.Column>
+                    <Button onClick={this.copyText}>
+                      <Icon name='copy' />
+                      {t('copyText')}
+                    </Button>
+                  </Grid.Column>
+                  <Grid.Column>
+                    <Button onClick={this.downloadFile}>
+                      <Icon name='download' />
+                      {t('downloadFile')}</Button>
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
+            </Container>
+          </Section>
 
           <Section>
             <StyledButton onClick={this.handleClick}>
@@ -135,24 +137,5 @@ const mapDispatchToProps = { setNewPhrase }
 type StateProps = ReturnType<typeof mapStateToProps>
 
 type DispatchProps = typeof mapDispatchToProps
-
-const MnemonicPad = styled.textarea`
-  width: 311px;
-  height: 125px;
-  font-family: Nunito;
-  padding: 10px;
-  font-size: 14px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: 1.57;
-  letter-spacing: normal;
-  color: #30383b;
-`
-
-const alignMiddle = {
-  width: 311,
-  margin: 'auto'
-}
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(GeneratePhrase))

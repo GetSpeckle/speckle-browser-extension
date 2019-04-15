@@ -1,12 +1,11 @@
 import * as React from 'react'
-import styled from 'styled-components'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 import { unlockWallet } from '../../services/keyring-vault-proxy'
 import { DEFAULT_ROUTE } from '../../constants/routes'
 import { setLocked } from '../../background/store/account'
-import { Button, Section, Title } from '../basic-components'
+import { Button, Section, Title, StyledPassword } from '../basic-components'
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
@@ -74,10 +73,5 @@ const mapStateToProps = (state: IAppState) => {
 const mapDispatchToProps = { setLocked }
 
 type DispatchProps = typeof mapDispatchToProps
-
-const StyledPassword = styled.input`
-  width: 311px;
-  height: 42px;
-`
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login))
