@@ -9,13 +9,14 @@ import { Message, Container, Grid, Button, Icon } from 'semantic-ui-react'
 import { generateMnemonic } from '../../services/keyring-vault-proxy'
 import { setNewPhrase } from '../../background/store/account'
 import { CONFIRM_PHRASE_ROUTE } from '../../constants/routes'
+import { Button as StyledButton } from '../basic-components'
 
 interface IGeneratePhraseProps extends StateProps, DispatchProps, RouteComponentProps {}
 
 interface IGeneratePhraseState {
   mnemonic: string,
   message?: string,
-  color: 'blue'|'red'
+  color: 'blue' | 'red'
 }
 
 class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhraseState> {
@@ -55,14 +56,14 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
     document.execCommand('copy')
     document.body.removeChild(el)
 
-    this.setState({message: t('copyTextMessage')})
-    setTimeout(()=> {
-      this.setState({message: ''})
+    this.setState({ message: t('copyTextMessage') })
+    setTimeout(() => {
+      this.setState({ message: '' })
     }, 3000)
   }
 
   downloadFile = () => {
-    var element = document.createElement('a');
+    let element = document.createElement('a')
     element.setAttribute('href',
         'data:text/plain;charset=utf-8,' + encodeURIComponent(this.state.mnemonic))
     element.setAttribute('download', 'secret-phrase.txt')
@@ -161,22 +162,7 @@ const MnemonicPad = styled.textarea`
   letter-spacing: normal;
   color: #30383b;
 `
-const StyledButton = styled.button`
-  width: 311px;
-  height: 45px;
-  border-radius: 4px;
-  box-shadow: 0 3px 10px 0 rgba(72, 178, 228, 0.21);
-  background-color: #24b6e8;
-  font-family: Nunito;
-  font-size: 16px;
-  font-weight: 800;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: 1.31;
-  letter-spacing: normal;
-  text-align: center;
-  color: #ffffff;
-`
+
 const alignMiddle = {
   width: 311,
   margin: 'auto'

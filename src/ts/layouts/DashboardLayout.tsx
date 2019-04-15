@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import styled from 'styled-components'
 import Image from 'semantic-ui-react/dist/commonjs/elements/Image/Image'
 import { IAppState } from '../background/store/all'
+import { LayoutContainer } from '../components/basic-components'
 
 interface ILoginLayoutProp extends StateProps, DispatchProps {}
 
@@ -18,22 +18,13 @@ class DashboardLayout extends Component<ILoginLayoutProp, ILoginLayoutState> {
 
   render () {
     return (
-      <DashboardStyleContainer>
+      <LayoutContainer>
         <Image src={this.getBackgroundImageUrl()} />
         {this.props.children}
-      </DashboardStyleContainer>
+      </LayoutContainer>
     )
   }
 }
-
-const DashboardStyleContainer = styled('div')`
-    width: 375px;
-    height: 667px;
-    border-radius: 4px;
-    box-shadow: 0 6px 30px 0 rgba(0, 0, 0, 0.08);
-    border: solid 1px #e7e7e7;
-    background-color: #ffffff;
-`
 
 const mapStateToProps = (state: IAppState) => {
   return {

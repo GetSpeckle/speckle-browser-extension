@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { unlockWallet } from '../../services/keyring-vault-proxy'
 import { DEFAULT_ROUTE } from '../../constants/routes'
 import { setLocked } from '../../background/store/account'
+import { Button } from '../basic-components'
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
@@ -17,6 +18,11 @@ interface ILoginState {
 }
 
 class Login extends React.Component<ILoginProps, ILoginState> {
+
+  constructor (props: Readonly<ILoginProps>) {
+    super(props)
+    this.handleLogin = this.handleLogin.bind(this)
+  }
 
   state: ILoginState = {
     password: ''
@@ -50,9 +56,9 @@ class Login extends React.Component<ILoginProps, ILoginState> {
           />
         </Text>
         <Text>
-          <StyledButton onClick={this.handleLogin.bind(this)}>
+          <Button onClick={this.handleLogin}>
             login
-          </StyledButton>
+          </Button>
         </Text>
       </div>
     )
@@ -72,23 +78,6 @@ type DispatchProps = typeof mapDispatchToProps
 const StyledPassword = styled.input`
   width: 311px;
   height: 42px;
-`
-
-const StyledButton = styled.button`
-  width: 311px;
-  height: 45px;
-  border-radius: 4px;
-  box-shadow: 0 3px 10px 0 rgba(72, 178, 228, 0.21);
-  background-color: #24b6e8;
-  font-family: Nunito;
-  font-size: 16px;
-  font-weight: 800;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: 1.31;
-  letter-spacing: normal;
-  text-align: center;
-  color: #ffffff;
 `
 
 const Text = styled.p`

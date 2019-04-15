@@ -6,6 +6,7 @@ import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 import { saveSettings } from '../../background/store/settings'
 import { RouteComponentProps, withRouter } from 'react-router'
+import { Button } from '../basic-components'
 
 interface ITermProp extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -27,9 +28,9 @@ class Term extends React.Component<ITermProp> {
             {t('termDescription')}
           </TermText>
           <Text>
-            <StyledButton onClick={this.handleClick}>
+            <Button onClick={this.handleClick}>
               {t('termAcceptButton')}
-            </StyledButton>
+            </Button>
           </Text>
         </div>
     )
@@ -61,22 +62,6 @@ const TermText = styled(Text)`
   height: 347px;
   overflow-y: auto;
 
-`
-const StyledButton = styled.button`
-  width: 311px;
-  height: 45px;
-  border-radius: 4px;
-  box-shadow: 0 3px 10px 0 rgba(72, 178, 228, 0.21);
-  background-color: #24b6e8;
-  font-family: Nunito;
-  font-size: 16px;
-  font-weight: 800;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: 1.31;
-  letter-spacing: normal;
-  text-align: center;
-  color: #ffffff;
 `
 
 const mapStateToProps = (state: IAppState) => {

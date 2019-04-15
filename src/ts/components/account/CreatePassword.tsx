@@ -9,6 +9,7 @@ import { Message } from 'semantic-ui-react'
 import { unlockWallet } from '../../services/keyring-vault-proxy'
 import { GENERATE_PHRASE_ROUTE } from '../../constants/routes'
 import { setLocked } from '../../background/store/account'
+import { Button } from '../basic-components'
 
 interface ICreatePasswordProps extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -19,6 +20,11 @@ interface ICreatePasswordState {
 }
 
 class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswordState> {
+
+  constructor (props: ICreatePasswordProps) {
+    super(props)
+    this.handleClick = this.handleClick.bind(this)
+  }
 
   state: ICreatePasswordState = {
     newPassword: '',
@@ -75,9 +81,9 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
           </Message>
 
           <Text>
-            <StyledButton onClick={this.handleClick.bind(this)}>
+            <Button onClick={this.handleClick}>
               {t('Create Account')}
-            </StyledButton>
+            </Button>
           </Text>
 
         </div>
@@ -98,7 +104,6 @@ type StateProps = ReturnType<typeof mapStateToProps>
 
 type DispatchProps = typeof mapDispatchToProps
 
-
 const Text = styled.p`
     width: 327px;
     margin:18px auto;
@@ -116,22 +121,6 @@ const Text = styled.p`
 const StyledPassword = styled.input`
   width: 311px;
   height: 42px;
-`
-const StyledButton = styled.button`
-  width: 311px;
-  height: 45px;
-  border-radius: 4px;
-  box-shadow: 0 3px 10px 0 rgba(72, 178, 228, 0.21);
-  background-color: #24b6e8;
-  font-family: Nunito;
-  font-size: 16px;
-  font-weight: 800;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: 1.31;
-  letter-spacing: normal;
-  text-align: center;
-  color: #ffffff;
 `
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CreatePassword))

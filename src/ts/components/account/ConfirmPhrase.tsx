@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import { Message, List } from 'semantic-ui-react'
 import { createAccount } from '../../services/keyring-vault-proxy'
 import { DEFAULT_ROUTE } from '../../constants/routes'
+import { Button } from '../basic-components'
 
 interface IConfirmPhraseProps extends StateProps, RouteComponentProps {}
 
@@ -81,9 +82,9 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
           </Message>
 
           <Text>
-            <StyledButton onClick={this.createAccount} disabled={!this.isPhraseConfirmed()}>
+            <Button onClick={this.createAccount} disabled={!this.isPhraseConfirmed()}>
               {t('confirmPhraseButton')}
-            </StyledButton>
+            </Button>
           </Text>
 
         </div>
@@ -125,22 +126,6 @@ const MnemonicPad = styled.textarea`
   line-height: 1.57;
   letter-spacing: normal;
   color: #30383b;
-`
-const StyledButton = styled.button`
-  width: 311px;
-  height: 45px;
-  border-radius: 4px;
-  box-shadow: 0 3px 10px 0 rgba(72, 178, 228, 0.21);
-  background-color: #24b6e8;
-  font-family: Nunito;
-  font-size: 16px;
-  font-weight: 800;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: 1.31;
-  letter-spacing: normal;
-  text-align: center;
-  color: #ffffff;
 `
 const error = {
   width: 311,

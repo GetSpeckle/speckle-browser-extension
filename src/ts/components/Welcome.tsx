@@ -9,6 +9,7 @@ import { saveSettings } from '../background/store/settings'
 import { ThemeTypes } from './styles/themes'
 import ImageMapper from 'react-image-mapper'
 import { withRouter, RouteComponentProps } from 'react-router'
+import { LayoutContainer } from './basic-components'
 
 interface IWelcomeProp extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -38,7 +39,7 @@ class Welcome extends React.Component<IWelcomeProp, IWelcomeState> {
 
   render () {
     return (
-       <WelcomeContainer>
+       <LayoutContainer>
          <LogoContainer><Image src='/assets/logo-3-x.svg' /></LogoContainer>
          <ColorPickerContainer><ImageMapper
             src={'/assets/icon-dots.svg'}
@@ -50,29 +51,16 @@ class Welcome extends React.Component<IWelcomeProp, IWelcomeState> {
           <Title>
             {t('pickColorTitle')}
           </Title>
-
           <Text>
             {t('pickColorDescription')}
           </Text>
-
           <Text>Click above to change color. Current color: {this.props.settings.color}</Text>
-
           <Text>{t('speckleIntroduction')}</Text>
-
-        </WelcomeContainer>
+        </LayoutContainer>
     )
   }
 }
 
-const WelcomeContainer = styled('div')`
-    text-align: center;
-    width: 375px;
-    height: 667px;
-    border-radius: 4px;
-    box-shadow: 0 6px 30px 0 rgba(0, 0, 0, 0.08);
-    border: solid 1px #e7e7e7;
-    background-color: #ffffff;
-`
 const LogoContainer = styled(Image)`
     margin: 36px auto 68px;
     width: 150px;
