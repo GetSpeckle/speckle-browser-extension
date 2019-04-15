@@ -6,7 +6,7 @@ const port = browser.runtime.connect(undefined, { name: '__SPECKLE__' })
 
 export function isWalletLocked (): Promise<boolean> {
   return new Promise<boolean>(resolve => {
-    port.onMessage.addListener((msg) => {
+    port.onMessage.addListener(msg => {
       if (msg.method === FUNCS.IS_LOCKED) {
         resolve(msg.result)
       }
@@ -17,7 +17,7 @@ export function isWalletLocked (): Promise<boolean> {
 
 export function lockWallet (): Promise<boolean> {
   return new Promise<boolean>(resolve => {
-    port.onMessage.addListener((msg) => {
+    port.onMessage.addListener(msg => {
       if (msg.method === FUNCS.LOCK) {
         resolve(msg.result)
       }
@@ -28,7 +28,7 @@ export function lockWallet (): Promise<boolean> {
 
 export function isWalletUnlocked (): Promise<boolean> {
   return new Promise<boolean>(resolve => {
-    port.onMessage.addListener((msg) => {
+    port.onMessage.addListener(msg => {
       if (msg.method === FUNCS.IS_UNLOCKED) {
         resolve(msg.result)
       }
@@ -36,10 +36,11 @@ export function isWalletUnlocked (): Promise<boolean> {
     port.postMessage({ method: FUNCS.IS_UNLOCKED })
   })
 }
+
 export function unlockWallet (password: string, addressPrefix?: string):
   Promise<Array<KeyringPair$Json>> {
   return new Promise<Array<KeyringPair$Json>>(resolve => {
-    port.onMessage.addListener((msg) => {
+    port.onMessage.addListener(msg => {
       if (msg.method === FUNCS.UNLOCK) {
         resolve(msg.result)
       }
@@ -50,7 +51,7 @@ export function unlockWallet (password: string, addressPrefix?: string):
 
 export function walletExists (): Promise<boolean> {
   return new Promise<boolean>(resolve => {
-    port.onMessage.addListener((msg) => {
+    port.onMessage.addListener(msg => {
       if (msg.method === FUNCS.WALLET_EXISTS) {
         resolve(msg.result)
       }
@@ -61,7 +62,7 @@ export function walletExists (): Promise<boolean> {
 
 export function getAccounts (): Promise<Array<KeyringPair$Json>> {
   return new Promise<Array<KeyringPair$Json>>((resolve, reject) => {
-    port.onMessage.addListener((msg) => {
+    port.onMessage.addListener(msg => {
       if (msg.method === FUNCS.GET_ACCOUNTS) {
         if (msg.result) resolve(msg.result)
         else reject(msg.error)
@@ -73,7 +74,7 @@ export function getAccounts (): Promise<Array<KeyringPair$Json>> {
 
 export function generateMnemonic (): Promise<string> {
   return new Promise<string>(resolve => {
-    port.onMessage.addListener((msg) => {
+    port.onMessage.addListener(msg => {
       if (msg.method === FUNCS.GENERATE_MNEMONIC) {
         resolve(msg.result)
       }
@@ -84,7 +85,7 @@ export function generateMnemonic (): Promise<string> {
 
 export function createAccount (mnemonic: string, accountName: string): Promise<KeyringPair$Json> {
   return new Promise<KeyringPair$Json>((resolve, reject) => {
-    port.onMessage.addListener((msg) => {
+    port.onMessage.addListener(msg => {
       if (msg.method === FUNCS.CREATE_ACCOUNT) {
         if (msg.result) resolve(msg.result)
         else reject(msg.error)
@@ -97,7 +98,7 @@ export function createAccount (mnemonic: string, accountName: string): Promise<K
 export function updateAccountName (address: string, accountName: string):
   Promise<KeyringPair$Json> {
   return new Promise<KeyringPair$Json>((resolve, reject) => {
-    port.onMessage.addListener((msg) => {
+    port.onMessage.addListener(msg => {
       if (msg.method === FUNCS.UPDATE_ACCOUNT_NAME) {
         if (msg.result) resolve(msg.result)
         else reject(msg.error)
@@ -113,7 +114,7 @@ export function updateAccountName (address: string, accountName: string):
 
 export function removeAccount (address: string): Promise<void> {
   return new Promise<void>(resolve => {
-    port.onMessage.addListener((msg) => {
+    port.onMessage.addListener(msg => {
       if (msg.method === FUNCS.REMOVE_ACCOUNT) {
         resolve()
       }
@@ -124,7 +125,7 @@ export function removeAccount (address: string): Promise<void> {
 
 export function isMnemonicValid (mnemonic: string): Promise<boolean> {
   return new Promise<boolean>(resolve => {
-    port.onMessage.addListener((msg) => {
+    port.onMessage.addListener(msg => {
       if (msg.method === FUNCS.IS_MNEMONIC_VALID) {
         resolve(msg.result)
       }
@@ -136,7 +137,7 @@ export function isMnemonicValid (mnemonic: string): Promise<boolean> {
 export function importAccountFromMnemonic (mnemonic: string, accountName: string):
   Promise<KeyringPair$Json> {
   return new Promise<KeyringPair$Json>((resolve, reject) => {
-    port.onMessage.addListener((msg) => {
+    port.onMessage.addListener(msg => {
       if (msg.method === FUNCS.IMPORT_MNEMONIC) {
         if (msg.result) resolve(msg.result)
         else reject(msg.error)
@@ -153,7 +154,7 @@ export function importAccountFromMnemonic (mnemonic: string, accountName: string
 export function importAccountFromJson (json: KeyringPair$Json, password?: string):
   Promise<KeyringPair$Json> {
   return new Promise<KeyringPair$Json>((resolve, reject) => {
-    port.onMessage.addListener((msg) => {
+    port.onMessage.addListener(msg => {
       if (msg.method === FUNCS.IMPORT_JSON) {
         if (msg.result) resolve(msg.result)
         else reject(msg.error)
