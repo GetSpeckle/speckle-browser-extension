@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { lockWallet } from '../../services/keyring-vault-proxy'
 import { UNLOCK_ROUTE } from '../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router'
-import { Button } from '../basic-components'
+import { Button, Section } from '../basic-components'
 
 interface IDashboardProp extends RouteComponentProps {}
 
@@ -23,11 +23,11 @@ class Dashboard extends React.Component<IDashboardProp> {
         <Title>
           Dashboard goes here
         </Title>
-        <Text>
+        <Section>
           <Button onClick={this.handleClick}>
             Logout
           </Button>
-        </Text>
+        </Section>
       </div>
     )
   }

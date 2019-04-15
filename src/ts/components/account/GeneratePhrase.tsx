@@ -9,7 +9,7 @@ import { Message, Container, Grid, Button, Icon } from 'semantic-ui-react'
 import { generateMnemonic } from '../../services/keyring-vault-proxy'
 import { setNewPhrase } from '../../background/store/account'
 import { CONFIRM_PHRASE_ROUTE } from '../../constants/routes'
-import { Button as StyledButton } from '../basic-components'
+import { Button as StyledButton, Section } from '../basic-components'
 
 interface IGeneratePhraseProps extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -80,14 +80,14 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
     return (
         <div>
           <Progress color={this.props.settings.color} progress={2} />
-          <Text>
+          <Section>
             {t('phraseDescription')}
-          </Text>
+          </Section>
 
-          <Text>
+          <Section>
             <div>{t('phraseTitle')}</div>
             <MnemonicPad value={this.state.mnemonic} readOnly={true} onClick={this.selectAll}/>
-          </Text>
+          </Section>
 
           <Message color={this.state.color} hidden={!this.state.message} style={alignMiddle}>
             {this.state.message}
@@ -112,11 +112,11 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
             </Grid>
           </Container>
 
-          <Text>
+          <Section>
             <StyledButton onClick={this.handleClick}>
               {t('createAccount')}
             </StyledButton>
-          </Text>
+          </Section>
 
         </div>
     )
@@ -136,19 +136,6 @@ type StateProps = ReturnType<typeof mapStateToProps>
 
 type DispatchProps = typeof mapDispatchToProps
 
-const Text = styled.div`
-    width: 327px;
-    margin:18px auto;
-    opacity: 0.6;
-    font-family: Nunito;
-    font-size: 14px;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    color: #3e5860;
-`
 const MnemonicPad = styled.textarea`
   width: 311px;
   height: 125px;

@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { unlockWallet } from '../../services/keyring-vault-proxy'
 import { DEFAULT_ROUTE } from '../../constants/routes'
 import { setLocked } from '../../background/store/account'
-import { Button } from '../basic-components'
+import { Button, Section, Title } from '../basic-components'
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
@@ -48,18 +48,18 @@ class Login extends React.Component<ILoginProps, ILoginState> {
         <Title>
           login here
         </Title>
-        <Text>
+        <Section>
           <StyledPassword
             type='password'
             value={this.state.password}
             onChange={evt => this.setState({ password: evt.target.value })}
           />
-        </Text>
-        <Text>
+        </Section>
+        <Section>
           <Button onClick={this.handleLogin}>
             login
           </Button>
-        </Text>
+        </Section>
       </div>
     )
   }
@@ -78,29 +78,6 @@ type DispatchProps = typeof mapDispatchToProps
 const StyledPassword = styled.input`
   width: 311px;
   height: 42px;
-`
-
-const Text = styled.p`
-    width: 327px;
-    margin:18px auto;
-    opacity: 0.6;
-    font-family: Nunito;
-    font-size: 14px;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    text-align: center;
-    color: #3e5860;
-`
-
-const Title = styled(Text)`
-    width: 311px;
-    height: 26px;
-    font-size: 19px;
-    font-weight: bold;
-    color: #30383B;
 `
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login))

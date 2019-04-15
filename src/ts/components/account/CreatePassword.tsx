@@ -9,7 +9,7 @@ import { Message } from 'semantic-ui-react'
 import { unlockWallet } from '../../services/keyring-vault-proxy'
 import { GENERATE_PHRASE_ROUTE } from '../../constants/routes'
 import { setLocked } from '../../background/store/account'
-import { Button } from '../basic-components'
+import { Button, Section } from '../basic-components'
 
 interface ICreatePasswordProps extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -56,35 +56,35 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
     return (
         <div>
           <Progress color={this.props.settings.color} progress={1} />
-          <Text>
+          <Section>
             {t('passwordDescription')}
-          </Text>
-          <Text>
+          </Section>
+          <Section>
             <StyledPassword
               type='password'
               placeholder={t('Create new password')}
               value={this.state.newPassword}
               onChange={evt => this.setState({ newPassword: evt.target.value })}/>
-          </Text>
+          </Section>
 
-          <Text>
+          <Section>
             <StyledPassword
               type='password'
               placeholder={t('Repeat password')}
               value={this.state.confirmPassword}
               onChange={evt => this.setState({ confirmPassword: evt.target.value })}
               />
-          </Text>
+          </Section>
 
           <Message negative={true} hidden={!this.state.errorMessage}>
             {this.state.errorMessage}
           </Message>
 
-          <Text>
+          <Section>
             <Button onClick={this.handleClick}>
               {t('Create Account')}
             </Button>
-          </Text>
+          </Section>
 
         </div>
     )
@@ -103,20 +103,6 @@ const mapDispatchToProps = { setLocked }
 type StateProps = ReturnType<typeof mapStateToProps>
 
 type DispatchProps = typeof mapDispatchToProps
-
-const Text = styled.p`
-    width: 327px;
-    margin:18px auto;
-    opacity: 0.6;
-    font-family: Nunito;
-    font-size: 14px;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    color: #3e5860;
-`
 
 const StyledPassword = styled.input`
   width: 311px;

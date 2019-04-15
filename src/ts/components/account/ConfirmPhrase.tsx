@@ -1,5 +1,4 @@
 import * as React from 'react'
-import styled from 'styled-components'
 import t from '../../services/i18n'
 import Progress from './Progress'
 import { IAppState } from '../../background/store/all'
@@ -8,7 +7,7 @@ import { connect } from 'react-redux'
 import { Message, List } from 'semantic-ui-react'
 import { createAccount } from '../../services/keyring-vault-proxy'
 import { DEFAULT_ROUTE } from '../../constants/routes'
-import { Button } from '../basic-components'
+import { Button, Section, MnemonicPad } from '../basic-components'
 
 interface IConfirmPhraseProps extends StateProps, RouteComponentProps {}
 
@@ -68,24 +67,24 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
         <div>
           <Progress color={this.props.settings.color} progress={2} />
 
-          <Text>
+          <Section>
             <div>{t('phraseConfirmTitle')}</div>
             <MnemonicPad value={this.state.inputPhrase} onChange={this.changePhrase}/>
-          </Text>
+          </Section>
 
-          <Text>
+          <Section>
             <List horizontal={true} items={this.state.wordList} />
-          </Text>
+          </Section>
 
           <Message negative={true} hidden={!this.state.errorMessage} style={error}>
             {this.state.errorMessage}
           </Message>
 
-          <Text>
+          <Section>
             <Button onClick={this.createAccount} disabled={!this.isPhraseConfirmed()}>
               {t('confirmPhraseButton')}
             </Button>
-          </Text>
+          </Section>
 
         </div>
     )
@@ -101,32 +100,6 @@ const mapStateToProps = (state: IAppState) => {
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
-const Text = styled.div`
-    width: 327px;
-    margin:18px auto;
-    opacity: 0.6;
-    font-family: Nunito;
-    font-size: 14px;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    color: #3e5860;
-`
-const MnemonicPad = styled.textarea`
-  width: 311px;
-  height: 125px;
-  font-family: Nunito;
-  padding: 10px;
-  font-size: 14px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: 1.57;
-  letter-spacing: normal;
-  color: #30383b;
-`
 const error = {
   width: 311,
   margin: 'auto'

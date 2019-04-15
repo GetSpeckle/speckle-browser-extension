@@ -6,7 +6,7 @@ import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 import { saveSettings } from '../../background/store/settings'
 import { RouteComponentProps, withRouter } from 'react-router'
-import { Button } from '../basic-components'
+import { Button, Section, Title } from '../basic-components'
 
 interface ITermProp extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -24,44 +24,22 @@ class Term extends React.Component<ITermProp> {
           <Title>
             {t('termTitle')}
           </Title>
-          <TermText>
+          <TermSection>
             {t('termDescription')}
-          </TermText>
-          <Text>
+          </TermSection>
+          <Section>
             <Button onClick={this.handleClick}>
               {t('termAcceptButton')}
             </Button>
-          </Text>
+          </Section>
         </div>
     )
   }
 }
 
-const Text = styled.p`
-    width: 311px;
-    margin:18px auto;
-    opacity: 0.6;
-    font-family: Nunito;
-    font-size: 14px;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    color: #3e5860;
-`
-
-const Title = styled(Text)`
-    width: 311px;
-    height: 26px;
-    font-size: 19px;
-    font-weight: bold;
-    color: #30383B;
-`
-const TermText = styled(Text)`
+const TermSection = styled(Section)`
   height: 347px;
   overflow-y: auto;
-
 `
 
 const mapStateToProps = (state: IAppState) => {

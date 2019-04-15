@@ -9,7 +9,7 @@ import { saveSettings } from '../background/store/settings'
 import { ThemeTypes } from './styles/themes'
 import ImageMapper from 'react-image-mapper'
 import { withRouter, RouteComponentProps } from 'react-router'
-import { LayoutContainer } from './basic-components'
+import { LayoutContainer, Section, Title } from './basic-components'
 
 interface IWelcomeProp extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -51,11 +51,11 @@ class Welcome extends React.Component<IWelcomeProp, IWelcomeState> {
           <Title>
             {t('pickColorTitle')}
           </Title>
-          <Text>
+          <Section>
             {t('pickColorDescription')}
-          </Text>
-          <Text>Click above to change color. Current color: {this.props.settings.color}</Text>
-          <Text>{t('speckleIntroduction')}</Text>
+          </Section>
+          <Section>Click above to change color. Current color: {this.props.settings.color}</Section>
+          <Section>{t('speckleIntroduction')}</Section>
         </LayoutContainer>
     )
   }
@@ -67,31 +67,11 @@ const LogoContainer = styled(Image)`
     height: 65px;
     object-fit: contain;
 `
+
 const ColorPickerContainer = styled('div')`
     width:208px;
     height: 208px;
     margin: 0 auto 68px;
-`
-const Text = styled.p`
-    width: 327px;
-    margin:18px auto;
-    opacity: 0.6;
-    font-family: Nunito;
-    font-size: 14px;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    text-align: center;
-    color: #3e5860;
-`
-const Title = styled(Text)`
-    width: 311px;
-    height: 26px;
-    font-size: 19px;
-    font-weight: bold;
-    color: #30383B;
 `
 
 const mapStateToProps = (state: IAppState) => {
