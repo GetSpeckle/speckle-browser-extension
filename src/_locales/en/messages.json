@@ -62,6 +62,15 @@
   "confirmPhraseButton": {
     "message": "Confirm Backup Phrase"
   },
+  "backupKeypairMessage": {
+    "message": "Great! Your first account has been created. Before you proceed, it is strongly recommended that you download the password protected key pair file and backup to a secure place."
+  },
+  "downloadKeyPairButton": {
+    "message": "Download Key Pair File"
+  },
+  "proceedButton": {
+    "message": "Proceed"
+  },
   "error": {
     "message": "error",
     "wallet": {

@@ -75,9 +75,6 @@ class KeyringVault {
   }
 
   generateMnemonic (): string {
-    if (this.isLocked()) {
-      throw new Error(t('error.wallet.locked'))
-    }
     this._mnemonic = mnemonicGenerate()
     return this._mnemonic
   }
