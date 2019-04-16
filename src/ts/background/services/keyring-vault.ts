@@ -71,7 +71,7 @@ class KeyringVault {
 
   walletExists (): Promise<boolean> {
     debugger
-    return LocalStore.get(VAULT_KEY).then(vault => !!vault)
+    return LocalStore.getValue(VAULT_KEY).then(value => !!value)
   }
 
   generateMnemonic (): string {
