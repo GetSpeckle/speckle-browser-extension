@@ -5,12 +5,13 @@ import Progress from './Progress'
 import { IAppState } from '../../background/store/all'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
-import { Message, List } from 'semantic-ui-react'
+import { Message, List, Button, Icon } from 'semantic-ui-react'
 import { createAccount, unlockWallet } from '../../services/keyring-vault-proxy'
 import { DEFAULT_ROUTE } from '../../constants/routes'
-import { KeyringPair$Json } from '@polkadot/keyring/types';
+import { KeyringPair$Json } from '@polkadot/keyring/types'
+import { setLocked, setCreated } from '../../background/store/account'
 
-interface IConfirmPhraseProps extends StateProps, RouteComponentProps {}
+interface IConfirmPhraseProps extends StateProps, DispatchProps, RouteComponentProps {}
 
 interface IConfirmPhraseState {
   inputPhrase: string,
@@ -59,45 +60,99 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
     if (accountStatus.newPassword) {
       unlockWallet(accountStatus.newPassword).then (kp => {
         console.log('wallet unlocked')
+        // update redux store state
+        this.props.setLocked(false)
         console.assert(kp.length==0, 'Should be an empty array')
         if (accountStatus.newPhrase) {
           createAccount(accountStatus.newPhrase, '').then(keyringPair => {
             console.log('Account created! ', keyringPair)
+            this.props.setCreated(true)
             this.setState({ keyringPair: keyringPair })
-            // this.props.history.push(DEFAULT_ROUTE)
           })
         }
       })
     }
   }
 
+  downloadKeyPair = () => {
+    var element = document.createElement('a');
+    element.setAttribute('href',
+        'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.state.keyringPair)))
+    element.setAttribute('download', 'key-pair.json')
+
+    element.style.display = 'none'
+    document.body.appendChild(element)
+
+    element.click()
+    document.body.removeChild(element)
+  }
+
+  gotoDashboard = () => {
+    this.props.history.push(DEFAULT_ROUTE)
+  }
+
   render () {
     return (
-        <div>
-          <Progress color={this.props.settings.color} progress={2} />
+      <div>
+        <Progress color={this.props.settings.color} progress={2} />
 
-          <Text>
-            <div>{t('phraseConfirmTitle')}</div>
-            <MnemonicPad value={this.state.inputPhrase} onChange={this.changePhrase}/>
-          </Text>
+        {this.state.keyringPair ? this.renderBackupScreen() : this.renderConfirmScreen()}
 
-          <Text>
-            <List horizontal={true} items={this.state.wordList} />
-          </Text>
-
-          <Message negative={true} hidden={!this.state.errorMessage} style={error}>
-            {this.state.errorMessage}
-          </Message>
-
-          <Text>
-            <StyledButton onClick={this.createAccount} disabled={!this.isPhraseConfirmed()}>
-              {t('confirmPhraseButton')}
-            </StyledButton>
-          </Text>
-
-        </div>
+      </div>
     )
   }
+
+  renderConfirmScreen() {
+    return(
+      <div>
+        <Text>
+          <div>{t('phraseConfirmTitle')}</div>
+          <MnemonicPad value={this.state.inputPhrase} onChange={this.changePhrase}/>
+        </Text>
+
+        <Text>
+          <List horizontal={true} items={this.state.wordList} />
+        </Text>
+
+        <Message negative={true} hidden={!this.state.errorMessage} style={alignMiddle}>
+          {this.state.errorMessage}
+        </Message>
+
+        <Text>
+          <StyledButton onClick={this.createAccount} disabled={!this.isPhraseConfirmed()}>
+            {t('confirmPhraseButton')}
+          </StyledButton>
+        </Text>
+      </div>
+    )
+  }
+
+  renderBackupScreen() {
+    return(
+      <div>
+        <Message info={true} style={alignMiddle}>
+          {t('backupKeypairMessage')}
+        </Message>
+
+        <Text>
+          <Button onClick={this.downloadKeyPair}>
+            <Icon name='download' />
+            {t('downloadKeyPairButton')}
+          </Button>
+        </Text>
+
+        <Text>
+          <Button onClick={this.gotoDashboard} primary>
+            <Icon name='play' />
+            {t('proceedButton')}
+          </Button>
+        </Text>
+
+
+      </div>
+    )
+  }
+
 }
 
 const mapStateToProps = (state: IAppState) => {
@@ -107,7 +162,12 @@ const mapStateToProps = (state: IAppState) => {
   }
 }
 
+const mapDispatchToProps = { setLocked, setCreated }
+
+
 type StateProps = ReturnType<typeof mapStateToProps>
+
+type DispatchProps = typeof mapDispatchToProps
 
 const Text = styled.div`
     width: 327px;
@@ -151,9 +211,9 @@ const StyledButton = styled.button`
   text-align: center;
   color: #ffffff;
 `
-const error = {
+const alignMiddle = {
   width: 311,
   margin: 'auto'
 }
 
-export default withRouter(connect(mapStateToProps)(ConfirmPhrase))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ConfirmPhrase))
