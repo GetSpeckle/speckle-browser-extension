@@ -34,7 +34,7 @@ export function setNewPhrase (phrase: string, accountName?: string): AnyAction {
   }
 }
 
-export function setNewPassword (password: string) : AnyAction {
+export function setNewPassword (password: string): AnyAction {
   return {
     type: ACTION_TYPES.SET_NEW_PASSWORD,
     payload: password
@@ -66,7 +66,10 @@ const account: Reducer<IAccountStatus, AnyAction> = (state = initialState, actio
       return { ...state, created: action.payload }
 
     case ACTION_TYPES.SET_NEW_PHRASE:
-      return { ...state, newPhrase: action.payload.phrase, newAccountName: action.payload.accountName }
+      return {
+        ...state,
+        newPhrase: action.payload.phrase,
+        newAccountName: action.payload.accountName }
 
     case ACTION_TYPES.SET_NEW_PASSWORD:
       console.log('set new password ...')
