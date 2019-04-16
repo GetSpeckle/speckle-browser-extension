@@ -13,6 +13,7 @@ const initialState: IAccountStatus = {
 }
 
 export const ACTION_TYPES = {
+  SET_CREATED: 'SET_CREATED',
   SET_LOCKED: 'SET_LOCKED',
   SET_NEW_PHRASE: 'SET_NEW_PHRASE'
 }
@@ -24,10 +25,17 @@ export function setLocked (locked: boolean): AnyAction {
   }
 }
 
+export function setCreated (created: boolean): AnyAction {
+  return {
+    type: ACTION_TYPES.SET_CREATED,
+    payload: created
+  }
+}
+
 export function setNewPhrase (phrase: string, accountName?: string): AnyAction {
   return {
     type: ACTION_TYPES.SET_NEW_PHRASE,
-    payload: {phrase: phrase, accountName: accountName}
+    payload: { phrase: phrase, accountName: accountName }
   }
 }
 
@@ -44,10 +52,16 @@ const account: Reducer<IAccountStatus, AnyAction> = (state = initialState, actio
       console.log('set locked statue: ', action.payload)
       return { ...state, locked: action.payload }
 
+    case ACTION_TYPES.SET_CREATED:
+      console.log('set created: ', action.payload)
+      return { ...state, created: action.payload }
+
     case ACTION_TYPES.SET_NEW_PHRASE:
       console.log('set new phrase: ', action.payload)
-      return { ...state, newPhrase: action.payload.phrase, newAccountName: action.payload.accountName }
-
+      return {
+        ...state,
+        newPhrase: action.payload.phrase,
+        newAccountName: action.payload.accountName }
     default:
       return state
   }

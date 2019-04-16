@@ -70,6 +70,7 @@ class KeyringVault {
   }
 
   walletExists (): Promise<boolean> {
+    debugger
     return LocalStore.get(VAULT_KEY).then(vault => !!vault)
   }
 
