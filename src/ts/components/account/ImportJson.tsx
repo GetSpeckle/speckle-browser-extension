@@ -9,9 +9,8 @@ import Dropzone from 'react-dropzone'
 import { isObject, u8aToString, isHex } from '@polkadot/util'
 import { Section, Button } from '../basic-components'
 
-interface ImportJsonProp extends RouteComponentProps {
-  history: any
-}
+interface ImportJsonProp extends RouteComponentProps {}
+
 interface ImportJsonState {
   file?: File
   json: KeyringPair$Json,

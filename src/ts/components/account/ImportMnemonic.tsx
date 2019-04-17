@@ -7,9 +7,8 @@ import { KeyringPair$Json } from '@polkadot/keyring/types'
 import { Message } from 'semantic-ui-react'
 import { Button, Section, MnemonicPad } from '../basic-components'
 
-interface ImportMnemonicProp extends RouteComponentProps {
-  history: any
-}
+interface ImportMnemonicProp extends RouteComponentProps {}
+
 interface ImportMnemonicState {
   mnemonic: string,
   accountName: string,
