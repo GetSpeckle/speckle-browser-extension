@@ -8,12 +8,14 @@ import GlobalStyle from '../../components/styles/GlobalStyle'
 import { themes } from '../../components/styles/themes'
 import { Routes } from '../../routes'
 import { getSettings } from '../../background/store/settings'
-import { isWalletLocked } from '../../services/keyring-vault-proxy'
-import { setLocked } from '../../background/store/account'
+import { isWalletLocked, walletExists } from '../../services/keyring-vault-proxy'
+import { setLocked, setCreated } from '../../background/store/account'
 
-interface IPopupApp extends StateProps, DispatchProps {}
+interface IPopupApp extends StateProps, DispatchProps {
+}
+
 interface IPopupState {
-  loading: boolean
+  initializing: boolean
 }
 
 class PopupApp extends React.Component<IPopupApp, IPopupState> {
@@ -22,41 +24,52 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
     super(props)
 
     this.state = {
-      loading: true
+      initializing: true
     }
   }
 
-  componentWillMount () {
+  initializeApp = () => {
     const loadAppSetting = this.props.getSettings()
-    const checkAppState = isWalletLocked().then(result => {
-      console.log(result)
-      this.props.setLocked(result)
-    })
+    const checkAppState = isWalletLocked().then(
+      result => {
+        console.log(`isLocked ${result}`)
+        this.props.setLocked(result)
+      })
+    const checkAccountCreated = walletExists().then(
+        result => {
+          console.log(`isWalletCreated ${result}`)
+          this.props.setCreated(result)
+        }
+    )
 
-    Promise.all([loadAppSetting, checkAppState]).then(
+    Promise.all([loadAppSetting, checkAppState, checkAccountCreated]).then(
       () => {
         this.setState({
-          loading: false
+          initializing: false
         })
       }
     )
   }
 
+  componentWillMount () {
+    this.initializeApp()
+  }
+
   render () {
-    if (this.state.loading) {
+    if (this.state.initializing) {
       return (null)
     }
     return (
-        <ThemeProvider theme={themes[this.props.settings.theme]}>
-          <React.Fragment>
-            <GlobalStyle/>
-            <PopupAppContainer>
-              <Router>
-                <Routes/>
-              </Router>
-            </PopupAppContainer>
-          </React.Fragment>
-        </ThemeProvider>
+      <ThemeProvider theme={themes[this.props.settings.theme]}>
+        <React.Fragment>
+          <GlobalStyle/>
+          <PopupAppContainer>
+            <Router>
+              <Routes/>
+            </Router>
+          </PopupAppContainer>
+        </React.Fragment>
+      </ThemeProvider>
     )
   }
 }
@@ -68,7 +81,7 @@ const mapStateToProps = (state: IAppState) => {
   }
 }
 
-const mapDispatchToProps = { getSettings, setLocked }
+const mapDispatchToProps = { getSettings, setLocked, setCreated }
 
 type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps

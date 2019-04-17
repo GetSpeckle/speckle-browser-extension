@@ -4,7 +4,7 @@ import Term from '../components/account/Term'
 import Login from '../components/account/Login'
 
 import {
-  DEFAULT_ROUTE,
+  HOME_ROUTE,
   TERM_SERVICE_ROUTE,
   CREATE_PASSWORD_ROUTE,
   GENERATE_PHRASE_ROUTE,
@@ -28,7 +28,7 @@ export class Routes extends React.Component {
       <Switch>
         <Authenticated
           layout={DashboardLayout}
-          path={DEFAULT_ROUTE}
+          path={HOME_ROUTE}
           component={Dashboard}
           exact={true}
         />

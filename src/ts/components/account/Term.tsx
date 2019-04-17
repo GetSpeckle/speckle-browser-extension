@@ -1,7 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import t from '../../services/i18n'
-import { CREATE_PASSWORD_ROUTE } from '../../constants/routes'
+import { HOME_ROUTE } from '../../constants/routes'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 import { saveSettings } from '../../background/store/settings'
@@ -14,8 +14,9 @@ class Term extends React.Component<ITermProp> {
 
   handleClick = () => {
     const { history, settings } = this.props
-    this.props.saveSettings({ ...settings, welcome: false })
-    history.push(CREATE_PASSWORD_ROUTE)
+    this.props.saveSettings({ ...settings, welcome: false }).then(() =>
+      history.push(HOME_ROUTE)
+    )
   }
 
   render () {
