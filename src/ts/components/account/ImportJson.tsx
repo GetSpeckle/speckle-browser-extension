@@ -50,7 +50,7 @@ class ImportJson extends React.Component<ImportJsonProp, ImportJsonState> {
     const file = acceptedFiles[0]
     this.setState({ ...this.state, file: file })
     const reader = new FileReader()
-    reader.onload = () => {
+    reader.onloadend = () => {
       const data = new Uint8Array(reader.result as ArrayBuffer)
       try {
         const json = JSON.parse(u8aToString(data))
