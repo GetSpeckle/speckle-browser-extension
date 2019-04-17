@@ -27,7 +27,9 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
 
   constructor (props) {
     super(props)
+  }
 
+  componentDidMount () {
     // generate the mnemonic
     generateMnemonic().then(phrase => {
       this.setState({ mnemonic: phrase })
