@@ -4,7 +4,7 @@ import { RouteComponentProps, withRouter } from 'react-router'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 import { unlockWallet } from '../../services/keyring-vault-proxy'
-import { DEFAULT_ROUTE } from '../../constants/routes'
+import { HOME_ROUTE } from '../../constants/routes'
 import { setLocked } from '../../background/store/account'
 
 type StateProps = ReturnType<typeof mapStateToProps>
@@ -29,7 +29,7 @@ class Login extends React.Component<ILoginProps, ILoginState> {
       keyringPairs => {
         if (keyringPairs.length && keyringPairs.length > 0) {
           this.props.setLocked(false).then(
-            this.props.history.push(DEFAULT_ROUTE)
+            this.props.history.push(HOME_ROUTE)
           )
         }
       }

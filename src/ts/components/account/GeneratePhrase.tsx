@@ -15,7 +15,7 @@ interface IGeneratePhraseProps extends StateProps, DispatchProps, RouteComponent
 interface IGeneratePhraseState {
   mnemonic: string,
   message?: string,
-  color: 'blue'|'red'
+  color: 'blue' | 'red'
 }
 
 class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhraseState> {
@@ -57,14 +57,14 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
     document.execCommand('copy')
     document.body.removeChild(el)
 
-    this.setState({message: t('copyTextMessage')})
-    setTimeout(()=> {
-      this.setState({message: ''})
+    this.setState({ message: t('copyTextMessage') })
+    setTimeout(() => {
+      this.setState({ message: '' })
     }, 3000)
   }
 
   downloadFile = () => {
-    var element = document.createElement('a');
+    let element = document.createElement('a')
     element.setAttribute('href',
         'data:text/plain;charset=utf-8,' + encodeURIComponent(this.state.mnemonic))
     element.setAttribute('download', 'secret-phrase.txt')

@@ -7,7 +7,7 @@ import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
 import { Message, List, Button, Icon } from 'semantic-ui-react'
 import { createAccount, unlockWallet } from '../../services/keyring-vault-proxy'
-import { DEFAULT_ROUTE } from '../../constants/routes'
+import { HOME_ROUTE } from '../../constants/routes'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import { setLocked, setCreated } from '../../background/store/account'
 
@@ -58,11 +58,11 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
     this.setState({ errorMessage: '' })
     const { accountStatus } = this.props
     if (accountStatus.newPassword) {
-      unlockWallet(accountStatus.newPassword).then (kp => {
+      unlockWallet(accountStatus.newPassword).then(kp => {
         console.log('wallet unlocked')
         // update redux store state
         this.props.setLocked(false)
-        console.assert(kp.length==0, 'Should be an empty array')
+        console.assert(kp.length == 0, 'Should be an empty array')
         if (accountStatus.newPhrase) {
           createAccount(accountStatus.newPhrase, '').then(keyringPair => {
             console.log('Account created! ', keyringPair)
@@ -75,9 +75,10 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
   }
 
   downloadKeyPair = () => {
-    var element = document.createElement('a');
+    let element = document.createElement('a')
     element.setAttribute('href',
-        'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.state.keyringPair)))
+        'data:text/plain;charset=utf-8,' +
+      encodeURIComponent(JSON.stringify(this.state.keyringPair)))
     element.setAttribute('download', 'key-pair.json')
 
     element.style.display = 'none'
@@ -88,7 +89,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
   }
 
   gotoDashboard = () => {
-    this.props.history.push(DEFAULT_ROUTE)
+    this.props.history.push(HOME_ROUTE)
   }
 
   render () {
@@ -102,7 +103,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
     )
   }
 
-  renderConfirmScreen() {
+  renderConfirmScreen () {
     return(
       <div>
         <Text>
@@ -127,7 +128,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
     )
   }
 
-  renderBackupScreen() {
+  renderBackupScreen () {
     return(
       <div>
         <Message info={true} style={alignMiddle}>
@@ -142,12 +143,11 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
         </Text>
 
         <Text>
-          <Button onClick={this.gotoDashboard} primary>
+          <Button onClick={this.gotoDashboard} primary={true}>
             <Icon name='play' />
             {t('proceedButton')}
           </Button>
         </Text>
-
 
       </div>
     )
@@ -163,7 +163,6 @@ const mapStateToProps = (state: IAppState) => {
 }
 
 const mapDispatchToProps = { setLocked, setCreated }
-
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
