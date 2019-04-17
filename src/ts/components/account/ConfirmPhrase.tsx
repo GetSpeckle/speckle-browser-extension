@@ -7,7 +7,7 @@ import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
 import { Message, List, Button, Icon } from 'semantic-ui-react'
 import { createAccount, unlockWallet } from '../../services/keyring-vault-proxy'
-import { DEFAULT_ROUTE } from '../../constants/routes'
+import { HOME_ROUTE } from '../../constants/routes'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import { setLocked, setCreated } from '../../background/store/account'
 
@@ -89,7 +89,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
   }
 
   gotoDashboard = () => {
-    this.props.history.push(DEFAULT_ROUTE)
+    this.props.history.push(HOME_ROUTE)
   }
 
   render () {

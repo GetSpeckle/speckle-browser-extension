@@ -15,10 +15,11 @@ const mapStateToProps = (state: IAppState) => {
 
 export class AuthenticatedRoute extends React.Component<StateProps & IRouteProps & RouteProps> {
   renderRoute (props: StateProps & IRouteProps & RouteProps) {
+    const { isLocked, welcome, accountCreated } = props
     switch (true) {
-      case !props.isLocked && !props.welcome && props.accountCreated:
+      case !isLocked && !welcome && accountCreated:
         return <RouteWithLayout {...props} />
-      case !props.welcome && !props.accountCreated:
+      case !welcome && !accountCreated:
         return <Redirect to={{ pathname: CREATE_PASSWORD_ROUTE }} />
       case this.props.welcome:
         return <Redirect to={{ pathname: INITIALIZE_ROUTE }} />
