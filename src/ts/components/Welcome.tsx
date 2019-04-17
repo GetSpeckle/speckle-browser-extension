@@ -9,6 +9,7 @@ import { saveSettings } from '../background/store/settings'
 import { ThemeTypes } from './styles/themes'
 import ImageMapper from 'react-image-mapper'
 import { withRouter, RouteComponentProps } from 'react-router'
+import { LayoutContainer, Section, Title } from './basic-components'
 
 interface IWelcomeProp extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -38,7 +39,7 @@ class Welcome extends React.Component<IWelcomeProp, IWelcomeState> {
 
   render () {
     return (
-       <WelcomeContainer>
+       <LayoutContainer>
          <LogoContainer><Image src='/assets/logo-3-x.svg' /></LogoContainer>
          <ColorPickerContainer><ImageMapper
             src={'/assets/icon-dots.svg'}
@@ -50,60 +51,27 @@ class Welcome extends React.Component<IWelcomeProp, IWelcomeState> {
           <Title>
             {t('pickColorTitle')}
           </Title>
-
-          <Text>
+          <Section>
             {t('pickColorDescription')}
-          </Text>
-
-          <Text>Click above to change color. Current color: {this.props.settings.color}</Text>
-
-          <Text>{t('speckleIntroduction')}</Text>
-
-        </WelcomeContainer>
+          </Section>
+          <Section>Click above to change color. Current color: {this.props.settings.color}</Section>
+          <Section>{t('speckleIntroduction')}</Section>
+        </LayoutContainer>
     )
   }
 }
 
-const WelcomeContainer = styled('div')`
-    text-align: center;
-    width: 375px;
-    height: 667px;
-    border-radius: 4px;
-    box-shadow: 0 6px 30px 0 rgba(0, 0, 0, 0.08);
-    border: solid 1px #e7e7e7;
-    background-color: #ffffff;
-`
 const LogoContainer = styled(Image)`
     margin: 36px auto 68px;
     width: 150px;
     height: 65px;
     object-fit: contain;
 `
+
 const ColorPickerContainer = styled('div')`
     width:208px;
     height: 208px;
     margin: 0 auto 68px;
-`
-const Text = styled.p`
-    width: 327px;
-    margin:18px auto;
-    opacity: 0.6;
-    font-family: Nunito;
-    font-size: 14px;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    text-align: center;
-    color: #3e5860;
-`
-const Title = styled(Text)`
-    width: 311px;
-    height: 26px;
-    font-size: 19px;
-    font-weight: bold;
-    color: #30383B;
 `
 
 const mapStateToProps = (state: IAppState) => {

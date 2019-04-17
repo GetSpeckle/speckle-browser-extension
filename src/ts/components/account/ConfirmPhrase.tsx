@@ -1,5 +1,4 @@
 import * as React from 'react'
-import styled from 'styled-components'
 import t from '../../services/i18n'
 import Progress from './Progress'
 import { IAppState } from '../../background/store/all'
@@ -7,6 +6,7 @@ import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
 import { Message, List, Button, Icon } from 'semantic-ui-react'
 import { createAccount, unlockWallet } from '../../services/keyring-vault-proxy'
+import { Button as StyledButton, Section, MnemonicPad } from '../basic-components'
 import { HOME_ROUTE } from '../../constants/routes'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import { setLocked, setCreated } from '../../background/store/account'
@@ -106,24 +106,24 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
   renderConfirmScreen () {
     return(
       <div>
-        <Text>
+        <Section>
           <div>{t('phraseConfirmTitle')}</div>
           <MnemonicPad value={this.state.inputPhrase} onChange={this.changePhrase}/>
-        </Text>
+        </Section>
 
-        <Text>
+        <Section>
           <List horizontal={true} items={this.state.wordList} />
-        </Text>
+        </Section>
 
         <Message negative={true} hidden={!this.state.errorMessage} style={alignMiddle}>
           {this.state.errorMessage}
         </Message>
 
-        <Text>
+        <Section>
           <StyledButton onClick={this.createAccount} disabled={!this.isPhraseConfirmed()}>
             {t('confirmPhraseButton')}
           </StyledButton>
-        </Text>
+        </Section>
       </div>
     )
   }
@@ -135,24 +135,22 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
           {t('backupKeypairMessage')}
         </Message>
 
-        <Text>
+        <Section>
           <Button onClick={this.downloadKeyPair}>
             <Icon name='download' />
             {t('downloadKeyPairButton')}
           </Button>
-        </Text>
+        </Section>
 
-        <Text>
-          <Button onClick={this.gotoDashboard} primary={true}>
+        <Section>
+          <Button onClick={this.gotoDashboard} primary>
             <Icon name='play' />
             {t('proceedButton')}
           </Button>
-        </Text>
-
+        </Section>
       </div>
     )
   }
-
 }
 
 const mapStateToProps = (state: IAppState) => {
@@ -166,53 +164,4 @@ const mapDispatchToProps = { setLocked, setCreated }
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
-type DispatchProps = typeof mapDispatchToProps
-
-const Text = styled.div`
-    width: 327px;
-    margin:18px auto;
-    opacity: 0.6;
-    font-family: Nunito;
-    font-size: 14px;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    color: #3e5860;
-`
-const MnemonicPad = styled.textarea`
-  width: 311px;
-  height: 125px;
-  font-family: Nunito;
-  padding: 10px;
-  font-size: 14px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: 1.57;
-  letter-spacing: normal;
-  color: #30383b;
-`
-const StyledButton = styled.button`
-  width: 311px;
-  height: 45px;
-  border-radius: 4px;
-  box-shadow: 0 3px 10px 0 rgba(72, 178, 228, 0.21);
-  background-color: #24b6e8;
-  font-family: Nunito;
-  font-size: 16px;
-  font-weight: 800;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: 1.31;
-  letter-spacing: normal;
-  text-align: center;
-  color: #ffffff;
-`
-const alignMiddle = {
-  width: 311,
-  margin: 'auto'
-}
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ConfirmPhrase))
+export default withRouter(connect(mapStateToProps)(ConfirmPhrase))

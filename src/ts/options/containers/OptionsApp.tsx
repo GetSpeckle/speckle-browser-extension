@@ -16,14 +16,14 @@ class OptionsApp extends React.Component<IOptionsApp> {
 
   render () {
     return (
-            <ThemeProvider theme={themes[this.props.theme]}>
-                <React.Fragment>
-                    <GlobalStyle />
-                    <OptionsAppContainer>
-                        <App/>
-                    </OptionsAppContainer>
-                </React.Fragment>
-            </ThemeProvider>
+      <ThemeProvider theme={themes[this.props.theme]}>
+        <React.Fragment>
+          <GlobalStyle/>
+          <OptionsAppContainer>
+            <App/>
+          </OptionsAppContainer>
+        </React.Fragment>
+      </ThemeProvider>
     )
   }
 }

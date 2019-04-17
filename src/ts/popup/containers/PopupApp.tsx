@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import styled, { ThemeProvider } from 'styled-components'
+import { HashRouter as Router } from 'react-router-dom'
 import { IAppState } from '../../background/store/all'
 
 import GlobalStyle from '../../components/styles/GlobalStyle'
 import { themes } from '../../components/styles/themes'
-import { HashRouter as Router } from 'react-router-dom'
 import { Routes } from '../../routes'
 import { getSettings } from '../../background/store/settings'
 import { isWalletLocked, walletExists } from '../../services/keyring-vault-proxy'
