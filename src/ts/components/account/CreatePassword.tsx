@@ -6,7 +6,6 @@ import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
 import { Message } from 'semantic-ui-react'
 import { GENERATE_PHRASE_ROUTE } from '../../constants/routes'
-import { setLocked } from '../../background/store/account'
 import { Button, Section, StyledPassword } from '../basic-components'
 import { setNewPassword } from '../../background/store/account'
 

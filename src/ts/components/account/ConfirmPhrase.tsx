@@ -62,7 +62,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
         console.log('wallet unlocked')
         // update redux store state
         this.props.setLocked(false)
-        console.assert(kp.length == 0, 'Should be an empty array')
+        console.assert(kp.length === 0, 'Should be an empty array')
         if (accountStatus.newPhrase) {
           createAccount(accountStatus.newPhrase, '').then(keyringPair => {
             console.log('Account created! ', keyringPair)
@@ -143,7 +143,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
         </Section>
 
         <Section>
-          <Button onClick={this.gotoDashboard} primary>
+          <Button onClick={this.gotoDashboard} primary={true}>
             <Icon name='play' />
             {t('proceedButton')}
           </Button>
@@ -160,8 +160,15 @@ const mapStateToProps = (state: IAppState) => {
   }
 }
 
+const alignMiddle = {
+  width: 311,
+  margin: 'auto'
+}
+
 const mapDispatchToProps = { setLocked, setCreated }
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
-export default withRouter(connect(mapStateToProps)(ConfirmPhrase))
+type DispatchProps = typeof mapDispatchToProps
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ConfirmPhrase))
