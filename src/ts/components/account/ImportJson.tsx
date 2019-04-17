@@ -18,12 +18,6 @@ interface ImportJsonState {
   errorMessage?: string
 }
 
-type LoadEvent = {
-  target: {
-    result: ArrayBuffer
-  }
-}
-
 class ImportJson extends React.Component<ImportJsonProp, ImportJsonState> {
 
   constructor (props) {
@@ -46,7 +40,7 @@ class ImportJson extends React.Component<ImportJsonProp, ImportJsonState> {
   handleImport () {
     importAccountFromJson(this.state.json, this.state.password)
       .then((json: KeyringPair$Json) => {
-        console.log(json)
+        console.log(json) // TODO navigate to account screen
       }).catch(error => {
         this.setState({ ...this.state, errorMessage: error })
       })
@@ -56,9 +50,8 @@ class ImportJson extends React.Component<ImportJsonProp, ImportJsonState> {
     const file = acceptedFiles[0]
     this.setState({ ...this.state, file: file })
     const reader = new FileReader()
-    // @ts-ignore
-    reader.onload = ({ target: { result } }: LoadEvent) => {
-      const data = new Uint8Array(result)
+    reader.onload = () => {
+      const data = new Uint8Array(reader.result as ArrayBuffer)
       try {
         const json = JSON.parse(u8aToString(data))
         decodeAddress(json.address, true).then(decodeAddress => {
