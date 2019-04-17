@@ -84,11 +84,11 @@ class ImportJson extends React.Component<ImportJsonProp, ImportJsonState> {
 
   private shortFileName () {
     if (!this.state.file) return ''
-    if (this.state.file.name.length < 20) {
-      return this.state.file.name
+    const fileName = this.state.file.name
+    if (fileName.length < 20) {
+      return fileName
     }
-    const longName = this.state.file.name
-    return longName.substring(0, 5) + '...' + longName.substring(longName.length - 10)
+    return fileName.substring(0, 5) + '...' + fileName.substring(fileName.length - 10)
   }
 
   render () {
