@@ -26,7 +26,7 @@ export const Button = styled.button`
   color: #ffffff;
 `
 
-export const Section = styled.p`
+export const Section = styled.div`
     width: 327px;
     margin:18px auto;
     opacity: 0.6;
