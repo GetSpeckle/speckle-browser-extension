@@ -170,6 +170,7 @@ export function importAccountFromJson (json: KeyringPair$Json, password?: string
   })
 }
 
+// TODO check if ignoreChecksum is necessary anymore
 export function decodeAddress (key: string | Uint8Array, ignoreChecksum?: boolean):
   Promise<Uint8Array> {
   return cryptoWaitReady().then(() => {
