@@ -1,9 +1,9 @@
 import { KeyringInstance, KeyringPair, KeyringPair$Json } from '@polkadot/keyring/types'
 import Keyring from '@polkadot/keyring'
 import { Prefix } from '@polkadot/keyring/address/types'
-import { LocalStore } from './local-store'
+import { LocalStore } from '../../services/local-store'
 import { mnemonicGenerate, cryptoWaitReady, mnemonicValidate } from '@polkadot/util-crypto'
-import t from './i18n'
+import t from '../../services/i18n'
 
 const VAULT_KEY: string = 'speckle-vault'
 
@@ -36,19 +36,21 @@ class KeyringVault {
 
   unlock (password: string, addressPrefix?: Prefix): Promise<Array<KeyringPair$Json>> {
     if (this.isUnlocked()) {
-      return new Promise<Array<KeyringPair$Json>>(() => this.keyring.getPairs().map((pair) => {
-        pair.toJson(this._password)
-      }))
+      return new Promise<Array<KeyringPair$Json>>(
+        resolve => {
+          resolve(this.keyring.getPairs().map(pair => pair.toJson(this._password)))
+        }
+      )
     }
     if (!password.length) throw new Error(t('error.password'))
     // this will be redundant if we have polkadot js api initialisation
     return cryptoWaitReady().then(async () => {
       this._keyring = new Keyring({ addressPrefix, type: 'sr25519' })
-      let vault = await LocalStore.get(VAULT_KEY)
+      let vault = await LocalStore.getValue(VAULT_KEY)
       if (vault) {
         let accounts = Object.values(vault)
         try {
-          accounts.forEach((account) => {
+          accounts.forEach(account => {
             let pair = this.keyring.addFromJson(account as KeyringPair$Json)
             pair.decodePkcs8(password)
             this.keyring.addPair(pair)
@@ -56,7 +58,7 @@ class KeyringVault {
           this._password = password
           return accounts as Array<KeyringPair$Json>
         } catch (e) {
-          this.keyring.getPairs().forEach((pair) => {
+          this.keyring.getPairs().forEach(pair => {
             this.keyring.removePair(pair.address())
           })
           throw new Error(t('error.password'))
@@ -68,15 +70,10 @@ class KeyringVault {
   }
 
   walletExists (): Promise<boolean> {
-    return LocalStore.get(VAULT_KEY).then((vault) => {
-      return !!vault
-    })
+    return LocalStore.getValue(VAULT_KEY).then(value => !!value)
   }
 
   generateMnemonic (): string {
-    if (this.isLocked()) {
-      throw new Error(t('error.wallet.locked'))
-    }
     this._mnemonic = mnemonicGenerate()
     return this._mnemonic
   }
@@ -88,7 +85,7 @@ class KeyringVault {
   getAccounts (): Array<KeyringPair$Json> {
     if (this.isLocked()) throw new Error(t('error.wallet.locked'))
     let accounts = new Array<KeyringPair$Json>()
-    this.keyring.getPairs().forEach((pair) => {
+    this.keyring.getPairs().forEach(pair => {
       accounts.push(pair.toJson(this._password))
     })
     return accounts
@@ -113,7 +110,7 @@ class KeyringVault {
   removeAccount (address: string) {
     if (this.isLocked()) throw new Error(t('error.wallet.locked'))
     this.keyring.removePair(address)
-    LocalStore.get(VAULT_KEY).then(async (vault) => {
+    LocalStore.getValue(VAULT_KEY).then(async (vault) => {
       if (vault) {
         delete vault[address]
         await LocalStore.set({ VAULT_KEY: vault })
@@ -141,7 +138,7 @@ class KeyringVault {
   private saveAccount (pair: KeyringPair): Promise<KeyringPair$Json> {
     this.addTimestamp(pair)
     const keyringPair$Json: KeyringPair$Json = pair.toJson(this._password)
-    return LocalStore.get(VAULT_KEY).then((vault) => {
+    return LocalStore.getValue(VAULT_KEY).then(vault => {
       if (!vault) {
         vault = {}
       }

@@ -7,6 +7,7 @@ import { KeyringPair$Json } from '@polkadot/keyring/types'
 import { Message } from 'semantic-ui-react'
 import Dropzone from 'react-dropzone'
 import { isObject, u8aToString, isHex } from '@polkadot/util'
+import { Section, Button } from '../basic-components'
 
 interface ImportJsonProp extends RouteComponentProps {
   history: any
@@ -43,22 +44,12 @@ class ImportJson extends React.Component<ImportJsonProp, ImportJsonState> {
     }
   }
 
-  shortFileName () {
-    if (!this.state.file) return ''
-    if (this.state.file.name.length < 20) {
-      return this.state.file.name
-    }
-    let longName = this.state.file.name
-    return longName.substring(0, 5) + '...' + longName.substring(longName.length - 10)
-  }
-
   handleImport () {
     importAccountFromJson(this.state.json, this.state.password)
       .then((json: KeyringPair$Json) => {
         console.log(json)
-      }).catch((reason) => {
-        console.log(reason)
-        this.setState({ ...this.state, errorMessage: reason })
+      }).catch(error => {
+        this.setState({ ...this.state, errorMessage: error })
       })
   }
 
@@ -71,40 +62,52 @@ class ImportJson extends React.Component<ImportJsonProp, ImportJsonState> {
       const data = new Uint8Array(result)
       try {
         const json = JSON.parse(u8aToString(data))
-        decodeAddress(json.address, true).then((decodeAddress) => {
-          const isFileValid = decodeAddress.length === 32
-            && isHex(json.encoded) && isObject(json.meta)
-            && (Array.isArray(json.encoding.content)
-              ? json.encoding.content[0] === 'pkcs8'
-              : json.encoding.content === 'pkcs8')
-          if (isFileValid) {
+        decodeAddress(json.address, true).then(decodeAddress => {
+          if (this.isFileValid(decodeAddress, json)) {
             this.setState({ ...this.state, json: json, errorMessage: '' })
           } else {
             this.setState({ ...this.state, errorMessage: t('error.keystore.invalid') })
           }
-        }).catch(err => {
+        }).catch(err => { // decodeAddress throw error
           this.setState({ ...this.state, errorMessage: err.message })
         })
-      } catch (error) { // JSON.parse(u8aToString(data)) may throw error here
-        this.setState({ ...this.state, errorMessage: error.message })
+      } catch (e) { // JSON.parse(u8aToString(data)) throw error
+        this.setState({ ...this.state, errorMessage: e.message })
       }
     }
     reader.readAsArrayBuffer(file)
   }
 
-  isReady () {
+  private isFileValid (decodeAddress, json) {
+    return decodeAddress.length === 32
+      && isHex(json.encoded) && isObject(json.meta)
+      && (Array.isArray(json.encoding.content)
+        ? json.encoding.content[0] === 'pkcs8'
+        : json.encoding.content === 'pkcs8')
+  }
+
+  private isReady () {
     return !!this.state.json.address && !this.state.errorMessage
+  }
+
+  private shortFileName () {
+    if (!this.state.file) return ''
+    if (this.state.file.name.length < 20) {
+      return this.state.file.name
+    }
+    let longName = this.state.file.name
+    return longName.substring(0, 5) + '...' + longName.substring(longName.length - 10)
   }
 
   render () {
     return (
       <div>
         <Dropzone onDrop={this.handleFileUpload}>
-          {({getRootProps, getInputProps}) => (
-            <StyledDiv {...getRootProps()}>
+          {({ getRootProps, getInputProps }) => (
+            <UploadArea {...getRootProps()}>
               <input {...getInputProps()} />
               {this.state.file ? this.shortFileName() : t('fileUpload')}
-            </StyledDiv>
+            </UploadArea>
           )}
         </Dropzone>
         <Section>
@@ -115,20 +118,22 @@ class ImportJson extends React.Component<ImportJsonProp, ImportJsonState> {
             value={this.state.password}
           />
         </Section>
-        <Message negative={true} hidden={!this.state.errorMessage} style={error}>
-          {this.state.errorMessage}
-        </Message>
         <Section>
-          <ImportButton onClick={this.handleImport} disabled={!this.isReady()}>
+          <Message negative={true} hidden={!this.state.errorMessage}>
+            {this.state.errorMessage}
+          </Message>
+        </Section>
+        <Section>
+          <Button onClick={this.handleImport} disabled={!this.isReady()}>
             {t('import')}
-          </ImportButton>
+          </Button>
         </Section>
       </div>
     )
   }
 }
 
-const StyledDiv = styled.div`
+const UploadArea = styled.div`
   width: 311px;
   height: 90px;
   margin:18px auto;
@@ -138,41 +143,6 @@ const StyledDiv = styled.div`
   justify-content: space-around;
   align-items: center
 `
-
-const Section = styled.p`
-    width: 311px;
-    margin:18px auto;
-    opacity: 0.6;
-    font-family: Nunito;
-    font-size: 14px;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    color: #3e5860;
-`
-
-const ImportButton = styled.button`
-  width: 311px;
-  height: 45px;
-  border-radius: 4px;
-  box-shadow: 0 3px 10px 0 rgba(72, 178, 228, 0.21);
-  background-color: #24b6e8;
-  font-family: Nunito;
-  font-size: 16px;
-  font-weight: 800;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: 1.31;
-  letter-spacing: normal;
-  text-align: center;
-  color: #ffffff;`
-
-const error = {
-  width: 311,
-  margin: 'auto'
-}
 
 const password = {
   width: 311,

@@ -1,27 +1,64 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import styled, { ThemeProvider } from 'styled-components'
+import { HashRouter as Router } from 'react-router-dom'
 import { IAppState } from '../../background/store/all'
 
 import GlobalStyle from '../../components/styles/GlobalStyle'
 import { themes } from '../../components/styles/themes'
-import { HashRouter as Router } from 'react-router-dom'
 import { Routes } from '../../routes'
 import { getSettings } from '../../background/store/settings'
-import { isWalletLocked } from '../../services/keyring-vault-proxy'
-import { setLocked } from '../../background/store/account'
+import { isWalletLocked, walletExists } from '../../services/keyring-vault-proxy'
+import { setLocked, setCreated } from '../../background/store/account'
 
-interface IPopupApp extends StateProps, DispatchProps {}
+interface IPopupApp extends StateProps, DispatchProps {
+}
 
-class PopupApp extends React.Component<IPopupApp> {
+interface IPopupState {
+  initializing: boolean
+}
 
-  componentDidMount () {
-    this.props.getSettings()
-    // TODO delete the function call below. It's a test
-    isWalletLocked().then(result => console.log(result))
+class PopupApp extends React.Component<IPopupApp, IPopupState> {
+
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      initializing: true
+    }
+  }
+
+  initializeApp = () => {
+    const loadAppSetting = this.props.getSettings()
+    const checkAppState = isWalletLocked().then(
+      result => {
+        console.log(`isLocked ${result}`)
+        this.props.setLocked(result)
+      })
+    const checkAccountCreated = walletExists().then(
+        result => {
+          console.log(`isWalletCreated ${result}`)
+          this.props.setCreated(result)
+        }
+    )
+
+    Promise.all([loadAppSetting, checkAppState, checkAccountCreated]).then(
+      () => {
+        this.setState({
+          initializing: false
+        })
+      }
+    )
+  }
+
+  componentWillMount () {
+    this.initializeApp()
   }
 
   render () {
+    if (this.state.initializing) {
+      return (null)
+    }
     return (
       <ThemeProvider theme={themes[this.props.settings.theme]}>
         <React.Fragment>
@@ -40,11 +77,11 @@ class PopupApp extends React.Component<IPopupApp> {
 const mapStateToProps = (state: IAppState) => {
   return {
     settings: state.settings,
-    accountStatus: state.accountStatus
+    accountStatus: state.account
   }
 }
 
-const mapDispatchToProps = { getSettings, setLocked }
+const mapDispatchToProps = { getSettings, setLocked, setCreated }
 
 type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps

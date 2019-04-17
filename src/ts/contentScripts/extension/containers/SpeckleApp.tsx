@@ -15,13 +15,13 @@ class SpeckleApp extends React.Component<ISpeckleApp> {
 
   render () {
     return (
-            <ThemeProvider theme={themes[this.props.theme]}>
-                <React.Fragment>
-                    <SpeckleAppContainer >
-                        <App />
-                    </SpeckleAppContainer>
-                </React.Fragment>
-            </ThemeProvider>
+      <ThemeProvider theme={themes[this.props.theme]}>
+        <React.Fragment>
+          <SpeckleAppContainer>
+            <App/>
+          </SpeckleAppContainer>
+        </React.Fragment>
+      </ThemeProvider>
     )
   }
 }

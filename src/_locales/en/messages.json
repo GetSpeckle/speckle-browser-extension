@@ -53,6 +53,39 @@
   "fileUpload": {
     "message": "Drag n' drop the keystore file and click here to choose one"
   },
+  "phraseDescription": {
+    "message": "Store your secret phrase in a safe location. It is required to restore you account."
+  },
+  "phraseTitle": {
+    "message": "Secret backup phrase"
+  },
+  "copyText": {
+    "message": "Copy Text"
+  },
+  "copyTextMessage": {
+    "message": "Phrase copied to clipboard. You can then paste and save it to a secure place."
+  },
+  "downloadFile": {
+    "message": "Download"
+  },
+  "createAccount": {
+    "message": "Create Account"
+  },
+  "phraseConfirmTitle": {
+    "message": "Enter your backup phrase"
+  },
+  "confirmPhraseButton": {
+    "message": "Confirm Backup Phrase"
+  },
+  "backupKeypairMessage": {
+    "message": "Great! Your first account has been created. Before you proceed, it is strongly recommended that you download the password protected key pair file and backup to a secure place."
+  },
+  "downloadKeyPairButton": {
+    "message": "Download Key Pair File"
+  },
+  "proceedButton": {
+    "message": "Proceed"
+  },
   "error": {
     "message": "error",
     "wallet": {

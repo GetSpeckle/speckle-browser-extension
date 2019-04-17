@@ -1,15 +1,11 @@
 import { createStore } from 'redux'
-import reducers, { IAppState, loadState } from './store/all'
+import reducers, { IAppState } from './store/all'
 import { wrapStore, Store } from 'react-chrome-redux'
-import { configureApp } from './AppConfig'
 import { browser } from 'webextension-polyfill-ts'
-import keyringVault from '../services/keyring-vault'
+import keyringVault from './services/keyring-vault'
 import * as FUNCS from '../constants/keyring-vault-funcs'
 
-const preloadedState = loadState()
-const store: Store<IAppState> = createStore(reducers, preloadedState)
-
-configureApp(store)
+const store: Store<IAppState> = createStore(reducers)
 
 wrapStore(store, {
   // Communication port between the background component
@@ -30,16 +26,20 @@ browser.runtime.onConnect.addListener(function (port) {
         break
       case FUNCS.LOCK:
         keyringVault.lock()
-        port.postMessage({ method: FUNCS.UNLOCK })
+        port.postMessage({ method: FUNCS.LOCK, result: true })
         break
       case FUNCS.UNLOCK:
         keyringVault.unlock(msg.password, msg.addressPrefix).then(keys => {
           port.postMessage({ method: FUNCS.UNLOCK, result: keys })
+        }).catch(err => {
+          port.postMessage({ method: FUNCS.UNLOCK, error: err })
         })
         break
       case FUNCS.WALLET_EXISTS:
         keyringVault.walletExists().then((result) => {
           port.postMessage({ method: FUNCS.WALLET_EXISTS, result: result })
+        }).catch(err => {
+          port.postMessage({ method: FUNCS.WALLET_EXISTS, error: err })
         })
         break
       case FUNCS.GET_ACCOUNTS:
@@ -72,22 +72,18 @@ browser.runtime.onConnect.addListener(function (port) {
         })
         break
       case FUNCS.CREATE_ACCOUNT:
-        try {
-          keyringVault.createAccount(msg.mnemonic, msg.accountName).then((pairJson) => {
-            port.postMessage({ method: FUNCS.CREATE_ACCOUNT, result: pairJson })
-          })
-        } catch (e) {
-          port.postMessage({ method: FUNCS.CREATE_ACCOUNT, error: e })
-        }
+        keyringVault.createAccount(msg.mnemonic, msg.accountName).then((pairJson) => {
+          port.postMessage({ method: FUNCS.CREATE_ACCOUNT, result: pairJson })
+        }).catch(err => {
+          port.postMessage({ method: FUNCS.CREATE_ACCOUNT, error: err })
+        })
         break
       case FUNCS.UPDATE_ACCOUNT_NAME:
-        try {
-          keyringVault.updateAccountName(msg.address, msg.accountName).then((pairJson) => {
-            port.postMessage({ method: FUNCS.UPDATE_ACCOUNT_NAME, result: pairJson })
-          })
-        } catch (e) {
-          port.postMessage({ method: FUNCS.UPDATE_ACCOUNT_NAME, error: e })
-        }
+        keyringVault.updateAccountName(msg.address, msg.accountName).then((pairJson) => {
+          port.postMessage({ method: FUNCS.UPDATE_ACCOUNT_NAME, result: pairJson })
+        }).catch(err => {
+          port.postMessage({ method: FUNCS.UPDATE_ACCOUNT_NAME, error: err })
+        })
         break
       case FUNCS.REMOVE_ACCOUNT:
         try {
@@ -98,22 +94,18 @@ browser.runtime.onConnect.addListener(function (port) {
         }
         break
       case FUNCS.IMPORT_MNEMONIC:
-        try {
-          keyringVault.importAccountFromMnemonic(msg.mnemonic, msg.accountName).then((pairJson) => {
-            port.postMessage({ method: FUNCS.IMPORT_MNEMONIC, result: pairJson })
-          })
-        } catch (e) {
-          port.postMessage({ method: FUNCS.IMPORT_MNEMONIC, error: e })
-        }
+        keyringVault.importAccountFromMnemonic(msg.mnemonic, msg.accountName).then((pairJson) => {
+          port.postMessage({ method: FUNCS.IMPORT_MNEMONIC, result: pairJson })
+        }).catch(err => {
+          port.postMessage({ method: FUNCS.IMPORT_MNEMONIC, error: err })
+        })
         break
       case FUNCS.IMPORT_JSON:
-        try {
-          keyringVault.importAccountFromJson(msg.json, msg.password).then((pairJson) => {
-            port.postMessage({ method: FUNCS.IMPORT_JSON, result: pairJson })
-          })
-        } catch (e) {
-          port.postMessage({ method: FUNCS.IMPORT_JSON, error: e.message })
-        }
+        keyringVault.importAccountFromJson(msg.json, msg.password).then((pairJson) => {
+          port.postMessage({ method: FUNCS.IMPORT_JSON, result: pairJson })
+        }).catch(err => {
+          port.postMessage({ method: FUNCS.IMPORT_JSON, error: err })
+        })
         break
       default:
         break

@@ -1,14 +1,15 @@
 import * as React from 'react'
-import styled from 'styled-components'
 import t from '../../services/i18n'
 import Progress from './Progress'
 import { IAppState } from '../../background/store/all'
-import keyringVault from '../../services/keyring-vault'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
-import { Message } from 'semantic-ui-react';
+import { Message } from 'semantic-ui-react'
+import { GENERATE_PHRASE_ROUTE } from '../../constants/routes'
+import { Button, Section, StyledPassword } from '../basic-components'
+import { setNewPassword } from '../../background/store/account'
 
-interface ICreatePasswordProps extends StateProps, RouteComponentProps {}
+interface ICreatePasswordProps extends StateProps, DispatchProps, RouteComponentProps {}
 
 interface ICreatePasswordState {
   newPassword: string,
@@ -18,64 +19,78 @@ interface ICreatePasswordState {
 
 class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswordState> {
 
+  constructor (props: ICreatePasswordProps) {
+    super(props)
+    this.handleClick = this.handleClick.bind(this)
+    this.setNewPassword = this.setNewPassword.bind(this)
+    this.setConfirmPassword = this.setConfirmPassword.bind(this)
+  }
+
   state: ICreatePasswordState = {
     newPassword: '',
     confirmPassword: ''
   }
 
+  setNewPassword (event) {
+    this.setState({ ...this.state, newPassword: event.target.value })
+  }
+
+  setConfirmPassword (event) {
+    this.setState({ ...this.state, confirmPassword: event.target.value })
+  }
+
   handleClick () {
-    this.setState({errorMessage: ''})
+    this.setState({ errorMessage: '' })
 
     if (this.state.newPassword !== this.state.confirmPassword) {
-      this.setState({errorMessage: t('Password mismatch')})
+      this.setState({ errorMessage: t('Password mismatch') })
       return
     }
-    if (this.state.newPassword.length<8) {
-      this.setState({errorMessage: t('Password minimum length is 8')})
+    if (this.state.newPassword.length < 8) {
+      this.setState({ errorMessage: t('Password minimum length is 8') })
       return
     }
 
-    keyringVault.unlock(this.state.newPassword).then(
-      keyringPairs => {
-        console.log('Should have empty keyring pairs ', keyringPairs)
-      }
-    )
+    // set the new password to the store for later use
+    this.props.setNewPassword(this.state.newPassword)
+    this.props.history.push(GENERATE_PHRASE_ROUTE)
+
   }
 
   render () {
     return (
         <div>
           <Progress color={this.props.settings.color} progress={1} />
-          <Text>
+          <Section>
             {t('passwordDescription')}
-          </Text>
-          <Text>
+          </Section>
+          <Section>
             <StyledPassword
               type='password'
               placeholder={t('Create new password')}
               value={this.state.newPassword}
-              onChange={evt => this.setState({newPassword: evt.target.value})}/>
-          </Text>
-
-          <Text>
+              onChange={this.setNewPassword}
+            />
+          </Section>
+          <Section>
             <StyledPassword
               type='password'
               placeholder={t('Repeat password')}
               value={this.state.confirmPassword}
-              onChange={evt => this.setState({confirmPassword: evt.target.value})}
-              />
-          </Text>
+              onChange={this.setConfirmPassword}
+            />
+          </Section>
+          <Section>
+            <Message negative={true} hidden={!this.state.errorMessage}>
+              {this.state.errorMessage}
+            </Message>
+          </Section>
 
-          <Message negative hidden={!this.state.errorMessage}>
-            {this.state.errorMessage}
-          </Message>
-
-          <Text>
-            <StyledButton onClick={this.handleClick.bind(this)}>
+          <Section>
+            <Button onClick={this.handleClick}>
               {t('Create Account')}
-            </StyledButton>
-          </Text>
-
+            </Button>
+          </Section>
         </div>
     )
   }
@@ -83,45 +98,15 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
 
 const mapStateToProps = (state: IAppState) => {
   return {
-    settings: state.settings
+    settings: state.settings,
+    accountStatus: state.account
   }
 }
 
+const mapDispatchToProps = { setNewPassword }
+
 type StateProps = ReturnType<typeof mapStateToProps>
 
-const Text = styled.p`
-    width: 327px;
-    margin:18px auto;
-    opacity: 0.6;
-    font-family: Nunito;
-    font-size: 14px;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    color: #3e5860;
-`
+type DispatchProps = typeof mapDispatchToProps
 
-const StyledPassword = styled.input`
-  width: 311px;
-  height: 42px;
-`
-const StyledButton = styled.button`
-  width: 311px;
-  height: 45px;
-  border-radius: 4px;
-  box-shadow: 0 3px 10px 0 rgba(72, 178, 228, 0.21);
-  background-color: #24b6e8;
-  font-family: Nunito;
-  font-size: 16px;
-  font-weight: 800;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: 1.31;
-  letter-spacing: normal;
-  text-align: center;
-  color: #ffffff;
-`
-
-export default withRouter(connect(mapStateToProps)(CreatePassword))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CreatePassword))

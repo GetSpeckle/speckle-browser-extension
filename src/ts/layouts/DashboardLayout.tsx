@@ -6,18 +6,22 @@ import { LayoutContainer } from '../components/basic-components'
 
 interface ILoginLayoutProp extends StateProps, DispatchProps {}
 
-class LoginLayout extends Component<ILoginLayoutProp> {
+interface ILoginLayoutState {
+  color: string
+}
 
-  getHeaderImageUrl = () => {
-    return `/assets/header/header_${this.props.settings.color}.svg`
+class DashboardLayout extends Component<ILoginLayoutProp, ILoginLayoutState> {
+
+  getBackgroundImageUrl = () => {
+    return `/assets/background/color-bg-${this.props.settings.color}.svg`
   }
 
   render () {
     return (
-    <LayoutContainer>
-      <Image src={this.getHeaderImageUrl()} />
-      {this.props.children}
-    </LayoutContainer>
+      <LayoutContainer>
+        <Image src={this.getBackgroundImageUrl()} />
+        {this.props.children}
+      </LayoutContainer>
     )
   }
 }
@@ -32,4 +36,4 @@ const mapDispatchToProps = {}
 type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginLayout)
+export default connect(mapStateToProps, mapDispatchToProps)(DashboardLayout)
