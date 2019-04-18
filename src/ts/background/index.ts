@@ -32,14 +32,15 @@ browser.runtime.onConnect.addListener(function (port) {
         keyringVault.unlock(msg.password, msg.addressPrefix).then(keys => {
           port.postMessage({ method: FUNCS.UNLOCK, result: keys })
         }).catch(err => {
-          port.postMessage({ method: FUNCS.UNLOCK, error: err })
+          debugger
+          port.postMessage({ method: FUNCS.UNLOCK, error: { message: err.message } })
         })
         break
       case FUNCS.WALLET_EXISTS:
         keyringVault.walletExists().then((result) => {
           port.postMessage({ method: FUNCS.WALLET_EXISTS, result: result })
         }).catch(err => {
-          port.postMessage({ method: FUNCS.WALLET_EXISTS, error: err })
+          port.postMessage({ method: FUNCS.WALLET_EXISTS, error: { message: err.message } })
         })
         break
       case FUNCS.GET_ACCOUNTS:
@@ -48,10 +49,10 @@ browser.runtime.onConnect.addListener(function (port) {
             method: FUNCS.GET_ACCOUNTS,
             result: keyringVault.getAccounts()
           })
-        } catch (e) {
+        } catch (err) {
           port.postMessage({
             method: FUNCS.GET_ACCOUNTS,
-            error: e
+            error: { message: err.message }
           })
         }
         break
@@ -61,8 +62,8 @@ browser.runtime.onConnect.addListener(function (port) {
             method: FUNCS.GENERATE_MNEMONIC,
             result: keyringVault.generateMnemonic()
           })
-        } catch (e) {
-          port.postMessage({ method: FUNCS.GENERATE_MNEMONIC, error: e })
+        } catch (err) {
+          port.postMessage({ method: FUNCS.GENERATE_MNEMONIC, error: { message: err.message } })
         }
         break
       case FUNCS.IS_MNEMONIC_VALID:
@@ -75,36 +76,36 @@ browser.runtime.onConnect.addListener(function (port) {
         keyringVault.createAccount(msg.mnemonic, msg.accountName).then((pairJson) => {
           port.postMessage({ method: FUNCS.CREATE_ACCOUNT, result: pairJson })
         }).catch(err => {
-          port.postMessage({ method: FUNCS.CREATE_ACCOUNT, error: err })
+          port.postMessage({ method: FUNCS.CREATE_ACCOUNT, error: { message: err.message } })
         })
         break
       case FUNCS.UPDATE_ACCOUNT_NAME:
         keyringVault.updateAccountName(msg.address, msg.accountName).then((pairJson) => {
           port.postMessage({ method: FUNCS.UPDATE_ACCOUNT_NAME, result: pairJson })
         }).catch(err => {
-          port.postMessage({ method: FUNCS.UPDATE_ACCOUNT_NAME, error: err })
+          port.postMessage({ method: FUNCS.UPDATE_ACCOUNT_NAME, error: { message: err.message } })
         })
         break
       case FUNCS.REMOVE_ACCOUNT:
         try {
           keyringVault.removeAccount(msg.address)
           port.postMessage({ method: FUNCS.REMOVE_ACCOUNT })
-        } catch (e) {
-          port.postMessage({ method: FUNCS.REMOVE_ACCOUNT, error: e })
+        } catch (err) {
+          port.postMessage({ method: FUNCS.REMOVE_ACCOUNT, error: { message: err.message } })
         }
         break
       case FUNCS.IMPORT_MNEMONIC:
         keyringVault.importAccountFromMnemonic(msg.mnemonic, msg.accountName).then((pairJson) => {
           port.postMessage({ method: FUNCS.IMPORT_MNEMONIC, result: pairJson })
         }).catch(err => {
-          port.postMessage({ method: FUNCS.IMPORT_MNEMONIC, error: err })
+          port.postMessage({ method: FUNCS.IMPORT_MNEMONIC, error: { message: err.message } })
         })
         break
       case FUNCS.IMPORT_JSON:
         keyringVault.importAccountFromJson(msg.json, msg.password).then((pairJson) => {
           port.postMessage({ method: FUNCS.IMPORT_JSON, result: pairJson })
         }).catch(err => {
-          port.postMessage({ method: FUNCS.IMPORT_JSON, error: err })
+          port.postMessage({ method: FUNCS.IMPORT_JSON, error: { message: err.message } })
         })
         break
       default:

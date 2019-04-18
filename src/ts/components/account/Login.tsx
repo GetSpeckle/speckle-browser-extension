@@ -43,7 +43,7 @@ class Login extends React.Component<ILoginProps, ILoginState> {
           )
         }
       }
-    )
+    ).catch(err => { alert(err) })
   }
 
   render () {

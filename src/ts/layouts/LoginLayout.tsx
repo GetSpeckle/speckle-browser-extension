@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import Image from 'semantic-ui-react/dist/commonjs/elements/Image/Image'
 import { IAppState } from '../background/store/all'
 import { LayoutContainer } from '../components/basic-components'
+import ErrorMessage from '../components/error/ErrorMessage'
 
 interface ILoginLayoutProp extends StateProps, DispatchProps {}
 
@@ -15,6 +16,7 @@ class LoginLayout extends Component<ILoginLayoutProp> {
   render () {
     return (
     <LayoutContainer>
+      <ErrorMessage message={this.props.error}/>
       <Image src={this.getHeaderImageUrl()} />
       {this.props.children}
     </LayoutContainer>
@@ -24,7 +26,8 @@ class LoginLayout extends Component<ILoginLayoutProp> {
 
 const mapStateToProps = (state: IAppState) => {
   return {
-    settings: state.settings
+    settings: state.settings,
+    error: state.error.message
   }
 }
 

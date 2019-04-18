@@ -43,9 +43,13 @@ export function unlockWallet (password: string, addressPrefix?: string):
   Promise<Array<KeyringPair$Json>> {
   return new Promise<Array<KeyringPair$Json>>(resolve => {
     port.onMessage.addListener(msg => {
-      if (msg.method === FUNCS.UNLOCK) {
-        resolve(msg.result)
+      if (msg.method !== FUNCS.UNLOCK) return
+      debugger
+      if (msg.error) {
+        alert(msg.error.message)
+        return
       }
+      resolve(msg.result)
     })
     port.postMessage({ method: FUNCS.UNLOCK, password: password, addressPrefix: addressPrefix })
   })
