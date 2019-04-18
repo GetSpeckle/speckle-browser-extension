@@ -2,11 +2,12 @@ import * as React from 'react'
 import { Route, Switch } from 'react-router-dom'
 import Term from '../components/account/Term'
 import Login from '../components/account/Login'
-
 import {
   HOME_ROUTE,
   TERM_SERVICE_ROUTE,
   CREATE_PASSWORD_ROUTE,
+  IMPORT_MNEMONIC_ROUTE,
+  IMPORT_JSON_ROUTE,
   GENERATE_PHRASE_ROUTE,
   CONFIRM_PHRASE_ROUTE,
   UNLOCK_ROUTE,
@@ -15,6 +16,8 @@ import {
 import { RouteWithLayout } from './withLayout'
 import LoginLayout from '../layouts/LoginLayout'
 import CreatePassword from '../components/account/CreatePassword'
+import ImportMnemonic from '../components/account/ImportMnemonic'
+import ImportJson from '../components/account/ImportJson'
 import ConfirmPhrase from '../components/account/ConfirmPhrase'
 import GeneratePhrase from '../components/account/GeneratePhrase'
 import Authenticated from './authenticated/index'
@@ -60,6 +63,18 @@ export class Routes extends React.Component {
           layout={LoginLayout}
           path={UNLOCK_ROUTE}
           component={Login}
+          exact={true}
+        />
+        <RouteWithLayout
+          layout={LoginLayout}
+          path={IMPORT_MNEMONIC_ROUTE}
+          component={ImportMnemonic}
+          exact={true}
+        />
+        <RouteWithLayout
+          layout={LoginLayout}
+          path={IMPORT_JSON_ROUTE}
+          component={ImportJson}
           exact={true}
         />
         <Route
