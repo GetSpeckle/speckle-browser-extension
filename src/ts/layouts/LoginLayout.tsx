@@ -16,8 +16,8 @@ class LoginLayout extends Component<ILoginLayoutProp> {
   render () {
     return (
     <LayoutContainer>
-      <ErrorMessage message={this.props.error}/>
       <Image src={this.getHeaderImageUrl()} />
+      <ErrorMessage message={this.props.error} style={alignMiddle}/>
       {this.props.children}
     </LayoutContainer>
     )
@@ -34,5 +34,10 @@ const mapStateToProps = (state: IAppState) => {
 const mapDispatchToProps = {}
 type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps
+
+const alignMiddle = {
+  width: 311,
+  margin: 'auto'
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginLayout)

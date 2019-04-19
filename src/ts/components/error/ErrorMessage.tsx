@@ -1,18 +1,25 @@
-import * as React from 'react'
+import React, { Component } from 'react'
+
+import { Message } from 'semantic-ui-react'
 
 interface ErrorMessageProp {
-  message: String
+  message: String,
+  style: object
 }
 
-class ErrorMessage extends React.Component<ErrorMessageProp> {
+class ErrorMessage extends Component<ErrorMessageProp> {
 
   render () {
-    const { message } = this.props
+    const { message, style } = this.props
+
+    if (!message) {
+      return null
+    }
 
     return (
-      <div>
-        ${message}
-      </div>
+      <Message negative={true} floating={true} style={style}>
+        <p>{message}</p>
+      </Message>
     )
   }
 }

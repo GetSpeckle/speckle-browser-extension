@@ -8,6 +8,7 @@ import { Message } from 'semantic-ui-react'
 import { GENERATE_PHRASE_ROUTE } from '../../constants/routes'
 import { Button, Section, StyledPassword } from '../basic-components'
 import { setNewPassword } from '../../background/store/account'
+import { setError } from '../../background/store/error'
 
 interface ICreatePasswordProps extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -40,14 +41,14 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
   }
 
   handleClick () {
-    this.setState({ errorMessage: '' })
+    this.props.setError(null)
 
     if (this.state.newPassword !== this.state.confirmPassword) {
-      this.setState({ errorMessage: t('Password mismatch') })
+      this.props.setError(t('Password mismatch'))
       return
     }
     if (this.state.newPassword.length < 8) {
-      this.setState({ errorMessage: t('Password minimum length is 8') })
+      this.props.setError(t('Password minimum length is 8'))
       return
     }
 
@@ -103,7 +104,7 @@ const mapStateToProps = (state: IAppState) => {
   }
 }
 
-const mapDispatchToProps = { setNewPassword }
+const mapDispatchToProps = { setNewPassword, setError }
 
 type StateProps = ReturnType<typeof mapStateToProps>
 

@@ -32,7 +32,6 @@ browser.runtime.onConnect.addListener(function (port) {
         keyringVault.unlock(msg.password, msg.addressPrefix).then(keys => {
           port.postMessage({ method: FUNCS.UNLOCK, result: keys })
         }).catch(err => {
-          debugger
           port.postMessage({ method: FUNCS.UNLOCK, error: { message: err.message } })
         })
         break

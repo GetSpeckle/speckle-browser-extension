@@ -74,6 +74,9 @@
   "phraseConfirmTitle": {
     "message": "Enter your backup phrase"
   },
+  "phraseMismatch": {
+    "message": "Please enter the matched phrase"
+  },
   "confirmPhraseButton": {
     "message": "Confirm Backup Phrase"
   },

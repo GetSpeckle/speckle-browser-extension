@@ -6,6 +6,7 @@ import { unlockWallet } from '../../services/keyring-vault-proxy'
 import { HOME_ROUTE } from '../../constants/routes'
 import { setLocked } from '../../background/store/account'
 import { Button, Section, Title, StyledPassword } from '../basic-components'
+import { setError } from '../../background/store/error'
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
@@ -33,8 +34,7 @@ class Login extends React.Component<ILoginProps, ILoginState> {
   }
 
   handleLogin () {
-    this.setState({ errorMessage: '' })
-    // for testing only
+    this.props.setError(null)
     unlockWallet(this.state.password).then(
       keyringPairs => {
         if (keyringPairs.length && keyringPairs.length > 0) {
@@ -43,7 +43,7 @@ class Login extends React.Component<ILoginProps, ILoginState> {
           )
         }
       }
-    ).catch(err => { alert(err) })
+    ).catch(err => { this.props.setError(err) })
   }
 
   render () {
@@ -75,7 +75,7 @@ const mapStateToProps = (state: IAppState) => {
   }
 }
 
-const mapDispatchToProps = { setLocked }
+const mapDispatchToProps = { setLocked, setError }
 
 type DispatchProps = typeof mapDispatchToProps
 
