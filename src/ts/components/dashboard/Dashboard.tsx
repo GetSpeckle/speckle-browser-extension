@@ -4,8 +4,11 @@ import { lockWallet } from '../../services/keyring-vault-proxy'
 import { UNLOCK_ROUTE } from '../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { Button, Section } from '../basic-components'
+import { colorSchemes } from '../styles/themes'
+import { IAppState } from '../../background/store/all'
+import { connect } from 'react-redux'
 
-interface IDashboardProp extends RouteComponentProps {}
+interface IDashboardProp extends StateProps, RouteComponentProps {}
 
 class Dashboard extends React.Component<IDashboardProp> {
 
@@ -24,7 +27,10 @@ class Dashboard extends React.Component<IDashboardProp> {
           Dashboard goes here
         </Title>
         <Section>
-          <Button onClick={this.handleClick}>
+          <Button
+            onClick={this.handleClick}
+            colorScheme={colorSchemes[this.props.settings.color]}
+          >
             Logout
           </Button>
         </Section>
@@ -55,4 +61,12 @@ const Title = styled(Text)`
     color: #30383B;
 `
 
-export default withRouter(Dashboard)
+const mapStateToProps = (state: IAppState) => {
+  return {
+    settings: state.settings
+  }
+}
+
+type StateProps = ReturnType<typeof mapStateToProps>
+
+export default withRouter(connect(mapStateToProps)(Dashboard))

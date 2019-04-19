@@ -9,6 +9,7 @@ import { generateMnemonic } from '../../services/keyring-vault-proxy'
 import { setNewPhrase } from '../../background/store/account'
 import { CONFIRM_PHRASE_ROUTE } from '../../constants/routes'
 import { Button as StyledButton, Section, MnemonicPad } from '../basic-components'
+import { colorSchemes } from '../styles/themes'
 
 interface IGeneratePhraseProps extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -117,7 +118,10 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
           </Section>
 
           <Section>
-            <StyledButton onClick={this.handleClick}>
+            <StyledButton
+              onClick={this.handleClick}
+              colorScheme={colorSchemes[this.props.settings.color]}
+            >
               {t('createAccount')}
             </StyledButton>
           </Section>

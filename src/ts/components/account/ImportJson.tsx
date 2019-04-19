@@ -8,8 +8,11 @@ import { Message } from 'semantic-ui-react'
 import Dropzone from 'react-dropzone'
 import { isObject, u8aToString, isHex } from '@polkadot/util'
 import { Section, Button } from '../basic-components'
+import { colorSchemes } from '../styles/themes'
+import { IAppState } from '../../background/store/all'
+import { connect } from 'react-redux'
 
-interface ImportJsonProp extends RouteComponentProps {}
+interface ImportJsonProp extends StateProps, RouteComponentProps {}
 
 interface ImportJsonState {
   file?: File
@@ -116,7 +119,11 @@ class ImportJson extends React.Component<ImportJsonProp, ImportJsonState> {
           </Message>
         </Section>
         <Section>
-          <Button onClick={this.handleImport} disabled={!this.isReady()}>
+          <Button
+            onClick={this.handleImport}
+            disabled={!this.isReady()}
+            colorScheme={colorSchemes[this.props.settings.color]}
+          >
             {t('import')}
           </Button>
         </Section>
@@ -146,4 +153,12 @@ const password = {
   borderColor: 'gray'
 }
 
-export default withRouter(ImportJson)
+const mapStateToProps = (state: IAppState) => {
+  return {
+    settings: state.settings
+  }
+}
+
+type StateProps = ReturnType<typeof mapStateToProps>
+
+export default withRouter(connect(mapStateToProps)(ImportJson))
