@@ -6,7 +6,6 @@ import { unlockWallet } from '../../services/keyring-vault-proxy'
 import { HOME_ROUTE } from '../../constants/routes'
 import { setLocked } from '../../background/store/account'
 import { Button, Section, Title, StyledPassword } from '../basic-components'
-import { colorSchemes } from '../styles/themes'
 import { setError } from '../../background/store/error'
 
 type StateProps = ReturnType<typeof mapStateToProps>
@@ -60,10 +59,7 @@ class Login extends React.Component<ILoginProps, ILoginState> {
           />
         </Section>
         <Section>
-          <Button
-            onClick={this.handleLogin}
-            colorScheme={colorSchemes[this.props.settings.color]}
-          >
+          <Button onClick={this.handleLogin}>
             login
           </Button>
         </Section>

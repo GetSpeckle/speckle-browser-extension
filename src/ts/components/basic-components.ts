@@ -1,10 +1,15 @@
-import styled, { DefaultTheme } from 'styled-components'
-import { ColorScheme } from './styles/themes'
+import styled from 'styled-components'
+import { colorSchemes } from './styles/themes'
+import { IAppState } from '../background/store/all'
+import { connect } from 'react-redux'
 
-type SpeckleProps = {
-  colorScheme: ColorScheme,
-  theme: DefaultTheme
+const mapStateToProps = (state: IAppState) => {
+  return {
+    settings: state.settings
+  }
 }
+
+type StateProps = ReturnType<typeof mapStateToProps>
 
 export const LayoutContainer = styled('div')`
     width: 375px;
@@ -15,12 +20,12 @@ export const LayoutContainer = styled('div')`
     background-color: ${props => props.theme['backgroundColor']};
 `
 
-export const Button = styled.button`
+const StyledButton = styled.button`
   width: 311px;
   height: 45px;
   border-radius: 4px;
-  box-shadow: 0 3px 10px 0 ${(p: SpeckleProps) => p.colorScheme.shadowColor};
-  background-color: ${(p: SpeckleProps) => p.colorScheme.backgroundColor};
+  box-shadow: 0 3px 10px 0 ${(p: StateProps) => colorSchemes[p.settings.color].shadowColor};
+  background-color: ${(p: StateProps) => colorSchemes[p.settings.color].backgroundColor};
   font-family: Nunito;
   font-size: 16px;
   font-weight: 800;
@@ -31,6 +36,8 @@ export const Button = styled.button`
   text-align: center;
   color: #ffffff;
 `
+
+export const Button = connect(mapStateToProps)(StyledButton)
 
 export const Section = styled.div`
     width: 327px;
