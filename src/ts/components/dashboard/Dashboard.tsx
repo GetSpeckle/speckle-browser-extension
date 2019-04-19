@@ -4,7 +4,6 @@ import { lockWallet } from '../../services/keyring-vault-proxy'
 import { LOGIN_ROUTE } from '../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { Button, Section } from '../basic-components'
-import { colorSchemes } from '../styles/themes'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 
@@ -28,10 +27,7 @@ class Dashboard extends React.Component<IDashboardProps> {
           Dashboard goes here
         </Title>
         <Section>
-          <Button
-            onClick={this.handleClick}
-            colorScheme={colorSchemes[this.props.settings.color]}
-          >
+          <Button onClick={this.handleClick}>
             Logout
           </Button>
         </Section>

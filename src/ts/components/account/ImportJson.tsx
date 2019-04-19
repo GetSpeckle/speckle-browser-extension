@@ -8,7 +8,6 @@ import { Message } from 'semantic-ui-react'
 import Dropzone from 'react-dropzone'
 import { isObject, u8aToString, isHex } from '@polkadot/util'
 import { Section, Button } from '../basic-components'
-import { colorSchemes } from '../styles/themes'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 
@@ -119,11 +118,7 @@ class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
           </Message>
         </Section>
         <Section>
-          <Button
-            onClick={this.handleImport}
-            disabled={!this.isReady()}
-            colorScheme={colorSchemes[this.props.settings.color]}
-          >
+          <Button onClick={this.handleImport} disabled={!this.isReady()}>
             {t('import')}
           </Button>
         </Section>

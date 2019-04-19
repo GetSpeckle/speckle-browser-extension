@@ -6,7 +6,6 @@ import { RouteComponentProps, withRouter } from 'react-router'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import { Message } from 'semantic-ui-react'
 import { Button, Section, MnemonicPad } from '../basic-components'
-import { colorSchemes } from '../styles/themes'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 
@@ -75,7 +74,6 @@ class ImportMnemonic extends React.Component<IImportMnemonicProps, IImportMnemon
           <Button
             onClick={this.handleImport}
             disabled={!this.isMnemonicComplete()}
-            colorScheme={colorSchemes[this.props.settings.color]}
           >
             {t('import')}
           </Button>
