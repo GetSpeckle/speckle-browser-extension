@@ -5,9 +5,9 @@ import { IAppState } from '../background/store/all'
 import { LayoutContainer } from '../components/basic-components'
 import ErrorMessage from '../components/error/ErrorMessage'
 
-interface ILoginLayoutProp extends StateProps, DispatchProps {}
+interface ILoginLayoutProps extends StateProps, DispatchProps {}
 
-class LoginLayout extends Component<ILoginLayoutProp> {
+class LoginLayout extends Component<ILoginLayoutProps> {
 
   getHeaderImageUrl = () => {
     return `/assets/header/header_${this.props.settings.color}.svg`

@@ -11,6 +11,7 @@ import { HOME_ROUTE } from '../../constants/routes'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import { setLocked, setCreated } from '../../background/store/account'
 import { setError } from '../../background/store/error'
+import { colorSchemes } from '../styles/themes'
 
 interface IConfirmPhraseProps extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -119,7 +120,11 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
         </Message>
 
         <Section>
-          <StyledButton onClick={this.createAccount} disabled={!this.isPhraseConfirmed()}>
+          <StyledButton
+            colorScheme={colorSchemes[this.props.settings.color]}
+            onClick={this.createAccount}
+            disabled={!this.isPhraseConfirmed()}
+          >
             {t('confirmPhraseButton')}
           </StyledButton>
         </Section>

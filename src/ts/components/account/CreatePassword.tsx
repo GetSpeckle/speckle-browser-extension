@@ -8,6 +8,7 @@ import { Message } from 'semantic-ui-react'
 import { GENERATE_PHRASE_ROUTE } from '../../constants/routes'
 import { Button, Section, StyledPassword } from '../basic-components'
 import { setNewPassword } from '../../background/store/account'
+import { colorSchemes } from '../styles/themes'
 import { setError } from '../../background/store/error'
 
 interface ICreatePasswordProps extends StateProps, DispatchProps, RouteComponentProps {}
@@ -88,7 +89,10 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
           </Section>
 
           <Section>
-            <Button onClick={this.handleClick}>
+            <Button
+              onClick={this.handleClick}
+              colorScheme={colorSchemes[this.props.settings.color]}
+            >
               {t('Create Account')}
             </Button>
           </Section>

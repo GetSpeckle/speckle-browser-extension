@@ -1,7 +1,12 @@
 import { Reducer, AnyAction } from 'redux'
 import { ACTION_TYPES } from './actions'
 import { SUCCESS, REQUEST } from '../util'
-import { ThemeTypes } from '../../../components/styles/themes'
+import {
+  Color,
+  ColorScheme,
+  colorSchemes,
+  ThemeTypes
+} from '../../../components/styles/themes'
 
 /**
  * Settings state
@@ -9,7 +14,8 @@ import { ThemeTypes } from '../../../components/styles/themes'
 export interface IAppSettings {
   updating: boolean,
   theme: ThemeTypes,
-  color: string,
+  color: Color,
+  colorScheme: ColorScheme,
   // welcome if first time user
   welcome: boolean
 }
@@ -18,6 +24,7 @@ const initialState: IAppSettings = {
   updating: false,
   theme: 'light',
   color: 'blue',
+  colorScheme: colorSchemes.blue,
   welcome: true
 }
 

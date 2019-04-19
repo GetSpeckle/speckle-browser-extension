@@ -6,16 +6,19 @@ import { RouteComponentProps, withRouter } from 'react-router'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import { Message } from 'semantic-ui-react'
 import { Button, Section, MnemonicPad } from '../basic-components'
+import { colorSchemes } from '../styles/themes'
+import { IAppState } from '../../background/store/all'
+import { connect } from 'react-redux'
 
-interface ImportMnemonicProp extends RouteComponentProps {}
+interface IImportMnemonicProps extends StateProps, RouteComponentProps {}
 
-interface ImportMnemonicState {
+interface IImportMnemonicState {
   mnemonic: string,
   accountName: string,
   errorMessage?: string
 }
 
-class ImportMnemonic extends React.Component<ImportMnemonicProp, ImportMnemonicState> {
+class ImportMnemonic extends React.Component<IImportMnemonicProps, IImportMnemonicState> {
 
   constructor (props) {
     super(props)
@@ -25,7 +28,7 @@ class ImportMnemonic extends React.Component<ImportMnemonicProp, ImportMnemonicS
     this.isMnemonicComplete = this.isMnemonicComplete.bind(this)
   }
 
-  state: ImportMnemonicState = {
+  state: IImportMnemonicState = {
     mnemonic: '',
     accountName: t('importedAccount')
   }
@@ -69,7 +72,11 @@ class ImportMnemonic extends React.Component<ImportMnemonicProp, ImportMnemonicS
           </Message>
         </Section>
         <Section>
-          <Button onClick={this.handleImport} disabled={!this.isMnemonicComplete()}>
+          <Button
+            onClick={this.handleImport}
+            disabled={!this.isMnemonicComplete()}
+            colorScheme={colorSchemes[this.props.settings.color]}
+          >
             {t('import')}
           </Button>
         </Section>
@@ -85,4 +92,12 @@ const AccountName = styled.input`
   padding: 10px;
 `
 
-export default withRouter(ImportMnemonic)
+const mapStateToProps = (state: IAppState) => {
+  return {
+    settings: state.settings
+  }
+}
+
+type StateProps = ReturnType<typeof mapStateToProps>
+
+export default withRouter(connect(mapStateToProps)(ImportMnemonic))

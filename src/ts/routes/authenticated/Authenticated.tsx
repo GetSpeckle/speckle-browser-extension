@@ -1,9 +1,9 @@
 import { connect } from 'react-redux'
 import * as React from 'react'
 import { Redirect, RouteProps } from 'react-router'
-import { IRouteProps, RouteWithLayout } from '../withLayout'
+import { IRouteProps, RouteWithLayout } from '../RouteWithLayout'
 import { IAppState } from '../../background/store/all'
-import { CREATE_PASSWORD_ROUTE, INITIALIZE_ROUTE, UNLOCK_ROUTE } from '../../constants/routes'
+import { CREATE_PASSWORD_ROUTE, INITIALIZE_ROUTE, LOGIN_ROUTE } from '../../constants/routes'
 
 const mapStateToProps = (state: IAppState) => {
   return {
@@ -24,7 +24,7 @@ export class AuthenticatedRoute extends React.Component<StateProps & IRouteProps
       case this.props.welcome:
         return <Redirect to={{ pathname: INITIALIZE_ROUTE }} />
       default:
-        return <Redirect to={{ pathname: UNLOCK_ROUTE }} />
+        return <Redirect to={{ pathname: LOGIN_ROUTE }} />
     }
   }
   render () {

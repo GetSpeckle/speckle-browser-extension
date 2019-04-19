@@ -7,10 +7,11 @@ import { connect } from 'react-redux'
 import { saveSettings } from '../../background/store/settings'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { Button, Section, Title } from '../basic-components'
+import { colorSchemes } from '../styles/themes'
 
-interface ITermProp extends StateProps, DispatchProps, RouteComponentProps {}
+interface ITermProps extends StateProps, DispatchProps, RouteComponentProps {}
 
-class Term extends React.Component<ITermProp> {
+class Term extends React.Component<ITermProps> {
 
   handleClick = () => {
     const { history, settings } = this.props
@@ -29,7 +30,10 @@ class Term extends React.Component<ITermProp> {
             {t('termDescription')}
           </TermSection>
           <Section>
-            <Button onClick={this.handleClick}>
+            <Button
+              onClick={this.handleClick}
+              colorScheme={colorSchemes[this.props.settings.color]}
+            >
               {t('termAcceptButton')}
             </Button>
           </Section>

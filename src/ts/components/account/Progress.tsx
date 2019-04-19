@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Section } from '../basic-components'
 
-interface IProgressProp {
+interface IProgressProps {
   color: string,
   progress: number
 }
@@ -9,7 +9,7 @@ interface IProgressProp {
 /**
  * A component to show the progress/step of account creation using given color.
  */
-class Progress extends React.Component<IProgressProp> {
+class Progress extends React.Component<IProgressProps> {
 
   render () {
 

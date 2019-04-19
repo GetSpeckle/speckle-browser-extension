@@ -1,4 +1,10 @@
-import styled from 'styled-components'
+import styled, { DefaultTheme } from 'styled-components'
+import { ColorScheme } from './styles/themes'
+
+type SpeckleProps = {
+  colorScheme: ColorScheme,
+  theme: DefaultTheme
+}
 
 export const LayoutContainer = styled('div')`
     width: 375px;
@@ -13,8 +19,8 @@ export const Button = styled.button`
   width: 311px;
   height: 45px;
   border-radius: 4px;
-  box-shadow: 0 3px 10px 0 rgba(72, 178, 228, 0.21);
-  background-color: #24b6e8;
+  box-shadow: 0 3px 10px 0 ${(p: SpeckleProps) => p.colorScheme.shadowColor};
+  background-color: ${(p: SpeckleProps) => p.colorScheme.backgroundColor};
   font-family: Nunito;
   font-size: 16px;
   font-weight: 800;

@@ -10,10 +10,10 @@ import {
   IMPORT_JSON_ROUTE,
   GENERATE_PHRASE_ROUTE,
   CONFIRM_PHRASE_ROUTE,
-  UNLOCK_ROUTE,
+  LOGIN_ROUTE,
   INITIALIZE_ROUTE
 } from '../constants/routes'
-import { RouteWithLayout } from './withLayout'
+import { RouteWithLayout } from './RouteWithLayout'
 import LoginLayout from '../layouts/LoginLayout'
 import CreatePassword from '../components/account/CreatePassword'
 import ImportMnemonic from '../components/account/ImportMnemonic'
@@ -61,7 +61,7 @@ export class Routes extends React.Component {
         />
         <RouteWithLayout
           layout={LoginLayout}
-          path={UNLOCK_ROUTE}
+          path={LOGIN_ROUTE}
           component={Login}
           exact={true}
         />
