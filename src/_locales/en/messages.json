@@ -74,6 +74,9 @@
   "phraseConfirmTitle": {
     "message": "Enter your backup phrase"
   },
+  "phraseMismatch": {
+    "message": "Please enter the matched phrase"
+  },
   "confirmPhraseButton": {
     "message": "Confirm Backup Phrase"
   },
@@ -86,33 +89,22 @@
   "proceedButton": {
     "message": "Proceed"
   },
-  "error": {
-    "message": "error",
-    "wallet": {
-      "locked": {
-        "message": "Wallet is locked"
-      }
-    },
-    "password": {
-      "message": "Empty or wrong password"
-    },
-    "account": {
-      "notFound": {
-        "message": "Account not found"
-      }
-    },
-    "mnemonic": {
-      "unmatched": {
-        "message": "Mnemonic not matched with the generated one"
-      },
-      "invalid": {
-        "message": "Mnemonic is invalid"
-      }
-    },
-    "keystore": {
-      "invalid": {
-        "message": "Keystore file is invalid"
-      }
-    }
+  "passwordError": {
+    "message": "Empty or wrong password"
+  },
+  "walletLocked": {
+    "message": "Wallet is locked"
+  },
+  "accountNotFound": {
+    "message": "Account not found"
+  },
+  "mnemonicUnmatched": {
+    "message": "Mnemonic not matched with the generated one"
+  },
+  "mnemonicInvalid": {
+    "message": "Mnemonic is invalid"
+  },
+  "keystoreInvalid": {
+    "message": "Keystore file is invalid"
   }
 }

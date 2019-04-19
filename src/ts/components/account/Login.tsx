@@ -7,6 +7,7 @@ import { HOME_ROUTE } from '../../constants/routes'
 import { setLocked } from '../../background/store/account'
 import { Button, Section, Title, StyledPassword } from '../basic-components'
 import { colorSchemes } from '../styles/themes'
+import { setError } from '../../background/store/error'
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
@@ -34,17 +35,15 @@ class Login extends React.Component<ILoginProps, ILoginState> {
   }
 
   handleLogin () {
-    this.setState({ errorMessage: '' })
-    // for testing only
+    this.props.setError(null)
     unlockWallet(this.state.password).then(
       keyringPairs => {
         if (keyringPairs.length && keyringPairs.length > 0) {
-          this.props.setLocked(false).then(
-            this.props.history.push(HOME_ROUTE)
-          )
+          this.props.setLocked(false)
+          this.props.history.push(HOME_ROUTE)
         }
       }
-    )
+    ).catch(err => { this.props.setError(err) })
   }
 
   render () {
@@ -79,7 +78,7 @@ const mapStateToProps = (state: IAppState) => {
   }
 }
 
-const mapDispatchToProps = { setLocked }
+const mapDispatchToProps = { setLocked, setError }
 
 type DispatchProps = typeof mapDispatchToProps
 

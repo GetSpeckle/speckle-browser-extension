@@ -12,16 +12,16 @@ import { colorSchemes } from '../styles/themes'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 
-interface ImportJsonProp extends StateProps, RouteComponentProps {}
+interface IImportJsonProps extends StateProps, RouteComponentProps {}
 
-interface ImportJsonState {
+interface IImportJsonState {
   file?: File
   json: KeyringPair$Json,
   password?: string,
   errorMessage?: string
 }
 
-class ImportJson extends React.Component<ImportJsonProp, ImportJsonState> {
+class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
 
   constructor (props) {
     super(props)
@@ -31,7 +31,7 @@ class ImportJson extends React.Component<ImportJsonProp, ImportJsonState> {
     this.shortFileName = this.shortFileName.bind(this)
   }
 
-  state: ImportJsonState = {
+  state: IImportJsonState = {
     json: {
       address: '',
       encoded: '',

@@ -42,7 +42,7 @@ class KeyringVault {
         }
       )
     }
-    if (!password.length) throw new Error(t('error.password'))
+    if (!password.length) throw new Error(t('passwordError'))
     // this will be redundant if we have polkadot js api initialisation
     return cryptoWaitReady().then(async () => {
       this._keyring = new Keyring({ addressPrefix, type: 'sr25519' })
@@ -61,7 +61,7 @@ class KeyringVault {
           this.keyring.getPairs().forEach(pair => {
             this.keyring.removePair(pair.address())
           })
-          throw new Error(t('error.password'))
+          throw new Error(t('passwordError'))
         }
       }
       this._password = password
@@ -83,7 +83,7 @@ class KeyringVault {
   }
 
   getAccounts (): Array<KeyringPair$Json> {
-    if (this.isLocked()) throw new Error(t('error.wallet.locked'))
+    if (this.isLocked()) throw new Error(t('walletLocked'))
     let accounts = new Array<KeyringPair$Json>()
     this.keyring.getPairs().forEach(pair => {
       accounts.push(pair.toJson(this._password))
@@ -92,23 +92,23 @@ class KeyringVault {
   }
 
   createAccount (mnemonic: string, accountName: string): Promise<KeyringPair$Json> {
-    if (this.isLocked()) throw new Error(t('error.wallet.locked'))
-    if (this._mnemonic !== mnemonic) throw new Error(t('error.mnemonic.unmatched'))
+    if (this.isLocked()) throw new Error(t('walletLocked'))
+    if (this._mnemonic !== mnemonic) throw new Error(t('mnemonicUnmatched'))
     let pair = this.keyring.addFromMnemonic(mnemonic, { name: accountName })
     this._mnemonic = undefined
     return this.saveAccount(pair)
   }
 
   updateAccountName (address: string, accountName: string): Promise<KeyringPair$Json> {
-    if (this.isLocked()) throw new Error(t('error.wallet.locked'))
+    if (this.isLocked()) throw new Error(t('walletLocked'))
     const pair = this.keyring.getPair(address)
-    if (!pair) throw new Error(t('error.account.notFound'))
+    if (!pair) throw new Error(t('accountNotFound'))
     pair.setMeta({ ...pair.getMeta(), name: accountName })
     return this.saveAccount(pair)
   }
 
   removeAccount (address: string) {
-    if (this.isLocked()) throw new Error(t('error.wallet.locked'))
+    if (this.isLocked()) throw new Error(t('walletLocked'))
     this.keyring.removePair(address)
     LocalStore.getValue(VAULT_KEY).then(async (vault) => {
       if (vault) {
@@ -119,14 +119,14 @@ class KeyringVault {
   }
 
   importAccountFromMnemonic (mnemonic: string, accountName: string): Promise<KeyringPair$Json> {
-    if (this.isLocked()) throw new Error(t('error.wallet.locked'))
-    if (!this.isMnemonicValid(mnemonic)) throw new Error(t('error.mnemonic.invalid'))
+    if (this.isLocked()) throw new Error(t('walletLocked'))
+    if (!this.isMnemonicValid(mnemonic)) throw new Error(t('mnemonicInvalid'))
     let pair = this.keyring.createFromUri(mnemonic, { name: accountName, imported: true })
     return this.saveAccount(pair)
   }
 
   importAccountFromJson (json: KeyringPair$Json, password?: string): Promise<KeyringPair$Json> {
-    if (this.isLocked()) throw new Error(t('error.wallet.locked'))
+    if (this.isLocked()) throw new Error(t('walletLocked'))
     let pair = this.keyring.addFromJson(json)
     pair.setMeta({ ...pair.getMeta(), imported: true })
     if (password) {

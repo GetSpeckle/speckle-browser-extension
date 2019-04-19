@@ -5,13 +5,13 @@ import { IAppState } from '../background/store/all'
 import { LayoutContainer } from '../components/basic-components'
 import { Color } from '../components/styles/themes'
 
-interface ILoginLayoutProp extends StateProps, DispatchProps {}
+interface IDashboardProps extends StateProps, DispatchProps {}
 
-interface ILoginLayoutState {
+interface IDashboardState {
   color: Color
 }
 
-class DashboardLayout extends Component<ILoginLayoutProp, ILoginLayoutState> {
+class DashboardLayout extends Component<IDashboardProps, IDashboardState> {
 
   getBackgroundImageUrl = () => {
     return `/assets/background/color-bg-${this.props.settings.color}.svg`

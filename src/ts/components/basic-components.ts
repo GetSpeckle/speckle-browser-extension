@@ -10,9 +10,9 @@ export const LayoutContainer = styled('div')`
     width: 375px;
     height: 667px;
     border-radius: 4px;
-    box-shadow: 0 6px 30px 0 ${props => props.theme.shadowColor};
-    border: solid 1px ${props => props.theme.borderColor};
-    background-color: ${props => props.theme.backgroundColor};
+    box-shadow: 0 6px 30px 0 ${props => props.theme['shadowColor']};
+    border: solid 1px ${props => props.theme['borderColor']};
+    background-color: ${props => props.theme['backgroundColor']};
 `
 
 export const Button = styled.button`

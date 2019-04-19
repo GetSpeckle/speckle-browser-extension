@@ -10,6 +10,7 @@ import { Button as StyledButton, Section, MnemonicPad } from '../basic-component
 import { HOME_ROUTE } from '../../constants/routes'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import { setLocked, setCreated } from '../../background/store/account'
+import { setError } from '../../background/store/error'
 import { colorSchemes } from '../styles/themes'
 
 interface IConfirmPhraseProps extends StateProps, DispatchProps, RouteComponentProps {}
@@ -17,8 +18,7 @@ interface IConfirmPhraseProps extends StateProps, DispatchProps, RouteComponentP
 interface IConfirmPhraseState {
   inputPhrase: string,
   wordList: Array<string>,
-  keyringPair: KeyringPair$Json | null,
-  errorMessage: string
+  keyringPair: KeyringPair$Json | null
 }
 
 class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseState> {
@@ -26,8 +26,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
   state: IConfirmPhraseState = {
     inputPhrase: '',
     wordList: [],
-    keyringPair: null,
-    errorMessage: ''
+    keyringPair: null
   }
 
   constructor (props) {
@@ -56,7 +55,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
   }
 
   createAccount = () => {
-    this.setState({ errorMessage: '' })
+    this.props.setError(null)
     const { accountStatus } = this.props
     if (accountStatus.newPassword) {
       unlockWallet(accountStatus.newPassword).then(kp => {
@@ -69,9 +68,9 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
             console.log('Account created! ', keyringPair)
             this.props.setCreated(true)
             this.setState({ keyringPair: keyringPair })
-          })
+          }).catch(err => { this.props.setError(err) })
         }
-      })
+      }).catch(err => { this.props.setError(err) })
     }
   }
 
@@ -116,8 +115,8 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
           <List horizontal={true} items={this.state.wordList} />
         </Section>
 
-        <Message negative={true} hidden={!this.state.errorMessage} style={alignMiddle}>
-          {this.state.errorMessage}
+        <Message negative={true} hidden={this.isPhraseConfirmed()} style={alignMiddle}>
+          {t('phraseMismatch')}
         </Message>
 
         <Section>
@@ -170,7 +169,7 @@ const alignMiddle = {
   margin: 'auto'
 }
 
-const mapDispatchToProps = { setLocked, setCreated }
+const mapDispatchToProps = { setLocked, setCreated, setError }
 
 type StateProps = ReturnType<typeof mapStateToProps>
 

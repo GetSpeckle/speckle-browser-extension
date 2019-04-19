@@ -10,15 +10,15 @@ import { colorSchemes } from '../styles/themes'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 
-interface ImportMnemonicProp extends StateProps, RouteComponentProps {}
+interface IImportMnemonicProps extends StateProps, RouteComponentProps {}
 
-interface ImportMnemonicState {
+interface IImportMnemonicState {
   mnemonic: string,
   accountName: string,
   errorMessage?: string
 }
 
-class ImportMnemonic extends React.Component<ImportMnemonicProp, ImportMnemonicState> {
+class ImportMnemonic extends React.Component<IImportMnemonicProps, IImportMnemonicState> {
 
   constructor (props) {
     super(props)
@@ -28,7 +28,7 @@ class ImportMnemonic extends React.Component<ImportMnemonicProp, ImportMnemonicS
     this.isMnemonicComplete = this.isMnemonicComplete.bind(this)
   }
 
-  state: ImportMnemonicState = {
+  state: IImportMnemonicState = {
     mnemonic: '',
     accountName: t('importedAccount')
   }

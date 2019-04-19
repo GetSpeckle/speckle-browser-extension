@@ -11,14 +11,14 @@ import ImageMapper from 'react-image-mapper'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { LayoutContainer, Section, Title } from './basic-components'
 
-interface IWelcomeProp extends StateProps, DispatchProps, RouteComponentProps {}
+interface IWelcomeProps extends StateProps, DispatchProps, RouteComponentProps {}
 
 interface IWelcomeState {
   color: string,
   theme: ThemeTypes
 }
 
-class Welcome extends React.Component<IWelcomeProp, IWelcomeState> {
+class Welcome extends React.Component<IWelcomeProps, IWelcomeState> {
 
   imageMap = {
     name: 'image-map',
