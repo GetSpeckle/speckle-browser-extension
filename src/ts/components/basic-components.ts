@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import { colorSchemes } from './styles/themes'
 import { IAppState } from '../background/store/all'
 import { connect } from 'react-redux'
+import { Form, Button as SemanticButton } from 'semantic-ui-react';
 
 const mapStateToProps = (state: IAppState) => {
   return {
@@ -20,20 +21,13 @@ export const LayoutContainer = styled('div')`
     background-color: ${props => props.theme['backgroundColor']};
 `
 
-const StyledButton = styled.button`
-  width: 311px;
-  height: 45px;
-  border-radius: 4px;
+const StyledButton = styled(SemanticButton).attrs({fluid: true})`
   box-shadow: 0 3px 10px 0 ${(p: StateProps) => colorSchemes[p.settings.color].shadowColor};
   background-color: ${(p: StateProps) => colorSchemes[p.settings.color].backgroundColor};
   font-family: Nunito;
   font-size: 16px;
   font-weight: 800;
-  font-style: normal;
-  font-stretch: normal;
   line-height: 1.31;
-  letter-spacing: normal;
-  text-align: center;
   color: #ffffff;
 `
 
@@ -50,7 +44,6 @@ export const Section = styled.div`
     font-stretch: normal;
     line-height: normal;
     letter-spacing: normal;
-    text-align: center;
     color: #3e5860;
 `
 
