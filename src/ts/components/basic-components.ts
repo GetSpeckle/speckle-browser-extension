@@ -65,10 +65,15 @@ export const StyledPassword = styled(Input).attrs({ fluid: true })`
   height: 42px;
 `
 
-export const Footer = styled.div`
+export const LoginFooter = styled.div`
   position: absolute;
   bottom: 0;
-  width: 100%;
+  width: 40%;
+  height: 25px;
+  font-size: 11px;
+  margin: 0 120px;
+  display: flex;
+  justify-content: space-around
 `
 
 const StyledLink = styled.a`
