@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { colorSchemes } from './styles/themes'
 import { IAppState } from '../background/store/all'
 import { connect } from 'react-redux'
-import { Button as SemanticButton, Input } from 'semantic-ui-react';
+import { Button as SemanticButton, Input } from 'semantic-ui-react'
 
 const mapStateToProps = (state: IAppState) => {
   return {
@@ -10,7 +10,7 @@ const mapStateToProps = (state: IAppState) => {
   }
 }
 
-type StateProps = ReturnType<typeof mapStateToProps>
+type P = ReturnType<typeof mapStateToProps>
 
 export const LayoutContainer = styled('div')`
     width: 375px;
@@ -22,8 +22,8 @@ export const LayoutContainer = styled('div')`
 `
 
 const StyledButton = styled(SemanticButton).attrs({ fluid: true })`
-  box-shadow: 0 3px 10px 0 ${(p: StateProps) => colorSchemes[p.settings.color].shadowColor} !important;
-  background-color: ${(p: StateProps) => colorSchemes[p.settings.color].backgroundColor} !important;
+  box-shadow: 0 3px 10px 0 ${(p: P) => colorSchemes[p.settings.color].shadowColor} !important;
+  background-color: ${(p: P) => colorSchemes[p.settings.color].backgroundColor} !important;
   color: #ffffff !important;
 `
 
