@@ -1,0 +1,9 @@
+
+.ui.form .field>label {
+  opacity: 0.6;
+  color: #3e5860;
+}
+
+.ui.button:hover {
+  opacity: 0.9;
+}

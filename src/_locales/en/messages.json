@@ -57,7 +57,10 @@
     "message": "Store your secret phrase in a safe location. It is required to restore you account."
   },
   "phraseTitle": {
-    "message": "Secret backup phrase"
+    "message": "Secret Backup Phrase"
+  },
+  "accountNameTitle": {
+    "message": "Enter Account Name"
   },
   "copyText": {
     "message": "Copy Text"

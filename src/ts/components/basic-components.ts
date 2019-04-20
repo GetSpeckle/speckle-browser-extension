@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import { colorSchemes } from './styles/themes'
 import { IAppState } from '../background/store/all'
 import { connect } from 'react-redux'
+import { Button as SemanticButton, Input } from 'semantic-ui-react';
 
 const mapStateToProps = (state: IAppState) => {
   return {
@@ -20,17 +21,10 @@ export const LayoutContainer = styled('div')`
     background-color: ${props => props.theme['backgroundColor']};
 `
 
-const StyledButton = styled.button`
-  width: 100%;
-  height: 45px;
-  border-radius: 4px;
-  box-shadow: 0 3px 10px 0 ${(p: StateProps) => colorSchemes[p.settings.color].shadowColor};
-  background-color: ${(p: StateProps) => colorSchemes[p.settings.color].backgroundColor};
-  font-size: 16px;
-  font-weight: 800;
-  line-height: 1.31;
-  text-align: center;
-  color: #ffffff;
+const StyledButton = styled(SemanticButton).attrs({ fluid: true })`
+  box-shadow: 0 3px 10px 0 ${(p: StateProps) => colorSchemes[p.settings.color].shadowColor} !important;
+  background-color: ${(p: StateProps) => colorSchemes[p.settings.color].backgroundColor} !important;
+  color: #ffffff !important;
 `
 
 export const Button = connect(mapStateToProps)(StyledButton)
@@ -67,6 +61,6 @@ export const MnemonicPad = styled.textarea`
   color: #30383b;
 `
 
-export const StyledPassword = styled.input`
+export const StyledPassword = styled(Input).attrs({ fluid: true })`
   height: 42px;
 `

@@ -145,14 +145,14 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
         </Section>
 
         <Section>
-          <Button onClick={this.downloadKeyPair}>
+          <Button onClick={this.downloadKeyPair} fluid={true}>
             <Icon name='download' />
             {t('downloadKeyPairButton')}
           </Button>
         </Section>
 
         <Section>
-          <Button onClick={this.gotoDashboard} primary={true}>
+          <Button onClick={this.gotoDashboard} primary={true} fluid={true}>
             <Icon name='play' />
             {t('proceedButton')}
           </Button>
