@@ -70,3 +70,9 @@ export const Footer = styled.div`
   bottom: 0;
   width: 100%;
 `
+
+const StyledLink = styled.a`
+  color: ${(p: P) => colorSchemes[p.settings.color].backgroundColor} !important
+`
+
+export const FooterLink = connect(mapStateToProps)(StyledLink)
