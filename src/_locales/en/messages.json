@@ -115,5 +115,8 @@
   },
   "login": {
     "message": "Login"
+  },
+  "help": {
+    "message": "Get help"
   }
 }

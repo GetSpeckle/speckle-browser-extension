@@ -1,4 +1,5 @@
 import React from 'react'
+import t from '../../services/i18n'
 import { Footer } from '../basic-components'
 import { colorSchemes } from '../styles/themes'
 import { IAppState } from '../../background/store/all'
@@ -22,7 +23,10 @@ const LoginFooter = (props) => {
   return (
     <Footer>
       <div style={styles.loginFooter}>
-        <span><a href='#' style={styles.link}>Get help</a></span>
+        <span>
+          <a href='https://speckleos.github.io/speckle-docs/' target='_blank' style={styles.link}>
+            {t('help')}
+          </a></span>
         <span>Speckle {year > 2019 ? `2019 - ${year}` : year}</span>
       </div>
     </Footer>
