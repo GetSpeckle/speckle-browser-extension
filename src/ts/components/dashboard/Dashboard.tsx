@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { lockWallet } from '../../services/keyring-vault-proxy'
 import { LOGIN_ROUTE } from '../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router'
-import { Button, Section } from '../basic-components'
+import { Button, ContentContainer, Section } from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 
@@ -22,16 +22,19 @@ class Dashboard extends React.Component<IDashboardProps> {
 
   render () {
     return (
-      <div>
-        <Title>
-          Dashboard goes here
-        </Title>
+      <ContentContainer>
+        <Section>
+          <Title>
+            Dashboard goes here
+          </Title>
+        </Section>
+
         <Section>
           <Button onClick={this.handleClick}>
             Logout
           </Button>
         </Section>
-      </div>
+      </ContentContainer>
     )
   }
 }

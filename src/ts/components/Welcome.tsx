@@ -9,9 +9,16 @@ import { saveSettings } from '../background/store/settings'
 import { ThemeTypes } from './styles/themes'
 import ImageMapper from 'react-image-mapper'
 import { withRouter, RouteComponentProps } from 'react-router'
-import { LayoutContainer, Section, Title } from './basic-components'
+import {
+  LayoutContainer,
+  SecondaryText,
+  ContentContainer,
+  Section,
+  Title
+} from './basic-components'
 
-interface IWelcomeProps extends StateProps, DispatchProps, RouteComponentProps {}
+interface IWelcomeProps extends StateProps, DispatchProps, RouteComponentProps {
+}
 
 interface IWelcomeState {
   color: string,
@@ -23,11 +30,31 @@ class Welcome extends React.Component<IWelcomeProps, IWelcomeState> {
   imageMap = {
     name: 'image-map',
     areas: [
-      { name: 'blue', shape: 'circle', coords: [103, 104, 40 ], fillColor: '#44C5EE' },
-      { name: 'purple', shape: 'circle', coords: [173, 36, 25 ], fillColor: '#D396FF' },
-      { name: 'orange', shape: 'circle', coords: [170, 173, 25 ], fillColor: 'FFC10B' },
-      { name: 'green', shape: 'circle', coords: [33, 172, 25 ], fillColor: '51DFB0' },
-      { name: 'red', shape: 'circle', coords: [34, 35, 25 ], fillColor: '#FF7396' }
+      {
+        name: 'blue',
+        shape: 'circle',
+        coords: [103, 104, 40],
+        fillColor: '#44C5EE'
+      },
+      {
+        name: 'purple',
+        shape: 'circle',
+        coords: [173, 36, 25],
+        fillColor: '#D396FF'
+      },
+      {
+        name: 'orange',
+        shape: 'circle',
+        coords: [170, 173, 25],
+        fillColor: 'FFC10B'
+      },
+      {
+        name: 'green',
+        shape: 'circle',
+        coords: [33, 172, 25],
+        fillColor: '51DFB0'
+      },
+      { name: 'red', shape: 'circle', coords: [34, 35, 25], fillColor: '#FF7396' }
     ]
   }
 
@@ -39,24 +66,36 @@ class Welcome extends React.Component<IWelcomeProps, IWelcomeState> {
 
   render () {
     return (
-       <LayoutContainer>
-         <LogoContainer><Image src='/assets/logo-3-x.svg' /></LogoContainer>
-         <ColorPickerContainer><ImageMapper
-            src={'/assets/icon-dots.svg'}
-            map={this.imageMap}
-            width={208}
-            imgWidth={208}
-            onClick={this.handleChangeColor}
-         /></ColorPickerContainer>
-          <Title>
-            {t('pickColorTitle')}
-          </Title>
+      <LayoutContainer>
+        <LogoContainer><Image src='/assets/logo-3-x.svg'/></LogoContainer>
+        <ColorPickerContainer><ImageMapper
+          src={'/assets/icon-dots.svg'}
+          map={this.imageMap}
+          width={208}
+          imgWidth={208}
+          onClick={this.handleChangeColor}
+        /></ColorPickerContainer>
+        <ContentContainer>
           <Section>
-            {t('pickColorDescription')}
+            <Title>
+              {t('pickColorTitle')}
+            </Title>
           </Section>
-          <Section>Click above to change color. Current color: {this.props.settings.color}</Section>
-          <Section>{t('speckleIntroduction')}</Section>
-        </LayoutContainer>
+          <Section>
+            <SecondaryText>
+              {t('pickColorDescription')}
+            </SecondaryText>
+          </Section>
+          <Section>
+            <SecondaryText>
+              {t('pickColorTip')} {this.props.settings.color}
+            </SecondaryText>
+          </Section>
+          <Section>
+            <SecondaryText>{t('speckleIntroduction')}</SecondaryText>
+          </Section>
+        </ContentContainer>
+      </LayoutContainer>
     )
   }
 }

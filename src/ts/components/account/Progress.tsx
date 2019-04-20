@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Section } from '../basic-components'
+import { ContentContainer } from '../basic-components'
 
 interface IProgressProps {
   color: string,
@@ -27,7 +27,7 @@ class Progress extends React.Component<IProgressProps> {
     const three = this.props.progress === 3 ? colorMap[this.props.color] : colorMap['gray']
 
     return (
-      <Section>
+      <ContentContainer>
 
         <svg xmlns='http://www.w3.org/2000/svg' xmlnsXlink='http://www.w3.org/1999/xlink' width='43' height='37' viewBox='0 0 43 37'>
           <defs>
@@ -66,8 +66,8 @@ class Progress extends React.Component<IProgressProps> {
           <text x='15' y='22' style={{ fill: 'white' }}>1</text>
         </svg>
 
-        <svg height='40' width='90'>
-          <line x1='0' y1='20' x2='90' y2='20' stroke='#cad3d7' />
+        <svg height='40' width='86'>
+          <line x1='0' y1='20' x2='86' y2='20' stroke='#cad3d7' />
         </svg>
 
         <svg xmlns='http://www.w3.org/2000/svg' xmlnsXlink='http://www.w3.org/1999/xlink' width='47' height='41' viewBox='0 0 47 41'>
@@ -107,8 +107,8 @@ class Progress extends React.Component<IProgressProps> {
           <text x='26' y='27' style={{ fill: 'white' }}>2</text>
         </svg>
 
-        <svg height='40' width='90'>
-          <line x1='0' y1='20' x2='90' y2='20' stroke='#cad3d7' />
+        <svg height='40' width='86'>
+          <line x1='0' y1='20' x2='86' y2='20' stroke='#cad3d7' />
         </svg>
 
         <svg xmlns='http://www.w3.org/2000/svg' xmlnsXlink='http://www.w3.org/1999/xlink' width='49' height='42' viewBox='0 0 49 42'>
@@ -161,7 +161,7 @@ class Progress extends React.Component<IProgressProps> {
           </g>
           <text x='20' y='27' style={{ fill: 'white' }}>3</text>
         </svg>
-      </Section>
+      </ContentContainer>
     )
   }
 }

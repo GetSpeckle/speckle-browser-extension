@@ -21,62 +21,52 @@ export const LayoutContainer = styled('div')`
 `
 
 const StyledButton = styled.button`
-  width: 311px;
+  width: 100%;
   height: 45px;
   border-radius: 4px;
   box-shadow: 0 3px 10px 0 ${(p: StateProps) => colorSchemes[p.settings.color].shadowColor};
   background-color: ${(p: StateProps) => colorSchemes[p.settings.color].backgroundColor};
-  font-family: Nunito;
   font-size: 16px;
   font-weight: 800;
-  font-style: normal;
-  font-stretch: normal;
   line-height: 1.31;
-  letter-spacing: normal;
   text-align: center;
   color: #ffffff;
 `
 
 export const Button = connect(mapStateToProps)(StyledButton)
 
-export const Section = styled.div`
-    width: 327px;
-    margin:18px auto;
-    opacity: 0.6;
-    font-family: Nunito;
-    font-size: 14px;
-    font-weight: normal;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    text-align: center;
-    color: #3e5860;
+export const ContentContainer = styled.div`
+  width: 311px;
+  margin: 0 auto;
 `
 
-export const Title = styled(Section)`
-    width: 311px;
-    height: 26px;
-    font-size: 19px;
-    font-weight: bold;
-    color: #30383B;
+export const Section = styled.div`
+  width: 100%;
+  margin: 18px 0;
+`
+
+export const PrimaryText = styled.div`
+  color: #30383B;
+`
+
+export const SecondaryText = styled.div`
+  opacity: 0.6;
+  color: #3e5860;
+`
+
+export const Title = styled.div`
+  font-size: 19px;
+  font-weight: bold;
+  color: #30383B;
+  text-align: center;
 `
 
 export const MnemonicPad = styled.textarea`
-  width: 311px;
   height: 125px;
-  font-family: Nunito;
-  padding: 10px;
-  font-size: 14px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
   line-height: 1.57;
-  letter-spacing: normal;
   color: #30383b;
 `
 
 export const StyledPassword = styled.input`
-  width: 311px;
   height: 42px;
 `
