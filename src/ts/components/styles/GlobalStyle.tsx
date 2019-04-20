@@ -17,6 +17,12 @@ const GlobalStyle = createGlobalStyle`
 	  width: 100%;
 	  padding: 10px;
 	}
+	div {
+	  overflow: -moz-scrollbars-none;
+	}
+	div::-webkit-scrollbar {
+	  display: none;
+	}
 `
 
 export default GlobalStyle
