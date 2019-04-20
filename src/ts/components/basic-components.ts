@@ -64,3 +64,15 @@ export const MnemonicPad = styled.textarea`
 export const StyledPassword = styled(Input).attrs({ fluid: true })`
   height: 42px;
 `
+
+export const Footer = styled.div`
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+`
+
+const StyledLink = styled.a`
+  color: ${(p: P) => colorSchemes[p.settings.color].backgroundColor} !important
+`
+
+export const FooterLink = connect(mapStateToProps)(StyledLink)
