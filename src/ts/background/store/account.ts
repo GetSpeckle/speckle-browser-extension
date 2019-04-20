@@ -1,14 +1,16 @@
 import { AnyAction, Reducer } from 'redux'
 
-export interface IAccountStatus {
+export interface IAccount {
   locked: boolean,
   created: boolean,
   newPassword?: string,
   newPhrase?: string,
   newAccountName?: string
+  currentAddress?: string
+  currentName?: string
 }
 
-const initialState: IAccountStatus = {
+const initialState: IAccount = {
   locked: true,
   created: false
 }
@@ -17,7 +19,8 @@ export const ACTION_TYPES = {
   SET_CREATED: 'SET_CREATED',
   SET_LOCKED: 'SET_LOCKED',
   SET_NEW_PHRASE: 'SET_NEW_PHRASE',
-  SET_NEW_PASSWORD: 'SET_NEW_PASSWORD'
+  SET_NEW_PASSWORD: 'SET_NEW_PASSWORD',
+  SET_CURRENT_ADDRESS_AND_NAME: 'SET_CURRENT_ADDRESS_AND_NAME'
 }
 
 export function setLocked (locked: boolean): AnyAction {
@@ -31,6 +34,13 @@ export function setNewPhrase (phrase: string, accountName?: string): AnyAction {
   return {
     type: ACTION_TYPES.SET_NEW_PHRASE,
     payload: { phrase: phrase, accountName: accountName }
+  }
+}
+
+export function setCurrentAddressAndName (address: string, accountName?: string): AnyAction {
+  return {
+    type: ACTION_TYPES.SET_CURRENT_ADDRESS_AND_NAME,
+    payload: { currentAddress: address, currentName: accountName }
   }
 }
 
@@ -54,7 +64,7 @@ export function setCreated (accountCreated: boolean): AnyAction {
  * @param state the current state
  * @param action the action received
  */
-const account: Reducer<IAccountStatus, AnyAction> = (state = initialState, action) => {
+const account: Reducer<IAccount, AnyAction> = (state = initialState, action) => {
   switch (action.type) {
 
     case ACTION_TYPES.SET_LOCKED:
@@ -74,6 +84,12 @@ const account: Reducer<IAccountStatus, AnyAction> = (state = initialState, actio
     case ACTION_TYPES.SET_NEW_PASSWORD:
       console.log('set new password ...')
       return { ...state, newPassword: action.payload }
+
+    case ACTION_TYPES.SET_CURRENT_ADDRESS_AND_NAME:
+      return {
+        ...state,
+        currentAddress: action.payload.address,
+        currentName: action.payload.accountName }
 
     default:
       return state

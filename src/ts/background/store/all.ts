@@ -1,11 +1,11 @@
 import settings, { IAppSettings } from './settings/reducer'
 import { combineReducers } from 'redux'
-import account, { IAccountStatus } from './account'
+import account, { IAccount } from './account'
 import error, { IError } from './error'
 
 export interface IAppState {
   settings: IAppSettings
-  account: IAccountStatus
+  account: IAccount
   error: IError
 }
 

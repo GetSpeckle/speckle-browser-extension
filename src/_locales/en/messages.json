@@ -1,4 +1,7 @@
 {
+  "address": {
+    "message": "Address"
+  },
   "appName": {
     "message": "Speckle"
   },
@@ -115,6 +118,9 @@
   },
   "login": {
     "message": "Login"
+  },
+  "logout": {
+    "message": "Logout"
   },
   "help": {
     "message": "Get help"
