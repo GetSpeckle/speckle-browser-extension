@@ -64,3 +64,9 @@ export const MnemonicPad = styled.textarea`
 export const StyledPassword = styled(Input).attrs({ fluid: true })`
   height: 42px;
 `
+
+export const Footer = styled.div`
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+`
