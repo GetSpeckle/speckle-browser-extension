@@ -96,7 +96,7 @@ export function generateMnemonic (): Promise<string> {
   })
 }
 
-export function createAccount (mnemonic: string, accountName: string): Promise<KeyringPair$Json> {
+export function createAccount (mnemonic: string, accountName?: string): Promise<KeyringPair$Json> {
   return new Promise<KeyringPair$Json>((resolve, reject) => {
     port.onMessage.addListener(msg => {
       if (msg.method !== FUNCS.CREATE_ACCOUNT) return

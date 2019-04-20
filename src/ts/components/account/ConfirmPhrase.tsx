@@ -69,7 +69,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
         this.props.setLocked(false)
         console.assert(kp.length === 0, 'Should be an empty array')
         if (accountStatus.newPhrase) {
-          createAccount(accountStatus.newPhrase, '').then(keyringPair => {
+          createAccount(accountStatus.newPhrase, accountStatus.newAccountName).then(keyringPair => {
             console.log('Account created! ', keyringPair)
             this.props.setCreated(true)
             this.setState({ keyringPair: keyringPair })
