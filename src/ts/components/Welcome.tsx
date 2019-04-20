@@ -16,6 +16,7 @@ import {
   Section,
   Title
 } from './basic-components'
+import LoginFooter from './account/LoginFooter'
 
 interface IWelcomeProps extends StateProps, DispatchProps, RouteComponentProps {
 }
@@ -112,6 +113,7 @@ class Welcome extends React.Component<IWelcomeProps, IWelcomeState> {
             </SecondaryText>
           </Section>
         </ContentContainer>
+        <LoginFooter />
       </LayoutContainer>
     )
   }
