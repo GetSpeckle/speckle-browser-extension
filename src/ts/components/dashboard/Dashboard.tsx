@@ -6,6 +6,7 @@ import { Button, ContentContainer, Section } from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 import { setCurrentAddressAndName } from '../../background/store/account'
+import t from '../../services/i18n'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {}
 
@@ -65,14 +66,14 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     return (
       <ContentContainer>
         <Section>
-          Account Name : {this.state.currentName}
+          {t('accountName')}: {this.state.currentName}
         </Section>
         <Section>
-          Address: {this.shortAddress(this.state.currentAddress)}
+          {t('address')}: {this.shortAddress(this.state.currentAddress)}
         </Section>
         <Section>
           <Button onClick={this.handleClick}>
-            Logout
+            {t('logout')}
           </Button>
         </Section>
       </ContentContainer>
