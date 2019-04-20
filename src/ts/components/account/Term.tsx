@@ -45,7 +45,7 @@ class Term extends React.Component<ITermProps> {
 }
 
 const TermSection = styled(SecondaryText)`
-  height: 347px;
+  height: 280px;
   overflow-y: auto;
 `
 
