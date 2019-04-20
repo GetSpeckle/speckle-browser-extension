@@ -7,3 +7,11 @@
 .ui.button:hover {
   opacity: 0.9;
 }
+
+.ui.horizontal.list>.item {
+  font-size: 1rem;
+  background: rgb(220,220,220,0.5);
+  margin: 2px;
+  padding: 4px;
+  border-radius: 3px
+}
