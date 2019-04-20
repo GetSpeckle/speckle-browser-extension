@@ -6,28 +6,63 @@ import { TERM_SERVICE_ROUTE } from '../constants/routes'
 import { IAppState } from '../background/store/all'
 import { connect } from 'react-redux'
 import { saveSettings } from '../background/store/settings'
-import { ThemeTypes } from './styles/themes'
+import { colorSchemes } from './styles/themes'
 import ImageMapper from 'react-image-mapper'
 import { withRouter, RouteComponentProps } from 'react-router'
-import { LayoutContainer, Section, Title } from './basic-components'
+import {
+  LayoutContainer,
+  SecondaryText,
+  ContentContainer,
+  Section,
+  Title
+} from './basic-components'
 
-interface IWelcomeProps extends StateProps, DispatchProps, RouteComponentProps {}
+interface IWelcomeProps extends StateProps, DispatchProps, RouteComponentProps {
+}
 
 interface IWelcomeState {
-  color: string,
-  theme: ThemeTypes
+  color: string
 }
 
 class Welcome extends React.Component<IWelcomeProps, IWelcomeState> {
 
+  state = {
+    color: colorSchemes[this.props.settings.color].backgroundColor
+  }
+
   imageMap = {
     name: 'image-map',
     areas: [
-      { name: 'blue', shape: 'circle', coords: [103, 104, 40 ], fillColor: '#44C5EE' },
-      { name: 'purple', shape: 'circle', coords: [173, 36, 25 ], fillColor: '#D396FF' },
-      { name: 'orange', shape: 'circle', coords: [170, 173, 25 ], fillColor: 'FFC10B' },
-      { name: 'green', shape: 'circle', coords: [33, 172, 25 ], fillColor: '51DFB0' },
-      { name: 'red', shape: 'circle', coords: [34, 35, 25 ], fillColor: '#FF7396' }
+      {
+        name: 'blue',
+        shape: 'circle',
+        coords: [103, 104, 40],
+        fillColor: '#44C5EE'
+      },
+      {
+        name: 'purple',
+        shape: 'circle',
+        coords: [172, 36, 25],
+        fillColor: '#D396FF'
+      },
+      {
+        name: 'orange',
+        shape: 'circle',
+        coords: [170, 173, 25],
+        fillColor: 'FFC10B'
+      },
+      {
+        name: 'green',
+        shape: 'circle',
+        coords: [33, 172, 25],
+        fillColor: '51DFB0'
+      },
+      {
+        name: 'red',
+        shape: 'circle',
+        coords: [34, 35, 25],
+        fillColor: '#FF7396'
+      }
     ]
   }
 
@@ -37,41 +72,83 @@ class Welcome extends React.Component<IWelcomeProps, IWelcomeState> {
     history.push(TERM_SERVICE_ROUTE)
   }
 
+  // TODO investigate why this is not triggered
+  handleMouseover = (area: any) => {
+    console.log(area.name)
+    this.setState({ color: colorSchemes[area.name].backgroundColor })
+  }
+
   render () {
     return (
-       <LayoutContainer>
-         <LogoContainer><Image src='/assets/logo-3-x.svg' /></LogoContainer>
-         <ColorPickerContainer><ImageMapper
-            src={'/assets/icon-dots.svg'}
-            map={this.imageMap}
-            width={208}
-            imgWidth={208}
-            onClick={this.handleChangeColor}
-         /></ColorPickerContainer>
-          <Title>
-            {t('pickColorTitle')}
-          </Title>
+      <LayoutContainer>
+        <div><Image src='/assets/logo-3-x.svg' style={logo}/></div>
+        <ColorPickerContainer><ImageMapper
+          src={'/assets/icon-dots.svg'}
+          map={this.imageMap}
+          onMouseover={this.handleMouseover}
+          onClick={this.handleChangeColor}
+        /></ColorPickerContainer>
+        <ContentContainer>
           <Section>
-            {t('pickColorDescription')}
+            <Title>
+              {t('pickColorTitle')}
+            </Title>
           </Section>
-          <Section>Click above to change color. Current color: {this.props.settings.color}</Section>
-          <Section>{t('speckleIntroduction')}</Section>
-        </LayoutContainer>
+          <Section>
+            <SecondaryText style={{ textAlign: 'center' }}>
+              {t('pickColorDescription')}
+            </SecondaryText>
+          </Section>
+          <Section>
+            <OvalContainer>
+              <Oval color={this.state.color}/>
+              <Oval color={this.state.color}/>
+              <Oval color={this.state.color}/>
+            </OvalContainer>
+          </Section>
+          <Section>
+            <SecondaryText style={{ textAlign: 'center' }}>
+              {t('speckleIntroduction')}
+            </SecondaryText>
+          </Section>
+        </ContentContainer>
+      </LayoutContainer>
     )
   }
 }
 
-const LogoContainer = styled(Image)`
-    margin: 36px auto 68px;
-    width: 150px;
-    height: 65px;
-    object-fit: contain;
+const logo = {
+  marginTop: 36,
+  marginBottom: 36,
+  marginLeft: 'auto',
+  marginRight: 'auto',
+  width: 150,
+  height: 65
+}
+
+const ColorPickerContainer = styled.div`
+  width:208px;
+  height: 208px;
+  margin: 0 auto 36px;
 `
 
-const ColorPickerContainer = styled('div')`
-    width:208px;
-    height: 208px;
-    margin: 0 auto 68px;
+type OvalProp = {
+  color: string
+}
+
+const Oval = styled.div`
+  width: 6px;
+  height: 6px;
+  border-radius: 3px
+  background-color: ${(p: OvalProp) => p.color};
+`
+
+const OvalContainer = styled.div`
+  width: 100px;
+  display: flex;
+  margin: auto;
+  justify-content: space-around;
+  align-items: center
 `
 
 const mapStateToProps = (state: IAppState) => {

@@ -4,15 +4,21 @@ import Progress from './Progress'
 import { IAppState } from '../../background/store/all'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
-import { Message, Container, Grid, Button, Icon } from 'semantic-ui-react'
+import { Grid, Button, Icon, Form, Divider } from 'semantic-ui-react'
 import { generateMnemonic } from '../../services/keyring-vault-proxy'
 import { setNewPhrase } from '../../background/store/account'
 import { CONFIRM_PHRASE_ROUTE } from '../../constants/routes'
-import { Button as StyledButton, Section, MnemonicPad } from '../basic-components'
+import {
+  Button as StyledButton,
+  ContentContainer,
+  Section,
+  SecondaryText,
+} from '../basic-components'
 
 interface IGeneratePhraseProps extends StateProps, DispatchProps, RouteComponentProps {}
 
 interface IGeneratePhraseState {
+  accountName: string,
   mnemonic: string,
   message?: string,
   color: 'blue' | 'red'
@@ -21,6 +27,7 @@ interface IGeneratePhraseState {
 class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhraseState> {
 
   state: IGeneratePhraseState = {
+    accountName: '',
     mnemonic: '',
     color: 'blue'
   }
@@ -36,9 +43,13 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
     })
   }
 
+  handleChange = event => {
+    this.setState({ accountName: event.target.value })
+  }
+
   handleClick = () => {
     this.setState({ message: '' })
-    this.props.setNewPhrase(this.state.mnemonic)
+    this.props.setNewPhrase(this.state.mnemonic, this.state.accountName)
     this.props.history.push(CONFIRM_PHRASE_ROUTE)
   }
 
@@ -79,50 +90,53 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
 
   render () {
     return (
-        <div>
-          <Progress color={this.props.settings.color} progress={2} />
-          <Section>
+      <ContentContainer>
+        <Section>
+          <Progress color={this.props.settings.color} progress={2}/>
+          <SecondaryText>
             {t('phraseDescription')}
-          </Section>
+          </SecondaryText>
+        </Section>
 
-          <Section>
-            <div>{t('phraseTitle')}</div>
-            <MnemonicPad value={this.state.mnemonic} readOnly={true} onClick={this.selectAll}/>
-          </Section>
+        <Form>
+          <Form.Input
+            label={t('accountNameTitle')}
+            type='input'
+            value={this.state.accountName}
+            onChange={this.handleChange}
+            placeholder={t('accountName')}
+          />
+          <Form.TextArea
+            label={t('phraseTitle')}
+            value={this.state.mnemonic}
+            readOnly={true}
+            onClick={this.selectAll}
+          />
 
-          <Section>
-            <Message color={this.state.color} hidden={!this.state.message}>
-              {this.state.message}
-            </Message>
-          </Section>
+            <Grid columns='equal'>
+              <Grid.Row>
+                <Grid.Column>
+                  <Button onClick={this.copyText}>
+                    <Icon name='copy' />
+                    {t('copyText')}
+                  </Button>
+                </Grid.Column>
+                <Grid.Column>
+                  <Button onClick={this.downloadFile} style={{ float: 'right' }}>
+                    <Icon name='download' />
+                    {t('downloadFile')}</Button>
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
 
-          <Section>
-            <Container>
-              <Grid>
-                <Grid.Row columns={2}>
-                  <Grid.Column>
-                    <Button onClick={this.copyText}>
-                      <Icon name='copy' />
-                      {t('copyText')}
-                    </Button>
-                  </Grid.Column>
-                  <Grid.Column>
-                    <Button onClick={this.downloadFile}>
-                      <Icon name='download' />
-                      {t('downloadFile')}</Button>
-                  </Grid.Column>
-                </Grid.Row>
-              </Grid>
-            </Container>
-          </Section>
+          <Divider />
 
-          <Section>
-            <StyledButton onClick={this.handleClick}>
-              {t('createAccount')}
-            </StyledButton>
-          </Section>
+          <StyledButton onClick={this.handleClick}>
+            {t('createAccount')}
+          </StyledButton>
 
-        </div>
+          </Form>
+        </ContentContainer>
     )
   }
 }

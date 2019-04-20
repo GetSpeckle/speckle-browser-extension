@@ -6,7 +6,7 @@ import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
 import { Message } from 'semantic-ui-react'
 import { GENERATE_PHRASE_ROUTE } from '../../constants/routes'
-import { Button, Section, StyledPassword } from '../basic-components'
+import { Button, ContentContainer, Section, SecondaryText, StyledPassword } from '../basic-components'
 import { setNewPassword } from '../../background/store/account'
 import { setError } from '../../background/store/error'
 
@@ -60,39 +60,44 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
 
   render () {
     return (
-        <div>
-          <Progress color={this.props.settings.color} progress={1} />
-          <Section>
+      <ContentContainer>
+        <Section>
+          <Progress color={this.props.settings.color} progress={1}/>
+          <SecondaryText>
             {t('passwordDescription')}
-          </Section>
-          <Section>
-            <StyledPassword
-              type='password'
-              placeholder={t('Create new password')}
-              value={this.state.newPassword}
-              onChange={this.setNewPassword}
-            />
-          </Section>
-          <Section>
-            <StyledPassword
-              type='password'
-              placeholder={t('Repeat password')}
-              value={this.state.confirmPassword}
-              onChange={this.setConfirmPassword}
-            />
-          </Section>
-          <Section>
-            <Message negative={true} hidden={!this.state.errorMessage}>
-              {this.state.errorMessage}
-            </Message>
-          </Section>
+          </SecondaryText>
+        </Section>
 
-          <Section>
-            <Button onClick={this.handleClick}>
-              {t('Create Account')}
-            </Button>
-          </Section>
-        </div>
+        <Section>
+          <StyledPassword
+            type='password'
+            placeholder={t('Create new password')}
+            value={this.state.newPassword}
+            onChange={this.setNewPassword}
+          />
+        </Section>
+
+        <Section>
+          <StyledPassword
+            type='password'
+            placeholder={t('Repeat password')}
+            value={this.state.confirmPassword}
+            onChange={this.setConfirmPassword}
+          />
+        </Section>
+
+        <Section>
+          <Message negative={true} hidden={!this.state.errorMessage}>
+            {this.state.errorMessage}
+          </Message>
+        </Section>
+
+        <Section>
+          <Button onClick={this.handleClick}>
+            {t('Create Account')}
+          </Button>
+        </Section>
+      </ContentContainer>
     )
   }
 }

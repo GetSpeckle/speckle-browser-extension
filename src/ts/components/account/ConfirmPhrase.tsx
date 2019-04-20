@@ -6,7 +6,13 @@ import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
 import { Message, List, Button, Icon } from 'semantic-ui-react'
 import { createAccount, unlockWallet } from '../../services/keyring-vault-proxy'
-import { Button as StyledButton, Section, MnemonicPad } from '../basic-components'
+import {
+  Button as StyledButton,
+  ContentContainer,
+  Section,
+  PrimaryText,
+  MnemonicPad
+} from '../basic-components'
 import { HOME_ROUTE } from '../../constants/routes'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import { setLocked, setCreated } from '../../background/store/account'
@@ -104,9 +110,9 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
 
   renderConfirmScreen () {
     return(
-      <div>
+      <ContentContainer>
         <Section>
-          <div>{t('phraseConfirmTitle')}</div>
+          <PrimaryText>{t('phraseConfirmTitle')}</PrimaryText>
           <MnemonicPad value={this.state.inputPhrase} onChange={this.changePhrase}/>
         </Section>
 
@@ -114,43 +120,44 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
           <List horizontal={true} items={this.state.wordList} />
         </Section>
 
-        <Message negative={true} hidden={this.isPhraseConfirmed()} style={alignMiddle}>
-          {t('phraseMismatch')}
-        </Message>
+        <Section>
+          <Message negative={true} hidden={this.isPhraseConfirmed()}>
+            {t('phraseMismatch')}
+          </Message>
+        </Section>
 
         <Section>
-          <StyledButton
-            onClick={this.createAccount}
-            disabled={!this.isPhraseConfirmed()}
-          >
+          <StyledButton onClick={this.createAccount} disabled={!this.isPhraseConfirmed()}>
             {t('confirmPhraseButton')}
           </StyledButton>
         </Section>
-      </div>
+      </ContentContainer>
     )
   }
 
   renderBackupScreen () {
     return(
-      <div>
-        <Message info={true} style={alignMiddle}>
-          {t('backupKeypairMessage')}
-        </Message>
+      <ContentContainer>
+        <Section>
+          <Message info={true}>
+            {t('backupKeypairMessage')}
+          </Message>
+        </Section>
 
         <Section>
-          <Button onClick={this.downloadKeyPair}>
+          <Button onClick={this.downloadKeyPair} fluid={true}>
             <Icon name='download' />
             {t('downloadKeyPairButton')}
           </Button>
         </Section>
 
         <Section>
-          <Button onClick={this.gotoDashboard} primary={true}>
+          <Button onClick={this.gotoDashboard} primary={true} fluid={true}>
             <Icon name='play' />
             {t('proceedButton')}
           </Button>
         </Section>
-      </div>
+      </ContentContainer>
     )
   }
 }
@@ -160,11 +167,6 @@ const mapStateToProps = (state: IAppState) => {
     settings: state.settings,
     accountStatus: state.account
   }
-}
-
-const alignMiddle = {
-  width: 311,
-  margin: 'auto'
 }
 
 const mapDispatchToProps = { setLocked, setCreated, setError }
