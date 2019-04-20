@@ -1,11 +1,12 @@
 import * as React from 'react'
+import t from '../../services/i18n'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 import { unlockWallet } from '../../services/keyring-vault-proxy'
 import { HOME_ROUTE } from '../../constants/routes'
 import { setLocked } from '../../background/store/account'
-import { Button, Section, Title, StyledPassword } from '../basic-components'
+import { Button, ContentContainer, Section, Title, StyledPassword } from '../basic-components'
 import { setError } from '../../background/store/error'
 
 type StateProps = ReturnType<typeof mapStateToProps>
@@ -47,10 +48,13 @@ class Login extends React.Component<ILoginProps, ILoginState> {
 
   render () {
     return (
-      <div>
-        <Title>
-          login here
-        </Title>
+      <ContentContainer>
+        <Section>
+          <Title>
+            {t('loginHere')}
+          </Title>
+        </Section>
+
         <Section>
           <StyledPassword
             type='password'
@@ -58,12 +62,13 @@ class Login extends React.Component<ILoginProps, ILoginState> {
             onChange={this.setPassword}
           />
         </Section>
+
         <Section>
           <Button onClick={this.handleLogin}>
-            login
+            {t('login')}
           </Button>
         </Section>
-      </div>
+      </ContentContainer>
     )
   }
 }

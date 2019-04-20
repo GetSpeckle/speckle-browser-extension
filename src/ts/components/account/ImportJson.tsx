@@ -7,7 +7,7 @@ import { KeyringPair$Json } from '@polkadot/keyring/types'
 import { Message } from 'semantic-ui-react'
 import Dropzone from 'react-dropzone'
 import { isObject, u8aToString, isHex } from '@polkadot/util'
-import { Section, Button } from '../basic-components'
+import { Button, ContentContainer, Section } from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 
@@ -95,58 +95,51 @@ class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
 
   render () {
     return (
-      <div>
-        <Dropzone onDrop={this.handleFileUpload}>
-          {({ getRootProps, getInputProps }) => (
-            <UploadArea {...getRootProps()}>
-              <input {...getInputProps()} />
-              {this.state.file ? this.shortFileName() : t('fileUpload')}
-            </UploadArea>
-          )}
-        </Dropzone>
+      <ContentContainer>
+        <Section>
+          <Dropzone onDrop={this.handleFileUpload}>
+            {({getRootProps, getInputProps}) => (
+              <UploadArea {...getRootProps()}>
+                <input {...getInputProps()} />
+                {this.state.file ? this.shortFileName() : t('fileUpload')}
+              </UploadArea>
+            )}
+          </Dropzone>
+        </Section>
+
         <Section>
           <input
-            style={password}
             type='password'
             placeholder={t('password')}
             value={this.state.password}
           />
         </Section>
+
         <Section>
           <Message negative={true} hidden={!this.state.errorMessage}>
             {this.state.errorMessage}
           </Message>
         </Section>
+
         <Section>
           <Button onClick={this.handleImport} disabled={!this.isReady()}>
             {t('import')}
           </Button>
         </Section>
-      </div>
+      </ContentContainer>
     )
   }
 }
 
 const UploadArea = styled.div`
-  width: 311px;
+  width: 100%;
   height: 90px;
-  margin:18px auto;
   border-radius: 5px;
   border: 1px dotted;
   display: flex;
   justify-content: space-around;
   align-items: center
 `
-
-const password = {
-  width: 311,
-  height: 42,
-  padding: 10,
-  boarderWidth: 0.5,
-  borderRadius: 3,
-  borderStyle: 'solid',
-  borderColor: 'gray'
-}
 
 const mapStateToProps = (state: IAppState) => {
   return {

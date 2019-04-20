@@ -4,11 +4,16 @@ import Progress from './Progress'
 import { IAppState } from '../../background/store/all'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
-import { Message, Container, Grid, Button, Icon, Form, Divider } from 'semantic-ui-react'
+import { Grid, Button, Icon, Form, Divider } from 'semantic-ui-react'
 import { generateMnemonic } from '../../services/keyring-vault-proxy'
 import { setNewPhrase } from '../../background/store/account'
 import { CONFIRM_PHRASE_ROUTE } from '../../constants/routes'
-import { Button as StyledButton, Section, MnemonicPad } from '../basic-components'
+import {
+  Button as StyledButton,
+  ContentContainer,
+  Section,
+  SecondaryText,
+} from '../basic-components'
 
 interface IGeneratePhraseProps extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -85,55 +90,53 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
 
   render () {
     return (
-        <div>
-          <Progress color={this.props.settings.color} progress={2} />
-          <Section>
+      <ContentContainer>
+        <Section>
+          <Progress color={this.props.settings.color} progress={2}/>
+          <SecondaryText>
             {t('phraseDescription')}
-          </Section>
+          </SecondaryText>
+        </Section>
 
-          <Section>
-            <Form>
-              <Form.Input
-                label={t('accountNameTitle')}
-                type='input'
-                value={this.state.accountName}
-                onChange={this.handleChange}
-                placeholder={t('accountName')}
-              />
-              <Form.TextArea
-                label={t('phraseTitle')}
-                value={this.state.mnemonic}
-                readOnly={true}
-                onClick={this.selectAll}
-              />
+        <Form>
+          <Form.Input
+            label={t('accountNameTitle')}
+            type='input'
+            value={this.state.accountName}
+            onChange={this.handleChange}
+            placeholder={t('accountName')}
+          />
+          <Form.TextArea
+            label={t('phraseTitle')}
+            value={this.state.mnemonic}
+            readOnly={true}
+            onClick={this.selectAll}
+          />
 
-              <Container>
-                <Grid>
-                  <Grid.Row columns={2}>
-                    <Grid.Column>
-                      <Button onClick={this.copyText}>
-                        <Icon name='copy' />
-                        {t('copyText')}
-                      </Button>
-                    </Grid.Column>
-                    <Grid.Column>
-                      <Button onClick={this.downloadFile}>
-                        <Icon name='download' />
-                        {t('downloadFile')}</Button>
-                    </Grid.Column>
-                  </Grid.Row>
-                </Grid>
-              </Container>
+            <Grid columns='equal'>
+              <Grid.Row>
+                <Grid.Column>
+                  <Button onClick={this.copyText}>
+                    <Icon name='copy' />
+                    {t('copyText')}
+                  </Button>
+                </Grid.Column>
+                <Grid.Column>
+                  <Button onClick={this.downloadFile} style={{ float: 'right' }}>
+                    <Icon name='download' />
+                    {t('downloadFile')}</Button>
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
 
-              <Divider />
+          <Divider />
 
-              <StyledButton onClick={this.handleClick}>
-                {t('createAccount')}
-              </StyledButton>
+          <StyledButton onClick={this.handleClick}>
+            {t('createAccount')}
+          </StyledButton>
 
-            </Form>
-          </Section>
-        </div>
+          </Form>
+        </ContentContainer>
     )
   }
 }
