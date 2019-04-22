@@ -111,6 +111,7 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
             value={this.state.mnemonic}
             readOnly={true}
             onClick={this.selectAll}
+            style={mnemonicStyle}
           />
 
             <Grid columns='equal'>
@@ -150,6 +151,12 @@ const mapStateToProps = (state: IAppState) => {
     settings: state.settings,
     accountStatus: state.account
   }
+}
+
+const mnemonicStyle = {
+  lineHeight: '1.8rem',
+  wordSpacing: 5,
+  height: 80
 }
 
 const mapDispatchToProps = { setNewPhrase }

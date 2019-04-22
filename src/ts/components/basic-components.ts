@@ -63,6 +63,8 @@ export const MnemonicPad = styled.textarea`
   height: 125px;
   line-height: 1.57;
   color: #30383b;
+  line-height 1.8rem;
+  word-spacing: 5px;
 `
 
 export const StyledPassword = styled(Input).attrs({ fluid: true })`
