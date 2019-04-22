@@ -37,6 +37,7 @@ export const ContentContainer = styled.div`
 export const Section = styled.div`
   width: 100%;
   margin: 18px 0;
+  word-wrap: break-word;
 `
 
 export const TopSection = styled(Section)`
