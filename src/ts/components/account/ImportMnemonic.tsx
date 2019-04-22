@@ -58,12 +58,12 @@ class ImportMnemonic extends React.Component<IImportMnemonicProps, IImportMnemon
     return (
       <ContentContainer>
         <TopSection>
-          <span>{t('accountName')}</span>
+          <label>{t('accountName')}</label>
           <AccountName value={this.state.accountName} onChange={this.changeAccountName}/>
         </TopSection>
 
         <Section>
-          <span>{t('mnemonic')}</span>
+          <label>{t('mnemonic')}</label>
           <MnemonicPad value={this.state.mnemonic} onChange={this.changeMnemonic}/>
         </Section>
 

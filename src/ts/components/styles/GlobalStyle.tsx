@@ -17,6 +17,11 @@ const GlobalStyle = createGlobalStyle`
 	  width: 100%;
 	  padding: 10px;
 	}
+	label {
+	  font-family: Avenir;
+    font-size: 11px !important;
+    color: #30383B; !important;
+	}
 `
 
 export default GlobalStyle
