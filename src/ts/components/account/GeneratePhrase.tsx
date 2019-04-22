@@ -128,7 +128,7 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
 
           <Divider />
 
-          <StyledButton onClick={this.handleClick}>
+          <StyledButton type='button' onClick={this.handleClick}>
             {t('createAccount')}
           </StyledButton>
 
