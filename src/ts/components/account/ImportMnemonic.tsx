@@ -5,7 +5,7 @@ import { importAccountFromMnemonic } from '../../services/keyring-vault-proxy'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import { Message } from 'semantic-ui-react'
-import { Button, ContentContainer, Section, MnemonicPad } from '../basic-components'
+import { Button, ContentContainer, Section, TopSection, MnemonicPad } from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 
@@ -57,10 +57,10 @@ class ImportMnemonic extends React.Component<IImportMnemonicProps, IImportMnemon
   render () {
     return (
       <ContentContainer>
-        <Section>
+        <TopSection>
           <span>{t('accountName')}</span>
           <AccountName value={this.state.accountName} onChange={this.changeAccountName}/>
-        </Section>
+        </TopSection>
 
         <Section>
           <span>{t('mnemonic')}</span>

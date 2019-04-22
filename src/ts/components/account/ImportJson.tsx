@@ -7,7 +7,7 @@ import { KeyringPair$Json } from '@polkadot/keyring/types'
 import { Message } from 'semantic-ui-react'
 import Dropzone from 'react-dropzone'
 import { isObject, u8aToString, isHex } from '@polkadot/util'
-import { Button, ContentContainer, Section } from '../basic-components'
+import { Button, ContentContainer, Section, TopSection } from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 
@@ -96,7 +96,7 @@ class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
   render () {
     return (
       <ContentContainer>
-        <Section>
+        <TopSection>
           <Dropzone onDrop={this.handleFileUpload}>
             {({getRootProps, getInputProps}) => (
               <UploadArea {...getRootProps()}>
@@ -105,7 +105,7 @@ class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
               </UploadArea>
             )}
           </Dropzone>
-        </Section>
+        </TopSection>
 
         <Section>
           <input

@@ -39,6 +39,10 @@ export const Section = styled.div`
   margin: 18px 0;
 `
 
+export const TopSection = styled(Section)`
+  margin-top: 0;
+`
+
 export const PrimaryText = styled.div`
   color: #30383B;
 `

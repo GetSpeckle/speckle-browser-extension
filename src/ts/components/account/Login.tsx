@@ -6,7 +6,14 @@ import { connect } from 'react-redux'
 import { unlockWallet } from '../../services/keyring-vault-proxy'
 import { HOME_ROUTE } from '../../constants/routes'
 import { setLocked } from '../../background/store/account'
-import { Button, ContentContainer, Section, Title, StyledPassword } from '../basic-components'
+import {
+  Button,
+  ContentContainer,
+  Section,
+  TopSection,
+  Title,
+  StyledPassword
+} from '../basic-components'
 import { setError } from '../../background/store/error'
 
 type StateProps = ReturnType<typeof mapStateToProps>
@@ -49,11 +56,11 @@ class Login extends React.Component<ILoginProps, ILoginState> {
   render () {
     return (
       <ContentContainer>
-        <Section>
+        <TopSection>
           <Title>
             {t('loginHere')}
           </Title>
-        </Section>
+        </TopSection>
 
         <Section>
           <StyledPassword

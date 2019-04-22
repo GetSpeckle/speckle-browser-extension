@@ -10,6 +10,7 @@ import {
   Button as StyledButton,
   ContentContainer,
   Section,
+  TopSection,
   PrimaryText,
   MnemonicPad
 } from '../basic-components'
@@ -111,10 +112,10 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
   renderConfirmScreen () {
     return(
       <ContentContainer>
-        <Section>
+        <TopSection>
           <PrimaryText>{t('phraseConfirmTitle')}</PrimaryText>
           <MnemonicPad value={this.state.inputPhrase} onChange={this.changePhrase}/>
-        </Section>
+        </TopSection>
 
         <Section>
           <List horizontal={true} items={this.state.wordList} />

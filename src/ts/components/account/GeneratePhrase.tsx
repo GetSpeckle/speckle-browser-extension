@@ -11,7 +11,7 @@ import { CONFIRM_PHRASE_ROUTE } from '../../constants/routes'
 import {
   Button as StyledButton,
   ContentContainer,
-  Section,
+  TopSection,
   SecondaryText
 } from '../basic-components'
 
@@ -91,12 +91,12 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
   render () {
     return (
       <ContentContainer>
-        <Section>
+        <TopSection>
           <Progress color={this.props.settings.color} progress={2}/>
           <SecondaryText>
             {t('phraseDescription')}
           </SecondaryText>
-        </Section>
+        </TopSection>
 
         <Form>
           <Form.Input

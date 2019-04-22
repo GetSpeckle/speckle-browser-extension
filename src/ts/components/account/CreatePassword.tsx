@@ -6,7 +6,14 @@ import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
 import { Message } from 'semantic-ui-react'
 import { GENERATE_PHRASE_ROUTE } from '../../constants/routes'
-import { Button, ContentContainer, Section, SecondaryText, StyledPassword } from '../basic-components'
+import {
+  Button,
+  ContentContainer,
+  Section,
+  TopSection,
+  SecondaryText,
+  StyledPassword
+} from '../basic-components'
 import { setNewPassword } from '../../background/store/account'
 import { setError } from '../../background/store/error'
 
@@ -61,12 +68,12 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
   render () {
     return (
       <ContentContainer>
-        <Section>
+        <TopSection>
           <Progress color={this.props.settings.color} progress={1}/>
           <SecondaryText>
             {t('passwordDescription')}
           </SecondaryText>
-        </Section>
+        </TopSection>
 
         <Section>
           <StyledPassword

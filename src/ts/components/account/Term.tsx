@@ -6,7 +6,13 @@ import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 import { saveSettings } from '../../background/store/settings'
 import { RouteComponentProps, withRouter } from 'react-router'
-import { Button, ContentContainer, Section, SecondaryText, Title } from '../basic-components'
+import { Button,
+  ContentContainer,
+  Section,
+  TopSection,
+  SecondaryText,
+  Title
+} from '../basic-components'
 
 interface ITermProps extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -22,11 +28,11 @@ class Term extends React.Component<ITermProps> {
   render () {
     return (
       <ContentContainer>
-        <Section>
+        <TopSection>
           <Title>
             {t('termTitle')}
           </Title>
-        </Section>
+        </TopSection>
 
         <Section>
           <TermSection>
