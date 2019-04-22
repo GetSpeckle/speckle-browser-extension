@@ -87,3 +87,7 @@ const StyledLink = styled.a`
 `
 
 export const FooterLink = connect(mapStateToProps)(StyledLink)
+
+export const Center = styled.div`
+  text-align: center;
+`

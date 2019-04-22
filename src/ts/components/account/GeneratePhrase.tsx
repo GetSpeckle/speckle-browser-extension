@@ -4,7 +4,7 @@ import Progress from './Progress'
 import { IAppState } from '../../background/store/all'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
-import { Grid, Button, Icon, Form, Divider, Popup } from 'semantic-ui-react'
+import { Button, Icon, Form, Divider, Popup } from 'semantic-ui-react'
 import { generateMnemonic } from '../../services/keyring-vault-proxy'
 import { setNewPhrase } from '../../background/store/account'
 import { CONFIRM_PHRASE_ROUTE } from '../../constants/routes'
@@ -12,6 +12,7 @@ import {
   Button as StyledButton,
   ContentContainer,
   TopSection,
+  Center,
   SecondaryText
 } from '../basic-components'
 
@@ -114,25 +115,16 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
             style={mnemonicStyle}
           />
 
-            <Grid columns='equal'>
-              <Grid.Row>
-                <Grid.Column>
-                <Popup
-                  trigger={<Button><Icon name='copy' />{t('copyText')}</Button>}
-                  content={t('copyTextMessage')}
-                  on='click'
-                  open={!!this.state.message}
-                  onOpen={this.copyText}
-                  position='top right'
-                />
-                </Grid.Column>
-                <Grid.Column>
-                  <Button onClick={this.downloadFile} style={{ float: 'right' }}>
-                    <Icon name='download' />
-                    {t('downloadFile')}</Button>
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
+          <Center>
+            <Popup
+              trigger={<Button><Icon name='copy' />{t('copyText')}</Button>}
+              content={t('copyTextMessage')}
+              on='click'
+              open={!!this.state.message}
+              onOpen={this.copyText}
+              position='top center'
+            />
+          </Center>
 
           <Divider />
 
