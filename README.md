@@ -21,7 +21,7 @@ Development is still work in progress. Stay Tuned!
 ### In terminal or command prompt
 ```
 yarn install
-yarn run dev 
+yarn run prod 
 yarn run watch (to watch code changes)
 ```
 ### In Brave web browser

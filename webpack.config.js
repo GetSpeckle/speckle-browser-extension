@@ -89,5 +89,5 @@ if (nodeEnv === 'watch') {
 }
 
 if (nodeEnv === 'production') {
-  module.exports.plugins.push(new CleanWebpackPlugin(distRootPath, {verbose: true, dry: false}));
+  module.exports.plugins.push(new CleanWebpackPlugin({outputPath: distRootPath, verbose: true, dry: false}));
 }
