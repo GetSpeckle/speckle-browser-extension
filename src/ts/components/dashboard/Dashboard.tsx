@@ -2,18 +2,21 @@ import * as React from 'react'
 import { getAccounts, lockWallet } from '../../services/keyring-vault-proxy'
 import { LOGIN_ROUTE } from '../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router'
-import { Button, ContentContainer, Section } from '../basic-components'
+import { Button as StyledButton, ContentContainer, Section } from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 import { setCurrentAddressAndName } from '../../background/store/account'
 import t from '../../services/i18n'
+import Button from 'semantic-ui-react/dist/commonjs/elements/Button/Button'
+import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon/Icon'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {}
 
 interface IDashboardState {
   currentAddress?: string,
   currentName?: string,
-  initializing: boolean
+  initializing: boolean,
+  showFullAddress: boolean
 }
 
 class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
@@ -22,7 +25,8 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     super(props)
 
     this.state = {
-      initializing: true
+      initializing: true,
+      showFullAddress: false
     }
   }
 
@@ -34,7 +38,15 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     })
   }
 
-  shortAddress = (address) => {
+  showFullAddress = () => {
+    this.setState({
+      showFullAddress: true
+    })
+  }
+
+  getAddress = (address) => {
+    if (this.state.showFullAddress) return address
+
     return address.substring(0, 5) + '...' + address.substring(address.length - 10)
   }
 
@@ -55,6 +67,12 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     )
   }
 
+  renderViewButton () {
+    return (
+      <Button onClick={this.showFullAddress} icon={true}><Icon name='eye' /></Button>
+    )
+  }
+
   componentWillMount () {
     this.loadAccounts()
   }
@@ -69,12 +87,13 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
           {t('accountName')}: {this.state.currentName}
         </Section>
         <Section>
-          {t('address')}: {this.shortAddress(this.state.currentAddress)}
+          {t('address')}: {this.getAddress(this.state.currentAddress)}
+          {!this.state.showFullAddress ? this.renderViewButton() : null}
         </Section>
         <Section>
-          <Button onClick={this.handleClick}>
+          <StyledButton onClick={this.handleClick}>
             {t('logout')}
-          </Button>
+          </StyledButton>
         </Section>
       </ContentContainer>
     )
