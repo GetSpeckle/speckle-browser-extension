@@ -61,7 +61,7 @@ export const Title = styled.div`
 `
 
 export const MnemonicPad = styled.textarea`
-  height: 125px;
+  height: 100px;
   line-height: 1.57;
   color: #30383b;
   line-height 1.8rem;
