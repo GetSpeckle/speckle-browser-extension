@@ -1,7 +1,11 @@
 import * as React from 'react'
 import { ContentContainer } from '../basic-components'
+import { withRouter, RouteComponentProps } from 'react-router'
+import { CREATE_PASSWORD_ROUTE, GENERATE_PHRASE_ROUTE } from '../../constants/routes'
 
-interface IProgressProps {
+import '../../../assets/app.css'
+
+interface IProgressProps extends RouteComponentProps {
   color: string,
   progress: number
 }
@@ -10,6 +14,17 @@ interface IProgressProps {
  * A component to show the progress/step of account creation using given color.
  */
 class Progress extends React.Component<IProgressProps> {
+
+  handleClick = route => event => {
+    // only allow to go back
+    if (this.props.progress > 1 && route === CREATE_PASSWORD_ROUTE) {
+      this.props.history.push(route)
+    }
+
+    if (this.props.progress > 2 && route === GENERATE_PHRASE_ROUTE) {
+      this.props.history.push(route)
+    }
+  }
 
   render () {
 
@@ -29,7 +44,15 @@ class Progress extends React.Component<IProgressProps> {
     return (
       <ContentContainer>
 
-        <svg xmlns='http://www.w3.org/2000/svg' xmlnsXlink='http://www.w3.org/1999/xlink' width='43' height='37' viewBox='0 0 43 37'>
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          xmlnsXlink='http://www.w3.org/1999/xlink'
+          width='43'
+          height='37'
+          viewBox='0 0 43 37'
+          onClick={this.handleClick(CREATE_PASSWORD_ROUTE)}
+          className='step'
+        >
           <defs>
             <radialGradient id='c' cy='22.572%' r='84.639%' fx='50%' fy='22.572%'>
               <stop offset='0%' stop-color={one[0]}/>
@@ -70,7 +93,15 @@ class Progress extends React.Component<IProgressProps> {
           <line x1='0' y1='20' x2='86' y2='20' stroke='#cad3d7' />
         </svg>
 
-        <svg xmlns='http://www.w3.org/2000/svg' xmlnsXlink='http://www.w3.org/1999/xlink' width='47' height='41' viewBox='0 0 47 41'>
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          xmlnsXlink='http://www.w3.org/1999/xlink'
+          width='47'
+          height='41'
+          viewBox='0 0 47 41'
+          onClick={this.handleClick(GENERATE_PHRASE_ROUTE)}
+          className='step'
+        >
           <defs>
             <radialGradient id='c2' cy='19.249%' r='80.751%' fx='50%' fy='19.249%'>
               <stop offset='0%' stop-color='#51DFB0'/>
@@ -166,4 +197,4 @@ class Progress extends React.Component<IProgressProps> {
   }
 }
 
-export default Progress
+export default withRouter(Progress)
