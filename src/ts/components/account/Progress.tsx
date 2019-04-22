@@ -15,7 +15,7 @@ interface IProgressProps extends RouteComponentProps {
  */
 class Progress extends React.Component<IProgressProps> {
 
-  handleClick = route => event => {
+  handleClick = route => () => {
     // only allow to go back
     if (this.props.progress > 1 && route === CREATE_PASSWORD_ROUTE) {
       this.props.history.push(route)
