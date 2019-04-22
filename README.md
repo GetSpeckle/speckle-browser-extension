@@ -1,4 +1,4 @@
-# speckle-browser-extension
+# Speckle browser extension
 ### Introduction
 Universal browser extension for Web 3 and the Polkadot ecosystem. 
 Development is still work in progress. Stay Tuned!
