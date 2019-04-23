@@ -38,10 +38,18 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
   }
 
   componentDidMount () {
-    // generate the mnemonic
-    generateMnemonic().then(phrase => {
-      this.setState({ mnemonic: phrase })
-    })
+    // generate the mnemonic or restore it from the store if exists
+    if (this.props.accountStatus.newPhrase) {
+      this.setState({ mnemonic: this.props.accountStatus.newPhrase })
+    } else {
+      generateMnemonic().then(phrase => {
+        this.setState({ mnemonic: phrase })
+      })
+    }
+
+    if (this.props.accountStatus.newAccountName) {
+      this.setState({ accountName: this.props.accountStatus.newAccountName })
+    }
   }
 
   handleChange = event => {
