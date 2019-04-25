@@ -21,7 +21,7 @@ class Progress extends React.Component<IProgressProps> {
       this.props.history.push(route)
     }
 
-    if (this.props.progress > 2 && route === GENERATE_PHRASE_ROUTE) {
+    if (this.props.progress >= 2 && route === GENERATE_PHRASE_ROUTE) {
       this.props.history.push(route)
     }
   }
