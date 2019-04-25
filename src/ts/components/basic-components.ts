@@ -17,7 +17,7 @@ export const LayoutContainer = styled('div')`
     height: 600px;
     border-radius: 4px;
     box-shadow: 0 6px 30px 0 ${props => props.theme['shadowColor']};
-    border: solid 1px ${props => props.theme['borderColor']};
+    border: 0;
     background-color: ${props => props.theme['backgroundColor']};
 `
 
