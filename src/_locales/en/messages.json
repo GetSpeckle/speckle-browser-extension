@@ -124,5 +124,8 @@
   },
   "help": {
     "message": "Get help"
+  },
+  "rpcError": {
+    "message": "RPC service error"
   }
 }
