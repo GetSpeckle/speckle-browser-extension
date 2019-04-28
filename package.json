@@ -12,7 +12,7 @@
 		"test:coverage": "jest --collect-coverage"
 	},
 	"resolutions": {
-		"@polkadot/types": "^0.76.1",
+		"@polkadot/types": "^0.77.1",
 		"@polkadot/util-crypto": "^0.76.1"
 	},
 	"dependencies": {
@@ -20,6 +20,7 @@
 		"@polkadot/keyring": "^0.76.1",
 		"@polkadot/util": "^0.76.1",
 		"@types/react-dropzone": "^4.2.2",
+		"polkadot-identicon": "^1.1.45",
 		"react": "^16.8.4",
 		"react-chrome-redux": "^2.0.0-alpha.5",
 		"react-dom": "^16.8.4",

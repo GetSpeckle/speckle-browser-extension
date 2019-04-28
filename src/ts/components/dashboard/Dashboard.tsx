@@ -9,6 +9,7 @@ import { setCurrentAddressAndName } from '../../background/store/account'
 import t from '../../services/i18n'
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button/Button'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon/Icon'
+import Identicon from 'polkadot-identicon'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {}
 
@@ -81,13 +82,18 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     if (this.state.initializing) {
       return (null)
     }
+
+    const size = 32
+    const address = this.state.currentAddress || ''
     return (
       <ContentContainer>
         <Section>
           {t('accountName')}: {this.state.currentName}
         </Section>
         <Section>
-          {t('address')}: {this.getAddress(this.state.currentAddress)}
+          {t('address')}:
+          <Identicon account={address} size={size} className='identicon' />
+          {this.getAddress(address)}
           {!this.state.showFullAddress ? this.renderViewButton() : null}
         </Section>
         <Section>

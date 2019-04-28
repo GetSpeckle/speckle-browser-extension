@@ -19,3 +19,7 @@
 .step {
   cursor: pointer;
 }
+
+.identicon {
+  vertical-align: top;
+}
