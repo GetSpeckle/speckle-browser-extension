@@ -68,7 +68,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
       if (wallet.newPhrase) {
         createAccount(wallet.newPhrase, wallet.newAccountName).then(keyringPair => {
           console.log('Account created! ', keyringPair)
-          this.setState({ keyringPair: keyringPair })
+          this.setState({ keyringPair })
         }).catch(err => {
           this.props.setError(err)
         })
@@ -84,7 +84,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
           createAccount(wallet.newPhrase, wallet.newAccountName).then(keyringPair => {
             console.log('Account created! ', keyringPair)
             this.props.setCreated(true)
-            this.setState({ keyringPair: keyringPair })
+            this.setState({ keyringPair })
           }).catch(err => { this.props.setError(err) })
         }
       }).catch(err => { this.props.setError(err) })
