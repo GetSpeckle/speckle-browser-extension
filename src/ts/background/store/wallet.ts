@@ -1,16 +1,22 @@
 import { AnyAction, Reducer } from 'redux'
 
-export interface IAccount {
+export interface IWallet {
   locked: boolean,
   created: boolean,
   newPassword?: string,
   newPhrase?: string,
   newAccountName?: string
+  accounts?: IAccount[]
   currentAddress?: string
   currentName?: string
 }
 
-const initialState: IAccount = {
+export interface IAccount {
+  address: string,
+  name: string
+}
+
+const initialState: IWallet = {
   locked: true,
   created: false
 }
@@ -19,6 +25,7 @@ export const ACTION_TYPES = {
   SET_CREATED: 'SET_CREATED',
   SET_LOCKED: 'SET_LOCKED',
   SET_NEW_PHRASE: 'SET_NEW_PHRASE',
+  SET_ACCOUNTS: 'SET_ACCOUNTS',
   SET_NEW_PASSWORD: 'SET_NEW_PASSWORD',
   SET_CURRENT_ADDRESS_AND_NAME: 'SET_CURRENT_ADDRESS_AND_NAME'
 }
@@ -59,12 +66,12 @@ export function setCreated (accountCreated: boolean): AnyAction {
 }
 
 /**
- * account reducer
+ * wallet reducer
  *
  * @param state the current state
  * @param action the action received
  */
-const account: Reducer<IAccount, AnyAction> = (state = initialState, action) => {
+const wallet: Reducer<IWallet, AnyAction> = (state = initialState, action) => {
   switch (action.type) {
 
     case ACTION_TYPES.SET_LOCKED:
@@ -85,6 +92,10 @@ const account: Reducer<IAccount, AnyAction> = (state = initialState, action) => 
       console.log('set new password ...')
       return { ...state, newPassword: action.payload }
 
+    case ACTION_TYPES.SET_ACCOUNTS:
+      console.log('set accounts ...')
+      return { ...state, accounts: action.payload }
+
     case ACTION_TYPES.SET_CURRENT_ADDRESS_AND_NAME:
       return {
         ...state,
@@ -96,4 +107,4 @@ const account: Reducer<IAccount, AnyAction> = (state = initialState, action) => 
   }
 }
 
-export default account
+export default wallet

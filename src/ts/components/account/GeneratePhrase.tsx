@@ -6,7 +6,7 @@ import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
 import { Button, Icon, Form, Divider, Popup } from 'semantic-ui-react'
 import { generateMnemonic } from '../../services/keyring-vault-proxy'
-import { setNewPhrase } from '../../background/store/account'
+import { setNewPhrase } from '../../background/store/wallet'
 import { CONFIRM_PHRASE_ROUTE } from '../../constants/routes'
 import {
   Button as StyledButton,
@@ -149,7 +149,7 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
 const mapStateToProps = (state: IAppState) => {
   return {
     settings: state.settings,
-    accountStatus: state.account
+    accountStatus: state.wallet
   }
 }
 

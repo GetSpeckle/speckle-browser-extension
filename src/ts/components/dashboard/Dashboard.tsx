@@ -1,19 +1,21 @@
 import * as React from 'react'
 import { getAccounts, lockWallet } from '../../services/keyring-vault-proxy'
-import { LOGIN_ROUTE } from '../../constants/routes'
+import { GENERATE_PHRASE_ROUTE, LOGIN_ROUTE } from '../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { Button as StyledButton, ContentContainer, Section } from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
-import { setCurrentAddressAndName } from '../../background/store/account'
+import { IAccount, setCurrentAddressAndName } from '../../background/store/wallet'
 import t from '../../services/i18n'
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button/Button'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon/Icon'
 import Identicon from 'polkadot-identicon'
+import { KeyringPair$Json } from '@polkadot/keyring/types'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {}
 
 interface IDashboardState {
+  accounts: IAccount[],
   currentAddress?: string,
   currentName?: string,
   initializing: boolean,
@@ -26,6 +28,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     super(props)
 
     this.state = {
+      accounts: [],
       initializing: true,
       showFullAddress: false
     }
@@ -36,6 +39,14 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     lockWallet().then(result => {
       console.log(result)
       history.push(LOGIN_ROUTE)
+    })
+  }
+
+  handleCreateAccountClick = () => {
+    const { history } = this.props
+    lockWallet().then(result => {
+      console.log(result)
+      history.push(GENERATE_PHRASE_ROUTE)
     })
   }
 
@@ -58,9 +69,15 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
         if (!Array.isArray(result) || !result.length) {
           return
         }
+        const accounts: IAccount[] = result.map(
+          (keyring: KeyringPair$Json) => {
+            return { name: keyring.meta.name, address: keyring.address }
+          }
+        )
         this.props.setCurrentAddressAndName(result[0].address, result[0].meta.name)
         this.setState({
           initializing: false,
+          accounts,
           currentAddress: result[0].address,
           currentName: result[0].meta.name
         })
@@ -100,6 +117,9 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
           <StyledButton onClick={this.handleClick}>
             {t('logout')}
           </StyledButton>
+          <StyledButton onClick={this.handleCreateAccountClick}>
+            create new account
+          </StyledButton>
         </Section>
       </ContentContainer>
     )
@@ -108,8 +128,8 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
 const mapStateToProps = (state: IAppState) => {
   return {
-    currentAddress: state.account.currentAddress,
-    currentName: state.account.currentName
+    currentAddress: state.wallet.currentAddress,
+    currentName: state.wallet.currentName
   }
 }
 

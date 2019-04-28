@@ -9,7 +9,7 @@ import { themes } from '../../components/styles/themes'
 import { Routes } from '../../routes'
 import { getSettings } from '../../background/store/settings'
 import { isWalletLocked, walletExists } from '../../services/keyring-vault-proxy'
-import { setLocked, setCreated } from '../../background/store/account'
+import { setLocked, setCreated } from '../../background/store/wallet'
 
 interface IPopupApp extends StateProps, DispatchProps {
 }
@@ -77,7 +77,7 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
 const mapStateToProps = (state: IAppState) => {
   return {
     settings: state.settings,
-    accountStatus: state.account
+    accountStatus: state.wallet
   }
 }
 

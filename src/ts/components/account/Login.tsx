@@ -5,7 +5,7 @@ import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 import { unlockWallet } from '../../services/keyring-vault-proxy'
 import { HOME_ROUTE } from '../../constants/routes'
-import { setLocked } from '../../background/store/account'
+import { setLocked } from '../../background/store/wallet'
 import {
   Button,
   ContentContainer,
