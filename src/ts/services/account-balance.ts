@@ -1,7 +1,7 @@
-import t from '../../services/i18n'
+import t from './i18n'
 import { ApiPromise } from '@polkadot/api'
 import { WsProvider } from '@polkadot/rpc-provider'
-import { Network } from '../../constants/networks'
+import { Network } from '../constants/networks'
 import { ChainProperties } from '@polkadot/types'
 import { formatBalance } from '@polkadot/util'
 
