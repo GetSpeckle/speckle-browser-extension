@@ -21,8 +21,6 @@ export async function getBalance (
       unit: chainProperties.tokenSymbol
     })
     return formatBalance(balance.toString())
-  } catch (e) {
-    return 'N/A'
   } finally {
     if (provider.isConnected()) provider.disconnect()
   }
