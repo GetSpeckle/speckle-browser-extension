@@ -111,8 +111,7 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
 
 const mapStateToProps = (state: IAppState) => {
   return {
-    settings: state.settings,
-    accountStatus: state.wallet
+    settings: state.settings
   }
 }
 

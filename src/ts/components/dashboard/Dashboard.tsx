@@ -5,7 +5,7 @@ import { RouteComponentProps, withRouter } from 'react-router'
 import { Button as StyledButton, ContentContainer, Section } from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
-import { IAccount, setCurrentAddressAndName } from '../../background/store/wallet'
+import { IAccount, setAccounts, setCurrentAccount } from '../../background/store/wallet'
 import t from '../../services/i18n'
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button/Button'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon/Icon'
@@ -16,8 +16,7 @@ interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps
 
 interface IDashboardState {
   accounts: IAccount[],
-  currentAddress?: string,
-  currentName?: string,
+  currentAccount: IAccount,
   initializing: boolean,
   showFullAddress: boolean
 }
@@ -29,6 +28,10 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
     this.state = {
       accounts: [],
+      currentAccount: {
+        address: '',
+        name: ''
+      },
       initializing: true,
       showFullAddress: false
     }
@@ -44,10 +47,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
   handleCreateAccountClick = () => {
     const { history } = this.props
-    lockWallet().then(result => {
-      console.log(result)
-      history.push(GENERATE_PHRASE_ROUTE)
-    })
+    history.push(GENERATE_PHRASE_ROUTE)
   }
 
   showFullAddress = () => {
@@ -74,12 +74,14 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
             return { name: keyring.meta.name, address: keyring.address }
           }
         )
-        this.props.setCurrentAddressAndName(result[0].address, result[0].meta.name)
+        // set first one to current account, test only
+        const currentAccount = accounts[0]
+        this.props.setCurrentAccount(currentAccount)
+        this.props.setAccounts(accounts)
         this.setState({
           initializing: false,
-          accounts,
-          currentAddress: result[0].address,
-          currentName: result[0].meta.name
+          accounts: accounts,
+          currentAccount: currentAccount
         })
       }
     )
@@ -101,11 +103,11 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     }
 
     const size = 32
-    const address = this.state.currentAddress || ''
+    const address = this.state.currentAccount.address || ''
     return (
       <ContentContainer>
         <Section>
-          {t('accountName')}: {this.state.currentName}
+          {t('accountName')}: {this.state.currentAccount.name}
         </Section>
         <Section>
           {t('address')}:
@@ -128,12 +130,11 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
 const mapStateToProps = (state: IAppState) => {
   return {
-    currentAddress: state.wallet.currentAddress,
-    currentName: state.wallet.currentName
+    currentAccount: state.wallet.currentAccount
   }
 }
 
-const mapDispatchToProps = { setCurrentAddressAndName }
+const mapDispatchToProps = { setCurrentAccount, setAccounts }
 type DispatchProps = typeof mapDispatchToProps
 
 type StateProps = ReturnType<typeof mapStateToProps>

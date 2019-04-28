@@ -39,16 +39,16 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
 
   componentDidMount () {
     // generate the mnemonic or restore it from the store if exists
-    if (this.props.accountStatus.newPhrase) {
-      this.setState({ mnemonic: this.props.accountStatus.newPhrase })
+    if (this.props.wallet.newPhrase) {
+      this.setState({ mnemonic: this.props.wallet.newPhrase })
     } else {
       generateMnemonic().then(phrase => {
         this.setState({ mnemonic: phrase })
       })
     }
 
-    if (this.props.accountStatus.newAccountName) {
-      this.setState({ accountName: this.props.accountStatus.newAccountName })
+    if (this.props.wallet.newAccountName) {
+      this.setState({ accountName: this.props.wallet.newAccountName })
     }
   }
 
@@ -149,7 +149,7 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
 const mapStateToProps = (state: IAppState) => {
   return {
     settings: state.settings,
-    accountStatus: state.wallet
+    wallet: state.wallet
   }
 }
 
