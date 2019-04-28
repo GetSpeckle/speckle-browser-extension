@@ -1,3 +1,4 @@
+import t from '../../services/i18n'
 import { ApiPromise } from '@polkadot/api'
 import { WsProvider } from '@polkadot/rpc-provider'
 import { Network } from '../../constants/networks'
@@ -21,6 +22,8 @@ export async function getBalance (
       unit: chainProperties.tokenSymbol
     })
     return formatBalance(balance.toString())
+  } catch (e) {
+    throw new Error(t('rpcError'))
   } finally {
     if (provider.isConnected()) provider.disconnect()
   }

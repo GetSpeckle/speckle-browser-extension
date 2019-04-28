@@ -11,11 +11,6 @@ describe('Testing account-balance', () => {
     expect(balance).toBeGreaterThanOrEqual(0)
   })
 
-  test('getBalanceWithFormat', async () => {
-    const formattedBalance = await getBalance(ALICE, Alexander, true)
-    expect(formattedBalance).toBeDefined()
-  })
-
   test('getBalanceOfEmptyAccount', async () => {
     const balance = await getBalance(EMPTY_ACCOUNT, Alexander)
     expect(balance).toEqual(0)
