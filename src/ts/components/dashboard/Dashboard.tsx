@@ -7,18 +7,26 @@ import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 import { IAccount, setAccounts, setCurrentAccount } from '../../background/store/wallet'
 import t from '../../services/i18n'
-import Button from 'semantic-ui-react/dist/commonjs/elements/Button/Button'
-import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon/Icon'
+import { Dropdown } from 'semantic-ui-react'
 import Identicon from 'polkadot-identicon'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
+import Header from 'semantic-ui-react/dist/commonjs/elements/Header/Header'
 
-interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {}
+interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
+}
 
 interface IDashboardState {
-  accounts: IAccount[],
+  options: Array<Option>,
   currentAccount: IAccount,
   initializing: boolean,
   showFullAddress: boolean
+}
+
+interface Option {
+  key: string,
+  text: string,
+  value: string,
+  content: object
 }
 
 class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
@@ -27,7 +35,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     super(props)
 
     this.state = {
-      accounts: [],
+      options: [],
       currentAccount: {
         address: '',
         name: ''
@@ -62,6 +70,15 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     return address.substring(0, 5) + '...' + address.substring(address.length - 10)
   }
 
+  generateDropdownItem (account: IAccount) {
+    return (
+      <div>
+        <Identicon account={account.address} size={32} className='identicon'/>
+        <Header content={account.name} subheader={account.address}/>
+      </div>
+    )
+  }
+
   loadAccounts = () => {
     getAccounts().then(
       result => {
@@ -80,16 +97,15 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
         this.props.setAccounts(accounts)
         this.setState({
           initializing: false,
-          accounts: accounts,
+          options: accounts.map(account => ({
+            key: account.name,
+            text: account.name,
+            value: account.address,
+            content: this.generateDropdownItem(account)
+          })),
           currentAccount: currentAccount
         })
       }
-    )
-  }
-
-  renderViewButton () {
-    return (
-      <Button onClick={this.showFullAddress} icon={true}><Icon name='eye' /></Button>
     )
   }
 
@@ -101,19 +117,10 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     if (this.state.initializing) {
       return (null)
     }
-
-    const size = 32
-    const address = this.state.currentAccount.address || ''
     return (
       <ContentContainer>
         <Section>
-          {t('accountName')}: {this.state.currentAccount.name}
-        </Section>
-        <Section>
-          {t('address')}:
-          <Identicon account={address} size={size} className='identicon' />
-          {this.getAddress(address)}
-          {!this.state.showFullAddress ? this.renderViewButton() : null}
+          <Dropdown options={this.state.options} text='My Polkadot Wallet'/>
         </Section>
         <Section>
           <StyledButton onClick={this.handleClick}>
