@@ -12,11 +12,11 @@
 		"test:coverage": "jest --collect-coverage"
 	},
 	"resolutions": {
-		"@polkadot/types": "^0.77.1",
+		"@polkadot/types": "^0.76.1",
 		"@polkadot/util-crypto": "^0.76.1"
 	},
 	"dependencies": {
-		"@polkadot/api": "^0.77.1",
+		"@polkadot/api": "^0.76.1",
 		"@polkadot/keyring": "^0.76.1",
 		"@polkadot/util": "^0.76.1",
 		"@types/react-dropzone": "^4.2.2",
