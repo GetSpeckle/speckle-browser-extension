@@ -3,8 +3,6 @@ import { ACTION_TYPES } from './actions'
 import { SUCCESS, REQUEST } from '../util'
 import {
   Color,
-  ColorScheme,
-  colorSchemes,
   ThemeTypes
 } from '../../../components/styles/themes'
 
@@ -15,7 +13,6 @@ export interface IAppSettings {
   updating: boolean,
   theme: ThemeTypes,
   color: Color,
-  colorScheme: ColorScheme,
   // welcome if first time user
   welcome: boolean
 }
@@ -24,7 +21,6 @@ const initialState: IAppSettings = {
   updating: false,
   theme: 'light',
   color: 'blue',
-  colorScheme: colorSchemes.blue,
   welcome: true
 }
 
