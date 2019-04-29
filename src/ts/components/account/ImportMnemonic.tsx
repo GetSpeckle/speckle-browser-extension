@@ -36,7 +36,7 @@ class ImportMnemonic extends React.Component<IImportMnemonicProps, IImportMnemon
 
     importAccountFromMnemonic(this.state.mnemonic, this.state.accountName)
       .then((json: KeyringPair$Json) => {
-        console.log(json) // TODO navigate to account screen
+        console.log(json) // TODO navigate to wallet screen
       }).catch((reason) => {
         this.setState({ ...this.state, errorMessage: reason })
       })

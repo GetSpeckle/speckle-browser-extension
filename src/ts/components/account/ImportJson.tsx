@@ -42,7 +42,7 @@ class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
   handleImport () {
     importAccountFromJson(this.state.json, this.state.password)
       .then((json: KeyringPair$Json) => {
-        console.log(json) // TODO navigate to account screen
+        console.log(json) // TODO navigate to wallet screen
       }).catch(error => {
         this.setState({ ...this.state, errorMessage: error })
       })

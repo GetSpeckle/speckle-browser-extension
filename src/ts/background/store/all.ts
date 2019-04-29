@@ -1,16 +1,16 @@
 import settings, { IAppSettings } from './settings/reducer'
 import { combineReducers } from 'redux'
-import account, { IAccount } from './account'
+import wallet, { IWallet } from './wallet'
 import error, { IError } from './error'
 
 export interface IAppState {
   settings: IAppSettings
-  account: IAccount
+  wallet: IWallet
   error: IError
 }
 
 const reducers = combineReducers<IAppState>({
-  settings, account, error
+  settings, wallet, error
 })
 
 export default reducers

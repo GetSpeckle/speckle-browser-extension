@@ -16,7 +16,7 @@ import {
 } from '../basic-components'
 import { HOME_ROUTE } from '../../constants/routes'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
-import { setLocked, setCreated } from '../../background/store/account'
+import { setLocked, setCreated } from '../../background/store/wallet'
 import { setError } from '../../background/store/error'
 
 interface IConfirmPhraseProps extends StateProps, DispatchProps, RouteComponentProps {}
@@ -41,8 +41,8 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
 
   componentDidMount () {
     // split the new phrase to be a list
-    if (this.props.accountStatus.newPhrase) {
-      this.setState({ wordList: this.props.accountStatus.newPhrase.split(/\s+/) })
+    if (this.props.wallet.newPhrase) {
+      this.setState({ wordList: this.props.wallet.newPhrase.split(/\s+/) })
     }
   }
 
@@ -56,24 +56,35 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
   }
 
   isPhraseConfirmed = (): boolean => {
-    return !!this.props.accountStatus && !!this.props.accountStatus.newPhrase
-        && this.props.accountStatus.newPhrase === this.state.inputPhrase
+    return !!this.props.wallet && !!this.props.wallet.newPhrase
+        && this.props.wallet.newPhrase === this.state.inputPhrase
   }
 
   createAccount = () => {
     this.props.setError(null)
-    const { accountStatus } = this.props
-    if (accountStatus.newPassword) {
-      unlockWallet(accountStatus.newPassword).then(kp => {
+    const { wallet } = this.props
+    // add a new wallet using the same pass
+    if (!wallet.locked && wallet.created) {
+      if (wallet.newPhrase) {
+        createAccount(wallet.newPhrase, wallet.newAccountName).then(keyringPair => {
+          console.log('Account created! ', keyringPair)
+          this.setState({ keyringPair })
+        }).catch(err => {
+          this.props.setError(err)
+        })
+      }
+    }
+    if (wallet.newPassword) {
+      unlockWallet(wallet.newPassword).then(kp => {
         console.log('wallet unlocked')
         // update redux store state
         this.props.setLocked(false)
         console.assert(kp.length === 0, 'Should be an empty array')
-        if (accountStatus.newPhrase) {
-          createAccount(accountStatus.newPhrase, accountStatus.newAccountName).then(keyringPair => {
+        if (wallet.newPhrase) {
+          createAccount(wallet.newPhrase, wallet.newAccountName).then(keyringPair => {
             console.log('Account created! ', keyringPair)
             this.props.setCreated(true)
-            this.setState({ keyringPair: keyringPair })
+            this.setState({ keyringPair })
           }).catch(err => { this.props.setError(err) })
         }
       }).catch(err => { this.props.setError(err) })
@@ -166,7 +177,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
 const mapStateToProps = (state: IAppState) => {
   return {
     settings: state.settings,
-    accountStatus: state.account
+    wallet: state.wallet
   }
 }
 

@@ -11,7 +11,7 @@ interface IProgressProps extends RouteComponentProps {
 }
 
 /**
- * A component to show the progress/step of account creation using given color.
+ * A component to show the progress/step of wallet creation using given color.
  */
 class Progress extends React.Component<IProgressProps> {
 

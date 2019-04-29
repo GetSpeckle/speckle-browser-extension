@@ -14,7 +14,7 @@ import {
   SecondaryText,
   StyledPassword
 } from '../basic-components'
-import { setNewPassword } from '../../background/store/account'
+import { setNewPassword } from '../../background/store/wallet'
 import { setError } from '../../background/store/error'
 
 interface ICreatePasswordProps extends StateProps, DispatchProps, RouteComponentProps {}
@@ -111,8 +111,7 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
 
 const mapStateToProps = (state: IAppState) => {
   return {
-    settings: state.settings,
-    accountStatus: state.account
+    settings: state.settings
   }
 }
 

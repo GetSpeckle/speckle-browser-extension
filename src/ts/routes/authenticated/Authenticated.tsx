@@ -8,8 +8,8 @@ import { CREATE_PASSWORD_ROUTE, INITIALIZE_ROUTE, LOGIN_ROUTE } from '../../cons
 const mapStateToProps = (state: IAppState) => {
   return {
     welcome: state.settings.welcome,
-    isLocked: state.account.locked,
-    accountCreated: state.account.created
+    isLocked: state.wallet.locked,
+    accountCreated: state.wallet.created
   }
 }
 

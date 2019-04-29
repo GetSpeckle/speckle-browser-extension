@@ -1,21 +1,22 @@
 import * as React from 'react'
 import { getAccounts, lockWallet } from '../../services/keyring-vault-proxy'
-import { LOGIN_ROUTE } from '../../constants/routes'
+import { GENERATE_PHRASE_ROUTE, LOGIN_ROUTE } from '../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { Button as StyledButton, ContentContainer, Section } from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
-import { setCurrentAddressAndName } from '../../background/store/account'
+import { IAccount, setAccounts, setCurrentAccount } from '../../background/store/wallet'
 import t from '../../services/i18n'
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button/Button'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon/Icon'
 import Identicon from 'polkadot-identicon'
+import { KeyringPair$Json } from '@polkadot/keyring/types'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {}
 
 interface IDashboardState {
-  currentAddress?: string,
-  currentName?: string,
+  accounts: IAccount[],
+  currentAccount: IAccount,
   initializing: boolean,
   showFullAddress: boolean
 }
@@ -26,6 +27,11 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     super(props)
 
     this.state = {
+      accounts: [],
+      currentAccount: {
+        address: '',
+        name: ''
+      },
       initializing: true,
       showFullAddress: false
     }
@@ -37,6 +43,11 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
       console.log(result)
       history.push(LOGIN_ROUTE)
     })
+  }
+
+  handleCreateAccountClick = () => {
+    const { history } = this.props
+    history.push(GENERATE_PHRASE_ROUTE)
   }
 
   showFullAddress = () => {
@@ -58,11 +69,19 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
         if (!Array.isArray(result) || !result.length) {
           return
         }
-        this.props.setCurrentAddressAndName(result[0].address, result[0].meta.name)
+        const accounts: IAccount[] = result.map(
+          (keyring: KeyringPair$Json) => {
+            return { name: keyring.meta.name, address: keyring.address }
+          }
+        )
+        // set first one to current account, test only
+        const currentAccount = accounts[0]
+        this.props.setCurrentAccount(currentAccount)
+        this.props.setAccounts(accounts)
         this.setState({
           initializing: false,
-          currentAddress: result[0].address,
-          currentName: result[0].meta.name
+          accounts: accounts,
+          currentAccount: currentAccount
         })
       }
     )
@@ -84,11 +103,11 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     }
 
     const size = 32
-    const address = this.state.currentAddress || ''
+    const address = this.state.currentAccount.address || ''
     return (
       <ContentContainer>
         <Section>
-          {t('accountName')}: {this.state.currentName}
+          {t('accountName')}: {this.state.currentAccount.name}
         </Section>
         <Section>
           {t('address')}:
@@ -100,6 +119,9 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
           <StyledButton onClick={this.handleClick}>
             {t('logout')}
           </StyledButton>
+          <StyledButton onClick={this.handleCreateAccountClick}>
+            create new account
+          </StyledButton>
         </Section>
       </ContentContainer>
     )
@@ -108,12 +130,11 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
 const mapStateToProps = (state: IAppState) => {
   return {
-    currentAddress: state.account.currentAddress,
-    currentName: state.account.currentName
+    currentAccount: state.wallet.currentAccount
   }
 }
 
-const mapDispatchToProps = { setCurrentAddressAndName }
+const mapDispatchToProps = { setCurrentAccount, setAccounts }
 type DispatchProps = typeof mapDispatchToProps
 
 type StateProps = ReturnType<typeof mapStateToProps>
