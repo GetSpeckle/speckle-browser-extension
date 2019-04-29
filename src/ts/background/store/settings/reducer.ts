@@ -5,6 +5,7 @@ import {
   Color,
   ThemeTypes
 } from '../../../components/styles/themes'
+import { Alexander, Network } from '../../../constants/networks'
 
 /**
  * Settings state
@@ -14,14 +15,16 @@ export interface IAppSettings {
   theme: ThemeTypes,
   color: Color,
   // welcome if first time user
-  welcome: boolean
+  welcome: boolean,
+  network: string
 }
 
 const initialState: IAppSettings = {
   updating: false,
   theme: 'light',
   color: 'blue',
-  welcome: true
+  welcome: true,
+  network: Alexander.name
 }
 
 /**
