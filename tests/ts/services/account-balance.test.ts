@@ -1,5 +1,5 @@
-import { getBalance } from '../../../../src/ts/background/services/account-balance'
-import { Alexander } from '../../../../src/ts/constants/networks'
+import { getBalance } from '../../../src/ts/services/account-balance'
+import { Alexander } from '../../../src/ts/constants/networks'
 
 const ALICE = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
 const EMPTY_ACCOUNT = '5F5BvRY9MJc74UUc8tLV9XAvitPNNeEWZ6TVfXwH7cpf8mox'
