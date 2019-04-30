@@ -10,6 +10,9 @@ import { Routes } from '../../routes'
 import { getSettings } from '../../background/store/settings'
 import { isWalletLocked, walletExists } from '../../services/keyring-vault-proxy'
 import { setLocked, setCreated } from '../../background/store/wallet'
+import { connectApi, disconnectApi } from '../../background/store/api-context'
+import { networks } from '../../constants/networks'
+import { WsProvider } from '@polkadot/rpc-provider'
 
 interface IPopupApp extends StateProps, DispatchProps {
 }
@@ -47,12 +50,19 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
         this.setState({
           initializing: false
         })
+        const network = networks[this.props.settings.network]
+        const provider = new WsProvider(network.rpcServer)
+        this.props.connectApi(provider)
       }
     )
   }
 
   componentWillMount () {
     this.initializeApp()
+  }
+
+  componentWillUnmount () {
+    this.props.disconnectApi()
   }
 
   render () {
@@ -80,7 +90,7 @@ const mapStateToProps = (state: IAppState) => {
   }
 }
 
-const mapDispatchToProps = { getSettings, setLocked, setCreated }
+const mapDispatchToProps = { getSettings, setLocked, setCreated, connectApi, disconnectApi }
 
 type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps

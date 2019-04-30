@@ -5,7 +5,7 @@ import {
   Color,
   ThemeTypes
 } from '../../../components/styles/themes'
-import { Alexander, Network } from '../../../constants/networks'
+import { Alexander } from '../../../constants/networks'
 
 /**
  * Settings state

@@ -26,7 +26,7 @@ export const chains: {[chainType: string]: Array<Network>} = {
   'Substrate': [CharredCherry]
 }
 
-const networks: {[name: string]: Network} = {
-  [Alexander[name]]: Alexander,
-  [CharredCherry[name]]: CharredCherry
+export const networks: {[name: string]: Network} = {
+  [Alexander.name]: Alexander,
+  [CharredCherry.name]: CharredCherry
 }
