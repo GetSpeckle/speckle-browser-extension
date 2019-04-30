@@ -20,7 +20,7 @@ class DashboardLayout extends Component<IDashboardProps, IDashboardState> {
   render () {
     return (
       <LayoutContainer>
-        <Image src={this.getBackgroundImageUrl()} />
+        <Image src={this.getBackgroundImageUrl()} width={375}/>
         {this.props.children}
       </LayoutContainer>
     )
