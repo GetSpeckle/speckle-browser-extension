@@ -12,7 +12,6 @@ class TopMenu extends React.Component<ITopMenuProps> {
 
   render () {
 
-    const logoUrl = '/assets/logo-s.svg'
     const chainOptions = [
       {
         key: 'Polkadot',
@@ -23,23 +22,30 @@ class TopMenu extends React.Component<ITopMenuProps> {
     ]
 
     return (
-      <div>
-        <Grid columns='equal' centered={true} >
-          <Grid.Row centered={true} columns='equal' textAlign='center'>
-            <Grid.Column>
-              <Image src={logoUrl} />
+      <div className='top-menu'>
+        <Grid centered={true} textAlign='center'>
+            <Grid.Column width={4} verticalAlign='middle'>
+              <Image src='/assets/logo-s.svg' centered={true} />
             </Grid.Column>
-            <Grid.Column width={8}>
+
+            <Grid.Column width={8} >
               <Dropdown
+                className='chain'
                 placeholder='Select Chain'
-                fluid
-                selection
+                fluid={true}
+                selection={true}
+                value='Polkadot'
                 options={chainOptions}
               />
-              </Grid.Column>
-            <Grid.Column>
             </Grid.Column>
-          </Grid.Row>
+
+            <Grid.Column width={2} verticalAlign='middle'>
+              <Image src='/assets/icon-dots-s.svg' centered={true} />
+            </Grid.Column>
+
+            <Grid.Column width={2} verticalAlign='middle'>
+              <Image src='/assets/icon-profile.svg' centered={true} />
+            </Grid.Column>
         </Grid>
       </div>
     )
