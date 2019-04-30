@@ -10,11 +10,6 @@ import styled from 'styled-components'
 
 class Balance extends React.Component<IBalanceProps, IBalanceState> {
 
-  constructor (props) {
-    super(props)
-    this.updateBalance = this.updateBalance.bind(this)
-  }
-
   state: IBalanceState = {
     tries: 0,
     balance: t('getBalance')
