@@ -2,7 +2,7 @@ import React from 'react'
 import t from '../../services/i18n'
 import { connect } from 'react-redux'
 import { IAppState } from '../../background/store/all'
-import { Title } from '../basic-components'
+import { Title, SecondaryText } from '../basic-components'
 import { ChainProperties } from '@polkadot/types'
 import ApiPromise from '@polkadot/api/promise'
 import { formatBalance } from '@polkadot/util'
@@ -16,7 +16,7 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
   }
 
   state: IBalanceState = {
-    balance: t('getBalance'),
+    balance: undefined,
     tries: 0,
     nextTry: undefined
   }
@@ -61,6 +61,20 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
   }
 
   render () {
+    return this.state.balance ? this.renderBalance() : this.renderPlaceHolder()
+  }
+
+  renderPlaceHolder () {
+    return (
+      <BalanceBox>
+        <SecondaryText>
+          {t('getBalance')}
+        </SecondaryText>
+      </BalanceBox>
+    )
+  }
+
+  renderBalance () {
     return (
       <BalanceBox>
         <Title>
@@ -96,7 +110,7 @@ interface IBalanceProps extends StateProps {
 }
 
 interface IBalanceState {
-  balance: string
+  balance: string | undefined
   tries: number
   nextTry?: any
 }

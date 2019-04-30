@@ -10,7 +10,7 @@
 
 .ui.horizontal.list>.item {
   font-size: 1rem;
-  background: rgb(220,220,220,0.5);
+  background: rgba(220,220,220,0.5);
   margin: 2px;
   padding: 4px;
   border-radius: 3px
@@ -22,4 +22,15 @@
 
 .identicon {
   vertical-align: top;
+}
+
+.top-menu {
+  margin: 4px 14px;
+}
+
+.top-menu .ui.selection.dropdown.chain {
+  border-radius: 1em;
+  border: solid 1px white;
+  color: white;
+  background-color: rgba(0,0,0,0);
 }

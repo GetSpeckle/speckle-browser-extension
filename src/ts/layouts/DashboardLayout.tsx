@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import Image from 'semantic-ui-react/dist/commonjs/elements/Image/Image'
 import { IAppState } from '../background/store/all'
 import { LayoutContainer } from '../components/basic-components'
 import { Color } from '../components/styles/themes'
+import TopMenu from '../components/dashboard/TopMenu'
 
 interface IDashboardProps extends StateProps, DispatchProps {}
 
@@ -13,14 +13,17 @@ interface IDashboardState {
 
 class DashboardLayout extends Component<IDashboardProps, IDashboardState> {
 
-  getBackgroundImageUrl = () => {
-    return `/assets/background/color-bg-${this.props.settings.color}.svg`
-  }
-
   render () {
+
+    const layoutStyle = {
+      backgroundImage: `url(/assets/background/color-bg-${this.props.settings.color}.svg)`,
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 375
+    }
+
     return (
-      <LayoutContainer>
-        <Image src={this.getBackgroundImageUrl()} width={375}/>
+      <LayoutContainer style={layoutStyle}>
+        <TopMenu />
         {this.props.children}
       </LayoutContainer>
     )
