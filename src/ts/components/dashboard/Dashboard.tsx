@@ -2,7 +2,16 @@ import * as React from 'react'
 import { getAccounts, lockWallet } from '../../services/keyring-vault-proxy'
 import { GENERATE_PHRASE_ROUTE, LOGIN_ROUTE } from '../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router'
-import { Button as StyledButton, ContentContainer, Section } from '../basic-components'
+import {
+  Button as StyledButton,
+  ContentContainer,
+  DropdownItemContainer,
+  DropdownItemContent,
+  DropdownItemHeader,
+  DropdownItemIcon,
+  DropdownItemSubHeader,
+  Section
+} from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 import { IAccount, setAccounts, setCurrentAccount } from '../../background/store/wallet'
@@ -72,10 +81,15 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
   generateDropdownItem (account: IAccount) {
     return (
-      <div>
-        <Identicon account={account.address} size={32} className='identicon'/>
-        <Header content={account.name} subheader={account.address}/>
-      </div>
+      <DropdownItemContainer>
+        <DropdownItemIcon>
+          <Identicon account={account.address} size={32} className='identicon'/>
+        </DropdownItemIcon>
+        <DropdownItemContent>
+          <DropdownItemHeader><Header content={account.name} sub={true}/></DropdownItemHeader>
+          <DropdownItemSubHeader>{this.getAddress(account.address)}</DropdownItemSubHeader>
+        </DropdownItemContent>
+      </DropdownItemContainer>
     )
   }
 
