@@ -10,9 +10,15 @@ import styled from 'styled-components'
 
 class Balance extends React.Component<IBalanceProps, IBalanceState> {
 
+  constructor (props) {
+    super(props)
+    this.updateBalance = this.updateBalance.bind(this)
+  }
+
   state: IBalanceState = {
+    balance: t('getBalance'),
     tries: 0,
-    balance: t('getBalance')
+    nextTry: undefined
   }
 
   get api (): ApiPromise {
@@ -39,7 +45,8 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
         })
       })
     } else if (this.state.tries < 5) {
-      setTimeout(this.updateBalance, 1000)
+      const nextTry = setTimeout(this.updateBalance, 1000)
+      this.setState({ ...this.state, nextTry })
     } else {
       this.setState({ ...this.state, balance: t('balanceNA') })
     }
@@ -47,6 +54,10 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
 
   componentDidMount (): void {
     this.updateBalance()
+  }
+
+  componentWillUnmount (): void {
+    this.state.nextTry && clearTimeout(this.state.nextTry)
   }
 
   render () {
@@ -85,8 +96,9 @@ interface IBalanceProps extends StateProps {
 }
 
 interface IBalanceState {
-  tries: number
   balance: string
+  tries: number
+  nextTry?: any
 }
 
 export default connect(mapStateToProps)(Balance)
