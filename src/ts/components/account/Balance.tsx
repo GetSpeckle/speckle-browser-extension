@@ -68,9 +68,6 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
 const BalanceBox = styled.div`
   width: 215px;
   height: 73px;
-  font-size: 15px;
-  font-weight: bold;
-  color: #30383B;
   display: flex;
   justify-content: center;
   align-items: center;
