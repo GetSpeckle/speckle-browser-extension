@@ -20,7 +20,6 @@ interface IPopupApp extends StateProps, DispatchProps {
 interface IPopupState {
   initializing: boolean
   tries: number
-  nextTry: any
 }
 
 class PopupApp extends React.Component<IPopupApp, IPopupState> {
@@ -32,8 +31,7 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
 
   state = {
     initializing: true,
-    tries: 0,
-    nextTry: undefined
+    tries: 0
   }
 
   tryConnectApi () {
@@ -44,8 +42,7 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
       this.props.connectApi(provider)
       if (this.state.tries <= 5) {
         // try to connect in 3 seconds
-        const nextTry = setTimeout(this.tryConnectApi, 3000)
-        this.setState({ ...this.state, nextTry })
+        setTimeout(this.tryConnectApi, 3000)
       }
     }
   }
@@ -79,7 +76,6 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
   }
 
   componentWillUnmount () {
-    this.state.nextTry && clearTimeout(this.state.nextTry)
     this.props.disconnectApi()
   }
 

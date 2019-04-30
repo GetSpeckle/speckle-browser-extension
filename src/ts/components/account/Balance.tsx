@@ -17,8 +17,7 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
 
   state: IBalanceState = {
     balance: undefined,
-    tries: 0,
-    nextTry: undefined
+    tries: 1
   }
 
   get api (): ApiPromise {
@@ -28,8 +27,8 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
   }
 
   updateBalance () {
-    this.setState({ ...this.state, tries: this.state.tries++ })
     console.log('try', this.state.tries)
+    this.setState({ ...this.state, tries: this.state.tries + 1 })
     if (this.props.apiContext.apiReady) {
       this.api.rpc.system.properties().then(properties => {
         const chainProperties = (properties as ChainProperties)
@@ -44,9 +43,8 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
           }
         })
       })
-    } else if (this.state.tries < 5) {
-      const nextTry = setTimeout(this.updateBalance, 1000)
-      this.setState({ ...this.state, nextTry })
+    } else if (this.state.tries <= 5) {
+      setTimeout(this.updateBalance, 1000)
     } else {
       this.setState({ ...this.state, balance: t('balanceNA') })
     }
@@ -56,12 +54,8 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
     this.updateBalance()
   }
 
-  componentWillUnmount (): void {
-    this.state.nextTry && clearTimeout(this.state.nextTry)
-  }
-
   render () {
-    return this.state.balance ? this.renderBalance() : this.renderPlaceHolder()
+    return this.state.balance !== undefined ? this.renderBalance() : this.renderPlaceHolder()
   }
 
   renderPlaceHolder () {
@@ -110,9 +104,8 @@ interface IBalanceProps extends StateProps {
 }
 
 interface IBalanceState {
-  balance: string | undefined
+  balance?: string
   tries: number
-  nextTry?: any
 }
 
 export default connect(mapStateToProps)(Balance)
