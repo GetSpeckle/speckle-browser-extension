@@ -23,3 +23,14 @@
 .identicon {
   vertical-align: top;
 }
+
+.top-menu {
+  margin: 4px 14px;
+}
+
+.top-menu .ui.selection.dropdown.chain {
+  border-radius: 1em;
+  border: solid 1px white;
+  color: white;
+  background-color: rgb(0,0,0,0);
+}
