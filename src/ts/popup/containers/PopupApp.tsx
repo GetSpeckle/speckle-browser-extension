@@ -18,16 +18,27 @@ interface IPopupApp extends StateProps, DispatchProps {
 }
 
 interface IPopupState {
-  initializing: boolean
+  initializing: boolean,
+  tries: number
 }
 
 class PopupApp extends React.Component<IPopupApp, IPopupState> {
 
-  constructor (props) {
-    super(props)
+  state = {
+    initializing: true,
+    tries: 0
+  }
 
-    this.state = {
-      initializing: true
+  tryConnectApi () {
+    if (!this.props.apiContext.apiReady) {
+      this.setState({ ...this.state, tries: this.state.tries++ })
+      const network = networks[this.props.settings.network]
+      const provider = new WsProvider(network.rpcServer)
+      this.props.connectApi(provider)
+      if (this.state.tries <= 5) {
+        // try to connect in 3 seconds
+        setTimeout(this.tryConnectApi, 3000)
+      }
     }
   }
 
@@ -50,9 +61,7 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
         this.setState({
           initializing: false
         })
-        const network = networks[this.props.settings.network]
-        const provider = new WsProvider(network.rpcServer)
-        this.props.connectApi(provider)
+        this.tryConnectApi()
       }
     )
   }
@@ -86,7 +95,8 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
 
 const mapStateToProps = (state: IAppState) => {
   return {
-    settings: state.settings
+    settings: state.settings,
+    apiContext: state.apiContext
   }
 }
 
