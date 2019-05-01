@@ -13,15 +13,12 @@ interface IDashboardState {
 
 class DashboardLayout extends Component<IDashboardProps, IDashboardState> {
 
-  getBackgroundImageUrl = () => {
-    return `/assets/background/color-bg-${this.props.settings.color}.svg`
-  }
-
   render () {
 
     const layoutStyle = {
       backgroundImage: `url(/assets/background/color-bg-${this.props.settings.color}.svg)`,
-      backgroundRepeat: 'no-repeat'
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: '375px'
     }
 
     return (
