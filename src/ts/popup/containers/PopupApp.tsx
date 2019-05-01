@@ -76,7 +76,8 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
   }
 
   componentWillUnmount () {
-    this.props.disconnectApi()
+    const provider = this.props.apiContext.provider
+    provider && this.props.disconnectApi(provider)
   }
 
   render () {

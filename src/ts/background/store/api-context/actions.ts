@@ -20,7 +20,8 @@ export function connectApi (provider: ProviderInterface) {
   }
 }
 
-export function disconnectApi (): AnyAction {
+export function disconnectApi (provider: ProviderInterface): AnyAction {
+  provider && provider.isConnected() && provider.disconnect()
   return {
     type: ACTION_TYPES.DISCONNECT
   }
