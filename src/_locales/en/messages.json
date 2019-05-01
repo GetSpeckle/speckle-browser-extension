@@ -127,5 +127,14 @@
   },
   "rpcError": {
     "message": "RPC service error"
+  },
+  "getBalance": {
+    "message": "getting balance..."
+  },
+  "balanceNA": {
+    "message": "balance N/A"
+  },
+  "apiError": {
+    "message": "API not found"
   }
 }

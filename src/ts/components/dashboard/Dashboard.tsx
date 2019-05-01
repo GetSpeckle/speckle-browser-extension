@@ -19,6 +19,7 @@ import t from '../../services/i18n'
 import { Dropdown } from 'semantic-ui-react'
 import Identicon from 'polkadot-identicon'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
+import Balance from '../account/Balance'
 import Header from 'semantic-ui-react/dist/commonjs/elements/Header/Header'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
@@ -135,6 +136,9 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
       <ContentContainer>
         <Section>
           <Dropdown options={this.state.options} text='My Polkadot Wallet'/>
+        </Section>
+        <Section>
+          <Balance address={address} />
         </Section>
         <Section>
           <StyledButton onClick={this.handleClick}>

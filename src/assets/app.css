@@ -10,7 +10,7 @@
 
 .ui.horizontal.list>.item {
   font-size: 1rem;
-  background: rgb(220,220,220,0.5);
+  background: rgba(220,220,220,0.5);
   margin: 2px;
   padding: 4px;
   border-radius: 3px
@@ -32,5 +32,5 @@
   border-radius: 1em;
   border: solid 1px white;
   color: white;
-  background-color: rgb(0,0,0,0);
+  background-color: rgba(0,0,0,0);
 }
