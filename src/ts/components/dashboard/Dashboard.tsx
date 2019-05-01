@@ -138,7 +138,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
           <Dropdown options={this.state.options} text='My Polkadot Wallet'/>
         </Section>
         <Section>
-          <Balance address={address} />
+          <Balance address={this.state.currentAccount.address} />
         </Section>
         <Section>
           <StyledButton onClick={this.handleClick}>
