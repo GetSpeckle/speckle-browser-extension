@@ -11,6 +11,7 @@ import Button from 'semantic-ui-react/dist/commonjs/elements/Button/Button'
 import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon/Icon'
 import Identicon from 'polkadot-identicon'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
+import Balance from '../account/Balance'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {}
 
@@ -114,6 +115,9 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
           <Identicon account={address} size={size} className='identicon' />
           {this.getAddress(address)}
           {!this.state.showFullAddress ? this.renderViewButton() : null}
+        </Section>
+        <Section>
+          <Balance address={address} />
         </Section>
         <Section>
           <StyledButton onClick={this.handleClick}>
