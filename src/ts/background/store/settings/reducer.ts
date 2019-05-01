@@ -3,10 +3,9 @@ import { ACTION_TYPES } from './actions'
 import { SUCCESS, REQUEST } from '../util'
 import {
   Color,
-  ColorScheme,
-  colorSchemes,
   ThemeTypes
 } from '../../../components/styles/themes'
+import { Alexander } from '../../../constants/networks'
 
 /**
  * Settings state
@@ -15,17 +14,17 @@ export interface IAppSettings {
   updating: boolean,
   theme: ThemeTypes,
   color: Color,
-  colorScheme: ColorScheme,
   // welcome if first time user
-  welcome: boolean
+  welcome: boolean,
+  network: string
 }
 
 const initialState: IAppSettings = {
   updating: false,
   theme: 'light',
   color: 'blue',
-  colorScheme: colorSchemes.blue,
-  welcome: true
+  welcome: true,
+  network: Alexander.name
 }
 
 /**

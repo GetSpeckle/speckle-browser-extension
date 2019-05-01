@@ -17,7 +17,7 @@ class TopMenu extends React.Component<ITopMenuProps> {
         key: 'Polkadot',
         text: 'Polkadot',
         value: 'Polkadot',
-        image: { avatar: true, src: '/assets/icon-48.png' },
+        image: { avatar: true, src: '/assets/icon-48.png' }
       }
     ]
 
