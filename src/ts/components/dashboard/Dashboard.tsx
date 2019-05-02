@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { getAccounts, lockWallet } from '../../services/keyring-vault-proxy'
-import { GENERATE_PHRASE_ROUTE, LOGIN_ROUTE } from '../../constants/routes'
+import { CREATE_PASSWORD_ROUTE, GENERATE_PHRASE_ROUTE, LOGIN_ROUTE } from '../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router'
 import {
   Button as StyledButton,
@@ -21,6 +21,9 @@ import Identicon from 'polkadot-identicon'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import Balance from '../account/Balance'
 import Header from 'semantic-ui-react/dist/commonjs/elements/Header/Header'
+import Divider from 'semantic-ui-react/dist/commonjs/elements/Divider/Divider'
+import Image from 'semantic-ui-react/dist/commonjs/elements/Image/Image'
+import { Link } from 'react-router-dom'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
 }
@@ -36,7 +39,10 @@ interface Option {
   key: string,
   text: string,
   value: string,
-  content: object
+  content: object,
+  disable?: boolean,
+  as?: object,
+  to?: string
 }
 
 class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
@@ -80,6 +86,15 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     return address.substring(0, 5) + '...' + address.substring(address.length - 10)
   }
 
+  generateLink () {
+    return (
+      <div>
+        <Image src={'/assets/path.svg'}/>
+        <Header>test</Header>
+      </div>
+    )
+  }
+
   generateDropdownItem (account: IAccount) {
     return (
       <DropdownItemContainer>
@@ -110,14 +125,31 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
         const currentAccount = accounts[0]
         this.props.setCurrentAccount(currentAccount)
         this.props.setAccounts(accounts)
+        const dynamicItems: Option[] = accounts.map(account => ({
+          key: account.name,
+          text: account.name,
+          value: account.address,
+          content: this.generateDropdownItem(account),
+          disable: false
+        }))
+        const staticItems: Option[] = [{
+          key: 'divider',
+          text: 'divider',
+          value: 'divider',
+          content: <Divider />,
+          disable: true
+        },{
+          key: 'link',
+          text: 'link',
+          value: 'link',
+          content: this.generateLink(),
+          as: Link,
+          to: CREATE_PASSWORD_ROUTE,
+          disable: false
+        }]
         this.setState({
           initializing: false,
-          options: accounts.map(account => ({
-            key: account.name,
-            text: account.name,
-            value: account.address,
-            content: this.generateDropdownItem(account)
-          })),
+          options: [...dynamicItems, ...staticItems],
           currentAccount: currentAccount
         })
       }
