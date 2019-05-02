@@ -34,3 +34,9 @@
   color: white;
   background-color: rgba(0,0,0,0);
 }
+
+.bottom-menu {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+}
