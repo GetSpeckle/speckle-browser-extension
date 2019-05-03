@@ -3,6 +3,10 @@ import { colorSchemes } from './styles/themes'
 import { IAppState } from '../background/store/all'
 import { connect } from 'react-redux'
 import { Button as SemanticButton, Input } from 'semantic-ui-react'
+import Dropdown from 'semantic-ui-react/dist/commonjs/modules/Dropdown/Dropdown'
+import Image from 'semantic-ui-react/dist/commonjs/elements/Image/Image'
+import Header from 'semantic-ui-react/dist/commonjs/elements/Header/Header'
+import Identicon from 'polkadot-identicon'
 
 const mapStateToProps = (state: IAppState) => {
   return {
@@ -37,6 +41,7 @@ export const ContentContainer = styled.div`
 export const Section = styled.div`
   width: 100%;
   margin: 18px 0;
+  text-align: center;
   word-wrap: break-word;
 `
 
@@ -81,7 +86,7 @@ export const DropdownItemContent = styled.div`
   float: right
 `
 
-export const DropdownItemHeader = styled.div`
+export const DropdownItemHeader = styled(Header)`
   width: 150px;
   height: 14px;
   font-family: Nunito;
@@ -93,8 +98,14 @@ export const DropdownItemHeader = styled.div`
   letter-spacing: normal;
 `
 
-export const DropdownItemIcon = styled.div`
-  display: inline
+export const DropdownItemIdenticon = styled(Identicon)`
+  display: inline;
+`
+
+export const DropdownItemIconImage = styled(Image)`
+  display: inline;
+  width: 32px;
+  height: 32px
 `
 
 export const DropdownItemSubHeader = styled.span`
@@ -108,6 +119,20 @@ export const DropdownItemSubHeader = styled.span`
   line-height: normal;
   letter-spacing: normal;
   text-align: center;
+`
+
+export const MyAccountDropdown = styled(Dropdown)`
+  width: 200px;
+  height: 26px;
+  margin: 0 auto;
+  font-family: Nunito;
+  font-size: 19px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #ffffff;
 `
 
 export const LoginFooter = styled.div`

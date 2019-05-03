@@ -7,22 +7,18 @@ import {
   ContentContainer,
   DropdownItemContainer,
   DropdownItemContent,
-  DropdownItemHeader,
-  DropdownItemIcon,
+  DropdownItemHeader, DropdownItemIconImage, DropdownItemIdenticon,
   DropdownItemSubHeader,
+  MyAccountDropdown,
   Section
 } from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 import { IAccount, setAccounts, setCurrentAccount } from '../../background/store/wallet'
 import t from '../../services/i18n'
-import { Dropdown } from 'semantic-ui-react'
-import Identicon from 'polkadot-identicon'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import Balance from '../account/Balance'
-import Header from 'semantic-ui-react/dist/commonjs/elements/Header/Header'
 import Divider from 'semantic-ui-react/dist/commonjs/elements/Divider/Divider'
-import Image from 'semantic-ui-react/dist/commonjs/elements/Image/Image'
 import { Link } from 'react-router-dom'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
@@ -86,23 +82,23 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     return address.substring(0, 5) + '...' + address.substring(address.length - 10)
   }
 
-  generateLink () {
+  generateCreateAccountLink () {
     return (
-      <div>
-        <Image src={'/assets/path.svg'}/>
-        <Header>test</Header>
-      </div>
+      <DropdownItemContainer>
+        <DropdownItemIconImage src={'/assets/path.svg'} centered={true}/>
+        <DropdownItemContent>
+          <DropdownItemHeader content={'Create Account'} />
+        </DropdownItemContent>
+      </DropdownItemContainer>
     )
   }
 
   generateDropdownItem (account: IAccount) {
     return (
       <DropdownItemContainer>
-        <DropdownItemIcon>
-          <Identicon account={account.address} size={32} className='identicon'/>
-        </DropdownItemIcon>
+        <DropdownItemIdenticon account={account.address} size={32} className='identicon'/>
         <DropdownItemContent>
-          <DropdownItemHeader><Header content={account.name} sub={true}/></DropdownItemHeader>
+          <DropdownItemHeader content={account.name} sub={true}/>
           <DropdownItemSubHeader>{this.getAddress(account.address)}</DropdownItemSubHeader>
         </DropdownItemContent>
       </DropdownItemContainer>
@@ -139,10 +135,10 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
           content: <Divider />,
           disable: true
         },{
-          key: 'link',
-          text: 'link',
-          value: 'link',
-          content: this.generateLink(),
+          key: 'createAccount',
+          text: 'Create Account',
+          value: 'Create Account',
+          content: this.generateCreateAccountLink(),
           as: Link,
           to: CREATE_PASSWORD_ROUTE,
           disable: false
@@ -167,7 +163,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     return (
       <ContentContainer>
         <Section>
-          <Dropdown options={this.state.options} text='My Polkadot Wallet'/>
+            <MyAccountDropdown options={this.state.options} text='My Polkadot Wallet'/>
         </Section>
         <Section>
           <Balance address={this.state.currentAccount.address} />
@@ -175,9 +171,6 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
         <Section>
           <StyledButton onClick={this.handleClick}>
             {t('logout')}
-          </StyledButton>
-          <StyledButton onClick={this.handleCreateAccountClick}>
-            create new account
           </StyledButton>
         </Section>
       </ContentContainer>
