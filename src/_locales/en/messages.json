@@ -136,5 +136,17 @@
   },
   "apiError": {
     "message": "API not found"
+  },
+  "menuHome": {
+    "message": "Home"
+  },
+  "menuStake": {
+    "message": "Stake"
+  },
+  "menuDemocracy": {
+    "message": "Democracy"
+  },
+  "menuSend": {
+    "message": "Send"
   }
 }
