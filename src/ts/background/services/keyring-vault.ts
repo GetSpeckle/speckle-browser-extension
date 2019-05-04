@@ -17,7 +17,7 @@ class KeyringVault {
     if (this._keyring) {
       return this._keyring
     }
-    throw new Error(`Keyring is not initialised yet`)
+    throw new Error(t('keyringNotInit'))
   }
 
   isLocked (): boolean {

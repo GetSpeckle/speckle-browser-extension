@@ -148,5 +148,8 @@
   },
   "menuSend": {
     "message": "Send"
+  },
+  "keyringNotInit": {
+    "message": "Keyring is not initialised yet"
   }
 }
