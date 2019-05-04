@@ -2,17 +2,12 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { IAppState } from '../background/store/all'
 import { LayoutContainer } from '../components/basic-components'
-import { Color } from '../components/styles/themes'
 import TopMenu from '../components/dashboard/TopMenu'
 import BottomMenu from '../components/dashboard/BottomMenu';
 
 interface IDashboardProps extends StateProps, DispatchProps {}
 
-interface IDashboardState {
-  color: Color
-}
-
-class DashboardLayout extends Component<IDashboardProps, IDashboardState> {
+class DashboardLayout extends Component<IDashboardProps> {
 
   render () {
 
