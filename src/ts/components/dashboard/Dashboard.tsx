@@ -1,16 +1,19 @@
 import * as React from 'react'
 import { getAccounts, lockWallet } from '../../services/keyring-vault-proxy'
-import { CREATE_PASSWORD_ROUTE, GENERATE_PHRASE_ROUTE, LOGIN_ROUTE } from '../../constants/routes'
+import { GENERATE_PHRASE_ROUTE, LOGIN_ROUTE } from '../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router'
 import {
   Button as StyledButton,
   ContentContainer,
+  StyledDropdownDivider as Divider,
   DropdownItemContainer,
   DropdownItemContent,
-  DropdownItemHeader, DropdownItemIconImage, DropdownItemIdenticon,
+  DropdownItemHeader,
+  DropdownItemIconImage,
+  DropdownItemIdenticon,
   DropdownItemSubHeader,
   MyAccountDropdown,
-  Section
+  Section, AccountAddress
 } from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
@@ -18,8 +21,8 @@ import { IAccount, setAccounts, setCurrentAccount } from '../../background/store
 import t from '../../services/i18n'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import Balance from '../account/Balance'
-import Divider from 'semantic-ui-react/dist/commonjs/elements/Divider/Divider'
 import { Link } from 'react-router-dom'
+import Identicon from 'polkadot-identicon'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
 }
@@ -65,15 +68,18 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     })
   }
 
-  handleCreateAccountClick = () => {
-    const { history } = this.props
-    history.push(GENERATE_PHRASE_ROUTE)
-  }
-
-  showFullAddress = () => {
-    this.setState({
-      showFullAddress: true
-    })
+  handleSelectChange = (address: string) => {
+    const dropdownOptions: Option[] = this.state.options.filter(o => o.value = address)
+    if (dropdownOptions && dropdownOptions[0]) {
+      this.setState(
+        {
+          currentAccount: {
+            address: dropdownOptions[0].value,
+            name: dropdownOptions[0].text
+          }
+        }
+      )
+    }
   }
 
   getAddress = (address) => {
@@ -82,12 +88,12 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     return address.substring(0, 5) + '...' + address.substring(address.length - 10)
   }
 
-  generateCreateAccountLink () {
+  generateLink (iconPath: string, title: string) {
     return (
       <DropdownItemContainer>
-        <DropdownItemIconImage src={'/assets/path.svg'} centered={true}/>
+        <DropdownItemIconImage src={iconPath} centered={true}/>
         <DropdownItemContent>
-          <DropdownItemHeader content={'Create Account'} />
+          <DropdownItemHeader content={title}/>
         </DropdownItemContent>
       </DropdownItemContainer>
     )
@@ -95,8 +101,8 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
   generateDropdownItem (account: IAccount) {
     return (
-      <DropdownItemContainer>
-        <DropdownItemIdenticon account={account.address} size={32} className='identicon'/>
+      <DropdownItemContainer onClick={this.handleSelectChange.bind(this, account.address)}>
+        <DropdownItemIdenticon account={account.address} size={16} className='identicon'/>
         <DropdownItemContent>
           <DropdownItemHeader content={account.name} sub={true}/>
           <DropdownItemSubHeader>{this.getAddress(account.address)}</DropdownItemSubHeader>
@@ -128,21 +134,33 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
           content: this.generateDropdownItem(account),
           disable: false
         }))
-        const staticItems: Option[] = [{
-          key: 'divider',
-          text: 'divider',
-          value: 'divider',
-          content: <Divider />,
-          disable: true
-        },{
-          key: 'createAccount',
-          text: 'Create Account',
-          value: 'Create Account',
-          content: this.generateCreateAccountLink(),
-          as: Link,
-          to: CREATE_PASSWORD_ROUTE,
-          disable: false
-        }]
+        const staticItems: Option[] = [
+          {
+            key: 'divider',
+            text: 'divider',
+            value: 'divider',
+            content: <Divider/>,
+            disable: true
+          },
+          {
+            key: 'createAccount',
+            text: 'Create Account',
+            value: 'createAccount',
+            content: this.generateLink('/assets/plus.svg', t('createNewAccount')),
+            as: Link,
+            to: GENERATE_PHRASE_ROUTE,
+            disable: false
+          },
+          {
+            key: 'importAccount',
+            text: 'Import Existing Account',
+            value: 'importAccount',
+            content: this.generateLink('/assets/refresh.svg', t('importExistingAccount')),
+            as: Link,
+            to: GENERATE_PHRASE_ROUTE,
+            disable: false
+          }
+        ]
         this.setState({
           initializing: false,
           options: [...dynamicItems, ...staticItems],
@@ -157,16 +175,23 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
   }
 
   render () {
+
     if (this.state.initializing) {
       return (null)
     }
     return (
       <ContentContainer>
         <Section>
-            <MyAccountDropdown options={this.state.options} text='My Polkadot Wallet'/>
+          <MyAccountDropdown options={this.state.options} text={t('myAccountDropdownTitle')} />
         </Section>
         <Section>
-          <Balance address={this.state.currentAccount.address} />
+          <AccountAddress>{this.getAddress(this.state.currentAccount.address)}</AccountAddress>
+        </Section>
+        <Section>
+          <Identicon account={this.state.currentAccount.address} size={80} className='identicon'/>
+        </Section>
+        <Section>
+          <Balance address={this.state.currentAccount.address}/>
         </Section>
         <Section>
           <StyledButton onClick={this.handleClick}>

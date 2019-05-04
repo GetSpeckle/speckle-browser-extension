@@ -74,11 +74,6 @@ module.exports = {
 
 if (nodeEnv === 'watch') {
   module.exports.watch = true;
-  module.exports.watchOptions = {
-    ignored: ['dist/**/*.js', 'node_modules', 'src/assets/**'],
-    poll: 3000, // Check for changes every second,
-    aggregateTimeout: 1000
-  };
   module.exports.plugins.push(
     new ChromeExtensionReloader({
       port: 9128,
