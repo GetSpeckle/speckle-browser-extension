@@ -39,14 +39,14 @@ module.exports = {
       template: path.join(sourceRootPath, 'html', 'options.html'),
       inject: 'body',
       filename: 'options.html',
-      title: 'Web Extension Starter - Options Page',
+      title: 'Speckle- Options Page',
       chunks: ['options'],
     }),
     new HtmlWebpackPlugin({
       template: path.join(sourceRootPath, 'html', 'popup.html'),
       inject: 'body',
       filename: 'popup.html',
-      title: 'Web Extension Starter - Popup Page',
+      title: 'Speckle - Popup Page',
       chunks: ['popup'],
     }),
     new CopyWebpackPlugin([
@@ -74,11 +74,6 @@ module.exports = {
 
 if (nodeEnv === 'watch') {
   module.exports.watch = true;
-  module.exports.watchOptions = {
-    ignored: ['dist/**/*.js', 'node_modules', 'src/assets/**'],
-    poll: 1000, // Check for changes every second,
-    aggregateTimeout: 600
-  };
   module.exports.plugins.push(
     new ChromeExtensionReloader({
       port: 9128,

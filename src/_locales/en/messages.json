@@ -137,6 +137,15 @@
   "apiError": {
     "message": "API not found"
   },
+  "myAccountDropdownTitle": {
+    "message": "My Polkadot Wallet"
+  },
+  "createNewAccount": {
+    "message": "Create New Account"
+  },
+  "importExistingAccount": {
+    "message": "Import Existing Account"
+  },
   "menuHome": {
     "message": "Home"
   },

@@ -65,7 +65,7 @@
 		"tslint": "^5.14.0",
 		"tslint-config-standard": "^8.0.1",
 		"tslint-react": "^4.0.0",
-		"typescript": "^3.4.1",
+		"typescript": "3.3.4000",
 		"url-loader": "^1.1.2",
 		"webpack": "^4.29.6",
 		"webpack-chrome-extension-reloader": "^1.2.0",
