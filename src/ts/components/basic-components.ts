@@ -62,12 +62,8 @@ export const Title = styled.div`
   text-align: center
 `
 
-export const MnemonicPad = styled.textarea`
-  height: 100px
-  line-height: 1.57
-  color: #30383b
-  line-height 1.8rem
-  word-spacing: 5px
+export const Header = styled(Title)`
+  color: white
 `
 
 export const StyledPassword = styled(Input).attrs({ fluid: true })`
@@ -76,7 +72,6 @@ export const StyledPassword = styled(Input).attrs({ fluid: true })`
 
 export const DropdownItemContainer = styled.div`
   width: 212px
-
 `
 
 export const DropdownItemContent = styled.div`

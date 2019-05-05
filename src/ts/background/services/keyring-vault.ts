@@ -17,7 +17,7 @@ class KeyringVault {
     if (this._keyring) {
       return this._keyring
     }
-    throw new Error(`Keyring is not initialised yet`)
+    throw new Error(t('keyringNotInit'))
   }
 
   isLocked (): boolean {
@@ -94,9 +94,11 @@ class KeyringVault {
   createAccount (mnemonic: string, accountName: string): Promise<KeyringPair$Json> {
     if (this.isLocked()) return Promise.reject(new Error(t('walletLocked')))
     if (this._mnemonic !== mnemonic) return Promise.reject(new Error(t('mnemonicUnmatched')))
-    let pair = this.keyring.addFromMnemonic(mnemonic, { name: accountName })
-    this._mnemonic = undefined
-    return this.saveAccount(pair)
+    return cryptoWaitReady().then(() => {
+      let pair = this.keyring.addFromUri(mnemonic, { name: accountName })
+      this._mnemonic = undefined
+      return this.saveAccount(pair)
+    })
   }
 
   updateAccountName (address: string, accountName: string): Promise<KeyringPair$Json> {
@@ -121,18 +123,27 @@ class KeyringVault {
   importAccountFromMnemonic (mnemonic: string, accountName: string): Promise<KeyringPair$Json> {
     if (this.isLocked()) return Promise.reject(new Error(t('walletLocked')))
     if (!this.isMnemonicValid(mnemonic)) return Promise.reject(new Error(t('mnemonicInvalid')))
-    let pair = this.keyring.createFromUri(mnemonic, { name: accountName, imported: true })
-    return this.saveAccount(pair)
+    return cryptoWaitReady().then(() => {
+      let pair = this.keyring.addFromUri(mnemonic, { name: accountName, imported: true })
+      return this.saveAccount(pair)
+    })
   }
 
   importAccountFromJson (json: KeyringPair$Json, password?: string): Promise<KeyringPair$Json> {
     if (this.isLocked()) return Promise.reject(new Error(t('walletLocked')))
-    let pair = this.keyring.addFromJson(json)
-    pair.setMeta({ ...pair.getMeta(), imported: true })
-    if (password) {
-      pair.decodePkcs8(password)
+    let pair: KeyringPair | undefined
+    try {
+      pair = this.keyring.addFromJson(json)
+      if (password) {
+        pair.decodePkcs8(password)
+      }
+      pair.setMeta({ ...pair.getMeta(), imported: true })
+      return this.saveAccount(pair)
+    } catch (e) {
+      console.log(e)
+      if (pair) this.keyring.removePair(pair.address())
+      return Promise.reject(new Error(t('importKeystoreError')))
     }
-    return this.saveAccount(pair)
   }
 
   private saveAccount (pair: KeyringPair): Promise<KeyringPair$Json> {

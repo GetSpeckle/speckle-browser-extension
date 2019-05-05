@@ -4,12 +4,18 @@ import t from '../../services/i18n'
 import { importAccountFromJson, decodeAddress } from '../../services/keyring-vault-proxy'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
-import { Message } from 'semantic-ui-react'
+import { Form, Message } from 'semantic-ui-react'
 import Dropzone from 'react-dropzone'
 import { isObject, u8aToString, isHex } from '@polkadot/util'
-import { Button, ContentContainer, Section, TopSection } from '../basic-components'
+import {
+  Button,
+  ContentContainer,
+  Header, SecondaryText,
+  Section
+} from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
+import { HOME_ROUTE } from '../../constants/routes'
 
 interface IImportJsonProps extends StateProps, RouteComponentProps {}
 
@@ -28,6 +34,7 @@ class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
     this.handleFileUpload = this.handleFileUpload.bind(this)
     this.isReady = this.isReady.bind(this)
     this.shortFileName = this.shortFileName.bind(this)
+    this.changePassword = this.changePassword.bind(this)
   }
 
   state: IImportJsonState = {
@@ -42,10 +49,15 @@ class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
   handleImport () {
     importAccountFromJson(this.state.json, this.state.password)
       .then((json: KeyringPair$Json) => {
-        console.log(json) // TODO navigate to wallet screen
+        console.log(json)
+        this.props.history.push(HOME_ROUTE)
       }).catch(error => {
         this.setState({ ...this.state, errorMessage: error })
       })
+  }
+
+  changePassword (e) {
+    this.setState({ ...this.state, password: e.target.value, errorMessage: '' })
   }
 
   handleFileUpload (acceptedFiles) {
@@ -54,20 +66,22 @@ class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
     const reader = new FileReader()
     reader.onloadend = () => {
       const data = new Uint8Array(reader.result as ArrayBuffer)
+      let json
       try {
-        const json = JSON.parse(u8aToString(data))
-        decodeAddress(json.address, true).then(decodeAddress => {
-          if (this.isFileValid(decodeAddress, json)) {
-            this.setState({ ...this.state, json: json, errorMessage: '' })
-          } else {
-            this.setState({ ...this.state, errorMessage: t('error.keystore.invalid') })
-          }
-        }).catch(err => { // decodeAddress throw error
-          this.setState({ ...this.state, errorMessage: err.message })
-        })
-      } catch (e) { // JSON.parse(u8aToString(data)) throw error
+        json = JSON.parse(u8aToString(data))
+      } catch (e) {
         this.setState({ ...this.state, errorMessage: e.message })
+        return
       }
+      decodeAddress(json.address, true).then(decodeAddress => {
+        if (this.isFileValid(decodeAddress, json)) {
+          this.setState({ ...this.state, json: json, errorMessage: '' })
+        } else {
+          this.setState({ ...this.state, errorMessage: t('error.keystore.invalid') })
+        }
+      }).catch(err => { // decodeAddress throw error
+        this.setState({ ...this.state, errorMessage: err.message })
+      })
     }
     reader.readAsArrayBuffer(file)
   }
@@ -96,48 +110,52 @@ class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
   render () {
     return (
       <ContentContainer>
-        <TopSection>
-          <Dropzone onDrop={this.handleFileUpload}>
-            {({getRootProps, getInputProps}) => (
-              <UploadArea {...getRootProps()}>
-                <input {...getInputProps()} />
-                {this.state.file ? this.shortFileName() : t('fileUpload')}
-              </UploadArea>
-            )}
-          </Dropzone>
-        </TopSection>
-
         <Section>
-          <input
-            type='password'
-            placeholder={t('password')}
-            value={this.state.password}
-          />
+          <Header>{t('importAccount')}</Header>
         </Section>
 
-        <Section>
+        <SecondaryText className='action-start'>
+          {t('keystoreOptionGuide')}
+        </SecondaryText>
+        <Form>
+          <Section>
+            <Dropzone onDrop={this.handleFileUpload}>
+              {({ getRootProps, getInputProps }) => (
+                <UploadArea {...getRootProps()}>
+                  <input {...getInputProps()} />
+                  {this.state.file ? this.shortFileName() : t('fileUpload')}
+                </UploadArea>
+              )}
+            </Dropzone>
+          </Section>
+          <Form.Input
+            type='password'
+            value={this.state.password}
+            placeholder={t('password')}
+            onChange={this.changePassword}
+          />
           <Message negative={true} hidden={!this.state.errorMessage}>
             {this.state.errorMessage}
           </Message>
-        </Section>
-
-        <Section>
-          <Button onClick={this.handleImport} disabled={!this.isReady()}>
-            {t('import')}
-          </Button>
-        </Section>
+          <Section>
+            <Button onClick={this.handleImport} disabled={!this.isReady()}>
+              {t('import')}
+            </Button>
+          </Section>
+        </Form>
       </ContentContainer>
     )
   }
 }
 
 const UploadArea = styled.div`
-  width: 100%;
-  height: 90px;
-  border-radius: 5px;
-  border: 1px dotted;
-  display: flex;
-  justify-content: space-around;
+  width: 100%
+  height: 90px
+  border-radius: 5px
+  border: 1px dotted #ccc
+  padding: 20px
+  display: flex
+  justify-content: center
   align-items: center
 `
 

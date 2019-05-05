@@ -5,16 +5,17 @@ import { LayoutContainer } from '../components/basic-components'
 import TopMenu from '../components/dashboard/TopMenu'
 import BottomMenu from '../components/dashboard/BottomMenu'
 
-interface IDashboardProps extends StateProps {}
+interface IActionProps extends StateProps {}
 
-class DashboardLayout extends Component<IDashboardProps> {
+class ActionLayout extends Component<IActionProps> {
 
   render () {
 
     const layoutStyle = {
       backgroundImage: `url(/assets/background/color-bg-${this.props.settings.color}.svg)`,
       backgroundRepeat: 'no-repeat',
-      backgroundSize: 375
+      backgroundSize: 375,
+      backgroundPositionY: -81
     }
 
     return (
@@ -35,4 +36,4 @@ const mapStateToProps = (state: IAppState) => {
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
-export default connect(mapStateToProps)(DashboardLayout)
+export default connect(mapStateToProps)(ActionLayout)
