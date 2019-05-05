@@ -2,12 +2,9 @@ import styled from 'styled-components'
 import { colorSchemes } from './styles/themes'
 import { IAppState } from '../background/store/all'
 import { connect } from 'react-redux'
-import { Button as SemanticButton, Input } from 'semantic-ui-react'
-import Dropdown from 'semantic-ui-react/dist/commonjs/modules/Dropdown/Dropdown'
-import Image from 'semantic-ui-react/dist/commonjs/elements/Image/Image'
+import { Button as SemanticButton, Dropdown, Input, Image } from 'semantic-ui-react'
 import Header from 'semantic-ui-react/dist/commonjs/elements/Header/Header'
 import Identicon from 'polkadot-identicon'
-import DropdownDivider from 'semantic-ui-react/dist/commonjs/modules/Dropdown/DropdownDivider'
 
 const mapStateToProps = (state: IAppState) => {
   return {
@@ -104,7 +101,7 @@ export const DropdownItemIdenticon = styled(Identicon)`
   display: inline;
 `
 
-export const StyledDropdownDivider = styled(DropdownDivider)`
+export const StyledDropdownDivider = styled(Dropdown.Divider)`
     height: 0.5px !important
     background-color: #ffffff
 `
