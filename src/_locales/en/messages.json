@@ -145,5 +145,17 @@
   },
   "importExistingAccount": {
     "message": "Import Existing Account"
+  },
+  "menuHome": {
+    "message": "Home"
+  },
+  "menuStake": {
+    "message": "Stake"
+  },
+  "menuDemocracy": {
+    "message": "Democracy"
+  },
+  "menuSend": {
+    "message": "Send"
   }
 }

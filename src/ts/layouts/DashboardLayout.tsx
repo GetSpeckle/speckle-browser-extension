@@ -4,6 +4,7 @@ import { IAppState } from '../background/store/all'
 import { LayoutContainer } from '../components/basic-components'
 import { Color } from '../components/styles/themes'
 import TopMenu from '../components/dashboard/TopMenu'
+import BottomMenu from '../components/dashboard/BottomMenu';
 
 interface IDashboardProps extends StateProps, DispatchProps {}
 
@@ -25,6 +26,7 @@ class DashboardLayout extends Component<IDashboardProps, IDashboardState> {
       <LayoutContainer style={layoutStyle}>
         <TopMenu />
         {this.props.children}
+        <BottomMenu />
       </LayoutContainer>
     )
   }
