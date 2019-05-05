@@ -18,8 +18,8 @@ const NAME_MAP = {
  */
 class BottomMenu extends React.Component<IBottomMenuProps> {
 
-  handleItemClick = (e, data) => {
-    console.log('Going to route: ' + NAME_MAP[data.name])
+  handleItemClick = (name: string) => {
+    console.log('Going to route: ' + NAME_MAP[name])
     // TODO: use history to go to the path
     // this.props.history.push(NAME_MAP[data.name])
   }
@@ -34,7 +34,7 @@ class BottomMenu extends React.Component<IBottomMenuProps> {
           <Menu.Item
             name='home'
             active={pathname === NAME_MAP.home}
-            onClick={this.handleItemClick}
+            onClick={this.handleItemClick.bind(this, name)}
           >
             <Icon name='home' />
             {t('menuHome')}
@@ -43,7 +43,7 @@ class BottomMenu extends React.Component<IBottomMenuProps> {
           <Menu.Item
             name='stake'
             active={pathname === NAME_MAP.stake}
-            onClick={this.handleItemClick}
+            onClick={this.handleItemClick.bind(this, name)}
           >
             <Icon name='chart pie' />
             {t('menuStake')}
