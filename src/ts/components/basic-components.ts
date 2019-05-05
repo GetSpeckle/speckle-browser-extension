@@ -88,6 +88,7 @@ export const DropdownItemHeader = styled(Header)`
   font-stretch: normal
   line-height: normal
   letter-spacing: normal
+  color: #ffffff !important
 `
 
 export const DropdownItemIdenticon = styled(Identicon)`
