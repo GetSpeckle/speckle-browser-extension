@@ -134,7 +134,6 @@ class KeyringVault {
     let pair: KeyringPair | undefined
     try {
       pair = this.keyring.addFromJson(json)
-      debugger
       if (password) {
         pair.decodePkcs8(password)
       }
@@ -148,7 +147,6 @@ class KeyringVault {
   }
 
   private saveAccount (pair: KeyringPair): Promise<KeyringPair$Json> {
-    debugger
     this.addTimestamp(pair)
     const keyringPair$Json: KeyringPair$Json = pair.toJson(this._password)
     return LocalStore.getValue(VAULT_KEY).then(vault => {
