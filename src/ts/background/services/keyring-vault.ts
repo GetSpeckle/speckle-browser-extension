@@ -94,9 +94,11 @@ class KeyringVault {
   createAccount (mnemonic: string, accountName: string): Promise<KeyringPair$Json> {
     if (this.isLocked()) return Promise.reject(new Error(t('walletLocked')))
     if (this._mnemonic !== mnemonic) return Promise.reject(new Error(t('mnemonicUnmatched')))
-    let pair = this.keyring.addFromMnemonic(mnemonic, { name: accountName })
-    this._mnemonic = undefined
-    return this.saveAccount(pair)
+    return cryptoWaitReady().then(() => {
+      let pair = this.keyring.addFromUri(mnemonic, { name: accountName })
+      this._mnemonic = undefined
+      return this.saveAccount(pair)
+    })
   }
 
   updateAccountName (address: string, accountName: string): Promise<KeyringPair$Json> {
@@ -121,8 +123,10 @@ class KeyringVault {
   importAccountFromMnemonic (mnemonic: string, accountName: string): Promise<KeyringPair$Json> {
     if (this.isLocked()) return Promise.reject(new Error(t('walletLocked')))
     if (!this.isMnemonicValid(mnemonic)) return Promise.reject(new Error(t('mnemonicInvalid')))
-    let pair = this.keyring.createFromUri(mnemonic, { name: accountName, imported: true })
-    return this.saveAccount(pair)
+    return cryptoWaitReady().then(() => {
+      let pair = this.keyring.addFromUri(mnemonic, { name: accountName, imported: true })
+      return this.saveAccount(pair)
+    })
   }
 
   importAccountFromJson (json: KeyringPair$Json, password?: string): Promise<KeyringPair$Json> {

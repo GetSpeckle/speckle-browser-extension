@@ -1,13 +1,20 @@
 import * as React from 'react'
-import styled from 'styled-components'
 import t from '../../services/i18n'
 import { importAccountFromMnemonic } from '../../services/keyring-vault-proxy'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
-import { Message } from 'semantic-ui-react'
-import { Button, ContentContainer, Section, TopSection, MnemonicPad } from '../basic-components'
+import { Form, Message } from 'semantic-ui-react'
+import {
+  Button,
+  ContentContainer,
+  Section,
+  SecondaryText,
+  Header,
+  MnemonicPad
+} from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
+import { HOME_ROUTE } from '../../constants/routes'
 
 interface IImportMnemonicProps extends StateProps, RouteComponentProps {}
 
@@ -36,14 +43,15 @@ class ImportMnemonic extends React.Component<IImportMnemonicProps, IImportMnemon
 
     importAccountFromMnemonic(this.state.mnemonic, this.state.accountName)
       .then((json: KeyringPair$Json) => {
-        console.log(json) // TODO navigate to wallet screen
+        console.log('Imported account ', json)
+        this.props.history.push(HOME_ROUTE)
       }).catch((reason) => {
         this.setState({ ...this.state, errorMessage: reason })
       })
   }
 
   changeMnemonic (event) {
-    this.setState({ ...this.state, mnemonic: event.target.value })
+    this.setState({ ...this.state, mnemonic: event.target.value, errorMessage: '' })
   }
 
   changeAccountName (event) {
@@ -57,38 +65,38 @@ class ImportMnemonic extends React.Component<IImportMnemonicProps, IImportMnemon
   render () {
     return (
       <ContentContainer>
-        <TopSection>
-          <label>{t('accountName')}</label>
-          <AccountName value={this.state.accountName} onChange={this.changeAccountName}/>
-        </TopSection>
-
         <Section>
-          <label>{t('mnemonic')}</label>
-          <MnemonicPad value={this.state.mnemonic} onChange={this.changeMnemonic}/>
+          <Header>{t('importAccount')}</Header>
         </Section>
-
-        <Section>
+        <Section style={{ marginTop: 110 }}>
+          <SecondaryText>
+            {t('phraseOptionDesc')}
+          </SecondaryText>
+        </Section>
+        <Form>
+          <Form.Input
+            label={t('accountNameTitle')}
+            type='input'
+            value={this.state.accountName}
+            onChange={this.changeAccountName}
+            placeholder={t('accountName')}
+          />
+          <MnemonicPad
+            label={t('phraseTitle')}
+            value={this.state.mnemonic}
+            onChange={this.changeMnemonic}
+          />
           <Message negative={true} hidden={!this.state.errorMessage}>
             {this.state.errorMessage}
           </Message>
-        </Section>
-
-        <Section>
           <Button onClick={this.handleImport} disabled={!this.isMnemonicComplete()}>
             {t('import')}
           </Button>
-        </Section>
+        </Form>
       </ContentContainer>
     )
   }
 }
-
-const AccountName = styled.input`
-  width: 311px;
-  height: 42px;
-  font-family: Nunito;
-  padding: 10px;
-`
 
 const mapStateToProps = (state: IAppState) => {
   return {

@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { colorSchemes } from './styles/themes'
 import { IAppState } from '../background/store/all'
 import { connect } from 'react-redux'
-import { Button as SemanticButton, Input } from 'semantic-ui-react'
+import { Button as SemanticButton, Form, Input } from 'semantic-ui-react'
 
 const mapStateToProps = (state: IAppState) => {
   return {
@@ -64,12 +64,10 @@ export const Header = styled(Title)`
   color: white
 `
 
-export const MnemonicPad = styled.textarea`
-  height: 100px
-  line-height: 1.57
-  color: #30383b
-  line-height 1.8rem
-  word-spacing: 5px
+export const MnemonicPad = styled(Form.TextArea)`
+  lineHeight: '1.8rem',
+  wordSpacing: 5,
+  height: 80
 `
 
 export const StyledPassword = styled(Input).attrs({ fluid: true })`
