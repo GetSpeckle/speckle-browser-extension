@@ -5,22 +5,24 @@ import { RouteComponentProps, withRouter } from 'react-router'
 import {
   Button as StyledButton,
   ContentContainer,
+  StyledDropdownDivider as Divider,
   DropdownItemContainer,
   DropdownItemContent,
   DropdownItemHeader,
-  DropdownItemIcon,
+  DropdownItemIconImage,
+  DropdownItemIdenticon,
   DropdownItemSubHeader,
-  Section
+  MyAccountDropdown,
+  Section, AccountAddress
 } from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 import { IAccount, setAccounts, setCurrentAccount } from '../../background/store/wallet'
 import t from '../../services/i18n'
-import { Dropdown } from 'semantic-ui-react'
-import Identicon from 'polkadot-identicon'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import Balance from '../account/Balance'
-import Header from 'semantic-ui-react/dist/commonjs/elements/Header/Header'
+import { Link } from 'react-router-dom'
+import Identicon from 'polkadot-identicon'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
 }
@@ -36,7 +38,10 @@ interface Option {
   key: string,
   text: string,
   value: string,
-  content: object
+  content: object,
+  disable?: boolean,
+  as?: object,
+  to?: string
 }
 
 class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
@@ -63,31 +68,43 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     })
   }
 
-  handleCreateAccountClick = () => {
-    const { history } = this.props
-    history.push(GENERATE_PHRASE_ROUTE)
-  }
-
-  showFullAddress = () => {
-    this.setState({
-      showFullAddress: true
-    })
+  handleSelectChange = (address: string) => {
+    const dropdownOptions: Option[] = this.state.options.filter(o => o.value = address)
+    if (dropdownOptions && dropdownOptions[0]) {
+      this.setState(
+        {
+          currentAccount: {
+            address: dropdownOptions[0].value,
+            name: dropdownOptions[0].text
+          }
+        }
+      )
+    }
   }
 
   getAddress = (address) => {
     if (this.state.showFullAddress) return address
 
-    return address.substring(0, 5) + '...' + address.substring(address.length - 10)
+    return address.substring(0, 8) + '...' + address.substring(address.length - 10)
+  }
+
+  generateLink (iconPath: string, title: string) {
+    return (
+      <DropdownItemContainer>
+        <DropdownItemIconImage src={iconPath} centered={true}/>
+        <DropdownItemContent>
+          <DropdownItemHeader content={title}/>
+        </DropdownItemContent>
+      </DropdownItemContainer>
+    )
   }
 
   generateDropdownItem (account: IAccount) {
     return (
-      <DropdownItemContainer>
-        <DropdownItemIcon>
-          <Identicon account={account.address} size={32} className='identicon'/>
-        </DropdownItemIcon>
+      <DropdownItemContainer onClick={this.handleSelectChange.bind(this, account.address)}>
+        <DropdownItemIdenticon account={account.address} size={16} className='identicon'/>
         <DropdownItemContent>
-          <DropdownItemHeader><Header content={account.name} sub={true}/></DropdownItemHeader>
+          <DropdownItemHeader content={account.name} sub={true}/>
           <DropdownItemSubHeader>{this.getAddress(account.address)}</DropdownItemSubHeader>
         </DropdownItemContent>
       </DropdownItemContainer>
@@ -110,14 +127,43 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
         const currentAccount = accounts[0]
         this.props.setCurrentAccount(currentAccount)
         this.props.setAccounts(accounts)
+        const dynamicItems: Option[] = accounts.map(account => ({
+          key: account.name,
+          text: account.name,
+          value: account.address,
+          content: this.generateDropdownItem(account),
+          disable: false
+        }))
+        const staticItems: Option[] = [
+          {
+            key: 'divider',
+            text: 'divider',
+            value: 'divider',
+            content: <Divider/>,
+            disable: true
+          },
+          {
+            key: 'createAccount',
+            text: 'Create Account',
+            value: 'createAccount',
+            content: this.generateLink('/assets/plus.svg', t('createNewAccount')),
+            as: Link,
+            to: GENERATE_PHRASE_ROUTE,
+            disable: false
+          },
+          {
+            key: 'importAccount',
+            text: 'Import Existing Account',
+            value: 'importAccount',
+            content: this.generateLink('/assets/refresh.svg', t('importExistingAccount')),
+            as: Link,
+            to: GENERATE_PHRASE_ROUTE,
+            disable: false
+          }
+        ]
         this.setState({
           initializing: false,
-          options: accounts.map(account => ({
-            key: account.name,
-            text: account.name,
-            value: account.address,
-            content: this.generateDropdownItem(account)
-          })),
+          options: [...dynamicItems, ...staticItems],
           currentAccount: currentAccount
         })
       }
@@ -135,17 +181,20 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     return (
       <ContentContainer>
         <Section>
-          <Dropdown options={this.state.options} text='My Polkadot Wallet'/>
+          <MyAccountDropdown options={this.state.options} text={t('myAccountDropdownTitle')} />
         </Section>
         <Section>
-          <Balance address={this.state.currentAccount.address} />
+          <AccountAddress>{this.getAddress(this.state.currentAccount.address)}</AccountAddress>
+        </Section>
+        <Section>
+          <Identicon account={this.state.currentAccount.address} size={80} className='identicon'/>
+        </Section>
+        <Section>
+          <Balance address={this.state.currentAccount.address}/>
         </Section>
         <Section>
           <StyledButton onClick={this.handleClick}>
             {t('logout')}
-          </StyledButton>
-          <StyledButton onClick={this.handleCreateAccountClick}>
-            create new account
           </StyledButton>
         </Section>
       </ContentContainer>
