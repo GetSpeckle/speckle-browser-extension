@@ -6,6 +6,7 @@ import {
   HOME_ROUTE,
   TERM_SERVICE_ROUTE,
   CREATE_PASSWORD_ROUTE,
+  IMPORT_OPTIONS_ROUTE,
   IMPORT_MNEMONIC_ROUTE,
   IMPORT_JSON_ROUTE,
   GENERATE_PHRASE_ROUTE,
@@ -16,6 +17,7 @@ import {
 import { RouteWithLayout } from './RouteWithLayout'
 import LoginLayout from '../layouts/LoginLayout'
 import CreatePassword from '../components/account/CreatePassword'
+import ImportOptions from '../components/account/ImportOptions'
 import ImportMnemonic from '../components/account/ImportMnemonic'
 import ImportJson from '../components/account/ImportJson'
 import ConfirmPhrase from '../components/account/ConfirmPhrase'
@@ -24,6 +26,7 @@ import Authenticated from './authenticated/index'
 import DashboardLayout from '../layouts/DashboardLayout'
 import Dashboard from '../components/dashboard/Dashboard'
 import Welcome from '../components/Welcome'
+import ActionLayout from '../layouts/ActionLayout'
 
 export class Routes extends React.Component {
   renderRoutes () {
@@ -33,6 +36,24 @@ export class Routes extends React.Component {
           layout={DashboardLayout}
           path={HOME_ROUTE}
           component={Dashboard}
+          exact={true}
+        />
+        <Authenticated
+          layout={ActionLayout}
+          path={IMPORT_MNEMONIC_ROUTE}
+          component={ImportMnemonic}
+          exact={true}
+        />
+        <Authenticated
+          layout={ActionLayout}
+          path={IMPORT_JSON_ROUTE}
+          component={ImportJson}
+          exact={true}
+        />
+        <Authenticated
+          layout={ActionLayout}
+          path={IMPORT_OPTIONS_ROUTE}
+          component={ImportOptions}
           exact={true}
         />
         <RouteWithLayout
@@ -63,18 +84,6 @@ export class Routes extends React.Component {
           layout={LoginLayout}
           path={LOGIN_ROUTE}
           component={Login}
-          exact={true}
-        />
-        <RouteWithLayout
-          layout={LoginLayout}
-          path={IMPORT_MNEMONIC_ROUTE}
-          component={ImportMnemonic}
-          exact={true}
-        />
-        <RouteWithLayout
-          layout={LoginLayout}
-          path={IMPORT_JSON_ROUTE}
-          component={ImportJson}
           exact={true}
         />
         <Route

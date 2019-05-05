@@ -151,5 +151,23 @@
   },
   "keyringNotInit": {
     "message": "Keyring is not initialised yet"
+  },
+  "howToImport": {
+    "message": "How would you like to import?"
+  },
+  "phraseOption": {
+    "message": "12 word seed phrase"
+  },
+  "phraseOptionDesc": {
+    "message": "Restore an existing account by entering your 12 word seed phrase"
+  },
+  "keystoreOption": {
+    "message": "Keystore file"
+  },
+  "keystoreOptionDesc": {
+    "message": "Restore an existing account by uploading your keystore file"
+  },
+  "importAccount": {
+    "message": "Import Existing Account"
   }
 }
