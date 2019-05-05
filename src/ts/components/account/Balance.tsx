@@ -55,6 +55,13 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
     this.updateBalance()
   }
 
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.address !== this.props.address) {
+      this.setState({ ...this.state, tries: 1 })
+      this.updateBalance()
+    }
+  }
+
   componentWillUnmount (): void {
     this.state.nextTry && clearTimeout(this.state.nextTry)
   }

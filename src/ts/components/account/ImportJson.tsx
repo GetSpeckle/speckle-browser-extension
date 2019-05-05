@@ -10,7 +10,8 @@ import { isObject, u8aToString, isHex } from '@polkadot/util'
 import {
   Button,
   ContentContainer,
-  Header, SecondaryText,
+  WhiteTitle,
+  SecondaryText,
   Section
 } from '../basic-components'
 import { IAppState } from '../../background/store/all'
@@ -111,7 +112,7 @@ class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
     return (
       <ContentContainer>
         <Section>
-          <Header>{t('importAccount')}</Header>
+          <WhiteTitle>{t('importAccount')}</WhiteTitle>
         </Section>
 
         <SecondaryText className='action-start'>

@@ -9,7 +9,7 @@ import {
   ContentContainer,
   Section,
   SecondaryText,
-  Header
+  WhiteTitle
 } from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
@@ -65,7 +65,7 @@ class ImportMnemonic extends React.Component<IImportMnemonicProps, IImportMnemon
     return (
       <ContentContainer>
         <Section>
-          <Header>{t('importAccount')}</Header>
+          <WhiteTitle>{t('importAccount')}</WhiteTitle>
         </Section>
         <Section className='action-start'>
           <SecondaryText>

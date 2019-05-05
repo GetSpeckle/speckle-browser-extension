@@ -1,6 +1,10 @@
 import * as React from 'react'
 import { getAccounts, lockWallet } from '../../services/keyring-vault-proxy'
-import { GENERATE_PHRASE_ROUTE, LOGIN_ROUTE } from '../../constants/routes'
+import {
+  GENERATE_PHRASE_ROUTE,
+  IMPORT_OPTIONS_ROUTE,
+  LOGIN_ROUTE
+} from '../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router'
 import {
   Button as StyledButton,
@@ -157,7 +161,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
             value: 'importAccount',
             content: this.generateLink('/assets/refresh.svg', t('importExistingAccount')),
             as: Link,
-            to: GENERATE_PHRASE_ROUTE,
+            to: IMPORT_OPTIONS_ROUTE,
             disable: false
           }
         ]

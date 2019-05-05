@@ -62,7 +62,7 @@ export const Title = styled.div`
   text-align: center
 `
 
-export const Header = styled(Title)`
+export const WhiteTitle = styled(Title)`
   color: white
 `
 

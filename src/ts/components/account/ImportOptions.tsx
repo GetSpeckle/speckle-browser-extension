@@ -5,7 +5,7 @@ import {
   ContentContainer,
   SecondaryText,
   Section,
-  Header,
+  WhiteTitle,
   Title
 } from '../basic-components'
 import styled from 'styled-components'
@@ -36,7 +36,7 @@ class ImportOptions extends React.Component<IImportOptionsProps> {
     return (
       <ContentContainer>
         <Section>
-          <Header>{t('importAccount')}</Header>
+          <WhiteTitle>{t('importAccount')}</WhiteTitle>
         </Section>
         <Section className='action-start'>
           <Title>{t('howToImport')}</Title>
