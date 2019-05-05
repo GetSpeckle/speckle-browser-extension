@@ -52,7 +52,7 @@ class BottomMenu extends React.Component<IBottomMenuProps> {
           <Menu.Item
             name='democracy'
             active={pathname === NAME_MAP.democracy}
-            onClick={this.handleItemClick}
+            onClick={this.handleItemClick.bind(this, name)}
           >
             <Icon name='thumbs up outline' />
             {t('menuDemocracy')}
@@ -61,7 +61,7 @@ class BottomMenu extends React.Component<IBottomMenuProps> {
           <Menu.Item
             name='send'
             active={pathname === NAME_MAP.send}
-            onClick={this.handleItemClick}
+            onClick={this.handleItemClick.bind(this, name)}
           >
             <Icon name='send' />
             {t('menuSend')}
