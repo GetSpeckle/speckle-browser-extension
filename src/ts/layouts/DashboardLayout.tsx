@@ -3,9 +3,9 @@ import { connect } from 'react-redux'
 import { IAppState } from '../background/store/all'
 import { LayoutContainer } from '../components/basic-components'
 import TopMenu from '../components/dashboard/TopMenu'
-import BottomMenu from '../components/dashboard/BottomMenu';
+import BottomMenu from '../components/dashboard/BottomMenu'
 
-interface IDashboardProps extends StateProps, DispatchProps {}
+interface IDashboardProps extends StateProps {}
 
 class DashboardLayout extends Component<IDashboardProps> {
 
@@ -33,8 +33,6 @@ const mapStateToProps = (state: IAppState) => {
   }
 }
 
-const mapDispatchToProps = {}
 type StateProps = ReturnType<typeof mapStateToProps>
-type DispatchProps = typeof mapDispatchToProps
 
-export default connect(mapStateToProps, mapDispatchToProps)(DashboardLayout)
+export default connect(mapStateToProps)(DashboardLayout)
