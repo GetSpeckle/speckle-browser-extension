@@ -9,8 +9,7 @@ import {
   ContentContainer,
   Section,
   SecondaryText,
-  Header,
-  MnemonicPad
+  Header
 } from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
@@ -81,7 +80,8 @@ class ImportMnemonic extends React.Component<IImportMnemonicProps, IImportMnemon
             onChange={this.changeAccountName}
             placeholder={t('accountName')}
           />
-          <MnemonicPad
+          <Form.TextArea
+            className='mnemonic'
             label={t('phraseTitle')}
             value={this.state.mnemonic}
             onChange={this.changeMnemonic}

@@ -37,6 +37,12 @@
 
 .bottom-menu {
   position: absolute;
-  bottom: 0px;
+  bottom: 0;
   width: 100%;
+}
+
+.mnemonic textarea {
+  line-height: 1.8rem !important;
+  word-spacing: 5px !important;
+  height: 80px !important
 }

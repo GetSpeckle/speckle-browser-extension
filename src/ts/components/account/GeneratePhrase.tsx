@@ -116,11 +116,11 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
             placeholder={t('accountName')}
           />
           <Form.TextArea
+            className='mnemonic'
             label={t('phraseTitle')}
             value={this.state.mnemonic}
             readOnly={true}
             onClick={this.selectAll}
-            style={mnemonicStyle}
           />
 
           <Center>
@@ -151,12 +151,6 @@ const mapStateToProps = (state: IAppState) => {
     settings: state.settings,
     wallet: state.wallet
   }
-}
-
-const mnemonicStyle = {
-  lineHeight: '1.8rem',
-  wordSpacing: 5,
-  height: 80
 }
 
 const mapDispatchToProps = { setNewPhrase }

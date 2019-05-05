@@ -4,15 +4,12 @@ import Progress from './Progress'
 import { IAppState } from '../../background/store/all'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
-import { Message, List, Button, Icon } from 'semantic-ui-react'
+import { Message, List, Button, Icon, Form } from 'semantic-ui-react'
 import { createAccount, unlockWallet } from '../../services/keyring-vault-proxy'
 import {
   Button as StyledButton,
   ContentContainer,
-  Section,
-  TopSection,
-  PrimaryText,
-  MnemonicPad
+  Section
 } from '../basic-components'
 import { HOME_ROUTE } from '../../constants/routes'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
@@ -123,26 +120,25 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
   renderConfirmScreen () {
     return(
       <ContentContainer>
-        <TopSection>
-          <PrimaryText>{t('phraseConfirmTitle')}</PrimaryText>
-          <MnemonicPad value={this.state.inputPhrase} onChange={this.changePhrase}/>
-        </TopSection>
-
-        <Section>
-          <List horizontal={true} items={this.state.wordList} />
-        </Section>
-
-        <Section>
+        <Form>
+          <Form.TextArea
+            className='mnemonic'
+            label={t('phraseConfirmTitle')}
+            value={this.state.inputPhrase}
+            onChange={this.changePhrase}
+          />
+          <Section>
+            <List horizontal={true} items={this.state.wordList} />
+          </Section>
           <Message negative={true} hidden={this.isPhraseConfirmed()}>
             {t('phraseMismatch')}
           </Message>
-        </Section>
-
-        <Section>
-          <StyledButton onClick={this.createAccount} disabled={!this.isPhraseConfirmed()}>
-            {t('confirmPhraseButton')}
-          </StyledButton>
-        </Section>
+          <Section>
+            <StyledButton onClick={this.createAccount} disabled={!this.isPhraseConfirmed()}>
+              {t('confirmPhraseButton')}
+            </StyledButton>
+          </Section>
+        </Form>
       </ContentContainer>
     )
   }
