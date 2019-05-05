@@ -4,7 +4,7 @@ import t from '../../services/i18n'
 import { importAccountFromJson, decodeAddress } from '../../services/keyring-vault-proxy'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
-import {Form, Message} from 'semantic-ui-react'
+import { Form, Message } from 'semantic-ui-react'
 import Dropzone from 'react-dropzone'
 import { isObject, u8aToString, isHex } from '@polkadot/util'
 import {
@@ -47,7 +47,6 @@ class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
   }
 
   handleImport () {
-    debugger
     importAccountFromJson(this.state.json, this.state.password)
       .then((json: KeyringPair$Json) => {
         console.log(json)
@@ -57,8 +56,8 @@ class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
       })
   }
 
-  changePassword () {
-    this.setState({ ...this.state, errorMessage: '' })
+  changePassword (e) {
+    this.setState({ ...this.state, password: e.target.value, errorMessage: '' })
   }
 
   handleFileUpload (acceptedFiles) {
@@ -67,20 +66,22 @@ class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
     const reader = new FileReader()
     reader.onloadend = () => {
       const data = new Uint8Array(reader.result as ArrayBuffer)
+      let json
       try {
-        const json = JSON.parse(u8aToString(data))
-        decodeAddress(json.address, true).then(decodeAddress => {
-          if (this.isFileValid(decodeAddress, json)) {
-            this.setState({ ...this.state, json: json, errorMessage: '' })
-          } else {
-            this.setState({ ...this.state, errorMessage: t('error.keystore.invalid') })
-          }
-        }).catch(err => { // decodeAddress throw error
-          this.setState({ ...this.state, errorMessage: err.message })
-        })
-      } catch (e) { // JSON.parse(u8aToString(data)) throw error
+        json = JSON.parse(u8aToString(data))
+      } catch (e) {
         this.setState({ ...this.state, errorMessage: e.message })
+        return
       }
+      decodeAddress(json.address, true).then(decodeAddress => {
+        if (this.isFileValid(decodeAddress, json)) {
+          this.setState({ ...this.state, json: json, errorMessage: '' })
+        } else {
+          this.setState({ ...this.state, errorMessage: t('error.keystore.invalid') })
+        }
+      }).catch(err => { // decodeAddress throw error
+        this.setState({ ...this.state, errorMessage: err.message })
+      })
     }
     reader.readAsArrayBuffer(file)
   }
