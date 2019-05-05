@@ -85,7 +85,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
   getAddress = (address) => {
     if (this.state.showFullAddress) return address
 
-    return address.substring(0, 5) + '...' + address.substring(address.length - 10)
+    return address.substring(0, 8) + '...' + address.substring(address.length - 10)
   }
 
   generateLink (iconPath: string, title: string) {
@@ -175,7 +175,6 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
   }
 
   render () {
-
     if (this.state.initializing) {
       return (null)
     }

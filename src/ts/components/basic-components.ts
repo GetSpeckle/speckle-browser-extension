@@ -2,8 +2,7 @@ import styled from 'styled-components'
 import { colorSchemes } from './styles/themes'
 import { IAppState } from '../background/store/all'
 import { connect } from 'react-redux'
-import { Button as SemanticButton, Dropdown, Input, Image } from 'semantic-ui-react'
-import Header from 'semantic-ui-react/dist/commonjs/elements/Header/Header'
+import { Button as SemanticButton, Dropdown, Input, Image, Header } from 'semantic-ui-react'
 import Identicon from 'polkadot-identicon'
 
 const mapStateToProps = (state: IAppState) => {
@@ -154,6 +153,9 @@ export const StyledMyAccountDropdown = styled(Dropdown)`
 
     & .menu {
       background-color: ${(p: P) => colorSchemes[p.settings.color].backgroundColor} !important
+      max-height: 200px
+      overflow-y: scroll
+      overflow-x: hidden
     }
 
     & .item {
