@@ -169,6 +169,14 @@ export const StyledMyAccountDropdown = styled(Dropdown)`
 
 export const MyAccountDropdown = connect(mapStateToProps)(StyledMyAccountDropdown)
 
+export const StyledChainDropdown = styled(Dropdown)`
+    & .menu {
+      background-color: ${(p: P) => colorSchemes[p.settings.color].backgroundColor} !important
+    }
+`
+
+export const ChainDropdown = connect(mapStateToProps)(StyledChainDropdown)
+
 export const LoginFooter = styled.div`
   position: absolute
   bottom: 0

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { withRouter, RouteComponentProps } from 'react-router'
-import { Image, Dropdown, Grid } from 'semantic-ui-react'
+import { Image, Grid } from 'semantic-ui-react'
+import { ChainDropdown } from '../basic-components';
 
 interface ITopMenuProps extends RouteComponentProps {
 }
@@ -29,7 +30,7 @@ class TopMenu extends React.Component<ITopMenuProps> {
             </Grid.Column>
 
             <Grid.Column width={8} >
-              <Dropdown
+              <ChainDropdown
                 className='chain'
                 placeholder='Select Chain'
                 fluid={true}
