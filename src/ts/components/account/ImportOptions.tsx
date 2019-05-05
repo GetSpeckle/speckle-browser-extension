@@ -38,7 +38,7 @@ class ImportOptions extends React.Component<IImportOptionsProps> {
         <Section>
           <Header>{t('importAccount')}</Header>
         </Section>
-        <Section style={{ marginTop: 110 }}>
+        <Section className='action-start'>
           <Title>{t('howToImport')}</Title>
         </Section>
         <OptionSection onClick={this.choosePhraseOption}>

@@ -131,12 +131,17 @@ class KeyringVault {
 
   importAccountFromJson (json: KeyringPair$Json, password?: string): Promise<KeyringPair$Json> {
     if (this.isLocked()) return Promise.reject(new Error(t('walletLocked')))
-    let pair = this.keyring.addFromJson(json)
-    pair.setMeta({ ...pair.getMeta(), imported: true })
-    if (password) {
-      pair.decodePkcs8(password)
+    try {
+      let pair = this.keyring.addFromJson(json)
+      pair.setMeta({ ...pair.getMeta(), imported: true })
+      if (password) {
+        pair.decodePkcs8(password)
+      }
+      return this.saveAccount(pair)
+    } catch (e) {
+      console.log(e)
+      return Promise.reject(new Error(t('importKeystoreError')))
     }
-    return this.saveAccount(pair)
   }
 
   private saveAccount (pair: KeyringPair): Promise<KeyringPair$Json> {

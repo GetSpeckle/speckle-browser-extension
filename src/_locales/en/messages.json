@@ -165,9 +165,15 @@
     "message": "Keystore file"
   },
   "keystoreOptionDesc": {
-    "message": "Restore an existing account by uploading your keystore file"
+    "message": "Restore an existing account by uploading your encrypted keystore file"
   },
   "importAccount": {
     "message": "Import Existing Account"
+  },
+  "keystoreOptionGuide": {
+    "message": "Upload keystore file and enter the password required to decrypt it"
+  },
+  "importKeystoreError": {
+    "message": "Cannot import the keystore file with the password supplied"
   }
 }

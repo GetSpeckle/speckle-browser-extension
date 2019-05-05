@@ -67,7 +67,7 @@ class ImportMnemonic extends React.Component<IImportMnemonicProps, IImportMnemon
         <Section>
           <Header>{t('importAccount')}</Header>
         </Section>
-        <Section style={{ marginTop: 110 }}>
+        <Section className='action-start'>
           <SecondaryText>
             {t('phraseOptionDesc')}
           </SecondaryText>
