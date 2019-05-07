@@ -22,9 +22,8 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
   }
 
   updateBalance = () => {
-    console.log('try', this.state.tries)
-    this.setState({ ...this.state, tries: this.state.tries + 1 })
     if (this.props.apiContext.apiReady) {
+      this.setState({ ...this.state, tries: 1 })
       this.api.rpc.system.properties().then(properties => {
         const chainProperties = (properties as ChainProperties)
         formatBalance.setDefaults({
@@ -42,7 +41,7 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
       })
     } else if (this.state.tries <= 5) {
       const nextTry = setTimeout(this.updateBalance, 1000)
-      this.setState({ ...this.state, nextTry: nextTry })
+      this.setState({ ...this.state, tries: this.state.tries + 1, nextTry: nextTry })
     } else {
       this.setState({ ...this.state, balance: t('balanceNA') })
     }
@@ -54,7 +53,6 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.address !== this.props.address) {
-      this.setState({ ...this.state, tries: 1 })
       this.updateBalance()
     }
   }
