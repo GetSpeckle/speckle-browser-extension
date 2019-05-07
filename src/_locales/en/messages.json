@@ -184,5 +184,11 @@
   },
   "importKeystoreError": {
     "message": "Cannot import the keystore file with the password supplied"
+  },
+  "errorMissingPage": {
+    "message": "It appears the page is missing at the moment. It may be still under development."
+  },
+  "goBack": {
+    "message": "Go Back"
   }
 }
