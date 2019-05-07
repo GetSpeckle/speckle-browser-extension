@@ -10,11 +10,6 @@ import styled from 'styled-components'
 
 class Balance extends React.Component<IBalanceProps, IBalanceState> {
 
-  constructor (props) {
-    super(props)
-    this.updateBalance = this.updateBalance.bind(this)
-  }
-
   state: IBalanceState = {
     balance: undefined,
     tries: 1
@@ -26,7 +21,7 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
     throw new Error(t('apiError'))
   }
 
-  updateBalance () {
+  updateBalance = () => {
     console.log('try', this.state.tries)
     this.setState({ ...this.state, tries: this.state.tries + 1 })
     if (this.props.apiContext.apiReady) {
@@ -36,7 +31,9 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
           decimals: chainProperties.tokenDecimals,
           unit: chainProperties.tokenSymbol
         })
+        console.log(this.props.address)
         this.api.query.balances.freeBalance(this.props.address, currentBalance => {
+          console.log('currentBalance', currentBalance)
           const formattedBalance = formatBalance(currentBalance)
           if (formattedBalance !== this.state.balance) {
             this.setState({ ...this.state, balance: formattedBalance })
