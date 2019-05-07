@@ -35,7 +35,6 @@ interface IDashboardState {
   options: Array<Option>,
   currentAccount: IAccount,
   initializing: boolean,
-  showFullAddress: boolean
 }
 
 interface Option {
@@ -59,8 +58,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
         address: '',
         name: ''
       },
-      initializing: true,
-      showFullAddress: false
+      initializing: true
     }
   }
 
@@ -73,7 +71,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
   }
 
   handleSelectChange = (address: string) => {
-    const dropdownOptions: Option[] = this.state.options.filter(o => o.value = address)
+    const dropdownOptions: Option[] = this.state.options.filter(o => o.key === address)
     if (dropdownOptions && dropdownOptions[0]) {
       this.setState(
         {
@@ -86,8 +84,8 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     }
   }
 
-  getAddress = (address) => {
-    if (this.state.showFullAddress) return address
+  getAddress = (address, showFulAddress = false) => {
+    if (showFulAddress) return address
 
     return address.substring(0, 8) + '...' + address.substring(address.length - 10)
   }
@@ -131,13 +129,15 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
         const currentAccount = accounts[0]
         this.props.setCurrentAccount(currentAccount)
         this.props.setAccounts(accounts)
+
         const dynamicItems: Option[] = accounts.map(account => ({
-          key: account.name,
+          key: account.address,
           text: account.name,
           value: account.address,
           content: this.generateDropdownItem(account),
           disable: false
         }))
+
         const staticItems: Option[] = [
           {
             key: 'divider',
@@ -185,10 +185,15 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     return (
       <ContentContainer>
         <Section>
-          <MyAccountDropdown options={this.state.options} text={t('myAccountDropdownTitle')} />
+          <MyAccountDropdown
+            options={this.state.options}
+            text={this.state.currentAccount.name ? this.state.currentAccount.name : 'N/A'}
+          />
         </Section>
         <Section>
-          <AccountAddress>{this.getAddress(this.state.currentAccount.address)}</AccountAddress>
+          <AccountAddress>
+            {this.getAddress(this.state.currentAccount.address, true)}
+          </AccountAddress>
         </Section>
         <Section>
           <Identicon account={this.state.currentAccount.address} size={80} className='identicon'/>
