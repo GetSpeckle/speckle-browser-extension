@@ -39,7 +39,7 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
           }
         })
       })
-    } else if (this.state.tries <= 5) {
+    } else if (this.state.tries <= 10) {
       const nextTry = setTimeout(this.updateBalance, 1000)
       this.setState({ ...this.state, tries: this.state.tries + 1, nextTry: nextTry })
     } else {
