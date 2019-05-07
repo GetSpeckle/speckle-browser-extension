@@ -145,6 +145,7 @@ export const StyledMyAccountDropdown = styled(Dropdown)`
     line-height: normal
     letter-spacing: normal
     color: #ffffff
+    text-align: center !important
 
     & .menu {
       background-color: ${(p: P) => colorSchemes[p.settings.color].backgroundColor} !important
