@@ -10,11 +10,6 @@ import styled from 'styled-components'
 
 class Balance extends React.Component<IBalanceProps, IBalanceState> {
 
-  constructor (props) {
-    super(props)
-    this.updateBalance = this.updateBalance.bind(this)
-  }
-
   state: IBalanceState = {
     balance: undefined,
     tries: 1
@@ -26,17 +21,18 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
     throw new Error(t('apiError'))
   }
 
-  updateBalance () {
-    console.log('try', this.state.tries)
-    this.setState({ ...this.state, tries: this.state.tries + 1 })
+  updateBalance = () => {
     if (this.props.apiContext.apiReady) {
+      this.setState({ ...this.state, tries: 1 })
       this.api.rpc.system.properties().then(properties => {
         const chainProperties = (properties as ChainProperties)
         formatBalance.setDefaults({
           decimals: chainProperties.tokenDecimals,
           unit: chainProperties.tokenSymbol
         })
+        console.log(this.props.address)
         this.api.query.balances.freeBalance(this.props.address, currentBalance => {
+          console.log('currentBalance', currentBalance)
           const formattedBalance = formatBalance(currentBalance)
           if (formattedBalance !== this.state.balance) {
             this.setState({ ...this.state, balance: formattedBalance })
@@ -45,7 +41,7 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
       })
     } else if (this.state.tries <= 5) {
       const nextTry = setTimeout(this.updateBalance, 1000)
-      this.setState({ ...this.state, nextTry: nextTry })
+      this.setState({ ...this.state, tries: this.state.tries + 1, nextTry: nextTry })
     } else {
       this.setState({ ...this.state, balance: t('balanceNA') })
     }
@@ -57,7 +53,6 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.address !== this.props.address) {
-      this.setState({ ...this.state, tries: 1 })
       this.updateBalance()
     }
   }
