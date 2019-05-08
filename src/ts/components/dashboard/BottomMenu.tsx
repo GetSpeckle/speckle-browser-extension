@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { withRouter, RouteComponentProps } from 'react-router'
-import { Menu, Icon, MenuItemProps } from 'semantic-ui-react'
+import { Menu, Icon } from 'semantic-ui-react'
 import t from '../../services/i18n'
 import { HOME_ROUTE } from '../../constants/routes'
 
