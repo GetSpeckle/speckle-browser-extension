@@ -49,13 +49,17 @@ interface Option {
 
 class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
-  state = {
-    options: [],
-    currentAccount: {
-      address: '',
-      name: ''
-    },
-    initializing: true
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      options: [],
+      currentAccount: {
+        address: '',
+        name: ''
+      },
+      initializing: true
+    }
   }
 
   handleClick = () => {
