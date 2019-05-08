@@ -130,10 +130,15 @@ class KeyringVault {
   }
 
   importAccountFromJson (json: KeyringPair$Json, password?: string): Promise<KeyringPair$Json> {
-    debugger
     if (this.isLocked()) return Promise.reject(new Error(t('walletLocked')))
-    let pair = this.keyring.getPair(json.address)
-    if (pair) return Promise.resolve(json)
+    let pair: KeyringPair | undefined
+    try {
+      this.keyring.decodeAddress(json.address)
+      pair = this.keyring.getPair(json.address)
+      if (pair) return Promise.resolve(json)
+    } catch (e) {
+      // ignore Checksum error
+    }
     try {
       pair = this.keyring.addFromJson(json, true)
       if (password) {

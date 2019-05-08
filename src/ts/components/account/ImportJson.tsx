@@ -29,15 +29,6 @@ interface IImportJsonState {
 
 class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
 
-  constructor (props) {
-    super(props)
-    this.handleImport = this.handleImport.bind(this)
-    this.handleFileUpload = this.handleFileUpload.bind(this)
-    this.isReady = this.isReady.bind(this)
-    this.shortFileName = this.shortFileName.bind(this)
-    this.changePassword = this.changePassword.bind(this)
-  }
-
   state: IImportJsonState = {
     json: {
       address: '',
@@ -47,7 +38,7 @@ class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
     }
   }
 
-  handleImport () {
+  handleImport = () => {
     importAccountFromJson(this.state.json, this.state.password)
       .then((json: KeyringPair$Json) => {
         console.log(json)
@@ -57,11 +48,11 @@ class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
       })
   }
 
-  changePassword (e) {
+  changePassword = (e) => {
     this.setState({ ...this.state, password: e.target.value, errorMessage: '' })
   }
 
-  handleFileUpload (acceptedFiles) {
+  handleFileUpload = (acceptedFiles) => {
     const file = acceptedFiles[0]
     this.setState({ ...this.state, file: file })
     const reader = new FileReader()
@@ -95,11 +86,11 @@ class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
         : json.encoding.content === 'pkcs8')
   }
 
-  private isReady () {
+  private readonly isReady = () => {
     return !!this.state.json.address && !this.state.errorMessage
   }
 
-  private shortFileName () {
+  private readonly shortFileName = () => {
     if (!this.state.file) return ''
     const fileName = this.state.file.name
     if (fileName.length < 20) {
