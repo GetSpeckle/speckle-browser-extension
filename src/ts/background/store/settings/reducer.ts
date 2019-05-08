@@ -6,6 +6,7 @@ import {
   ThemeTypes
 } from '../../../components/styles/themes'
 import { Alexander } from '../../../constants/networks'
+import { IAccount } from '../wallet'
 
 /**
  * Settings state
@@ -16,7 +17,8 @@ export interface IAppSettings {
   color: Color,
   // welcome if first time user
   welcome: boolean,
-  network: string
+  network: string,
+  selectedAccount?: IAccount
 }
 
 const initialState: IAppSettings = {

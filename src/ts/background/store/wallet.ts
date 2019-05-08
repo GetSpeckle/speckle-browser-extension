@@ -3,7 +3,6 @@ import { AnyAction, Reducer } from 'redux'
 export interface IWallet {
   accounts?: IAccount[],
   created: boolean,
-  currentAccount?: IAccount
   locked: boolean,
   newPassword?: string,
   newPhrase?: string,
@@ -25,8 +24,7 @@ export const ACTION_TYPES = {
   SET_LOCKED: 'SET_LOCKED',
   SET_NEW_PHRASE: 'SET_NEW_PHRASE',
   SET_ACCOUNTS: 'SET_ACCOUNTS',
-  SET_NEW_PASSWORD: 'SET_NEW_PASSWORD',
-  SET_CURRENT_ACCOUNT: 'SET_CURRENT_ACCOUNT'
+  SET_NEW_PASSWORD: 'SET_NEW_PASSWORD'
 }
 
 export function setLocked (locked: boolean): AnyAction {
@@ -40,13 +38,6 @@ export function setNewPhrase (phrase: string, accountName?: string): AnyAction {
   return {
     type: ACTION_TYPES.SET_NEW_PHRASE,
     payload: { phrase: phrase, accountName: accountName }
-  }
-}
-
-export function setCurrentAccount (account: IAccount): AnyAction {
-  return {
-    type: ACTION_TYPES.SET_CURRENT_ACCOUNT,
-    payload: account
   }
 }
 
@@ -101,11 +92,6 @@ const wallet: Reducer<IWallet, AnyAction> = (state = initialState, action) => {
     case ACTION_TYPES.SET_ACCOUNTS:
       console.log('set accounts ...')
       return { ...state, accounts: action.payload }
-
-    case ACTION_TYPES.SET_CURRENT_ACCOUNT:
-      return {
-        ...state,
-        currentAccount: action.payload }
 
     default:
       return state

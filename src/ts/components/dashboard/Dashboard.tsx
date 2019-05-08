@@ -21,19 +21,19 @@ import {
 } from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
-import { IAccount, setAccounts, setCurrentAccount } from '../../background/store/wallet'
+import { IAccount, setAccounts } from '../../background/store/wallet'
 import t from '../../services/i18n'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import Balance from '../account/Balance'
 import { Link } from 'react-router-dom'
 import Identicon from 'polkadot-identicon'
+import { saveSettings } from '../../background/store/settings'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
 }
 
 interface IDashboardState {
   options: Array<Option>,
-  currentAccount: IAccount,
   initializing: boolean,
 }
 
@@ -54,10 +54,6 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
     this.state = {
       options: [],
-      currentAccount: {
-        address: '',
-        name: ''
-      },
       initializing: true
     }
   }
@@ -73,14 +69,10 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
   handleSelectChange = (address: string) => {
     const dropdownOptions: Option[] = this.state.options.filter(o => o.key === address)
     if (dropdownOptions && dropdownOptions[0]) {
-      this.setState(
-        {
-          currentAccount: {
-            address: dropdownOptions[0].value,
-            name: dropdownOptions[0].text
-          }
-        }
-      )
+      this.props.saveSettings({ ...this.props.settings, selectedAccount: {
+        address: dropdownOptions[0].value,
+        name: dropdownOptions[0].text
+      } })
     }
   }
 
@@ -106,7 +98,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
       <DropdownItemContainer onClick={this.handleSelectChange.bind(this, account.address)}>
         <DropdownItemIdenticon account={account.address} size={16} className='identicon'/>
         <DropdownItemContent>
-          <DropdownItemHeader content={account.name} sub={true}/>
+          <DropdownItemHeader content={account.name ? account.name : 'N/A'} sub={true}/>
           <DropdownItemSubHeader>{this.getAddress(account.address)}</DropdownItemSubHeader>
         </DropdownItemContent>
       </DropdownItemContainer>
@@ -125,9 +117,11 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
             return { name: keyring.meta.name, address: keyring.address }
           }
         )
-        // set first one to current account, test only
-        const currentAccount = accounts[0]
-        this.props.setCurrentAccount(currentAccount)
+        // set first one to select account if it isn't set
+        if (!this.props.settings.selectedAccount) {
+          this.props.saveSettings({ ...this.props.settings, selectedAccount: accounts[0] })
+        }
+
         this.props.setAccounts(accounts)
 
         const dynamicItems: Option[] = accounts.map(account => ({
@@ -167,8 +161,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
         ]
         this.setState({
           initializing: false,
-          options: [...dynamicItems, ...staticItems],
-          currentAccount: currentAccount
+          options: [...dynamicItems, ...staticItems]
         })
       }
     )
@@ -179,7 +172,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
   }
 
   render () {
-    if (this.state.initializing) {
+    if (this.state.initializing || !this.props.settings.selectedAccount) {
       return (null)
     }
     return (
@@ -187,19 +180,19 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
         <Section>
           <MyAccountDropdown
             options={this.state.options}
-            text={this.state.currentAccount.name ? this.state.currentAccount.name : 'N/A'}
+            text={this.props.settings.selectedAccount.name ? this.props.settings.selectedAccount.name : 'N/A'}
           />
         </Section>
         <Section>
           <AccountAddress>
-            {this.getAddress(this.state.currentAccount.address, true)}
+            {this.getAddress(this.props.settings.selectedAccount.address, true)}
           </AccountAddress>
         </Section>
         <Section>
-          <Identicon account={this.state.currentAccount.address} size={80} className='identicon'/>
+          <Identicon account={this.props.settings.selectedAccount.address} size={80} className='identicon'/>
         </Section>
         <Section>
-          <Balance address={this.state.currentAccount.address}/>
+          <Balance address={this.props.settings.selectedAccount.address}/>
         </Section>
         <Section>
           <StyledButton onClick={this.handleClick}>
@@ -213,11 +206,11 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
 const mapStateToProps = (state: IAppState) => {
   return {
-    currentAccount: state.wallet.currentAccount
+    settings: state.settings
   }
 }
 
-const mapDispatchToProps = { setCurrentAccount, setAccounts }
+const mapDispatchToProps = { saveSettings, setAccounts }
 type DispatchProps = typeof mapDispatchToProps
 
 type StateProps = ReturnType<typeof mapStateToProps>
