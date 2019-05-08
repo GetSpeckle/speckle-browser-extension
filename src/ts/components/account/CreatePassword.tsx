@@ -27,27 +27,20 @@ interface ICreatePasswordState {
 
 class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswordState> {
 
-  constructor (props: ICreatePasswordProps) {
-    super(props)
-    this.handleClick = this.handleClick.bind(this)
-    this.setNewPassword = this.setNewPassword.bind(this)
-    this.setConfirmPassword = this.setConfirmPassword.bind(this)
-  }
-
   state: ICreatePasswordState = {
     newPassword: '',
     confirmPassword: ''
   }
 
-  setNewPassword (event) {
+  setNewPassword = (event) => {
     this.setState({ ...this.state, newPassword: event.target.value })
   }
 
-  setConfirmPassword (event) {
+  setConfirmPassword = (event) => {
     this.setState({ ...this.state, confirmPassword: event.target.value })
   }
 
-  handleClick () {
+  handleClick = () => {
     this.props.setError(null)
 
     if (this.state.newPassword !== this.state.confirmPassword) {

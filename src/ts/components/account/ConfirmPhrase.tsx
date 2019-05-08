@@ -32,10 +32,6 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
     keyringPair: null
   }
 
-  constructor (props) {
-    super(props)
-  }
-
   componentDidMount () {
     // split the new phrase to be a list
     if (this.props.wallet.newPhrase) {
