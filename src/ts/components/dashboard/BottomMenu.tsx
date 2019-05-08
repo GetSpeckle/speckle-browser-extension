@@ -2,12 +2,13 @@ import * as React from 'react'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { Menu, Icon } from 'semantic-ui-react'
 import t from '../../services/i18n'
+import { HOME_ROUTE } from '../../constants/routes'
 
 interface IBottomMenuProps extends RouteComponentProps {
 }
 
 const NAME_MAP = {
-  home: '/',
+  home: HOME_ROUTE,
   stake: '/stake',
   democracy: '/democracy',
   send: '/send'
@@ -18,10 +19,11 @@ const NAME_MAP = {
  */
 class BottomMenu extends React.Component<IBottomMenuProps> {
 
-  handleItemClick = (name: string) => {
+  handleItemClick = (e, data) => {
+    const name = data.name || 'home'
     console.log('Going to route: ' + NAME_MAP[name])
-    // TODO: use history to go to the path
-    // this.props.history.push(NAME_MAP[data.name])
+    // use history to go to the path
+    this.props.history.push(NAME_MAP[name])
   }
 
   render () {
@@ -34,7 +36,7 @@ class BottomMenu extends React.Component<IBottomMenuProps> {
           <Menu.Item
             name='home'
             active={pathname === NAME_MAP.home}
-            onClick={this.handleItemClick.bind(this, name)}
+            onClick={this.handleItemClick}
           >
             <Icon name='home' />
             {t('menuHome')}
@@ -43,7 +45,7 @@ class BottomMenu extends React.Component<IBottomMenuProps> {
           <Menu.Item
             name='stake'
             active={pathname === NAME_MAP.stake}
-            onClick={this.handleItemClick.bind(this, name)}
+            onClick={this.handleItemClick}
           >
             <Icon name='chart pie' />
             {t('menuStake')}
@@ -52,7 +54,7 @@ class BottomMenu extends React.Component<IBottomMenuProps> {
           <Menu.Item
             name='democracy'
             active={pathname === NAME_MAP.democracy}
-            onClick={this.handleItemClick.bind(this, name)}
+            onClick={this.handleItemClick}
           >
             <Icon name='thumbs up outline' />
             {t('menuDemocracy')}
@@ -61,7 +63,7 @@ class BottomMenu extends React.Component<IBottomMenuProps> {
           <Menu.Item
             name='send'
             active={pathname === NAME_MAP.send}
-            onClick={this.handleItemClick.bind(this, name)}
+            onClick={this.handleItemClick}
           >
             <Icon name='send' />
             {t('menuSend')}

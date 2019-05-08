@@ -27,21 +27,15 @@ interface ILoginState {
 
 class Login extends React.Component<ILoginProps, ILoginState> {
 
-  constructor (props: Readonly<ILoginProps>) {
-    super(props)
-    this.handleLogin = this.handleLogin.bind(this)
-    this.setPassword = this.setPassword.bind(this)
-  }
-
   state: ILoginState = {
     password: ''
   }
 
-  setPassword (event) {
+  setPassword = (event) => {
     this.setState({ password: event.target.value })
   }
 
-  handleLogin () {
+  handleLogin = () => {
     this.props.setError(null)
     unlockWallet(this.state.password).then(
       keyringPairs => {

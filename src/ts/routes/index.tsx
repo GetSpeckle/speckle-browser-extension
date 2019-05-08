@@ -27,6 +27,7 @@ import DashboardLayout from '../layouts/DashboardLayout'
 import Dashboard from '../components/dashboard/Dashboard'
 import Welcome from '../components/Welcome'
 import ActionLayout from '../layouts/ActionLayout'
+import Missing from '../components/Missing';
 
 export class Routes extends React.Component {
   renderRoutes () {
@@ -90,6 +91,9 @@ export class Routes extends React.Component {
           path={INITIALIZE_ROUTE}
           component={Welcome}
           exact={true}
+        />
+        <Route
+          component={Missing}
         />
       </Switch>
     )

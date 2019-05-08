@@ -18,17 +18,11 @@ interface IImportOptionsProps extends StateProps, RouteComponentProps {}
 
 class ImportOptions extends React.Component<IImportOptionsProps> {
 
-  constructor (props: Readonly<IImportOptionsProps>) {
-    super(props)
-    this.choosePhraseOption = this.choosePhraseOption.bind(this)
-    this.chooseKeystoreOption = this.chooseKeystoreOption.bind(this)
-  }
-
-  choosePhraseOption () {
+  choosePhraseOption = () => {
     this.props.history.push(IMPORT_MNEMONIC_ROUTE)
   }
 
-  chooseKeystoreOption () {
+  chooseKeystoreOption = () => {
     this.props.history.push(IMPORT_JSON_ROUTE)
   }
 

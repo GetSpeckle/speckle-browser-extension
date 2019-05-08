@@ -25,20 +25,12 @@ interface IImportMnemonicState {
 
 class ImportMnemonic extends React.Component<IImportMnemonicProps, IImportMnemonicState> {
 
-  constructor (props) {
-    super(props)
-    this.changeMnemonic = this.changeMnemonic.bind(this)
-    this.changeAccountName = this.changeAccountName.bind(this)
-    this.handleImport = this.handleImport.bind(this)
-    this.isMnemonicComplete = this.isMnemonicComplete.bind(this)
-  }
-
   state: IImportMnemonicState = {
     mnemonic: '',
     accountName: t('importedAccount')
   }
 
-  handleImport () {
+  handleImport = () => {
 
     importAccountFromMnemonic(this.state.mnemonic, this.state.accountName)
       .then((json: KeyringPair$Json) => {
@@ -49,15 +41,15 @@ class ImportMnemonic extends React.Component<IImportMnemonicProps, IImportMnemon
       })
   }
 
-  changeMnemonic (event) {
+  changeMnemonic = (event) => {
     this.setState({ ...this.state, mnemonic: event.target.value, errorMessage: '' })
   }
 
-  changeAccountName (event) {
+  changeAccountName = (event) => {
     this.setState({ ...this.state, accountName: event.target.value })
   }
 
-  isMnemonicComplete () {
+  isMnemonicComplete = () => {
     return this.state.mnemonic && this.state.mnemonic.split(' ').length === 12
   }
 
