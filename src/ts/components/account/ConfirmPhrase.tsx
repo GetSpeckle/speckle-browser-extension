@@ -13,7 +13,7 @@ import {
 } from '../basic-components'
 import { HOME_ROUTE } from '../../constants/routes'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
-import { setLocked, setCreated } from '../../background/store/wallet'
+import { setLocked, setCreated, setNewPhrase } from '../../background/store/wallet'
 import { setError } from '../../background/store/error'
 
 interface IConfirmPhraseProps extends StateProps, DispatchProps, RouteComponentProps {}
@@ -62,6 +62,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
         createAccount(wallet.newPhrase, wallet.newAccountName).then(keyringPair => {
           console.log('Account created! ', keyringPair)
           this.setState({ keyringPair })
+          this.props.setNewPhrase('', '')
         }).catch(err => {
           this.props.setError(err)
         })
@@ -78,6 +79,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
             console.log('Account created! ', keyringPair)
             this.props.setCreated(true)
             this.setState({ keyringPair })
+            this.props.setNewPhrase('', '')
           }).catch(err => { this.props.setError(err) })
         }
       }).catch(err => { this.props.setError(err) })
@@ -173,7 +175,7 @@ const mapStateToProps = (state: IAppState) => {
   }
 }
 
-const mapDispatchToProps = { setLocked, setCreated, setError }
+const mapDispatchToProps = { setLocked, setCreated, setError, setNewPhrase }
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
