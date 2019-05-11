@@ -29,6 +29,8 @@ import { Link } from 'react-router-dom'
 import Identicon from 'polkadot-identicon'
 import { saveSettings } from '../../background/store/settings'
 import { Popup } from 'semantic-ui-react'
+import 'react-tippy/dist/tippy.css'
+import { Tooltip } from 'react-tippy'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
 }
@@ -209,9 +211,11 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
           />
         </Section>
         <Section>
+          <Tooltip title='Copy to clipboard' position='bottom' trigger='mouseenter' arrow={true}>
           <AccountAddress onClick={this.copyToClipboard}>
             {this.getAddress(this.props.settings.selectedAccount.address)}
           </AccountAddress>
+          </Tooltip>
           <Popup
             open={!!this.state.message}
             content={t('copyAddressMessage')}
