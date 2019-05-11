@@ -71,6 +71,9 @@
   "copyTextMessage": {
     "message": "Phrase copied to clipboard. Make sure to paste and save it to a secure place."
   },
+  "copyAddressMessage": {
+    "message": "Account address is copied to clipboard."
+  },
   "downloadFile": {
     "message": "Download"
   },

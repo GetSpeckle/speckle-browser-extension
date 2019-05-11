@@ -15,6 +15,7 @@ import { HOME_ROUTE } from '../../constants/routes'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import { setLocked, setCreated, setNewPhrase } from '../../background/store/wallet'
 import { setError } from '../../background/store/error'
+import { saveSettings } from '../../background/store/settings'
 
 interface IConfirmPhraseProps extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -53,37 +54,49 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
         && this.props.wallet.newPhrase === this.state.inputPhrase
   }
 
-  createAccount = () => {
-    this.props.setError(null)
-    const { wallet } = this.props
-    // add a new wallet using the same pass
-    if (!wallet.locked && wallet.created) {
-      if (wallet.newPhrase) {
-        createAccount(wallet.newPhrase, wallet.newAccountName).then(keyringPair => {
-          console.log('Account created! ', keyringPair)
-          this.setState({ keyringPair })
-          this.props.setNewPhrase('', '')
-        }).catch(err => {
-          this.props.setError(err)
-        })
-      }
-    }
-    if (wallet.newPassword) {
-      unlockWallet(wallet.newPassword).then(kp => {
-        console.log('wallet unlocked')
-        // update redux store state
-        this.props.setLocked(false)
-        console.assert(kp.length === 0, 'Should be an empty array')
-        if (wallet.newPhrase) {
-          createAccount(wallet.newPhrase, wallet.newAccountName).then(keyringPair => {
-            console.log('Account created! ', keyringPair)
-            this.props.setCreated(true)
-            this.setState({ keyringPair })
-            this.props.setNewPhrase('', '')
-          }).catch(err => { this.props.setError(err) })
+  createAccount = (phrase: string, name?: string) => {
+    const { wallet, saveSettings, settings, setNewPhrase, setCreated, setError } = this.props
+    createAccount(phrase, name).then(keyringPair => {
+      this.setState({ keyringPair })
+      // use new created account as the selected account
+      saveSettings(
+        { ...settings, selectedAccount:
+            { name: keyringPair.meta.name, address: keyringPair.address }
         }
-      }).catch(err => { this.props.setError(err) })
+      )
+      setNewPhrase('', '')
+      if (!wallet.created) {
+        setCreated(true)
+      }
+    }).catch(err => {
+      setError(err)
+    })
+  }
+
+  create = () => {
+    const { wallet, setError, setLocked } = this.props
+    setError(null)
+
+    if (!wallet.newPhrase) {
+      setError(t('passwordError'))
+      return
     }
+
+    // add a new account using the same pass
+    if (!wallet.locked && wallet.created) {
+      this.createAccount(wallet.newPhrase, wallet.newAccountName)
+      return
+    }
+
+    // create wallet with the first account
+    unlockWallet(wallet.newPassword!!).then(kp => {
+      // update redux store state
+      setLocked(false)
+      console.assert(kp.length === 0, 'Should be an empty array')
+      if (wallet.newPhrase) {
+        this.createAccount(wallet.newPhrase, wallet.newAccountName)
+      }
+    }).catch(err => { setError(err) })
   }
 
   downloadKeyPair = () => {
@@ -132,7 +145,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
             {t('phraseMismatch')}
           </Message>
           <Section>
-            <StyledButton onClick={this.createAccount} disabled={!this.isPhraseConfirmed()}>
+            <StyledButton onClick={this.create} disabled={!this.isPhraseConfirmed()}>
               {t('confirmPhraseButton')}
             </StyledButton>
           </Section>
@@ -175,7 +188,7 @@ const mapStateToProps = (state: IAppState) => {
   }
 }
 
-const mapDispatchToProps = { setLocked, setCreated, setError, setNewPhrase }
+const mapDispatchToProps = { saveSettings, setLocked, setCreated, setError, setNewPhrase }
 
 type StateProps = ReturnType<typeof mapStateToProps>
 

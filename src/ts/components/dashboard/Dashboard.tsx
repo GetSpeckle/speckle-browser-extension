@@ -28,15 +28,17 @@ import Balance from '../account/Balance'
 import { Link } from 'react-router-dom'
 import Identicon from 'polkadot-identicon'
 import { saveSettings } from '../../background/store/settings'
-import { Dropdown, Button, Icon } from 'semantic-ui-react';
-import { colorSchemes } from '../styles/themes';
+import { Dropdown, Button, Icon, Popup } from 'semantic-ui-react'
+import { colorSchemes } from '../styles/themes'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
 }
 
 interface IDashboardState {
   options: Array<Option>,
+  message?: string,
   initializing: boolean,
+  msgTimeout?: any
 }
 
 interface Option {
@@ -60,10 +62,9 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     }
   }
 
-  handleClick = () => {
+  handleClickLogout = () => {
     const { history } = this.props
-    lockWallet().then(result => {
-      console.log(result)
+    lockWallet().then(() => {
       history.push(LOGIN_ROUTE)
     })
   }
@@ -107,10 +108,27 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     )
   }
 
+  copyToClipboard = () => {
+    const el = document.createElement('textarea')
+    el.value = this.props.settings.selectedAccount!!.address
+    el.setAttribute('readonly', '')
+    el.style.position = 'absolute'
+    el.style.left = '-9999px'
+    document.body.appendChild(el)
+    el.select()
+    document.execCommand('copy')
+    document.body.removeChild(el)
+
+    this.setState({ message: t('copyAddressMessage') })
+    const timeout = setTimeout(() => {
+      this.setState({ message: '' })
+    }, 2000)
+    this.setState({ msgTimeout: timeout })
+  }
+
   loadAccounts = () => {
     getAccounts().then(
       result => {
-        console.log(`get account ${result}`)
         if (!Array.isArray(result) || !result.length) {
           return
         }
@@ -169,8 +187,22 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     )
   }
 
+  handleClickCreateAccount = () => {
+    this.props.history.push(GENERATE_PHRASE_ROUTE)
+  }
+
+  handleClickImport = () => {
+    this.props.history.push(IMPORT_OPTIONS_ROUTE)
+  }
+
   componentWillMount () {
     this.loadAccounts()
+  }
+
+  componentWillUnmount () {
+    if (this.state.msgTimeout) {
+      clearTimeout(this.state.msgTimeout)
+    }
   }
 
   render () {
@@ -208,12 +240,24 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
             </Dropdown.Menu>
 
             <Dropdown.Divider />
-            <Button fluid={true} icon={true} labelPosition='left' style={backgroundStyle}>
+            <Button
+              fluid={true}
+              icon={true}
+              labelPosition='left'
+              style={backgroundStyle}
+              onClick={this.handleClickCreateAccount}
+            >
               <Icon name='plus' />
                 {t('createNewAccount')}
             </Button>
 
-            <Button fluid={true} icon={true} labelPosition='left' style={backgroundStyle}>
+            <Button
+              fluid={true}
+              icon={true}
+              labelPosition='left'
+              style={backgroundStyle}
+              onClick={this.handleClickImport}
+            >
               <Icon name='redo' />
                 {t('importExistingAccount')}
             </Button>
@@ -221,9 +265,14 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
           </Dropdown>
         </Section>
         <Section>
-          <AccountAddress>
-            {this.getAddress(this.props.settings.selectedAccount.address, true)}
+          <AccountAddress onClick={this.copyToClipboard}>
+            {this.getAddress(this.props.settings.selectedAccount.address)}
           </AccountAddress>
+          <Popup
+            open={!!this.state.message}
+            content={t('copyAddressMessage')}
+            basic={true}
+          />
         </Section>
         <Section>
           <Identicon account={this.props.settings.selectedAccount.address} size={80} className='identicon'/>
@@ -232,7 +281,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
           <Balance address={this.props.settings.selectedAccount.address}/>
         </Section>
         <Section>
-          <StyledButton onClick={this.handleClick}>
+          <StyledButton onClick={this.handleClickLogout}>
             {t('logout')}
           </StyledButton>
         </Section>
@@ -251,6 +300,5 @@ const mapDispatchToProps = { saveSettings, setAccounts }
 type DispatchProps = typeof mapDispatchToProps
 
 type StateProps = ReturnType<typeof mapStateToProps>
-
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Dashboard))

@@ -106,31 +106,32 @@ export const DropdownItemIconImage = styled(Image)`
   height: 16px
 `
 
-export const AccountAddress = styled.div`
-  height: 14px;
-  font-family: Nunito;
-  font-size: 10px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: normal;
-  letter-spacing: normal;
-  text-align: center;
-  color: #ffffff;
+export const AccountAddress = styled.span`
+  cursor: copy
+  height: 14px
+  font-family: Nunito
+  font-size: 10px
+  font-weight: normal
+  font-style: normal
+  font-stretch: normal
+  line-height: normal
+  letter-spacing: normal
+  text-align: center
+  color: #ffffff
 `
 
 export const DropdownItemSubHeader = styled.span`
-  width: 85px;
-  height: 9px;
-  font-family: Nunito;
-  font-size: 7px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: normal;
-  letter-spacing: normal;
-  text-align: center;
-  color: #ffffff;
+  width: 85px
+  height: 9px
+  font-family: Nunito
+  font-size: 7px
+  font-weight: normal
+  font-style: normal
+  font-stretch: normal
+  line-height: normal
+  letter-spacing: normal
+  text-align: center
+  color: #ffffff
 `
 
 export const StyledMyAccountDropdown = styled(Dropdown)`
