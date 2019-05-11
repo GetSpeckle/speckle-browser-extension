@@ -28,12 +28,14 @@ import Balance from '../account/Balance'
 import { Link } from 'react-router-dom'
 import Identicon from 'polkadot-identicon'
 import { saveSettings } from '../../background/store/settings'
+import { Popup } from 'semantic-ui-react'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
 }
 
 interface IDashboardState {
   options: Array<Option>,
+  message?: string,
   initializing: boolean,
 }
 
@@ -60,8 +62,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
   handleClick = () => {
     const { history } = this.props
-    lockWallet().then(result => {
-      console.log(result)
+    lockWallet().then(() => {
       history.push(LOGIN_ROUTE)
     })
   }
@@ -105,10 +106,26 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     )
   }
 
+  copyToClipboard = () => {
+    const el = document.createElement('textarea')
+    el.value = this.props.settings.selectedAccount!!.address
+    el.setAttribute('readonly', '')
+    el.style.position = 'absolute'
+    el.style.left = '-9999px'
+    document.body.appendChild(el)
+    el.select()
+    document.execCommand('copy')
+    document.body.removeChild(el)
+
+    this.setState({ message: t('copyAddressMessage') })
+    setTimeout(() => {
+      this.setState({ message: '' })
+    }, 2000)
+  }
+
   loadAccounts = () => {
     getAccounts().then(
       result => {
-        console.log(`get account ${result}`)
         if (!Array.isArray(result) || !result.length) {
           return
         }
@@ -184,9 +201,14 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
           />
         </Section>
         <Section>
-          <AccountAddress>
-            {this.getAddress(this.props.settings.selectedAccount.address, true)}
+          <AccountAddress onClick={this.copyToClipboard}>
+            {this.getAddress(this.props.settings.selectedAccount.address)}
           </AccountAddress>
+          <Popup
+            open={!!this.state.message}
+            content={t('copyAddressMessage')}
+            basic={true}
+          />
         </Section>
         <Section>
           <Identicon account={this.props.settings.selectedAccount.address} size={80} className='identicon'/>
