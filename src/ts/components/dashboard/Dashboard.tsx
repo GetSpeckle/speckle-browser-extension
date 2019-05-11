@@ -9,15 +9,8 @@ import { RouteComponentProps, withRouter } from 'react-router'
 import {
   Button as StyledButton,
   ContentContainer,
-  StyledDropdownDivider as Divider,
-  DropdownItemContainer,
-  DropdownItemContent,
-  DropdownItemHeader,
-  DropdownItemIconImage,
-  DropdownItemIdenticon,
-  DropdownItemSubHeader,
-  MyAccountDropdown,
-  Section, AccountAddress
+  Section,
+  AccountAddress
 } from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
@@ -25,7 +18,6 @@ import { IAccount, setAccounts } from '../../background/store/wallet'
 import t from '../../services/i18n'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import Balance from '../account/Balance'
-import { Link } from 'react-router-dom'
 import Identicon from 'polkadot-identicon'
 import { saveSettings } from '../../background/store/settings'
 import { Dropdown, Button, Icon, Popup } from 'semantic-ui-react'
@@ -85,17 +77,6 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     return address.substring(0, 8) + '...' + address.substring(address.length - 10)
   }
 
-  generateLink (iconPath: string, title: string) {
-    return (
-      <DropdownItemContainer>
-        <DropdownItemIconImage src={iconPath} centered={true}/>
-        <DropdownItemContent>
-          <DropdownItemHeader content={title}/>
-        </DropdownItemContent>
-      </DropdownItemContainer>
-    )
-  }
-
   generateDropdownItem (account: IAccount) {
     return (
       <div className='item' onClick={this.handleSelectChange.bind(this, account.address)}>
@@ -152,33 +133,6 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
           disable: false
         }))
 
-        const staticItems: Option[] = [
-          {
-            key: '',
-            text: '',
-            value: '',
-            content: <Divider/>,
-            disable: true
-          },
-          {
-            key: 'createAccount',
-            text: 'Create Account',
-            value: 'createAccount',
-            content: this.generateLink('/assets/plus.svg', t('createNewAccount')),
-            as: Link,
-            to: GENERATE_PHRASE_ROUTE,
-            disable: false
-          },
-          {
-            key: 'importAccount',
-            text: 'Import Existing Account',
-            value: 'importAccount',
-            content: this.generateLink('/assets/refresh.svg', t('importExistingAccount')),
-            as: Link,
-            to: IMPORT_OPTIONS_ROUTE,
-            disable: false
-          }
-        ]
         this.setState({
           initializing: false,
           options: [...dynamicItems]
@@ -240,6 +194,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
             </Dropdown.Menu>
 
             <Dropdown.Divider />
+
             <Button
               fluid={true}
               icon={true}
