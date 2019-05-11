@@ -28,6 +28,8 @@ import Balance from '../account/Balance'
 import { Link } from 'react-router-dom'
 import Identicon from 'polkadot-identicon'
 import { saveSettings } from '../../background/store/settings'
+import { Dropdown, Button, Icon } from 'semantic-ui-react';
+import { colorSchemes } from '../styles/themes';
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
 }
@@ -95,13 +97,13 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
   generateDropdownItem (account: IAccount) {
     return (
-      <DropdownItemContainer onClick={this.handleSelectChange.bind(this, account.address)}>
-        <DropdownItemIdenticon account={account.address} size={16} className='identicon'/>
-        <DropdownItemContent>
-          <DropdownItemHeader content={account.name ? account.name : 'N/A'} sub={true}/>
-          <DropdownItemSubHeader>{this.getAddress(account.address)}</DropdownItemSubHeader>
-        </DropdownItemContent>
-      </DropdownItemContainer>
+      <div className='item' onClick={this.handleSelectChange.bind(this, account.address)}>
+        <Identicon account={account.address} size={20} className='identicon image' />
+        <div className='account-item'>
+          <div className='item-name'>{account.name ? account.name : 'N/A'} </div>
+          <div className='item-address'>{this.getAddress(account.address)}</div>
+        </div>
+      </div>
     )
   }
 
@@ -134,9 +136,9 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
         const staticItems: Option[] = [
           {
-            key: 'divider',
-            text: 'divider',
-            value: 'divider',
+            key: '',
+            text: '',
+            value: '',
             content: <Divider/>,
             disable: true
           },
@@ -161,7 +163,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
         ]
         this.setState({
           initializing: false,
-          options: [...dynamicItems, ...staticItems]
+          options: [...dynamicItems]
         })
       }
     )
@@ -175,13 +177,48 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     if (this.state.initializing || !this.props.settings.selectedAccount) {
       return (null)
     }
+
+    const selectedAccount = this.props.settings.selectedAccount
+
+    const accountStyle = {
+      backgroundColor: 'rgba(0,0,0,0)',
+      textAlign: 'center',
+      color: 'white'
+    }
+
+    const backgroundStyle = {
+      backgroundColor: colorSchemes[this.props.settings.color].backgroundColor,
+      color: 'white'
+    }
+
     return (
       <ContentContainer>
         <Section>
-          <MyAccountDropdown
-            options={this.state.options}
-            text={this.props.settings.selectedAccount.name ? this.props.settings.selectedAccount.name : 'N/A'}
-          />
+          <Dropdown
+            text={selectedAccount.name ? selectedAccount.name : 'N/A'}
+            button={true}
+            fluid={true}
+            style={accountStyle}
+          >
+          <Dropdown.Menu style={backgroundStyle}>
+            <Dropdown.Menu scrolling={true} style={backgroundStyle}>
+              {this.state.options.map(option => (
+                <Dropdown.Item key={option.value} {...option} />
+              ))}
+            </Dropdown.Menu>
+
+            <Dropdown.Divider />
+            <Button fluid={true} icon={true} labelPosition='left' style={backgroundStyle}>
+              <Icon name='plus' />
+                {t('createNewAccount')}
+            </Button>
+
+            <Button fluid={true} icon={true} labelPosition='left' style={backgroundStyle}>
+              <Icon name='redo' />
+                {t('importExistingAccount')}
+            </Button>
+          </Dropdown.Menu>
+          </Dropdown>
         </Section>
         <Section>
           <AccountAddress>
@@ -214,5 +251,6 @@ const mapDispatchToProps = { saveSettings, setAccounts }
 type DispatchProps = typeof mapDispatchToProps
 
 type StateProps = ReturnType<typeof mapStateToProps>
+
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Dashboard))
