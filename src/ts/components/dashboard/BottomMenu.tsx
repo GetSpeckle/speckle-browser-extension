@@ -19,9 +19,7 @@ const NAME_MAP = {
  */
 class BottomMenu extends React.Component<IBottomMenuProps> {
 
-  handleItemClick = (e, data) => {
-    const name = data.name || 'home'
-    console.log('Going to route: ' + NAME_MAP[name])
+  handleItemClick = (name: string) => {
     // use history to go to the path
     this.props.history.push(NAME_MAP[name])
   }
@@ -36,7 +34,7 @@ class BottomMenu extends React.Component<IBottomMenuProps> {
           <Menu.Item
             name='home'
             active={pathname === NAME_MAP.home}
-            onClick={this.handleItemClick}
+            onClick={this.handleItemClick.bind(this, 'home')}
           >
             <Icon name='home' />
             {t('menuHome')}
@@ -45,7 +43,7 @@ class BottomMenu extends React.Component<IBottomMenuProps> {
           <Menu.Item
             name='stake'
             active={pathname === NAME_MAP.stake}
-            onClick={this.handleItemClick}
+            onClick={this.handleItemClick.bind(this, 'stake')}
           >
             <Icon name='chart pie' />
             {t('menuStake')}
@@ -54,7 +52,7 @@ class BottomMenu extends React.Component<IBottomMenuProps> {
           <Menu.Item
             name='democracy'
             active={pathname === NAME_MAP.democracy}
-            onClick={this.handleItemClick}
+            onClick={this.handleItemClick.bind(this, 'democracy')}
           >
             <Icon name='thumbs up outline' />
             {t('menuDemocracy')}
@@ -63,7 +61,7 @@ class BottomMenu extends React.Component<IBottomMenuProps> {
           <Menu.Item
             name='send'
             active={pathname === NAME_MAP.send}
-            onClick={this.handleItemClick}
+            onClick={this.handleItemClick.bind(this, 'send')}
           >
             <Icon name='send' />
             {t('menuSend')}

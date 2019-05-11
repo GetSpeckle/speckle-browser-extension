@@ -37,6 +37,7 @@ interface IDashboardState {
   options: Array<Option>,
   message?: string,
   initializing: boolean,
+  msgTimeout?: any
 }
 
 interface Option {
@@ -118,9 +119,10 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     document.body.removeChild(el)
 
     this.setState({ message: t('copyAddressMessage') })
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       this.setState({ message: '' })
     }, 2000)
+    this.setState({ msgTimeout: timeout })
   }
 
   loadAccounts = () => {
@@ -186,6 +188,12 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
   componentWillMount () {
     this.loadAccounts()
+  }
+
+  componentWillUnmount () {
+    if (this.state.msgTimeout) {
+      clearTimeout(this.state.msgTimeout)
+    }
   }
 
   render () {

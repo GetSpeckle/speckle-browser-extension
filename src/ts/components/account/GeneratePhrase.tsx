@@ -22,7 +22,8 @@ interface IGeneratePhraseState {
   accountName: string,
   mnemonic: string,
   message?: string,
-  color: 'blue' | 'red'
+  color: 'blue' | 'red',
+  msgTimeout?: any
 }
 
 class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhraseState> {
@@ -52,6 +53,12 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
     }
   }
 
+  componentWillUnmount () {
+    if (this.state.msgTimeout) {
+      clearTimeout(this.state.msgTimeout)
+    }
+  }
+
   handleChange = event => {
     this.setState({ accountName: event.target.value })
   }
@@ -78,9 +85,10 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
     document.body.removeChild(el)
 
     this.setState({ message: t('copyTextMessage') })
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       this.setState({ message: '' })
     }, 3000)
+    this.setState({ msgTimeout: timeout })
   }
 
   downloadFile = () => {

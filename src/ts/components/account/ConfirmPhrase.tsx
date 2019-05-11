@@ -63,6 +63,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
             { name: keyringPair.meta.name, address: keyringPair.address }
         }
       )
+      this.props.setCreated(true)
       this.props.setNewPhrase('', '')
     }).catch(err => {
       this.props.setError(err)
@@ -72,7 +73,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
   create = () => {
     this.props.setError(null)
     const { wallet } = this.props
-    // add a new wallet using the same pass
+    // add a new account using the same pass
     if (!wallet.locked && wallet.created) {
       if (wallet.newPhrase) {
         this.createAccount(wallet.newPhrase, wallet.newAccountName)
