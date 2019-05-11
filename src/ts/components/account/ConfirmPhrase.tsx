@@ -55,40 +55,48 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
   }
 
   createAccount = (phrase: string, name?: string) => {
+    const { wallet, saveSettings, settings, setNewPhrase, setCreated, setError } = this.props
     createAccount(phrase, name).then(keyringPair => {
       this.setState({ keyringPair })
       // use new created account as the selected account
-      this.props.saveSettings(
-        { ...this.props.settings, selectedAccount:
+      saveSettings(
+        { ...settings, selectedAccount:
             { name: keyringPair.meta.name, address: keyringPair.address }
         }
       )
-      this.props.setCreated(true)
-      this.props.setNewPhrase('', '')
+      setNewPhrase('', '')
+      if (!wallet.created) {
+        setCreated(true)
+      }
     }).catch(err => {
-      this.props.setError(err)
+      setError(err)
     })
   }
 
   create = () => {
-    this.props.setError(null)
-    const { wallet } = this.props
+    const { wallet, setError, setLocked } = this.props
+    setError(null)
+
+    if (!wallet.newPhrase) {
+      setError(t('passwordError'))
+      return
+    }
+
     // add a new account using the same pass
     if (!wallet.locked && wallet.created) {
+      this.createAccount(wallet.newPhrase, wallet.newAccountName)
+      return
+    }
+
+    // create wallet with the first account
+    unlockWallet(wallet.newPassword!!).then(kp => {
+      // update redux store state
+      setLocked(false)
+      console.assert(kp.length === 0, 'Should be an empty array')
       if (wallet.newPhrase) {
         this.createAccount(wallet.newPhrase, wallet.newAccountName)
       }
-    }
-    if (wallet.newPassword) {
-      unlockWallet(wallet.newPassword).then(kp => {
-        // update redux store state
-        this.props.setLocked(false)
-        console.assert(kp.length === 0, 'Should be an empty array')
-        if (wallet.newPhrase) {
-          this.createAccount(wallet.newPhrase, wallet.newAccountName)
-        }
-      }).catch(err => { this.props.setError(err) })
-    }
+    }).catch(err => { setError(err) })
   }
 
   downloadKeyPair = () => {
