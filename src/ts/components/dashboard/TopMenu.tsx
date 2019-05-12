@@ -52,12 +52,11 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
             <Grid.Column width={9} >
               <ChainDropdown
                 className='chain'
-                placeholder='Select Chain'
                 fluid={true}
                 selection={true}
                 value={this.state.network}
                 onChange={this.changeNetwork}
-                icon={<img src={this.state.chainIconUrl} alt='Chain Icon'/>}
+                icon={<img src={this.state.chainIconUrl} alt='Chain logo'/>}
                 options={networkOptions}
               />
             </Grid.Column>
