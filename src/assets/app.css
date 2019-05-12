@@ -54,3 +54,21 @@
 .action-start {
   margin-top: 110px !important;
 }
+
+.item .account-item {
+  display: inline-block;
+  margin: 0px 4px
+}
+
+.account-item .item-name {
+  font-family: Nunito;
+  font-size: 10px;
+  font-weight: bold;
+  color: #ffffff
+}
+
+.account-item .item-address {
+  font-family: Nunito;
+  font-size: 7px;
+  color: #ffffff
+}

@@ -2,8 +2,7 @@ import styled from 'styled-components'
 import { colorSchemes } from './styles/themes'
 import { IAppState } from '../background/store/all'
 import { connect } from 'react-redux'
-import { Button as SemanticButton, Dropdown, Input, Image, Header } from 'semantic-ui-react'
-import Identicon from 'polkadot-identicon'
+import { Button as SemanticButton, Dropdown, Input } from 'semantic-ui-react'
 
 const mapStateToProps = (state: IAppState) => {
   return {
@@ -46,10 +45,6 @@ export const TopSection = styled(Section)`
   margin-top: 0
 `
 
-export const PrimaryText = styled.div`
-  color: #30383B
-`
-
 export const SecondaryText = styled.div`
   opacity: 0.6
   color: #3e5860
@@ -69,102 +64,13 @@ export const WhiteTitle = styled(Title)`
 export const StyledPassword = styled(Input).attrs({ fluid: true })`
   height: 42px
 `
-
-export const DropdownItemContainer = styled.div`
-  width: 212px
-`
-
-export const DropdownItemContent = styled.div`
-  float: right
-`
-
-export const DropdownItemHeader = styled(Header)`
-  width: 150px
-  height: 14px
-  font-family: Nunito
-  font-size: 10px !important
-  font-weight: bold
-  font-style: normal
-  font-stretch: normal
-  line-height: normal
-  letter-spacing: normal
-  color: #ffffff !important
-`
-
-export const DropdownItemIdenticon = styled(Identicon)`
-  display: inline;
-`
-
-export const StyledDropdownDivider = styled(Dropdown.Divider)`
-    height: 0.5px !important
-    background-color: #ffffff
-`
-
-export const DropdownItemIconImage = styled(Image)`
-  display: inline !important
-  width: 16px
-  height: 16px
-`
-
 export const AccountAddress = styled.span`
   cursor: copy
   height: 14px
-  font-family: Nunito
   font-size: 10px
-  font-weight: normal
-  font-style: normal
-  font-stretch: normal
-  line-height: normal
-  letter-spacing: normal
   text-align: center
-  color: #ffffff
+  color: #fff
 `
-
-export const DropdownItemSubHeader = styled.span`
-  width: 85px
-  height: 9px
-  font-family: Nunito
-  font-size: 7px
-  font-weight: normal
-  font-style: normal
-  font-stretch: normal
-  line-height: normal
-  letter-spacing: normal
-  text-align: center
-  color: #ffffff
-`
-
-export const StyledMyAccountDropdown = styled(Dropdown)`
-    width: 200px
-    height: 26px
-    margin: 0 auto
-    font-family: Nunito
-    font-size: 19px
-    font-weight: bold
-    font-style: normal
-    font-stretch: normal
-    line-height: normal
-    letter-spacing: normal
-    color: #ffffff
-    text-align: center !important
-
-    & .menu {
-      background-color: ${(p: P) => colorSchemes[p.settings.color].backgroundColor} !important
-      max-height: 200px
-      overflow-y: scroll
-      overflow-x: hidden
-    }
-
-    & .item {
-      height: 32px
-    }
-
-    & .divider {
-      height: 2px
-    }
-`
-
-export const MyAccountDropdown = connect(mapStateToProps)(StyledMyAccountDropdown)
 
 export const StyledChainDropdown = styled(Dropdown)`
     & .menu {
