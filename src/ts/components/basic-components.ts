@@ -2,8 +2,7 @@ import styled from 'styled-components'
 import { colorSchemes } from './styles/themes'
 import { IAppState } from '../background/store/all'
 import { connect } from 'react-redux'
-import { Button as SemanticButton, Dropdown, Input, Image, Header } from 'semantic-ui-react'
-import Identicon from 'polkadot-identicon'
+import { Button as SemanticButton, Dropdown, Input } from 'semantic-ui-react'
 
 const mapStateToProps = (state: IAppState) => {
   return {
@@ -46,10 +45,6 @@ export const TopSection = styled(Section)`
   margin-top: 0
 `
 
-export const PrimaryText = styled.div`
-  color: #30383B
-`
-
 export const SecondaryText = styled.div`
   opacity: 0.6
   color: #3e5860
@@ -72,15 +67,9 @@ export const StyledPassword = styled(Input).attrs({ fluid: true })`
 export const AccountAddress = styled.span`
   cursor: copy
   height: 14px
-  font-family: Nunito
   font-size: 10px
-  font-weight: normal
-  font-style: normal
-  font-stretch: normal
-  line-height: normal
-  letter-spacing: normal
   text-align: center
-  color: #ffffff
+  color: #fff
 `
 
 export const StyledChainDropdown = styled(Dropdown)`
