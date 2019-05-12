@@ -20,12 +20,10 @@ import { KeyringPair$Json } from '@polkadot/keyring/types'
 import Balance from '../account/Balance'
 import Identicon from 'polkadot-identicon'
 import { saveSettings } from '../../background/store/settings'
-import { Popup } from 'semantic-ui-react'
 import 'react-tippy/dist/tippy.css'
 import { Tooltip } from 'react-tippy'
 import { Dropdown, Button, Icon, Popup } from 'semantic-ui-react'
 import { colorSchemes } from '../styles/themes'
-
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
 }
