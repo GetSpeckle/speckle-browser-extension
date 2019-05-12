@@ -4,8 +4,10 @@ import { withRouter, RouteComponentProps } from 'react-router'
 import { CREATE_PASSWORD_ROUTE, GENERATE_PHRASE_ROUTE } from '../../constants/routes'
 
 import '../../../assets/app.css'
+import { IAppState } from '../../background/store/all'
+import { connect } from 'react-redux'
 
-interface IProgressProps extends RouteComponentProps {
+interface IProgressProps extends RouteComponentProps, StateProps {
   color: string,
   progress: number
 }
@@ -16,8 +18,9 @@ interface IProgressProps extends RouteComponentProps {
 class Progress extends React.Component<IProgressProps> {
 
   handleClick = route => () => {
-    // only allow to go back
-    if (this.props.progress > 1 && route === CREATE_PASSWORD_ROUTE) {
+    const { wallet } = this.props
+    // only allow to go back if there is no account created
+    if (!wallet.created && this.props.progress > 1 && route === CREATE_PASSWORD_ROUTE) {
       this.props.history.push(route)
     }
 
@@ -27,7 +30,6 @@ class Progress extends React.Component<IProgressProps> {
   }
 
   render () {
-
     const colorMap = {
       blue: ['#44C5EE', '#4AABE0'],
       red: ['#FF7396', '#F3536D'],
@@ -197,4 +199,13 @@ class Progress extends React.Component<IProgressProps> {
   }
 }
 
-export default withRouter(Progress)
+const mapStateToProps = (state: IAppState) => {
+  return {
+    settings: state.settings,
+    wallet: state.wallet
+  }
+}
+
+type StateProps = ReturnType<typeof mapStateToProps>
+
+export default withRouter(connect(mapStateToProps)(Progress))
