@@ -1,15 +1,11 @@
 import * as React from 'react'
 import { getAccounts, lockWallet } from '../../services/keyring-vault-proxy'
-import {
-  GENERATE_PHRASE_ROUTE,
-  IMPORT_OPTIONS_ROUTE,
-  LOGIN_ROUTE
-} from '../../constants/routes'
+import { GENERATE_PHRASE_ROUTE, IMPORT_OPTIONS_ROUTE, LOGIN_ROUTE } from '../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router'
 import {
+  AccountAddress,
   Button as StyledButton,
   ContentContainer,
-  StyledDropdownDivider as Divider,
   DropdownItemContainer,
   DropdownItemContent,
   DropdownItemHeader,
@@ -17,7 +13,8 @@ import {
   DropdownItemIdenticon,
   DropdownItemSubHeader,
   MyAccountDropdown,
-  Section, AccountAddress
+  Section,
+  StyledDropdownDivider as Divider
 } from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
@@ -64,7 +61,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
   }
 
   handleClick = () => {
-    const { history } = this.props
+    const {history} = this.props
     lockWallet().then(() => {
       history.push(LOGIN_ROUTE)
     })
@@ -73,16 +70,17 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
   handleSelectChange = (address: string) => {
     const dropdownOptions: Option[] = this.state.options.filter(o => o.key === address)
     if (dropdownOptions && dropdownOptions[0]) {
-      this.props.saveSettings({ ...this.props.settings, selectedAccount: {
-        address: dropdownOptions[0].value,
-        name: dropdownOptions[0].text
-      } })
+      this.props.saveSettings({
+        ...this.props.settings, selectedAccount: {
+          address: dropdownOptions[0].value,
+          name: dropdownOptions[0].text
+        }
+      })
     }
   }
 
   getAddress = (address, showFulAddress = false) => {
     if (showFulAddress) return address
-
     return address.substring(0, 8) + '...' + address.substring(address.length - 10)
   }
 
@@ -120,11 +118,11 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     document.execCommand('copy')
     document.body.removeChild(el)
 
-    this.setState({ message: t('copyAddressMessage') })
+    this.setState({message: t('copyAddressMessage')})
     const timeout = setTimeout(() => {
-      this.setState({ message: '' })
+      this.setState({message: ''})
     }, 2000)
-    this.setState({ msgTimeout: timeout })
+    this.setState({msgTimeout: timeout})
   }
 
   loadAccounts = () => {
@@ -135,12 +133,12 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
         }
         const accounts: IAccount[] = result.map(
           (keyring: KeyringPair$Json) => {
-            return { name: keyring.meta.name, address: keyring.address }
+            return {name: keyring.meta.name, address: keyring.address}
           }
         )
         // set first one to select account if it isn't set
         if (!this.props.settings.selectedAccount) {
-          this.props.saveSettings({ ...this.props.settings, selectedAccount: accounts[0] })
+          this.props.saveSettings({...this.props.settings, selectedAccount: accounts[0]})
         }
 
         this.props.setAccounts(accounts)
@@ -211,10 +209,11 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
           />
         </Section>
         <Section>
-          <Tooltip title='Copy to clipboard' position='bottom' trigger='mouseenter' arrow={true}>
-          <AccountAddress onClick={this.copyToClipboard}>
-            {this.getAddress(this.props.settings.selectedAccount.address)}
-          </AccountAddress>
+          <Tooltip title={!this.state.message ? 'Copy to clipboard' : 'Copied!'} position='bottom'
+                   trigger='mouseenter' arrow={true}>
+            <AccountAddress onClick={this.copyToClipboard}>
+              {this.getAddress(this.props.settings.selectedAccount.address)}
+            </AccountAddress>
           </Tooltip>
           <Popup
             open={!!this.state.message}
@@ -223,7 +222,8 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
           />
         </Section>
         <Section>
-          <Identicon account={this.props.settings.selectedAccount.address} size={80} className='identicon'/>
+          <Identicon account={this.props.settings.selectedAccount.address} size={80}
+                     className='identicon'/>
         </Section>
         <Section>
           <Balance address={this.props.settings.selectedAccount.address}/>
@@ -244,7 +244,7 @@ const mapStateToProps = (state: IAppState) => {
   }
 }
 
-const mapDispatchToProps = { saveSettings, setAccounts }
+const mapDispatchToProps = {saveSettings, setAccounts}
 type DispatchProps = typeof mapDispatchToProps
 
 type StateProps = ReturnType<typeof mapStateToProps>
