@@ -16,14 +16,14 @@ export const Alexander: Network = {
 
 export const CharredCherry: Network = {
   chain: Substrate,
-  name: 'Charred Cherry',
+  name: 'Charred-Cherry',
   rpcServer: 'wss://substrate-rpc.parity.io/',
   txExplorer: 'https://polkadot.js.org/apps/#/explorer'
 }
 
 export const chains: {[chainType: string]: Array<Network>} = {
-  'Polkadot': [Alexander],
-  'Substrate': [CharredCherry]
+  [Polkadot.chainType]: [Alexander],
+  [Substrate.chainType]: [CharredCherry]
 }
 
 export const networks: {[name: string]: Network} = {

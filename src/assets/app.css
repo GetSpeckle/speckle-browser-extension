@@ -31,12 +31,34 @@
 .top-menu .ui.selection.dropdown.chain {
   border-radius: 1em;
   border: solid 1px white;
-  color: white;
+  line-height: normal;
   background-color: rgba(0,0,0,0);
+  color: white;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  min-height: min-content;
 }
 
-.ui.selection.dropdown.chain .menu .selected {
+.ui.dropdown.chain .menu>.item {
+  line-height: normal;
+}
+
+.ui.dropdown.chain .menu>.item>.image, .ui.dropdown.chain .menu>.item>img {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.top-menu .ui.selection.dropdown.chain .menu .selected {
   color: white;
+}
+
+.top-menu div.text {
+  padding-left: 15px;
+}
+
+.top-menu img {
+  height: 20px;
+  float: left;
 }
 
 .bottom-menu {

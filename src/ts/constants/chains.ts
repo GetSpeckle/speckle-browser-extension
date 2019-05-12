@@ -7,10 +7,10 @@ export type Chain = {
 
 export const Polkadot: Chain = {
   chainType: 'Polkadot',
-  iconUrl: ''
+  iconUrl: '/assets/chain-logo/polkadot.png'
 }
 
 export const Substrate: Chain = {
   chainType: 'Substrate',
-  iconUrl: ''
+  iconUrl: '/assets/chain-logo/substrate.png'
 }
