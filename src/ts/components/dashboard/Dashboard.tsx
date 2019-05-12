@@ -1,33 +1,25 @@
 import * as React from 'react'
-import { getAccounts, lockWallet } from '../../services/keyring-vault-proxy'
-import { GENERATE_PHRASE_ROUTE, IMPORT_OPTIONS_ROUTE, LOGIN_ROUTE } from '../../constants/routes'
-import { RouteComponentProps, withRouter } from 'react-router'
+import {getAccounts, lockWallet} from '../../services/keyring-vault-proxy'
+import {GENERATE_PHRASE_ROUTE, IMPORT_OPTIONS_ROUTE, LOGIN_ROUTE} from '../../constants/routes'
+import {RouteComponentProps, withRouter} from 'react-router'
 import {
   AccountAddress,
   Button as StyledButton,
   ContentContainer,
-  DropdownItemContainer,
-  DropdownItemContent,
-  DropdownItemHeader,
-  DropdownItemIconImage,
-  DropdownItemIdenticon,
-  DropdownItemSubHeader,
-  MyAccountDropdown,
-  Section,
-  StyledDropdownDivider as Divider
+  Section
 } from '../basic-components'
-import { IAppState } from '../../background/store/all'
-import { connect } from 'react-redux'
-import { IAccount, setAccounts } from '../../background/store/wallet'
+import {IAppState} from '../../background/store/all'
+import {connect} from 'react-redux'
+import {IAccount, setAccounts} from '../../background/store/wallet'
 import t from '../../services/i18n'
-import { KeyringPair$Json } from '@polkadot/keyring/types'
+import {KeyringPair$Json} from '@polkadot/keyring/types'
 import Balance from '../account/Balance'
-import { Link } from 'react-router-dom'
 import Identicon from 'polkadot-identicon'
-import { saveSettings } from '../../background/store/settings'
-import { Popup } from 'semantic-ui-react'
+import {saveSettings} from '../../background/store/settings'
 import 'react-tippy/dist/tippy.css'
-import { Tooltip } from 'react-tippy'
+import {Tooltip} from 'react-tippy'
+import {Button, Dropdown, Icon, Popup} from 'semantic-ui-react'
+import {colorSchemes} from '../styles/themes'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
 }
@@ -60,7 +52,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     }
   }
 
-  handleClick = () => {
+  handleClickLogout = () => {
     const {history} = this.props
     lockWallet().then(() => {
       history.push(LOGIN_ROUTE)
@@ -84,26 +76,15 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     return address.substring(0, 8) + '...' + address.substring(address.length - 10)
   }
 
-  generateLink (iconPath: string, title: string) {
-    return (
-      <DropdownItemContainer>
-        <DropdownItemIconImage src={iconPath} centered={true}/>
-        <DropdownItemContent>
-          <DropdownItemHeader content={title}/>
-        </DropdownItemContent>
-      </DropdownItemContainer>
-    )
-  }
-
   generateDropdownItem (account: IAccount) {
     return (
-      <DropdownItemContainer onClick={this.handleSelectChange.bind(this, account.address)}>
-        <DropdownItemIdenticon account={account.address} size={16} className='identicon'/>
-        <DropdownItemContent>
-          <DropdownItemHeader content={account.name ? account.name : 'N/A'} sub={true}/>
-          <DropdownItemSubHeader>{this.getAddress(account.address)}</DropdownItemSubHeader>
-        </DropdownItemContent>
-      </DropdownItemContainer>
+      <div className='item' onClick={this.handleSelectChange.bind(this, account.address)}>
+        <Identicon account={account.address} size={20} className='identicon image'/>
+        <div className='account-item'>
+          <div className='item-name'>{account.name ? account.name : 'N/A'} </div>
+          <div className='item-address'>{this.getAddress(account.address)}</div>
+        </div>
+      </div>
     )
   }
 
@@ -151,39 +132,20 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
           disable: false
         }))
 
-        const staticItems: Option[] = [
-          {
-            key: 'divider',
-            text: 'divider',
-            value: 'divider',
-            content: <Divider/>,
-            disable: true
-          },
-          {
-            key: 'createAccount',
-            text: 'Create Account',
-            value: 'createAccount',
-            content: this.generateLink('/assets/plus.svg', t('createNewAccount')),
-            as: Link,
-            to: GENERATE_PHRASE_ROUTE,
-            disable: false
-          },
-          {
-            key: 'importAccount',
-            text: 'Import Existing Account',
-            value: 'importAccount',
-            content: this.generateLink('/assets/refresh.svg', t('importExistingAccount')),
-            as: Link,
-            to: IMPORT_OPTIONS_ROUTE,
-            disable: false
-          }
-        ]
         this.setState({
           initializing: false,
-          options: [...dynamicItems, ...staticItems]
+          options: [...dynamicItems]
         })
       }
     )
+  }
+
+  handleClickCreateAccount = () => {
+    this.props.history.push(GENERATE_PHRASE_ROUTE)
+  }
+
+  handleClickImport = () => {
+    this.props.history.push(IMPORT_OPTIONS_ROUTE)
   }
 
   componentWillMount () {
@@ -200,13 +162,61 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     if (this.state.initializing || !this.props.settings.selectedAccount) {
       return (null)
     }
+
+    const selectedAccount = this.props.settings.selectedAccount
+
+    const accountStyle = {
+      backgroundColor: 'rgba(0,0,0,0)',
+      textAlign: 'center',
+      color: 'white'
+    }
+
+    const backgroundStyle = {
+      backgroundColor: colorSchemes[this.props.settings.color].backgroundColor,
+      color: 'white'
+    }
+
     return (
       <ContentContainer>
         <Section>
-          <MyAccountDropdown
-            options={this.state.options}
-            text={this.props.settings.selectedAccount.name ? this.props.settings.selectedAccount.name : 'N/A'}
-          />
+          <Dropdown
+            text={selectedAccount.name ? selectedAccount.name : 'N/A'}
+            button={true}
+            fluid={true}
+            style={accountStyle}
+          >
+            <Dropdown.Menu style={backgroundStyle}>
+              <Dropdown.Menu scrolling={true} style={backgroundStyle}>
+                {this.state.options.map(option => (
+                  <Dropdown.Item key={option.value} {...option} />
+                ))}
+              </Dropdown.Menu>
+
+              <Dropdown.Divider/>
+
+              <Button
+                fluid={true}
+                icon={true}
+                labelPosition='left'
+                style={backgroundStyle}
+                onClick={this.handleClickCreateAccount}
+              >
+                <Icon name='plus'/>
+                {t('createNewAccount')}
+              </Button>
+
+              <Button
+                fluid={true}
+                icon={true}
+                labelPosition='left'
+                style={backgroundStyle}
+                onClick={this.handleClickImport}
+              >
+                <Icon name='redo'/>
+                {t('importExistingAccount')}
+              </Button>
+            </Dropdown.Menu>
+          </Dropdown>
         </Section>
         <Section>
           <Tooltip title={!this.state.message ? 'Copy to clipboard' : 'Copied!'} position='bottom'
@@ -229,7 +239,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
           <Balance address={this.props.settings.selectedAccount.address}/>
         </Section>
         <Section>
-          <StyledButton onClick={this.handleClick}>
+          <StyledButton onClick={this.handleClickLogout}>
             {t('logout')}
           </StyledButton>
         </Section>
