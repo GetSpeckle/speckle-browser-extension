@@ -77,6 +77,20 @@
   margin-top: 110px !important;
 }
 
+.ui.dropdown.account-dropdown {
+  background-color: rgba(0,0,0,0);
+  text-align: center;
+  color: white;
+}
+
+/*
+ This css caused the white screen issue on firefox
+.ui.active.dropdown.account-dropdown:hover {
+  background-color: rgba(0,0,0,0);
+  color: white;
+}
+*/
+
 .item .account-item {
   display: inline-block;
   margin: 0px 4px
@@ -84,13 +98,13 @@
 
 .account-item .item-name {
   font-family: Nunito;
-  font-size: 10px;
+  font-size: 14px;
   font-weight: bold;
   color: #ffffff
 }
 
 .account-item .item-address {
   font-family: Nunito;
-  font-size: 7px;
+  font-size: 10px;
   color: #ffffff
 }

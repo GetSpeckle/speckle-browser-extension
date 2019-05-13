@@ -166,12 +166,6 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
     const selectedAccount = this.props.settings.selectedAccount
 
-    const accountStyle = {
-      backgroundColor: 'rgba(0,0,0,0)',
-      textAlign: 'center',
-      color: 'white'
-    }
-
     const backgroundStyle = {
       backgroundColor: colorSchemes[this.props.settings.color].backgroundColor,
       color: 'white'
@@ -184,39 +178,33 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
             text={selectedAccount.name ? selectedAccount.name : 'N/A'}
             button={true}
             fluid={true}
-            style={accountStyle}
+            className='account-dropdown'
           >
-          <Dropdown.Menu style={backgroundStyle}>
-            <Dropdown.Menu scrolling={true} style={backgroundStyle}>
-              {this.state.options.map(option => (
-                <Dropdown.Item key={option.value} {...option} />
-              ))}
+            <Dropdown.Menu style={backgroundStyle}>
+              <Dropdown.Menu scrolling={true} style={backgroundStyle}>
+                {this.state.options.map(option => (
+                  <Dropdown.Item key={option.value} {...option} />
+                ))}
+              </Dropdown.Menu>
+
+              <Dropdown.Divider />
+
+              <Dropdown.Item
+                style={backgroundStyle}
+                onClick={this.handleClickCreateAccount}
+              >
+                <Icon name='plus' />
+                  {t('createNewAccount')}
+              </Dropdown.Item>
+
+              <Dropdown.Item
+                style={backgroundStyle}
+                onClick={this.handleClickImport}
+              >
+                <Icon name='redo' />
+                  {t('importExistingAccount')}
+              </Dropdown.Item>
             </Dropdown.Menu>
-
-            <Dropdown.Divider />
-
-            <Button
-              fluid={true}
-              icon={true}
-              labelPosition='left'
-              style={backgroundStyle}
-              onClick={this.handleClickCreateAccount}
-            >
-              <Icon name='plus' />
-                {t('createNewAccount')}
-            </Button>
-
-            <Button
-              fluid={true}
-              icon={true}
-              labelPosition='left'
-              style={backgroundStyle}
-              onClick={this.handleClickImport}
-            >
-              <Icon name='redo' />
-                {t('importExistingAccount')}
-            </Button>
-          </Dropdown.Menu>
           </Dropdown>
         </Section>
         <Section>
