@@ -1,19 +1,19 @@
 import React from 'react'
 
-const Header = (props) => {
+export const Header = (props) => {
   return (
     <svg width="375" height="174" viewBox="0 0 375 174">
       <defs>
         <path id="a" d="M0 0h375v174H0z"/>
         <radialGradient id="e" cy="27.105%" r="72.895%" fx="50%" fy="27.105%" gradientTransform="matrix(0 1 -.671 0 .682 -.229)">
-          <stop offset="0%" stop-color={props.inner}/>
-          <stop offset="100%" stop-color={props.outer}/>
+          <stop offset="0%" stop-color={props.color.inner}/>
+          <stop offset="100%" stop-color={props.color.outer}/>
         </radialGradient>
         <path id="d" d="M99 154C13.396 154-56 84.604-56-1S13.396-156 99-156 254-86.604 254-1 184.604 154 99 154zm185-39c-14.912 0-27-12.088-27-27s12.088-27 27-27 27 12.088 27 27-12.088 27-27 27zm71.5-62C327.61 53 305 30.39 305 2.5S327.61-48 355.5-48 406-25.39 406 2.5 383.39 53 355.5 53z"/>
         <filter id="c" width="116.2%" height="124.2%" x="-8.1%" y="-12.1%" filterUnits="objectBoundingBox">
           <feOffset in="SourceAlpha" result="shadowOffsetOuter1"/>
           <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="12.5"/>
-          <feColorMatrix in="shadowBlurOuter1" values={props.shadow}/>
+          <feColorMatrix in="shadowBlurOuter1" values={props.color.shadow}/>
         </filter>
       </defs>
       <g fill="none" fill-rule="evenodd">
