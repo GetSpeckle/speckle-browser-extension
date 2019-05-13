@@ -1,25 +1,25 @@
 import * as React from 'react'
-import {getAccounts, lockWallet} from '../../services/keyring-vault-proxy'
-import {GENERATE_PHRASE_ROUTE, IMPORT_OPTIONS_ROUTE, LOGIN_ROUTE} from '../../constants/routes'
-import {RouteComponentProps, withRouter} from 'react-router'
+import { getAccounts, lockWallet } from '../../services/keyring-vault-proxy'
+import { GENERATE_PHRASE_ROUTE, IMPORT_OPTIONS_ROUTE, LOGIN_ROUTE } from '../../constants/routes'
+import { RouteComponentProps, withRouter } from 'react-router'
 import {
   AccountAddress,
   Button as StyledButton,
   ContentContainer,
   Section
 } from '../basic-components'
-import {IAppState} from '../../background/store/all'
-import {connect} from 'react-redux'
-import {IAccount, setAccounts} from '../../background/store/wallet'
+import { IAppState } from '../../background/store/all'
+import { connect } from 'react-redux'
+import { IAccount, setAccounts } from '../../background/store/wallet'
 import t from '../../services/i18n'
-import {KeyringPair$Json} from '@polkadot/keyring/types'
+import { KeyringPair$Json } from '@polkadot/keyring/types'
 import Balance from '../account/Balance'
 import Identicon from 'polkadot-identicon'
-import {saveSettings} from '../../background/store/settings'
+import { saveSettings } from '../../background/store/settings'
 import 'react-tippy/dist/tippy.css'
-import {Tooltip} from 'react-tippy'
-import {Button, Dropdown, Icon, Popup} from 'semantic-ui-react'
-import {colorSchemes} from '../styles/themes'
+import { Tooltip } from 'react-tippy'
+import { Button, Dropdown, Icon, Popup } from 'semantic-ui-react'
+import { colorSchemes } from '../styles/themes'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
 }
@@ -219,8 +219,12 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
           </Dropdown>
         </Section>
         <Section>
-          <Tooltip title={!this.state.message ? 'Copy to clipboard' : 'Copied!'} position='bottom'
-                   trigger='mouseenter' arrow={true}>
+          <Tooltip
+            title={!this.state.message ? t('copyToClipboard') : t('copiedExclam')}
+            position='bottom'
+            trigger='mouseenter'
+            arrow={true}
+          >
             <AccountAddress onClick={this.copyToClipboard}>
               {this.getAddress(this.props.settings.selectedAccount.address)}
             </AccountAddress>
@@ -232,8 +236,11 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
           />
         </Section>
         <Section>
-          <Identicon account={this.props.settings.selectedAccount.address} size={80}
-                     className='identicon'/>
+          <Identicon
+            account={this.props.settings.selectedAccount.address}
+            size={80}
+            className='identicon'
+          />
         </Section>
         <Section>
           <Balance address={this.props.settings.selectedAccount.address}/>
