@@ -25,7 +25,7 @@
 }
 
 .top-menu {
-  margin: 4px 14px;
+  margin: 10px 14px;
 }
 
 .top-menu .ui.selection.dropdown.chain {
@@ -37,6 +37,11 @@
   padding-top: 5px;
   padding-bottom: 5px;
   min-height: min-content;
+}
+
+.top-menu>.ui.grid>.column:not(.row) {
+  padding-left: 2px;
+  padding-right: 2px;
 }
 
 .ui.dropdown.chain .menu>.item {
@@ -56,7 +61,7 @@
   padding-left: 12px;
 }
 
-.top-menu img {
+.top-menu .ui.selection.dropdown.chain img {
   height: 20px;
   float: left;
 }

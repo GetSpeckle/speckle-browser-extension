@@ -45,11 +45,11 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
     return (
       <div className='top-menu'>
         <Grid centered={true} textAlign='center'>
-            <Grid.Column width={3} verticalAlign='middle'>
+            <Grid.Column width={4} verticalAlign='middle'>
               <Image src='/assets/logo-s.svg' centered={true} />
             </Grid.Column>
 
-            <Grid.Column width={9} >
+            <Grid.Column width={8} >
               <ChainDropdown
                 className='chain'
                 fluid={true}
