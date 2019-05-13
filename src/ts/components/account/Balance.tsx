@@ -21,23 +21,16 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
     throw new Error(t('apiError'))
   }
 
-  get chainProperties (): ChainProperties {
-    const chainProperties = this.state.chainProperties
-    if (chainProperties) return chainProperties
-    throw new Error(t('apiError'))
-  }
-
-  updateBalance = (address: string) => {
+  updateBalance = () => {
     if (this.props.apiContext.apiReady) {
       this.setState({ ...this.state, tries: 1 })
-      if (this.state.chainProperties) {
-        this.doUpdate(address)
-        return
-      }
       this.api.rpc.system.properties().then(properties => {
         const chainProperties = (properties as ChainProperties)
-        this.setState({ ...this.state, chainProperties: chainProperties })
-        this.doUpdate(address)
+        formatBalance.setDefaults({
+          decimals: chainProperties.tokenDecimals,
+          unit: chainProperties.tokenSymbol
+        })
+        this.doUpdate()
       })
     } else if (this.state.tries <= 10) {
       const nextTry = setTimeout(this.updateBalance, 1000)
@@ -47,25 +40,27 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
     }
   }
 
-  private doUpdate = (address: string) => {
-    console.log(address)
-    formatBalance.setDefaults({
-      decimals: this.chainProperties.tokenDecimals,
-      unit: this.chainProperties.tokenSymbol
-    })
-    this.api.query.balances.freeBalance(address).then(result => {
-      const formattedBalance = formatBalance(result.toString())
-      this.setState({ ...this.state, balance: formattedBalance })
+  private doUpdate = () => {
+    console.log(this.props.address)
+    this.api.query.balances.freeBalance(this.props.address, currentBalance => {
+      console.log('currentBalance', currentBalance)
+      const formattedBalance = formatBalance(currentBalance)
+      if (formattedBalance !== this.state.balance) {
+        this.setState({ ...this.state, balance: formattedBalance })
+      }
+    }).then(unsub => {
+      this.setState({ ...this.state, unsub: unsub })
     })
   }
 
   componentDidMount (): void {
-    this.updateBalance(this.props.address)
+    this.updateBalance()
   }
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.address !== this.props.address) {
-      this.updateBalance(nextProps.address)
+      this.state.unsub && this.state.unsub()
+      this.updateBalance()
     }
   }
 
@@ -124,9 +119,9 @@ interface IBalanceProps extends StateProps {
 
 interface IBalanceState {
   balance?: string
-  tries: number,
-  nextTry?: any,
-  chainProperties?: ChainProperties
+  tries: number
+  nextTry?: any
+  unsub?: Function
 }
 
 export default connect(mapStateToProps)(Balance)
