@@ -21,7 +21,11 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
     throw new Error(t('apiError'))
   }
 
-  NOOP = () => { console.log() }
+  get chainProperties (): ChainProperties {
+    const chainProperties = this.state.chainProperties
+    if (chainProperties) return chainProperties
+    throw new Error(t('apiError'))
+  }
 
   updateBalance = (address: string) => {
     if (this.props.apiContext.apiReady) {
@@ -32,10 +36,6 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
       }
       this.api.rpc.system.properties().then(properties => {
         const chainProperties = (properties as ChainProperties)
-        formatBalance.setDefaults({
-          decimals: chainProperties.tokenDecimals,
-          unit: chainProperties.tokenSymbol
-        })
         this.setState({ ...this.state, chainProperties: chainProperties })
         this.doUpdate(address)
       })
@@ -49,13 +49,14 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
 
   private doUpdate = (address: string) => {
     console.log(address)
-    this.api.query.balances.freeBalance(address, currentBalance => {
-      console.log('currentBalance', currentBalance)
-      const formattedBalance = formatBalance(currentBalance)
-      if (formattedBalance !== this.state.balance) {
-        this.setState({ ...this.state, balance: formattedBalance })
-      }
-    }).then(this.NOOP)
+    formatBalance.setDefaults({
+      decimals: this.chainProperties.tokenDecimals,
+      unit: this.chainProperties.tokenSymbol
+    })
+    this.api.query.balances.freeBalance(address).then(result => {
+      const formattedBalance = formatBalance(result.toString())
+      this.setState({ ...this.state, balance: formattedBalance })
+    })
   }
 
   componentDidMount (): void {
