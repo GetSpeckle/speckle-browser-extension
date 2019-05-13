@@ -5,10 +5,30 @@ import { Image, Grid } from 'semantic-ui-react'
 import { ChainDropdown } from '../basic-components'
 import { networks } from '../../constants/networks'
 import { IAppState } from '../../background/store/all'
+import { saveSettings } from '../../background/store/settings'
 
-interface ITopMenuProps extends StateProps, RouteComponentProps {}
+interface ITopMenuProps extends StateProps, DispatchProps, RouteComponentProps {}
 
-class TopMenu extends React.Component<ITopMenuProps> {
+interface ITopMenuState {
+  network: string,
+  chainIconUrl: string
+}
+
+class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
+
+  state = {
+    network: this.props.settings.network,
+    chainIconUrl: networks[this.props.settings.network].chain.iconUrl
+  }
+
+  changeNetwork = (e, data) => {
+    console.log(e.target)
+    this.setState({
+      network: data.value,
+      chainIconUrl: networks[data.value].chain.iconUrl
+    })
+    this.props.saveSettings({ ...this.props.settings, network: data.value })
+  }
 
   render () {
 
@@ -25,18 +45,18 @@ class TopMenu extends React.Component<ITopMenuProps> {
     return (
       <div className='top-menu'>
         <Grid centered={true} textAlign='center'>
-            <Grid.Column width={3} verticalAlign='middle'>
+            <Grid.Column width={4} verticalAlign='middle'>
               <Image src='/assets/logo-s.svg' centered={true} />
             </Grid.Column>
 
-            <Grid.Column width={9} >
+            <Grid.Column width={8} >
               <ChainDropdown
                 className='chain'
-                placeholder='Select Chain'
                 fluid={true}
                 selection={true}
-                value={this.props.settings.network}
-                icon={<img src={networks[this.props.settings.network].chain.iconUrl} alt='Chain Icon'/>}
+                value={this.state.network}
+                onChange={this.changeNetwork}
+                icon={<img src={this.state.chainIconUrl} alt='Chain logo'/>}
                 options={networkOptions}
               />
             </Grid.Column>
@@ -62,4 +82,8 @@ const mapStateToProps = (state: IAppState) => {
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
-export default withRouter(connect(mapStateToProps)(TopMenu))
+const mapDispatchToProps = { saveSettings }
+
+type DispatchProps = typeof mapDispatchToProps
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(TopMenu))
