@@ -20,7 +20,7 @@ import { KeyringPair$Json } from '@polkadot/keyring/types'
 import Balance from '../account/Balance'
 import Identicon from 'polkadot-identicon'
 import { saveSettings } from '../../background/store/settings'
-import { Dropdown, Button, Icon, Popup } from 'semantic-ui-react'
+import { Dropdown, Icon, Popup } from 'semantic-ui-react'
 import { colorSchemes } from '../styles/themes'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
@@ -218,7 +218,11 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
           />
         </Section>
         <Section>
-          <Identicon account={this.props.settings.selectedAccount.address} size={80} className='identicon'/>
+          <Identicon
+            account={this.props.settings.selectedAccount.address}
+            size={80}
+            className='identicon'
+          />
         </Section>
         <Section>
           <Balance address={this.props.settings.selectedAccount.address}/>
