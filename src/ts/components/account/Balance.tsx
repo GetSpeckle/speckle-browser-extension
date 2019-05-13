@@ -21,23 +21,23 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
     throw new Error(t('apiError'))
   }
 
-  updateBalance = () => {
+  NOOP = () => { console.log() }
+
+  updateBalance = (address: string) => {
     if (this.props.apiContext.apiReady) {
       this.setState({ ...this.state, tries: 1 })
+      if (this.state.chainProperties) {
+        this.doUpdate(address)
+        return
+      }
       this.api.rpc.system.properties().then(properties => {
         const chainProperties = (properties as ChainProperties)
         formatBalance.setDefaults({
           decimals: chainProperties.tokenDecimals,
           unit: chainProperties.tokenSymbol
         })
-        console.log(this.props.address)
-        this.api.query.balances.freeBalance(this.props.address, currentBalance => {
-          console.log('currentBalance', currentBalance)
-          const formattedBalance = formatBalance(currentBalance)
-          if (formattedBalance !== this.state.balance) {
-            this.setState({ ...this.state, balance: formattedBalance })
-          }
-        })
+        this.setState({ ...this.state, chainProperties: chainProperties })
+        this.doUpdate(address)
       })
     } else if (this.state.tries <= 10) {
       const nextTry = setTimeout(this.updateBalance, 1000)
@@ -47,13 +47,24 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
     }
   }
 
+  private doUpdate = (address: string) => {
+    console.log(address)
+    this.api.query.balances.freeBalance(address, currentBalance => {
+      console.log('currentBalance', currentBalance)
+      const formattedBalance = formatBalance(currentBalance)
+      if (formattedBalance !== this.state.balance) {
+        this.setState({ ...this.state, balance: formattedBalance })
+      }
+    }).then(this.NOOP)
+  }
+
   componentDidMount (): void {
-    this.updateBalance()
+    this.updateBalance(this.props.address)
   }
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.address !== this.props.address) {
-      this.updateBalance()
+      this.updateBalance(nextProps.address)
     }
   }
 
@@ -113,7 +124,8 @@ interface IBalanceProps extends StateProps {
 interface IBalanceState {
   balance?: string
   tries: number,
-  nextTry?: any
+  nextTry?: any,
+  chainProperties?: ChainProperties
 }
 
 export default connect(mapStateToProps)(Balance)
