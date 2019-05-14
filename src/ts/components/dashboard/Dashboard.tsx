@@ -20,6 +20,8 @@ import { KeyringPair$Json } from '@polkadot/keyring/types'
 import Balance from '../account/Balance'
 import Identicon from 'polkadot-identicon'
 import { saveSettings } from '../../background/store/settings'
+import 'react-tippy/dist/tippy.css'
+import { Tooltip } from 'react-tippy'
 import { Dropdown, Icon, Popup } from 'semantic-ui-react'
 import { colorSchemes } from '../styles/themes'
 import styled from 'styled-components'
@@ -216,6 +218,12 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
           </Dropdown>
         </AccountSection>
         <AccountSection>
+          <Tooltip
+            title={!this.state.message ? t('copyToClipboard') : t('copiedExclam')}
+            position='bottom'
+            trigger='mouseenter'
+            arrow={true}
+          >
           <AccountAddress onClick={this.copyToClipboard}>
             {this.getAddress(this.props.settings.selectedAccount.address)}
           </AccountAddress>
@@ -224,6 +232,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
             content={t('copyAddressMessage')}
             basic={true}
           />
+          </Tooltip>
         </AccountSection>
         <AccountSection>
           <Identicon
