@@ -14,8 +14,9 @@ import {
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 import { HOME_ROUTE } from '../../constants/routes'
+import { saveSettings } from '../../background/store/settings'
 
-interface IImportMnemonicProps extends StateProps, RouteComponentProps {}
+interface IImportMnemonicProps extends StateProps, DispatchProps, RouteComponentProps {}
 
 interface IImportMnemonicState {
   mnemonic: string,
@@ -34,7 +35,10 @@ class ImportMnemonic extends React.Component<IImportMnemonicProps, IImportMnemon
 
     importAccountFromMnemonic(this.state.mnemonic, this.state.accountName)
       .then((json: KeyringPair$Json) => {
-        console.log('Imported account ', json)
+        this.props.saveSettings({ ...this.props.settings, selectedAccount: {
+          address: json.address,
+          name: json.meta.name
+        } })
         this.props.history.push(HOME_ROUTE)
       }).catch((reason) => {
         this.setState({ ...this.state, errorMessage: reason })
@@ -99,4 +103,8 @@ const mapStateToProps = (state: IAppState) => {
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
-export default withRouter(connect(mapStateToProps)(ImportMnemonic))
+const mapDispatchToProps = { saveSettings }
+
+type DispatchProps = typeof mapDispatchToProps
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ImportMnemonic))
