@@ -66,6 +66,10 @@
   float: left;
 }
 
+.ui.button.account-dropdown {
+  padding-bottom: 0;
+}
+
 .bottom-menu {
   position: absolute;
   bottom: 0;

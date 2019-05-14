@@ -22,6 +22,7 @@ import Identicon from 'polkadot-identicon'
 import { saveSettings } from '../../background/store/settings'
 import { Dropdown, Icon, Popup } from 'semantic-ui-react'
 import { colorSchemes } from '../styles/themes'
+import styled from 'styled-components'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
 }
@@ -180,7 +181,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
     return (
       <ContentContainer>
-        <Section>
+        <AccountSection>
           <Dropdown
             text={selectedAccount.name ? this.shorten(selectedAccount.name) : 'N/A'}
             button={true}
@@ -213,8 +214,8 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
-        </Section>
-        <Section>
+        </AccountSection>
+        <AccountSection>
           <AccountAddress onClick={this.copyToClipboard}>
             {this.getAddress(this.props.settings.selectedAccount.address)}
           </AccountAddress>
@@ -223,17 +224,17 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
             content={t('copyAddressMessage')}
             basic={true}
           />
-        </Section>
-        <Section>
+        </AccountSection>
+        <AccountSection>
           <Identicon
             account={this.props.settings.selectedAccount.address}
             size={80}
             className='identicon'
           />
-        </Section>
-        <Section>
+        </AccountSection>
+        <AccountSection>
           <Balance address={this.props.settings.selectedAccount.address}/>
-        </Section>
+        </AccountSection>
         <Section>
           <StyledButton onClick={this.handleClickLogout}>
             {t('logout')}
@@ -243,6 +244,12 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     )
   }
 }
+
+export const AccountSection = styled.div`
+  width: 100%
+  margin: 8px 0 9px
+  text-align: center
+`
 
 const mapStateToProps = (state: IAppState) => {
   return {
