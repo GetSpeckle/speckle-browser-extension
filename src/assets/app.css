@@ -71,6 +71,11 @@
   padding-bottom: 0;
 }
 
+.ui.active.button.account-dropdown {
+  background-color: rgba(0, 0, 0, 0);
+  color: white;
+}
+
 .bottom-menu {
   position: absolute;
   bottom: 0;
