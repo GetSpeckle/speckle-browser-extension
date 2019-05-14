@@ -50,13 +50,13 @@ class Welcome extends React.Component<IWelcomeProps, IWelcomeState> {
         name: 'orange',
         shape: 'circle',
         coords: [170, 173, 25],
-        fillColor: 'FFC10B'
+        fillColor: '#FFC10B'
       },
       {
         name: 'green',
         shape: 'circle',
         coords: [33, 172, 25],
-        fillColor: '51DFB0'
+        fillColor: '#51DFB0'
       },
       {
         name: 'red',

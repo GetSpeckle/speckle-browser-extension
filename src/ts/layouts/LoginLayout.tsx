@@ -19,7 +19,7 @@ class LoginLayout extends Component<ILoginLayoutProps> {
   render () {
     return (
     <LayoutContainer>
-      <Header color={color['red' /*user color choice */]}/>
+      <Header color={color[this.props.settings.color]}/>
       <ErrorMessage message={this.props.error} style={alignMiddle}/>
       {this.props.children}
       <LoginFooter />
