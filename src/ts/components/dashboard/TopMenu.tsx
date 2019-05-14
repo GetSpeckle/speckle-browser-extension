@@ -1,26 +1,46 @@
 import * as React from 'react'
+import { connect } from 'react-redux'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { Image, Grid } from 'semantic-ui-react'
-import { ChainDropdown } from '../basic-components';
+import { ChainDropdown } from '../basic-components'
+import { networks } from '../../constants/networks'
+import { IAppState } from '../../background/store/all'
+import { saveSettings } from '../../background/store/settings'
 
-interface ITopMenuProps extends RouteComponentProps {
+interface ITopMenuProps extends StateProps, DispatchProps, RouteComponentProps {}
+
+interface ITopMenuState {
+  network: string,
+  chainIconUrl: string
 }
 
-/**
- * The top menu bar on the dashboard
- */
-class TopMenu extends React.Component<ITopMenuProps> {
+class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
+
+  state = {
+    network: this.props.settings.network,
+    chainIconUrl: networks[this.props.settings.network].chain.iconUrl
+  }
+
+  changeNetwork = (e, data) => {
+    console.log(e.target)
+    this.setState({
+      network: data.value,
+      chainIconUrl: networks[data.value].chain.iconUrl
+    })
+    this.props.saveSettings({ ...this.props.settings, network: data.value })
+  }
 
   render () {
 
-    const chainOptions = [
-      {
-        key: 'Polkadot',
-        text: 'Polkadot',
-        value: 'Polkadot',
-        image: { avatar: true, src: '/assets/icon-48.png' }
+    const networkOptions = Object.keys(networks).map(n => {
+      const network = networks[n]
+      return {
+        key: network.name,
+        text: network.name,
+        value: network.name,
+        image: { src: network.chain.iconUrl }
       }
-    ]
+    })
 
     return (
       <div className='top-menu'>
@@ -32,11 +52,12 @@ class TopMenu extends React.Component<ITopMenuProps> {
             <Grid.Column width={8} >
               <ChainDropdown
                 className='chain'
-                placeholder='Select Chain'
                 fluid={true}
                 selection={true}
-                value='Polkadot'
-                options={chainOptions}
+                value={this.state.network}
+                onChange={this.changeNetwork}
+                icon={<img src={this.state.chainIconUrl} alt='Chain logo'/>}
+                options={networkOptions}
               />
             </Grid.Column>
 
@@ -53,4 +74,16 @@ class TopMenu extends React.Component<ITopMenuProps> {
   }
 }
 
-export default withRouter(TopMenu)
+const mapStateToProps = (state: IAppState) => {
+  return {
+    settings: state.settings
+  }
+}
+
+type StateProps = ReturnType<typeof mapStateToProps>
+
+const mapDispatchToProps = { saveSettings }
+
+type DispatchProps = typeof mapDispatchToProps
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(TopMenu))

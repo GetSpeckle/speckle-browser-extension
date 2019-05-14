@@ -69,6 +69,7 @@ class ImportMnemonic extends React.Component<IImportMnemonicProps, IImportMnemon
             label={t('accountNameTitle')}
             type='input'
             value={this.state.accountName}
+            maxLength={32}
             onChange={this.changeAccountName}
             placeholder={t('accountName')}
           />

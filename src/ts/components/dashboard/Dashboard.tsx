@@ -1,12 +1,16 @@
 import * as React from 'react'
 import { getAccounts, lockWallet } from '../../services/keyring-vault-proxy'
-import { GENERATE_PHRASE_ROUTE, IMPORT_OPTIONS_ROUTE, LOGIN_ROUTE } from '../../constants/routes'
+import {
+  GENERATE_PHRASE_ROUTE,
+  IMPORT_OPTIONS_ROUTE,
+  LOGIN_ROUTE
+} from '../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router'
 import {
-  AccountAddress,
   Button as StyledButton,
   ContentContainer,
-  Section
+  Section,
+  AccountAddress
 } from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
@@ -18,8 +22,9 @@ import Identicon from 'polkadot-identicon'
 import { saveSettings } from '../../background/store/settings'
 import 'react-tippy/dist/tippy.css'
 import { Tooltip } from 'react-tippy'
-import { Button, Dropdown, Icon } from 'semantic-ui-react'
+import { Dropdown, Icon, Popup } from 'semantic-ui-react'
 import { colorSchemes } from '../styles/themes'
+import styled from 'styled-components'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
 }
@@ -53,7 +58,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
   }
 
   handleClickLogout = () => {
-    const {history} = this.props
+    const { history } = this.props
     lockWallet().then(() => {
       history.push(LOGIN_ROUTE)
     })
@@ -62,26 +67,25 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
   handleSelectChange = (address: string) => {
     const dropdownOptions: Option[] = this.state.options.filter(o => o.key === address)
     if (dropdownOptions && dropdownOptions[0]) {
-      this.props.saveSettings({
-        ...this.props.settings, selectedAccount: {
-          address: dropdownOptions[0].value,
-          name: dropdownOptions[0].text
-        }
-      })
+      this.props.saveSettings({ ...this.props.settings, selectedAccount: {
+        address: dropdownOptions[0].value,
+        name: dropdownOptions[0].text
+      } })
     }
   }
 
   getAddress = (address, showFulAddress = false) => {
     if (showFulAddress) return address
+
     return address.substring(0, 8) + '...' + address.substring(address.length - 10)
   }
 
   generateDropdownItem (account: IAccount) {
     return (
       <div className='item' onClick={this.handleSelectChange.bind(this, account.address)}>
-        <Identicon account={account.address} size={20} className='identicon image'/>
+        <Identicon account={account.address} size={20} className='identicon image' />
         <div className='account-item'>
-          <div className='item-name'>{account.name ? account.name : 'N/A'} </div>
+          <div className='item-name'>{account.name ? this.shorten(account.name) : 'N/A'} </div>
           <div className='item-address'>{this.getAddress(account.address)}</div>
         </div>
       </div>
@@ -99,11 +103,11 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     document.execCommand('copy')
     document.body.removeChild(el)
 
-    this.setState({message: t('copyAddressMessage')})
+    this.setState({ message: t('copyAddressMessage') })
     const timeout = setTimeout(() => {
-      this.setState({message: ''})
+      this.setState({ message: '' })
     }, 2000)
-    this.setState({msgTimeout: timeout})
+    this.setState({ msgTimeout: timeout })
   }
 
   loadAccounts = () => {
@@ -114,12 +118,12 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
         }
         const accounts: IAccount[] = result.map(
           (keyring: KeyringPair$Json) => {
-            return {name: keyring.meta.name, address: keyring.address}
+            return { name: keyring.meta.name, address: keyring.address }
           }
         )
         // set first one to select account if it isn't set
         if (!this.props.settings.selectedAccount) {
-          this.props.saveSettings({...this.props.settings, selectedAccount: accounts[0]})
+          this.props.saveSettings({ ...this.props.settings, selectedAccount: accounts[0] })
         }
 
         this.props.setAccounts(accounts)
@@ -138,6 +142,13 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
         })
       }
     )
+  }
+
+  shorten = (s: string) => {
+    if (s && s.length > 32) {
+      return s.substr(0, 15) + '...' + s.substring(s.length - 15)
+    }
+    return s
   }
 
   handleClickCreateAccount = () => {
@@ -165,12 +176,6 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
     const selectedAccount = this.props.settings.selectedAccount
 
-    const accountStyle = {
-      backgroundColor: 'rgba(0,0,0,0)',
-      textAlign: 'center',
-      color: 'white'
-    }
-
     const backgroundStyle = {
       backgroundColor: colorSchemes[this.props.settings.color].backgroundColor,
       color: 'white'
@@ -178,12 +183,12 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
     return (
       <ContentContainer>
-        <Section>
+        <AccountSection>
           <Dropdown
-            text={selectedAccount.name ? selectedAccount.name : 'N/A'}
+            text={selectedAccount.name ? this.shorten(selectedAccount.name) : 'N/A'}
             button={true}
             fluid={true}
-            style={accountStyle}
+            className='account-dropdown'
           >
             <Dropdown.Menu style={backgroundStyle}>
               <Dropdown.Menu scrolling={true} style={backgroundStyle}>
@@ -192,54 +197,53 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
                 ))}
               </Dropdown.Menu>
 
-              <Dropdown.Divider/>
+              <Dropdown.Divider />
 
-              <Button
-                fluid={true}
-                icon={true}
-                labelPosition='left'
+              <Dropdown.Item
                 style={backgroundStyle}
                 onClick={this.handleClickCreateAccount}
               >
-                <Icon name='plus'/>
-                {t('createNewAccount')}
-              </Button>
+                <Icon name='plus' />
+                  {t('createNewAccount')}
+              </Dropdown.Item>
 
-              <Button
-                fluid={true}
-                icon={true}
-                labelPosition='left'
+              <Dropdown.Item
                 style={backgroundStyle}
                 onClick={this.handleClickImport}
               >
-                <Icon name='redo'/>
-                {t('importExistingAccount')}
-              </Button>
+                <Icon name='redo' />
+                  {t('importExistingAccount')}
+              </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
-        </Section>
-        <Section>
+        </AccountSection>
+        <AccountSection>
           <Tooltip
             title={!this.state.message ? t('copyToClipboard') : t('copiedExclam')}
             position='bottom'
             trigger='mouseenter'
             arrow={true}
           >
-            <AccountAddress onClick={this.copyToClipboard}>
-              {this.getAddress(this.props.settings.selectedAccount.address)}
-            </AccountAddress>
+          <AccountAddress onClick={this.copyToClipboard}>
+            {this.getAddress(this.props.settings.selectedAccount.address)}
+          </AccountAddress>
+          <Popup
+            open={!!this.state.message}
+            content={t('copyAddressMessage')}
+            basic={true}
+          />
           </Tooltip>
-        </Section>
-        <Section>
+        </AccountSection>
+        <AccountSection>
           <Identicon
             account={this.props.settings.selectedAccount.address}
             size={80}
             className='identicon'
           />
-        </Section>
-        <Section>
+        </AccountSection>
+        <AccountSection>
           <Balance address={this.props.settings.selectedAccount.address}/>
-        </Section>
+        </AccountSection>
         <Section>
           <StyledButton onClick={this.handleClickLogout}>
             {t('logout')}
@@ -250,13 +254,19 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
   }
 }
 
+export const AccountSection = styled.div`
+  width: 100%
+  margin: 8px 0 9px
+  text-align: center
+`
+
 const mapStateToProps = (state: IAppState) => {
   return {
     settings: state.settings
   }
 }
 
-const mapDispatchToProps = {saveSettings, setAccounts}
+const mapDispatchToProps = { saveSettings, setAccounts }
 type DispatchProps = typeof mapDispatchToProps
 
 type StateProps = ReturnType<typeof mapStateToProps>

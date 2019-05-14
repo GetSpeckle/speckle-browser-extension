@@ -48,7 +48,7 @@
     "message": "Imported Account"
   },
   "accountName": {
-    "message": "Account Name"
+    "message": "Account Name (max 32 chars including space)"
   },
   "password": {
     "message": "Password"
