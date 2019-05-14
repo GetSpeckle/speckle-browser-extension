@@ -18,7 +18,7 @@ import Identicon from 'polkadot-identicon'
 import { saveSettings } from '../../background/store/settings'
 import 'react-tippy/dist/tippy.css'
 import { Tooltip } from 'react-tippy'
-import { Button, Dropdown, Icon, Popup } from 'semantic-ui-react'
+import { Button, Dropdown, Icon } from 'semantic-ui-react'
 import { colorSchemes } from '../styles/themes'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
@@ -229,11 +229,6 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
               {this.getAddress(this.props.settings.selectedAccount.address)}
             </AccountAddress>
           </Tooltip>
-          <Popup
-            open={!!this.state.message}
-            content={t('copyAddressMessage')}
-            basic={true}
-          />
         </Section>
         <Section>
           <Identicon
