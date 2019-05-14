@@ -1,5 +1,4 @@
-// Color for Header
-
+// Header Color Scheme
 export const color = {
   'blue': {
     inner: '#44C5EE', // inner circle
