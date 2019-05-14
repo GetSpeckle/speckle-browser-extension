@@ -121,6 +121,7 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
             type='input'
             value={this.state.accountName}
             onChange={this.handleChange}
+            maxLength={32}
             placeholder={t('accountName')}
           />
           <Form.TextArea

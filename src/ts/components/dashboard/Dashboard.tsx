@@ -82,7 +82,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
       <div className='item' onClick={this.handleSelectChange.bind(this, account.address)}>
         <Identicon account={account.address} size={20} className='identicon image' />
         <div className='account-item'>
-          <div className='item-name'>{account.name ? account.name : 'N/A'} </div>
+          <div className='item-name'>{account.name ? this.shorten(account.name) : 'N/A'} </div>
           <div className='item-address'>{this.getAddress(account.address)}</div>
         </div>
       </div>
@@ -141,6 +141,13 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     )
   }
 
+  shorten = (s: string) => {
+    if (s && s.length > 32) {
+      return s.substr(0, 15) + '...' + s.substring(s.length - 15)
+    }
+    return s
+  }
+
   handleClickCreateAccount = () => {
     this.props.history.push(GENERATE_PHRASE_ROUTE)
   }
@@ -175,7 +182,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
       <ContentContainer>
         <Section>
           <Dropdown
-            text={selectedAccount.name ? selectedAccount.name : 'N/A'}
+            text={selectedAccount.name ? this.shorten(selectedAccount.name) : 'N/A'}
             button={true}
             fluid={true}
             className='account-dropdown'
