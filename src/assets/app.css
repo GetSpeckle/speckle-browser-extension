@@ -25,7 +25,8 @@
 }
 
 .top-menu {
-  margin: 10px 14px;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .top-menu .ui.selection.dropdown.chain {
