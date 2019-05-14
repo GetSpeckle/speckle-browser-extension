@@ -39,9 +39,9 @@ class Progress extends React.Component<IProgressProps> {
       gray: ['#BBBBBB', '#CCCCCC']
     }
 
-    const one = this.props.progress === 1 ? colorMap[this.props.color] : colorMap['gray']
-    const two = this.props.progress === 2 ? colorMap[this.props.color] : colorMap['gray']
-    const three = this.props.progress === 3 ? colorMap[this.props.color] : colorMap['gray']
+    const one = this.props.progress === 1 ? colorMap[this.props.settings.color] : colorMap['gray']
+    const two = this.props.progress === 2 ? colorMap[this.props.settings.color] : colorMap['gray']
+    const three = this.props.progress === 3 ? colorMap[this.props.settings.color] : colorMap['gray']
 
     return (
       <ContentContainer>

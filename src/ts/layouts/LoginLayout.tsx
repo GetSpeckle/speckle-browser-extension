@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-//import Image from 'semantic-ui-react/dist/commonjs/elements/Image/Image'
 import {IAppState} from '../background/store/all'
 import {LayoutContainer} from '../components/basic-components'
 import ErrorMessage from '../components/error/ErrorMessage'
