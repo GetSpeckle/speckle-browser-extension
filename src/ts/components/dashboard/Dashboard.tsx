@@ -143,8 +143,8 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
   }
 
   shorten = (s: string) => {
-    if (s && s.length > 32) {
-      return s.substr(0, 15) + '...' + s.substring(s.length - 15)
+    if (s && s.length >= 28) {
+      return s.substr(0, 12) + '...' + s.substring(s.length - 12)
     }
     return s
   }
