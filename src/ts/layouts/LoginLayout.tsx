@@ -5,7 +5,7 @@ import {LayoutContainer} from '../components/basic-components'
 import ErrorMessage from '../components/error/ErrorMessage'
 import LoginFooter from '../components/account/LoginFooter'
 import Header from './Header'
-import {color} from '../constants/color'
+import { color } from '../constants/color'
 
 interface ILoginLayoutProps extends StateProps, DispatchProps {
 }
