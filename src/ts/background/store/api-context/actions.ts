@@ -3,26 +3,26 @@ import { AnyAction } from 'redux'
 import ApiPromise from '@polkadot/api/promise'
 
 export const ACTION_TYPES = {
-  CONNECT: 'CONNECT',
-  DISCONNECT: 'DISCONNECT'
+  CREATE: 'CREATE',
+  DESTROY: 'DESTROY'
 }
 
 type ApiWithProvider = { api: ApiPromise, provider: ProviderInterface }
 
-function createApi (provider: ProviderInterface): Promise<ApiWithProvider> {
+function doCreateApi (provider: ProviderInterface): Promise<ApiWithProvider> {
   return ApiPromise.create(provider).then(api => ({ api, provider }))
 }
 
-export function connectApi (provider: ProviderInterface) {
+export function createApi (provider: ProviderInterface) {
   return {
-    type: ACTION_TYPES.CONNECT,
-    payload: createApi(provider)
+    type: ACTION_TYPES.CREATE,
+    payload: doCreateApi(provider)
   }
 }
 
-export function disconnectApi (provider: ProviderInterface): AnyAction {
+export function destroyApi (provider: ProviderInterface): AnyAction {
   provider && provider.isConnected() && provider.disconnect()
   return {
-    type: ACTION_TYPES.DISCONNECT
+    type: ACTION_TYPES.DESTROY
   }
 }

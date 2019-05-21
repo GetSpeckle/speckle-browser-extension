@@ -10,7 +10,7 @@ import { Routes } from '../../routes'
 import { getSettings } from '../../background/store/settings'
 import { isWalletLocked, walletExists } from '../../services/keyring-vault-proxy'
 import { setLocked, setCreated } from '../../background/store/wallet'
-import { connectApi, disconnectApi } from '../../background/store/api-context'
+import { createApi, destroyApi } from '../../background/store/api-context'
 import { networks } from '../../constants/networks'
 import { WsProvider } from '@polkadot/rpc-provider'
 
@@ -26,7 +26,7 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
 
   constructor (props) {
     super(props)
-    this.tryConnectApi = this.tryConnectApi.bind(this)
+    this.tryCreateApi = this.tryCreateApi.bind(this)
   }
 
   state = {
@@ -34,15 +34,15 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
     tries: 0
   }
 
-  tryConnectApi () {
+  tryCreateApi () {
     if (!this.props.apiContext.apiReady) {
       this.setState({ ...this.state, tries: this.state.tries++ })
       const network = networks[this.props.settings.network]
       const provider = new WsProvider(network.rpcServer)
-      this.props.connectApi(provider)
+      this.props.createApi(provider)
       if (this.state.tries <= 5) {
         // try to connect in 3 seconds
-        setTimeout(this.tryConnectApi, 3000)
+        setTimeout(this.tryCreateApi, 3000)
       }
     }
   }
@@ -66,7 +66,7 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
         this.setState({
           initializing: false
         })
-        this.tryConnectApi()
+        this.tryCreateApi()
       }
     )
   }
@@ -77,7 +77,7 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
 
   componentWillUnmount () {
     const provider = this.props.apiContext.provider
-    provider && this.props.disconnectApi(provider)
+    provider && this.props.destroyApi(provider)
   }
 
   render () {
@@ -106,7 +106,7 @@ const mapStateToProps = (state: IAppState) => {
   }
 }
 
-const mapDispatchToProps = { getSettings, setLocked, setCreated, connectApi, disconnectApi }
+const mapDispatchToProps = { getSettings, setLocked, setCreated, createApi, destroyApi }
 
 type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps
