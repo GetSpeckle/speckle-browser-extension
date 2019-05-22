@@ -13,6 +13,9 @@ import { setLocked, setCreated } from '../../background/store/wallet'
 import { createApi, destroyApi } from '../../background/store/api-context'
 import { networks } from '../../constants/networks'
 import { WsProvider } from '@polkadot/rpc-provider'
+import { Edgeware } from '../../constants/chains'
+import { ApiOptions } from '@polkadot/api/types'
+import { Identity, Governance, Voting } from 'edgeware-api'
 
 interface IPopupApp extends StateProps, DispatchProps {
 }
@@ -39,7 +42,16 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
       this.setState({ ...this.state, tries: this.state.tries++ })
       const network = networks[this.props.settings.network]
       const provider = new WsProvider(network.rpcServer)
-      this.props.createApi(provider)
+      let apiOptions: ApiOptions = { provider }
+      if (network.chain === Edgeware) {
+        console.log('Edgeware detected')
+        apiOptions = { ...apiOptions, types: {
+          ...Identity.IdentityTypes,
+          ...Governance.GovernanceTypes,
+          ...Voting.VotingTypes
+        } }
+      }
+      this.props.createApi(apiOptions)
       if (this.state.tries <= 5) {
         // try to connect in 3 seconds
         setTimeout(this.tryCreateApi, 3000)

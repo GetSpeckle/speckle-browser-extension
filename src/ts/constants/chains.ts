@@ -14,3 +14,8 @@ export const Substrate: Chain = {
   chainType: 'Substrate',
   iconUrl: '/assets/chain-logo/substrate.png'
 }
+
+export const Edgeware: Chain = {
+  chainType: 'Substrate',
+  iconUrl: '/assets/chain-logo/edgeware.png'
+}
