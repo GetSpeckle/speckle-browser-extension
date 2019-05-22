@@ -1,20 +1,19 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {IAppState} from '../background/store/all'
-import {LayoutContainer} from '../components/basic-components'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { IAppState } from '../background/store/all'
+import { LayoutContainer } from '../components/basic-components'
 import ErrorMessage from '../components/error/ErrorMessage'
 import LoginFooter from '../components/account/LoginFooter'
 import Header from './Header'
-import { color } from '../constants/color'
+import { colorMap } from '../constants/color-map'
 
-interface ILoginLayoutProps extends StateProps, DispatchProps {
-}
+interface ILoginLayoutProps extends StateProps, DispatchProps {}
 
 class LoginLayout extends Component<ILoginLayoutProps> {
   render () {
     return (
       <LayoutContainer>
-        <Header color={color[this.props.settings.color]}/>
+        <Header color={colorMap[this.props.settings.color]}/>
         <ErrorMessage message={this.props.error} style={alignMiddle}/>
         {this.props.children}
         <LoginFooter/>

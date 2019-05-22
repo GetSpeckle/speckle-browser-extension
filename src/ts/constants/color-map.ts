@@ -1,5 +1,5 @@
 // Header Color Scheme
-export const color = {
+export const colorMap = {
   'blue': {
     inner: '#44C5EE', // inner circle
     outer: '#4AABE0', // outer circle
