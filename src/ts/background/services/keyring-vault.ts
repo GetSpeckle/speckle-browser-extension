@@ -91,6 +91,13 @@ class KeyringVault {
     return accounts
   }
 
+  getAccount (address: string): KeyringPair {
+    if (this.isLocked()) throw new Error(t('walletLocked'))
+    const keyringPair = this.keyring.getPair(address)
+    debugger
+    return keyringPair
+  }
+
   createAccount (mnemonic: string, accountName: string): Promise<KeyringPair$Json> {
     if (this.isLocked()) return Promise.reject(new Error(t('walletLocked')))
     if (this._mnemonic !== mnemonic) return Promise.reject(new Error(t('mnemonicUnmatched')))

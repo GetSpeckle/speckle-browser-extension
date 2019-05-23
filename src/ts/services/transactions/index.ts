@@ -21,7 +21,8 @@ export const transfer = async (
   const transfer = api.tx.balances.transfer(toAddress, amount)
 
   // Sign and send the transaction using our account
-  const hash = await transfer.signAndSend(from)
+  await transfer.sign(from, {})
+  const hash = await transfer.send()
 
   console.log('Transfer sent with hash', hash.toHex())
 

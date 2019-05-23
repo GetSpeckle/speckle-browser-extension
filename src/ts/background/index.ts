@@ -42,6 +42,19 @@ browser.runtime.onConnect.addListener(function (port) {
           port.postMessage({ method: FUNCS.WALLET_EXISTS, error: { message: err.message } })
         })
         break
+      case FUNCS.GET_ACCOUNT:
+        try {
+          port.postMessage({
+            method: FUNCS.GET_ACCOUNT,
+            result: keyringVault.getAccount(msg.address)
+          })
+        } catch (err) {
+          port.postMessage({
+            method: FUNCS.GET_ACCOUNT,
+            error: { message: err.message }
+          })
+        }
+        break
       case FUNCS.GET_ACCOUNTS:
         try {
           port.postMessage({

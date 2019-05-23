@@ -1,5 +1,5 @@
 import { browser } from 'webextension-polyfill-ts'
-import { KeyringPair$Json } from '@polkadot/keyring/types'
+import { KeyringPair, KeyringPair$Json } from '@polkadot/keyring/types'
 import * as FUNCS from '../constants/keyring-vault-funcs'
 import { cryptoWaitReady } from '@polkadot/util-crypto'
 import Keyring from '@polkadot/keyring'
@@ -123,6 +123,22 @@ export function updateAccountName (address: string, accountName: string):
       method: FUNCS.UPDATE_ACCOUNT_NAME,
       address: address,
       accountName: accountName
+    })
+  })
+}
+
+export function getAccount (address: string): Promise<KeyringPair> {
+  return new Promise<KeyringPair>((resolve, reject) => {
+    port.onMessage.addListener(msg => {
+      if (msg.method !== FUNCS.GET_ACCOUNT) return
+      if (msg.error) {
+        reject(msg.error.message)
+      }
+      resolve(msg.result)
+    })
+    port.postMessage({
+      method: FUNCS.GET_ACCOUNT,
+      address: address
     })
   })
 }
