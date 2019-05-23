@@ -20,8 +20,11 @@ import { KeyringPair$Json } from '@polkadot/keyring/types'
 import Balance from '../account/Balance'
 import Identicon from 'polkadot-identicon'
 import { saveSettings } from '../../background/store/settings'
-import { Dropdown, Button, Icon, Popup } from 'semantic-ui-react'
+import 'react-tippy/dist/tippy.css'
+import { Tooltip } from 'react-tippy'
+import { Dropdown, Icon, Popup } from 'semantic-ui-react'
 import { colorSchemes } from '../styles/themes'
+import styled from 'styled-components'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
 }
@@ -82,7 +85,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
       <div className='item' onClick={this.handleSelectChange.bind(this, account.address)}>
         <Identicon account={account.address} size={20} className='identicon image' />
         <div className='account-item'>
-          <div className='item-name'>{account.name ? account.name : 'N/A'} </div>
+          <div className='item-name'>{account.name ? this.shorten(account.name) : 'N/A'} </div>
           <div className='item-address'>{this.getAddress(account.address)}</div>
         </div>
       </div>
@@ -141,6 +144,13 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     )
   }
 
+  shorten = (s: string) => {
+    if (s && s.length >= 28) {
+      return s.substr(0, 12) + '...' + s.substring(s.length - 12)
+    }
+    return s
+  }
+
   handleClickCreateAccount = () => {
     this.props.history.push(GENERATE_PHRASE_ROUTE)
   }
@@ -166,12 +176,6 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
     const selectedAccount = this.props.settings.selectedAccount
 
-    const accountStyle = {
-      backgroundColor: 'rgba(0,0,0,0)',
-      textAlign: 'center',
-      color: 'white'
-    }
-
     const backgroundStyle = {
       backgroundColor: colorSchemes[this.props.settings.color].backgroundColor,
       color: 'white'
@@ -179,47 +183,47 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
     return (
       <ContentContainer>
-        <Section>
+        <AccountSection>
           <Dropdown
-            text={selectedAccount.name ? selectedAccount.name : 'N/A'}
+            text={selectedAccount.name ? this.shorten(selectedAccount.name) : 'N/A'}
             button={true}
             fluid={true}
-            style={accountStyle}
+            className='account-dropdown'
           >
-          <Dropdown.Menu style={backgroundStyle}>
-            <Dropdown.Menu scrolling={true} style={backgroundStyle}>
-              {this.state.options.map(option => (
-                <Dropdown.Item key={option.value} {...option} />
-              ))}
+            <Dropdown.Menu style={backgroundStyle}>
+              <Dropdown.Menu scrolling={true} style={backgroundStyle}>
+                {this.state.options.map(option => (
+                  <Dropdown.Item key={option.value} {...option} />
+                ))}
+              </Dropdown.Menu>
+
+              <Dropdown.Divider />
+
+              <Dropdown.Item
+                style={backgroundStyle}
+                onClick={this.handleClickCreateAccount}
+              >
+                <Icon name='plus' />
+                  {t('createNewAccount')}
+              </Dropdown.Item>
+
+              <Dropdown.Item
+                style={backgroundStyle}
+                onClick={this.handleClickImport}
+              >
+                <Icon name='redo' />
+                  {t('importExistingAccount')}
+              </Dropdown.Item>
             </Dropdown.Menu>
-
-            <Dropdown.Divider />
-
-            <Button
-              fluid={true}
-              icon={true}
-              labelPosition='left'
-              style={backgroundStyle}
-              onClick={this.handleClickCreateAccount}
-            >
-              <Icon name='plus' />
-                {t('createNewAccount')}
-            </Button>
-
-            <Button
-              fluid={true}
-              icon={true}
-              labelPosition='left'
-              style={backgroundStyle}
-              onClick={this.handleClickImport}
-            >
-              <Icon name='redo' />
-                {t('importExistingAccount')}
-            </Button>
-          </Dropdown.Menu>
           </Dropdown>
-        </Section>
-        <Section>
+        </AccountSection>
+        <AccountSection>
+          <Tooltip
+            title={!this.state.message ? t('copyToClipboard') : t('copiedExclam')}
+            position='bottom'
+            trigger='mouseenter'
+            arrow={true}
+          >
           <AccountAddress onClick={this.copyToClipboard}>
             {this.getAddress(this.props.settings.selectedAccount.address)}
           </AccountAddress>
@@ -228,13 +232,18 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
             content={t('copyAddressMessage')}
             basic={true}
           />
-        </Section>
-        <Section>
-          <Identicon account={this.props.settings.selectedAccount.address} size={80} className='identicon'/>
-        </Section>
-        <Section>
+          </Tooltip>
+        </AccountSection>
+        <AccountSection>
+          <Identicon
+            account={this.props.settings.selectedAccount.address}
+            size={80}
+            className='identicon'
+          />
+        </AccountSection>
+        <AccountSection>
           <Balance address={this.props.settings.selectedAccount.address}/>
-        </Section>
+        </AccountSection>
         <Section>
           <StyledButton onClick={this.handleClickLogout}>
             {t('logout')}
@@ -244,6 +253,12 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     )
   }
 }
+
+export const AccountSection = styled.div`
+  width: 100%
+  margin: 8px 0 9px
+  text-align: center
+`
 
 const mapStateToProps = (state: IAppState) => {
   return {

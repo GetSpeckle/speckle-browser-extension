@@ -48,7 +48,7 @@
     "message": "Imported Account"
   },
   "accountName": {
-    "message": "Account Name"
+    "message": "Account Name (max 32 chars including space)"
   },
   "password": {
     "message": "Password"
@@ -67,6 +67,12 @@
   },
   "copyText": {
     "message": "Copy Text"
+  },
+  "copyToClipboard": {
+    "message": "Copy to clipboard"
+  },
+  "copiedExclam": {
+    "message": "Copied!"
   },
   "copyTextMessage": {
     "message": "Phrase copied to clipboard. Make sure to paste and save it to a secure place."

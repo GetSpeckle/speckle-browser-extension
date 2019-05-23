@@ -17,8 +17,9 @@ import {
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 import { HOME_ROUTE } from '../../constants/routes'
+import { saveSettings } from '../../background/store/settings'
 
-interface IImportJsonProps extends StateProps, RouteComponentProps {}
+interface IImportJsonProps extends StateProps, DispatchProps, RouteComponentProps {}
 
 interface IImportJsonState {
   file?: File
@@ -41,7 +42,10 @@ class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
   handleImport = () => {
     importAccountFromJson(this.state.json, this.state.password)
       .then((json: KeyringPair$Json) => {
-        console.log(json)
+        this.props.saveSettings({ ...this.props.settings, selectedAccount: {
+          address: json.address,
+          name: json.meta.name
+        } })
         this.props.history.push(HOME_ROUTE)
       }).catch(error => {
         this.setState({ ...this.state, errorMessage: error })
@@ -159,4 +163,8 @@ const mapStateToProps = (state: IAppState) => {
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
-export default withRouter(connect(mapStateToProps)(ImportJson))
+const mapDispatchToProps = { saveSettings }
+
+type DispatchProps = typeof mapDispatchToProps
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ImportJson))

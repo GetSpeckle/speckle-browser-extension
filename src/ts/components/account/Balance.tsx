@@ -30,14 +30,7 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
           decimals: chainProperties.tokenDecimals,
           unit: chainProperties.tokenSymbol
         })
-        console.log(this.props.address)
-        this.api.query.balances.freeBalance(this.props.address, currentBalance => {
-          console.log('currentBalance', currentBalance)
-          const formattedBalance = formatBalance(currentBalance)
-          if (formattedBalance !== this.state.balance) {
-            this.setState({ ...this.state, balance: formattedBalance })
-          }
-        })
+        this.doUpdate()
       })
     } else if (this.state.tries <= 10) {
       const nextTry = setTimeout(this.updateBalance, 1000)
@@ -47,12 +40,26 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
     }
   }
 
+  private doUpdate = () => {
+    console.log(this.props.address)
+    this.api.query.balances.freeBalance(this.props.address, currentBalance => {
+      console.log('currentBalance', currentBalance)
+      const formattedBalance = formatBalance(currentBalance)
+      if (formattedBalance !== this.state.balance) {
+        this.setState({ ...this.state, balance: formattedBalance })
+      }
+    }).then(unsub => {
+      this.setState({ ...this.state, unsub: unsub })
+    })
+  }
+
   componentDidMount (): void {
     this.updateBalance()
   }
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.address !== this.props.address) {
+      this.state.unsub && this.state.unsub()
       this.updateBalance()
     }
   }
@@ -112,8 +119,9 @@ interface IBalanceProps extends StateProps {
 
 interface IBalanceState {
   balance?: string
-  tries: number,
+  tries: number
   nextTry?: any
+  unsub?: Function
 }
 
 export default connect(mapStateToProps)(Balance)
