@@ -120,7 +120,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
   render () {
     return (
       <div>
-        <Progress color={this.props.settings.color} progress={2} />
+        <Progress step={2} />
 
         {this.state.keyringPair ? this.renderBackupScreen() : this.renderConfirmScreen()}
 

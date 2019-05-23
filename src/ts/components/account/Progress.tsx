@@ -9,8 +9,7 @@ import { connect } from 'react-redux'
 import { colorSchemes } from '../styles/themes'
 
 interface IProgressProps extends RouteComponentProps, StateProps {
-  color: string,
-  progress: number
+  step: number
 }
 
 /**
@@ -19,14 +18,14 @@ interface IProgressProps extends RouteComponentProps, StateProps {
 class Progress extends React.Component<IProgressProps> {
 
   handleClick = route => () => {
-    const { wallet } = this.props
+    const { step, history, wallet } = this.props
     // only allow to go back if there is no account created
-    if (!wallet.created && this.props.progress > 1 && route === CREATE_PASSWORD_ROUTE) {
-      this.props.history.push(route)
+    if (!wallet.created && step > 1 && route === CREATE_PASSWORD_ROUTE) {
+      history.push(route)
     }
 
-    if (this.props.progress >= 2 && route === GENERATE_PHRASE_ROUTE) {
-      this.props.history.push(route)
+    if (step >= 2 && route === GENERATE_PHRASE_ROUTE) {
+      history.push(route)
     }
   }
 
@@ -36,9 +35,11 @@ class Progress extends React.Component<IProgressProps> {
       stopColorTwo: '#CCCCCC'
     }
 
-    const one = this.props.progress === 1 ? colorSchemes[this.props.color] : grayColorScheme
-    const two = this.props.progress === 2 ? colorSchemes[this.props.color] : grayColorScheme
-    const three = this.props.progress === 3 ? colorSchemes[this.props.color] : grayColorScheme
+    const { settings, step } = this.props
+    const colorScheme = colorSchemes[settings.color]
+    const one = step === 1 ? colorScheme : grayColorScheme
+    const two = step === 2 ? colorScheme : grayColorScheme
+    const three = step === 3 ? colorScheme : grayColorScheme
 
     return (
       <ContentContainer>
@@ -291,6 +292,7 @@ class Progress extends React.Component<IProgressProps> {
 
 const mapStateToProps = (state: IAppState) => {
   return {
+    settings: state.settings,
     wallet: state.wallet
   }
 }
