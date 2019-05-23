@@ -52,8 +52,8 @@ class Progress extends React.Component<IProgressProps> {
         >
           <defs>
             <radialGradient id='c' cy='22.572%' r='84.639%' fx='50%' fy='22.572%'>
-              <stop offset='0%' stop-color={one.stopColorOne}/>
-              <stop offset='100%' stop-color={one.stopColorTwo}/>
+              <stop offset='0%' stopColor={one.stopColorOne}/>
+              <stop offset='100%' stopColor={one.stopColorTwo}/>
             </radialGradient>
             <path
               id='b'
@@ -78,8 +78,8 @@ class Progress extends React.Component<IProgressProps> {
               />
             </filter>
             <radialGradient id='f' cy='27.105%' r='72.895%' fx='50%' fy='27.105%'>
-              <stop offset='0%' stop-color='#FF7396'/>
-              <stop offset='100%' stop-color='#F3536D'/>
+              <stop offset='0%' stopColor='#FF7396'/>
+              <stop offset='100%' stopColor='#F3536D'/>
             </radialGradient>
             <rect id='e' width='12' height='12' x='21' y='3' rx='6'/>
             <filter
@@ -99,15 +99,15 @@ class Progress extends React.Component<IProgressProps> {
               />
             </filter>
           </defs>
-          <g fill='none' fill-rule='nonzero'>
+          <g fill='none' fillRule='nonzero'>
             <path d='M4 4h33v29H4z'/>
             <g transform='translate(4 4)'>
-              <use fill='#000' filter='url(#a)' xlinkHref='#b'/>
-              <use fill='url(#c)' xlinkHref='#b'/>
+              <use fill='#000' filter='url(#a)' href='#b'/>
+              <use fill='url(#c)' href='#b'/>
             </g>
             <g transform='translate(4 4)'>
-              <use fill='#000' filter='url(#d)' xlinkHref='#e'/>
-              <use fill='url(#f)' xlinkHref='#e'/>
+              <use fill='#000' filter='url(#d)' href='#e'/>
+              <use fill='url(#f)' href='#e'/>
             </g>
           </g>
           <text x='15' y='22' style={{ fill: 'white' }}>1</text>
@@ -126,8 +126,8 @@ class Progress extends React.Component<IProgressProps> {
         >
           <defs>
             <radialGradient id='c2' cy='19.249%' r='80.751%' fx='50%' fy='19.249%'>
-              <stop offset='0%' stop-color='#51DFB0'/>
-              <stop offset='100%' stop-color='#52C48D'/>
+              <stop offset='0%' stopColor='#51DFB0'/>
+              <stop offset='100%' stopColor='#52C48D'/>
             </radialGradient>
             <path
               id='b2'
@@ -152,8 +152,8 @@ class Progress extends React.Component<IProgressProps> {
               />
             </filter>
             <radialGradient id='f2' cy='22.572%' r='84.639%' fx='50%' fy='22.572%'>
-              <stop offset='0%' stop-color={two.stopColorTwo}/>
-              <stop offset='100%' stop-color={two.stopColorTwo}/>
+              <stop offset='0%' stopColor={two.stopColorTwo}/>
+              <stop offset='100%' stopColor={two.stopColorTwo}/>
             </radialGradient>
             <rect id='e2' width='26' height='26' x='7' y='3' rx='13'/>
             <filter
@@ -173,15 +173,15 @@ class Progress extends React.Component<IProgressProps> {
               />
             </filter>
           </defs>
-          <g fill='none' fill-rule='nonzero'>
+          <g fill='none' fillRule='nonzero'>
             <path d='M10 8h33v29H10z'/>
             <g transform='translate(10 8)'>
-              <use fill='#000' filter='url(#a2)' xlinkHref='#b2'/>
-              <use fill='url(#c2)' xlinkHref='#b2'/>
+              <use fill='#000' filter='url(#a2)' href='#b2'/>
+              <use fill='url(#c2)' href='#b2'/>
             </g>
             <g transform='translate(10 8)'>
-              <use fill='#000' filter='url(#d2)' xlinkHref='#e2'/>
-              <use fill='url(#f2)' xlinkHref='#e2'/>
+              <use fill='#000' filter='url(#d2)' href='#e2'/>
+              <use fill='url(#f2)' href='#e2'/>
             </g>
           </g>
           <text x='26' y='27' style={{ fill: 'white' }}>2</text>
@@ -194,8 +194,8 @@ class Progress extends React.Component<IProgressProps> {
         <svg width='49' height='42' viewBox='0 0 49 42'>
           <defs>
             <radialGradient id='c3' cy='19.249%' r='80.751%' fx='50%' fy='19.249%'>
-              <stop offset='0%' stop-color='#51DFB0'/>
-              <stop offset='100%' stop-color='#52C48D'/>
+              <stop offset='0%' stopColor='#51DFB0'/>
+              <stop offset='100%' stopColor='#52C48D'/>
             </radialGradient>
             <path
               id='b3'
@@ -220,8 +220,8 @@ class Progress extends React.Component<IProgressProps> {
               />
             </filter>
             <radialGradient id='f3' cy='22.572%' r='84.639%' fx='50%' fy='22.572%'>
-              <stop offset='0%' stop-color={three.stopColorOne}/>
-              <stop offset='100%' stop-color={three.stopColorTwo}/>
+              <stop offset='0%' stopColor={three.stopColorOne}/>
+              <stop offset='100%' stopColor={three.stopColorTwo}/>
             </radialGradient>
             <path
               id='e3'
@@ -246,8 +246,8 @@ class Progress extends React.Component<IProgressProps> {
               />
             </filter>
             <radialGradient id='i' cy='27.105%' r='72.895%' fx='50%' fy='27.105%'>
-              <stop offset='0%' stop-color='#FF7396'/>
-              <stop offset='100%' stop-color='#F3536D'/>
+              <stop offset='0%' stopColor='#FF7396'/>
+              <stop offset='100%' stopColor='#F3536D'/>
             </radialGradient>
             <rect id='h' width='9' height='9' y='18' rx='4.5'/>
             <filter
@@ -267,7 +267,7 @@ class Progress extends React.Component<IProgressProps> {
               />
             </filter>
           </defs>
-          <g fill='none' fill-rule='nonzero'>
+          <g fill='none' fillRule='nonzero'>
             <path d='M6 7h33v29H6z'/>
             <g transform='translate(6 7)'>
               <use fill='#000' filter='url(#a3)' href='#b3'/>
