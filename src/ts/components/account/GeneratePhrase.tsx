@@ -109,7 +109,7 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
     return (
       <ContentContainer>
         <TopSection>
-          <Progress color={this.props.settings.color} progress={2}/>
+          <Progress step={2}/>
           <SecondaryText>
             {t('phraseDescription')}
           </SecondaryText>
@@ -157,7 +157,6 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
 
 const mapStateToProps = (state: IAppState) => {
   return {
-    settings: state.settings,
     wallet: state.wallet
   }
 }

@@ -24,6 +24,19 @@ yarn install
 yarn run prod 
 yarn run watch (to watch code changes)
 ```
+### If you're using Ubuntu
+```
+sudo apt install curl
+sudo apt install git
+git clone https://github.com/SpeckleOS/speckle-browser-extension.git
+curl -sL https://deb.nodesource.com/setup_11.x | sudo -E bash -
+sudo apt-get install nodejs
+sudo npm install -g yarn
+cd speckle-browser-extension/
+yarn install
+yarn run prod
+```
+
 ### In Brave web browser
 1. Go to: [**brave://extensions**](brave://extensions)
 2. Toggle: "**developer mode**" on.
