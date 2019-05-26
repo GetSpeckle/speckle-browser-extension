@@ -199,5 +199,14 @@
   },
   "goBack": {
     "message": "Go Back"
+  },
+  "tabAll": {
+    "message": "All"
+  },
+  "tabSent": {
+    "message": "Sent"
+  },
+  "tabStaked": {
+    "message": "Staked"
   }
 }
