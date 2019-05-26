@@ -1,5 +1,5 @@
 import { browser } from 'webextension-polyfill-ts'
-import { KeyringPair, KeyringPair$Json } from '@polkadot/keyring/types'
+import { KeyringPair$Json } from '@polkadot/keyring/types'
 import * as FUNCS from '../constants/keyring-vault-funcs'
 import { cryptoWaitReady } from '@polkadot/util-crypto'
 import Keyring from '@polkadot/keyring'
@@ -70,6 +70,19 @@ export function walletExists (): Promise<boolean> {
   })
 }
 
+export function getAccount (address: string): Promise<KeyringPair$Json> {
+  return new Promise<KeyringPair$Json>((resolve, reject) => {
+    port.onMessage.addListener(msg => {
+      if (msg.method !== FUNCS.GET_ACCOUNT) return
+      if (msg.error) {
+        reject(msg.error.message)
+      }
+      resolve(msg.result)
+    })
+    port.postMessage({ method: FUNCS.GET_ACCOUNT, address: address })
+  })
+}
+
 export function getAccounts (): Promise<Array<KeyringPair$Json>> {
   return new Promise<Array<KeyringPair$Json>>((resolve, reject) => {
     port.onMessage.addListener(msg => {
@@ -127,18 +140,17 @@ export function updateAccountName (address: string, accountName: string):
   })
 }
 
-export function getAccount (address: string): Promise<KeyringPair> {
-  return new Promise<KeyringPair>((resolve, reject) => {
+export function getPassword (): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
     port.onMessage.addListener(msg => {
-      if (msg.method !== FUNCS.GET_ACCOUNT) return
+      if (msg.method !== FUNCS.GET_PASSWORD) return
       if (msg.error) {
         reject(msg.error.message)
       }
       resolve(msg.result)
     })
     port.postMessage({
-      method: FUNCS.GET_ACCOUNT,
-      address: address
+      method: FUNCS.GET_PASSWORD
     })
   })
 }

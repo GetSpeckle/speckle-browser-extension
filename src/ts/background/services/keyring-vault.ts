@@ -91,11 +91,15 @@ class KeyringVault {
     return accounts
   }
 
-  getAccount (address: string): KeyringPair {
+  getPassword (): string | undefined {
     if (this.isLocked()) throw new Error(t('walletLocked'))
-    const keyringPair = this.keyring.getPair(address)
-    debugger
-    return keyringPair
+    return this._password
+  }
+
+  getAccount (address: string): KeyringPair$Json {
+    if (this.isLocked()) throw new Error(t('walletLocked'))
+    const keyringPairJson = this.keyring.getPair(address).toJson(this._password)
+    return keyringPairJson
   }
 
   createAccount (mnemonic: string, accountName: string): Promise<KeyringPair$Json> {

@@ -1,5 +1,6 @@
 import * as React from 'react'
-import { getAccount } from '../../services/keyring-vault-proxy'
+import BN from 'bn.js'
+import { getPassword, getAccount } from '../../services/keyring-vault-proxy'
 import ApiPromise from '@polkadot/api/promise'
 import { RouteComponentProps, withRouter } from 'react-router'
 import {
@@ -12,13 +13,24 @@ import { connect } from 'react-redux'
 import 'react-tippy/dist/tippy.css'
 import { Form } from 'semantic-ui-react'
 import t from '../../services/i18n'
+import Keyring from '@polkadot/keyring'
+import { KeyringPair } from '@polkadot/keyring/types'
+import formatBalance from '@polkadot/util/format/formatBalance'
 interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {
 }
 
 interface ISendState {
-  amount: number,
-  toAddress: string
+  amount: BN,
+  toAddress: string,
+  hasAvailable: boolean,
+  maxBalance?: BN,
+  isSi: boolean,
+  siUnit: string
 }
+
+const TEN = new BN(10)
+
+const si = formatBalance.findSi('m')
 
 class Send extends React.Component<ISendProps, ISendState> {
 
@@ -32,14 +44,49 @@ class Send extends React.Component<ISendProps, ISendState> {
     super(props)
 
     this.state = {
-      amount: 0,
-      toAddress: ''
+      amount: new BN(0),
+      toAddress: '',
+      hasAvailable: true,
+      maxBalance: new BN(0),
+      isSi: true,
+      siUnit: si.value
     }
   }
 
   changeAmount = event => {
-    const val = event.target.value
-    this.setState({ amount: val })
+    this.setState({ amount: this.inputValueToBn(event.target.value) })
+  }
+
+  private getSiPowers = (siUnit = this.state.siUnit): [BN, number, number] => {
+    debugger
+    const { isSi } = this.state
+
+    const basePower = isSi ? formatBalance.getDefaults().decimals : 0
+    const siUnitPower = isSi ? formatBalance.findSi(siUnit).power : 0
+
+    return [new BN(basePower + siUnitPower), basePower, siUnitPower]
+  }
+
+  private inputValueToBn = (value: string, siUnit?: string): BN => {
+    const [siPower, basePower, siUnitPower] = this.getSiPowers(siUnit)
+
+    const isDecimalValue = value.match(/^(\d+)\.(\d+)$/)
+
+    if (isDecimalValue) {
+      if (siUnitPower - isDecimalValue[2].length < -basePower) {
+        return new BN(-1)
+      }
+
+      const div = new BN(value.replace(/\.\d*$/, ''))
+      const mod = new BN(value.replace(/^\d+\./, ''))
+
+      return div
+        .mul(TEN.pow(siPower))
+        .add(mod.mul(TEN.pow(new BN(basePower + siUnitPower - mod.toString().length))))
+    } else {
+      return new BN(value.replace(/[^\d]/g, ''))
+        .mul(TEN.pow(siPower))
+    }
   }
 
   changeAddress = event => {
@@ -51,28 +98,35 @@ class Send extends React.Component<ISendProps, ISendState> {
     if (!this.props.settings.selectedAccount) {
       return
     }
-    debugger
     getAccount(this.props.settings.selectedAccount.address).then(
-      result => {
-        // Do the transfer and track the actual status
-        this.api.tx.balances
-          .transfer(this.state.toAddress, this.state.amount)
-          .signAndSend(result, ({ events = [], status }) => {
-            console.log('Transaction status:', status.type)
+      keyringPairJson => {
+        getPassword().then(password => {
+          const keyring = new Keyring({ type: 'sr25519' })
 
-            if (status.isFinalized) {
-              console.log('Completed at block hash', status.asFinalized.toHex())
-              console.log('Events:')
+          let pair: KeyringPair = keyring.addFromJson(keyringPairJson)
+          pair.decodePkcs8(password)
+          // Do the transfer and track the actual status
+          this.api.tx.balances
+            .transfer(this.state.toAddress, this.state.amount)
+            .signAndSend(pair, ({ events = [], status }) => {
+              console.log('Transaction status:', status.type)
 
-              events.forEach(({ phase, event: { data, method, section } }) => {
-                console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString())
-              })
+              if (status.isFinalized) {
+                console.log(`Completed transfer of ${this.state.amount} to ${this.state.toAddress} at block hash`, status.asFinalized.toHex())
+                console.log('Events:')
 
-              process.exit(0)
+                events.forEach(({ phase, event: { data, method, section } }) => {
+                  console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString())
+                })
+              } else {
+                console.log(`Status of transfer: ${status.type}`)
+              }
             }
-          })
+          )
+        }
+        )
       }
-    )
+      )
   }
 
   render () {
@@ -83,9 +137,8 @@ class Send extends React.Component<ISendProps, ISendState> {
     return (
       <ContentContainer>
         <Form>
-          <Form.TextArea
-            label='Amount'
-            value={this.state.amount}
+          <Form.Input
+            label='Amount (milli)'
             onChange={this.changeAmount}
           />
           <Form.TextArea
