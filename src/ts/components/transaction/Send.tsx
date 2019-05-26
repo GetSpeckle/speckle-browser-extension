@@ -23,7 +23,6 @@ interface ISendState {
   amount: BN,
   toAddress: string,
   hasAvailable: boolean,
-  maxBalance?: BN,
   isSi: boolean,
   siUnit: string
 }
@@ -47,7 +46,6 @@ class Send extends React.Component<ISendProps, ISendState> {
       amount: new BN(0),
       toAddress: '',
       hasAvailable: true,
-      maxBalance: new BN(0),
       isSi: true,
       siUnit: si.value
     }
@@ -57,8 +55,7 @@ class Send extends React.Component<ISendProps, ISendState> {
     this.setState({ amount: this.inputValueToBn(event.target.value) })
   }
 
-  private getSiPowers = (siUnit = this.state.siUnit): [BN, number, number] => {
-    debugger
+  getSiPowers = (siUnit = this.state.siUnit): [BN, number, number] => {
     const { isSi } = this.state
 
     const basePower = isSi ? formatBalance.getDefaults().decimals : 0
@@ -67,7 +64,7 @@ class Send extends React.Component<ISendProps, ISendState> {
     return [new BN(basePower + siUnitPower), basePower, siUnitPower]
   }
 
-  private inputValueToBn = (value: string, siUnit?: string): BN => {
+  inputValueToBn = (value: string, siUnit?: string): BN => {
     const [siPower, basePower, siUnitPower] = this.getSiPowers(siUnit)
 
     const isDecimalValue = value.match(/^(\d+)\.(\d+)$/)
