@@ -39,6 +39,8 @@ export const ACTION_TYPES = {
 const PREFIX = 'transactions_'
 
 export function getTransactions (address: string): AnyAction {
+  console.log('Action: geting tranx for %s', address)
+
   return {
     type: ACTION_TYPES.GET_TRANSACTIONS,
     address: address,
@@ -80,7 +82,7 @@ const transactions: Reducer<IAccountTransactions, AnyAction> = (state = initialS
       return { ...state, [action.address]: action.payload }
 
     case SUCCESS(ACTION_TYPES.GET_TRANSACTIONS):
-      console.log('got the transactions', action.payload)
+      console.log('got the transactions for %s: %s', action.address, action.payload)
       return { ...state, [action.address]: action.payload }
 
     case SUCCESS(ACTION_TYPES.SAVE_TRNASACTIONS):
