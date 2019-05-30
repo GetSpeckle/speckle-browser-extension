@@ -21,14 +21,7 @@ export interface ITransaction {
   updateTime?: Date
 }
 
-/**
- * Map of account address -> transaction list
- */
-export interface IAccountTransactions {
-  [index: string]: ITransaction[]
-}
-
-const initialState: IAccountTransactions = {}
+const initialState: ITransaction[] = []
 
 export const ACTION_TYPES = {
   GET_TRANSACTIONS: 'GET_TRANSACTIONS',
@@ -39,12 +32,9 @@ export const ACTION_TYPES = {
 const PREFIX = 'transactions_'
 
 export function getTransactions (address: string): AnyAction {
-  console.log('Action: geting tranx for %s', address)
-
   return {
     type: ACTION_TYPES.GET_TRANSACTIONS,
-    address: address,
-    payload: LocalStore.get(PREFIX + address)
+    payload: LocalStore.getValue(PREFIX + address)
   }
 }
 
@@ -54,7 +44,6 @@ export function addTransaction (address: string,
   list.unshift(tran)
   return {
     type: ACTION_TYPES.ADD_TRNASACTION,
-    address: address,
     payload: LocalStore.setValue(PREFIX + address, list)
   }
 }
@@ -63,7 +52,6 @@ export function saveTransactions (address: string, list: ITransaction[]): AnyAct
 
   return {
     type: ACTION_TYPES.SAVE_TRNASACTIONS,
-    address: address,
     payload: LocalStore.setValue(PREFIX + address, list)
   }
 }
@@ -74,20 +62,20 @@ export function saveTransactions (address: string, list: ITransaction[]): AnyAct
  * @param state the current state
  * @param action the action received
  */
-const transactions: Reducer<IAccountTransactions, AnyAction> = (state = initialState, action) => {
+const transactions: Reducer<ITransaction[], AnyAction> = (state = initialState, action) => {
   switch (action.type) {
 
     case SUCCESS(ACTION_TYPES.ADD_TRNASACTION):
       console.log('added transaction', action.payload)
-      return { ...state, [action.address]: action.payload }
+      return action.payload
 
     case SUCCESS(ACTION_TYPES.GET_TRANSACTIONS):
-      console.log('got the transactions for %s: %s', action.address, action.payload)
-      return { ...state, [action.address]: action.payload }
+      console.log('got the transactions: ', action.payload)
+      return action.payload ? action.payload : []
 
     case SUCCESS(ACTION_TYPES.SAVE_TRNASACTIONS):
       console.log('saved the transactions', action.payload)
-      return { ...state, [action.address]: action.payload }
+      return action.payload
 
     default:
       return state

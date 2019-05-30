@@ -3,14 +3,14 @@ import settings, { IAppSettings } from './settings/reducer'
 import wallet, { IWallet } from './wallet'
 import error, { IError } from './error'
 import apiContext, { IApiContext } from './api-context/reducer'
-import transactions, { IAccountTransactions } from './transaction'
+import transactions, { ITransaction } from './transaction'
 
 export interface IAppState {
   settings: IAppSettings
   wallet: IWallet
   apiContext: IApiContext
   error: IError
-  transactions: IAccountTransactions
+  transactions: ITransaction[]
 }
 
 const reducers = combineReducers<IAppState>({

@@ -9,34 +9,55 @@ import t from '../../services/i18n'
 interface ITransactionListProps extends StateProps, DispatchProps, RouteComponentProps {}
 
 interface ITransactionListState {
+  currentAddress: string
 }
 
 class TransactionList extends React.Component<ITransactionListProps, ITransactionListState> {
 
   state = {
+    currentAddress: ''
   }
 
-  componentWillMount () {
-    // load the transaction list
-    if (this.props.account) {
-      console.log('Getting transactions for ' + this.props.account.address)
-      this.props.getTransactions(this.props.account.address)
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.account && nextProps.account.address !== prevState.currentAddress) {
+      return { currentAddress: nextProps.account.address }
+    } else {
+      return null
     }
+  }
 
+  componentDidUpdate (_prevProps, prevState) {
+    if (prevState.currentAddress !== this.state.currentAddress) {
+      this.loadTransactions()
+    }
+  }
+
+  componentDidMount () {
+    this.loadTransactions()
+  }
+
+  private loadTransactions = () => {
+    // load the transaction list
+    if (this.state.currentAddress) {
+      console.log('Getting transactions for ' + this.state.currentAddress)
+      this.props.getTransactions(this.state.currentAddress)
+    }
   }
 
   render () {
 
     const account = this.props.account
-    if (!account || !(account.address in this.props.transactions)) {
+    if (!account || !(this.props.transactions)) {
       console.log('No transaction found.')
       return (null)
     }
 
+    console.log('Rendering transactions: ', this.props.transactions)
+
     const panes = [
-      { menuItem: t('tabAll'), render: () => this.renderWithFilter(account.address, '') },
-      { menuItem: t('tabSent'), render: () => this.renderWithFilter(account.address, 'Sent') },
-      { menuItem: t('tabStaked'), render: () => this.renderWithFilter(account.address, 'Staked') },
+      { menuItem: t('tabAll'), render: () => this.renderWithFilter('') },
+      { menuItem: t('tabSent'), render: () => this.renderWithFilter('Sent') },
+      { menuItem: t('tabStaked'), render: () => this.renderWithFilter('Staked') },
     ]
 
     return (
@@ -46,10 +67,10 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
     )
   }
 
-  renderWithFilter = (address: string, type: TransactionType | '') => {
+  renderWithFilter = (type: TransactionType | '') => {
 
-    // get the transactions for the address
-    let tranx = this.props.transactions[address]
+    // get the transactions
+    let tranx = this.props.transactions
     if (type !== '') {
       tranx = tranx.filter(item => item.type === type)
     }
