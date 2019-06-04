@@ -21,18 +21,18 @@ interface IConfirmPhraseProps extends StateProps, DispatchProps, RouteComponentP
 
 interface IConfirmPhraseState {
   inputPhrase: string,
-  wordList: Array<string>,
+  candidateList: Array<string>,
   confirmList: Array<string>,
   keyringPair: KeyringPair$Json | null
 }
 
-type ListType = 'candidate' | 'confirm'
+type ListType = 'candidateList' | 'confirmList'
 
 class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseState> {
 
   state: IConfirmPhraseState = {
     inputPhrase: '',
-    wordList: [],
+    candidateList: [],
     confirmList: [],
     keyringPair: null
   }
@@ -40,7 +40,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
   componentDidMount () {
     // split the new phrase to be a list
     if (this.props.wallet.newPhrase) {
-      this.setState({ wordList: this.shuffle(this.props.wallet.newPhrase.split(/\s+/)) })
+      this.setState({ candidateList: this.shuffle(this.props.wallet.newPhrase.split(/\s+/)) })
     }
   }
 
@@ -160,13 +160,13 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
 
           <Section>
             <List horizontal={true}>
-              {this.state.confirmList.map((item, index) => this.renderItem('confirm', item, index))}
+              {this.state.confirmList.map((item, index) => this.renderItem('confirmList', item, index))}
             </List>
           </Section>
 
           <Section>
             <List horizontal={true}>
-              {this.state.wordList.map((item, index) => this.renderItem('candidate', item, index))}
+              {this.state.candidateList.map((item, index) => this.renderItem('candidateList', item, index))}
             </List>
           </Section>
           <Message negative={true} hidden={this.isPhraseConfirmed()}>
@@ -191,14 +191,15 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
   }
 
   handleClickItem = (type: ListType, index: number) => {
-    if (type === 'candidate') {
-      const wordList = this.state.wordList
-      const newList = wordList.slice(0, index).concat(wordList.slice(index + 1, wordList.length))
-      this.setState({ wordList: newList })
-    } else if (type === 'confirm') {
-      const wordList = this.state.confirmList
-      const newList = wordList.slice(0, index).concat(wordList.slice(index + 1, wordList.length))
-      this.setState({ confirmList: newList })
+    const fromList = this.state[type]
+    const toType: ListType = type === 'candidateList' ? 'confirmList' : 'candidateList'
+    const toList = this.state[toType]
+    const newFromList = fromList.slice(0, index).concat(fromList.slice(index + 1, fromList.length))
+    const newToList = [...toList, fromList[index]]
+    if (type === 'candidateList') {
+      this.setState({ candidateList: newFromList, confirmList: newToList })
+    } else {
+      this.setState({ confirmList: newFromList, candidateList: newToList})
     }
   }
 
