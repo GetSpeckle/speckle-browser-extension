@@ -1,6 +1,6 @@
 import * as React from 'react'
 import BN from 'bn.js'
-import { getPassword, getAccount } from '../../services/keyring-vault-proxy'
+import { signExtrinsic } from '../../services/keyring-vault-proxy'
 import ApiPromise from '@polkadot/api/promise'
 import { RouteComponentProps, withRouter } from 'react-router'
 import {
@@ -13,9 +13,12 @@ import { connect } from 'react-redux'
 import 'react-tippy/dist/tippy.css'
 import { Form } from 'semantic-ui-react'
 import t from '../../services/i18n'
-import Keyring from '@polkadot/keyring'
-import { KeyringPair } from '@polkadot/keyring/types'
 import formatBalance from '@polkadot/util/format/formatBalance'
+import { IExtrinsic } from '@polkadot/types/types'
+import { SignerOptions } from '../../background/types'
+import { Index } from '@polkadot/types'
+import { SubmittableResult } from '@polkadot/api'
+
 interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {
 }
 
@@ -91,39 +94,30 @@ class Send extends React.Component<ISendProps, ISendState> {
     this.setState({ toAddress: val })
   }
 
-  confirm = () => {
+  confirm = async () => {
     if (!this.props.settings.selectedAccount) {
       return
     }
-    getAccount(this.props.settings.selectedAccount.address).then(
-      keyringPairJson => {
-        getPassword().then(password => {
-          const keyring = new Keyring({ type: 'sr25519' })
 
-          let pair: KeyringPair = keyring.addFromJson(keyringPairJson)
-          pair.decodePkcs8(password)
-          // Do the transfer and track the actual status
-          this.api.tx.balances
-            .transfer(this.state.toAddress, this.state.amount)
-            .signAndSend(pair, ({ events = [], status }) => {
-              console.log('Transaction status:', status.type)
+    const currentAddress = this.props.settings.selectedAccount.address
 
-              if (status.isFinalized) {
-                console.log(`Completed transfer of ${this.state.amount} to ${this.state.toAddress} at block hash`, status.asFinalized.toHex())
-                console.log('Events:')
+    const extrinsic: IExtrinsic = this.api.tx.balances
+      .transfer(this.state.toAddress, this.state.amount)
 
-                events.forEach(({ phase, event: { data, method, section } }) => {
-                  console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString())
-                })
-              } else {
-                console.log(`Status of transfer: ${status.type}`)
-              }
-            }
-          )
+    const signOptions: SignerOptions = {
+      blockHash: await this.api.genesisHash,
+      genesisHash: await this.api.genesisHash,
+      nonce: await this.api.query.system.accountNonce(currentAddress) as Index
+    }
+
+    signExtrinsic(extrinsic, currentAddress, signOptions).then(signature => {
+      extrinsic.addSignature(currentAddress as any, signature, signOptions.nonce)
+      this.api.rpc.author.submitAndWatchExtrinsic(extrinsic, (result: SubmittableResult) => {
+        if (result.status.isFinalized) {
+          console.log(result)
         }
-        )
-      }
-      )
+      })
+    })
   }
 
   render () {
