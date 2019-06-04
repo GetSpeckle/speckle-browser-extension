@@ -11,12 +11,14 @@ import {
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 import 'react-tippy/dist/tippy.css'
-import { Form } from 'semantic-ui-react'
 import t from '../../services/i18n'
 import Keyring from '@polkadot/keyring'
 import { KeyringPair } from '@polkadot/keyring/types'
 import formatBalance from '@polkadot/util/format/formatBalance'
-interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {
+import Balance from '../account/Balance'
+import { AccountSection } from '../dashboard/Dashboard'
+import { AccountList } from '../account/AccountList'
+interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
 }
 
 interface ISendState {
@@ -31,7 +33,7 @@ const TEN = new BN(10)
 
 const si = formatBalance.findSi('m')
 
-class Send extends React.Component<ISendProps, ISendState> {
+class Send extends React.Component<IDashboardProps, ISendState> {
 
   get api (): ApiPromise {
     const api = this.props.apiContext.api
@@ -109,6 +111,7 @@ class Send extends React.Component<ISendProps, ISendState> {
               console.log('Transaction status:', status.type)
 
               if (status.isFinalized) {
+                // tslint:disable-next-line:max-line-length
                 console.log(`Completed transfer of ${this.state.amount} to ${this.state.toAddress} at block hash`, status.asFinalized.toHex())
                 console.log('Events:')
 
@@ -133,6 +136,12 @@ class Send extends React.Component<ISendProps, ISendState> {
 
     return (
       <ContentContainer>
+        <AccountSection>
+          <AccountList parent={this.props}/>
+        </AccountSection>
+        <AccountSection>
+          <Balance address={this.props.settings.selectedAccount.address}/>
+        </AccountSection>
         <Form>
           <Form.Input
             label='Amount (milli)'
