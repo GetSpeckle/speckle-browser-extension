@@ -22,22 +22,41 @@ interface IConfirmPhraseProps extends StateProps, DispatchProps, RouteComponentP
 interface IConfirmPhraseState {
   inputPhrase: string,
   wordList: Array<string>,
+  confirmList: Array<string>,
   keyringPair: KeyringPair$Json | null
 }
+
+type ListType = 'candidate' | 'confirm'
 
 class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseState> {
 
   state: IConfirmPhraseState = {
     inputPhrase: '',
     wordList: [],
+    confirmList: [],
     keyringPair: null
   }
 
   componentDidMount () {
     // split the new phrase to be a list
     if (this.props.wallet.newPhrase) {
-      this.setState({ wordList: this.props.wallet.newPhrase.split(/\s+/) })
+      this.setState({ wordList: this.shuffle(this.props.wallet.newPhrase.split(/\s+/)) })
     }
+  }
+
+  /**
+   * Shuffles array in place.
+   * @param {Array} a items An array containing the items.
+   */
+  private shuffle = (a: Array<string>): Array<string> => {
+    let i = 0
+    for (i = a.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1))
+      let x = a[i]
+      a[i] = a[j]
+      a[j] = x
+    }
+    return a
   }
 
   changePhrase = event => {
@@ -51,7 +70,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
 
   isPhraseConfirmed = (): boolean => {
     return !!this.props.wallet && !!this.props.wallet.newPhrase
-        && this.props.wallet.newPhrase === this.state.inputPhrase
+        && this.props.wallet.newPhrase === this.state.confirmList.join(' ')
   }
 
   createAccount = (phrase: string, name?: string) => {
@@ -138,8 +157,17 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
             value={this.state.inputPhrase}
             onChange={this.changePhrase}
           />
+
           <Section>
-            <List horizontal={true} items={this.state.wordList} />
+            <List horizontal={true}>
+              {this.state.confirmList.map((item, index) => this.renderItem('confirm', item, index))}
+            </List>
+          </Section>
+
+          <Section>
+            <List horizontal={true}>
+              {this.state.wordList.map((item, index) => this.renderItem('candidate', item, index))}
+            </List>
           </Section>
           <Message negative={true} hidden={this.isPhraseConfirmed()}>
             {t('phraseMismatch')}
@@ -152,6 +180,26 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
         </Form>
       </ContentContainer>
     )
+  }
+
+  renderItem (type: ListType, item: string, index: number) {
+    return(
+      <List.Item>
+        <Button onClick={this.handleClickItem.bind(this, type, index)}>{item}</Button>
+      </List.Item>
+    )
+  }
+
+  handleClickItem = (type: ListType, index: number) => {
+    if (type === 'candidate') {
+      const wordList = this.state.wordList
+      const newList = wordList.slice(0, index).concat(wordList.slice(index + 1, wordList.length))
+      this.setState({ wordList: newList })
+    } else if (type === 'confirm') {
+      const wordList = this.state.confirmList
+      const newList = wordList.slice(0, index).concat(wordList.slice(index + 1, wordList.length))
+      this.setState({ confirmList: newList })
+    }
   }
 
   renderBackupScreen () {
