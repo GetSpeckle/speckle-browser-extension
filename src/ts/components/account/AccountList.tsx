@@ -20,7 +20,7 @@ import 'react-tippy/dist/tippy.css'
 import { Tooltip } from 'react-tippy'
 import { Dropdown, Icon, Popup } from 'semantic-ui-react'
 import { colorSchemes } from '../styles/themes'
-import styled from 'styled-components'
+import { AccountSection } from '../dashboard/Dashboard'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
 }
@@ -29,7 +29,7 @@ interface IAccountListProps {
   parent: IDashboardProps
 }
 
-interface IDashboardState {
+interface IAccountListState {
   options: Array<Option>,
   message?: string,
   initializing: boolean,
@@ -46,7 +46,7 @@ interface Option {
   to?: string
 }
 
-export class AccountList extends React.Component<IAccountListProps, IDashboardState> {
+export class AccountList extends React.Component<IAccountListProps, IAccountListState> {
 
   constructor (props) {
     super(props)
