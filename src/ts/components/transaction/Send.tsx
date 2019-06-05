@@ -146,7 +146,7 @@ class Send extends React.Component<IDashboardProps, ISendState> {
           <Amount/>
           <div style={{height: 27}} />
           <ToAddress/>
-          <div style={{height: 212}} />
+          <div style={{height: 27}} />
           <Section>
             <StyledButton onClick={this.confirm}>
               Confirm
