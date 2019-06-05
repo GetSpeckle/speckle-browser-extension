@@ -113,9 +113,7 @@ class Send extends React.Component<ISendProps, ISendState> {
     signExtrinsic(extrinsic, currentAddress, signOptions).then(signature => {
       extrinsic.addSignature(currentAddress as any, signature, signOptions.nonce)
       this.api.rpc.author.submitAndWatchExtrinsic(extrinsic, (result: SubmittableResult) => {
-        if (result.status.isFinalized) {
-          console.log(result)
-        }
+        // save extrinsic here
       })
     })
   }
