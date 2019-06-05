@@ -9,11 +9,19 @@
 }
 
 .ui.horizontal.list>.item {
-  font-size: 1rem;
-  background: rgba(220,220,220,0.5);
   margin: 2px;
-  padding: 4px;
-  border-radius: 3px
+}
+
+.ui.horizontal.list.confirm-list {
+  min-height: 40px;
+  width: 100%;
+  border: solid 1px silver;
+}
+
+.item>.ui.button {
+  margin: 0px;
+  padding: 2px;
+  font-weight: normal;
 }
 
 .step {

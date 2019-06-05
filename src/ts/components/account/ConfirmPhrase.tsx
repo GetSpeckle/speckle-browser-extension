@@ -4,12 +4,13 @@ import Progress from './Progress'
 import { IAppState } from '../../background/store/all'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
-import { Message, List, Button, Icon, Form } from 'semantic-ui-react'
+import { Message, List, Button, Icon, Form, Label } from 'semantic-ui-react'
 import { createAccount, unlockWallet } from '../../services/keyring-vault-proxy'
 import {
   Button as StyledButton,
   ContentContainer,
-  Section
+  Section,
+  BasicSection
 } from '../basic-components'
 import { HOME_ROUTE } from '../../constants/routes'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
@@ -151,24 +152,26 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
     return(
       <ContentContainer>
         <Form>
-          <Form.TextArea
+          {/* <Form.TextArea
             className='mnemonic'
             label={t('phraseConfirmTitle')}
             value={this.state.inputPhrase}
             onChange={this.changePhrase}
-          />
+          /> */}
 
-          <Section>
-            <List horizontal={true}>
+          <BasicSection>
+            <div>{t('phraseConfirmTitle')}</div>
+            <List horizontal={true} className='confirm-list'>
               {this.state.confirmList.map((item, index) => this.renderItem('confirmList', item, index))}
             </List>
-          </Section>
+          </BasicSection>
 
-          <Section>
+          <BasicSection>
             <List horizontal={true}>
               {this.state.candidateList.map((item, index) => this.renderItem('candidateList', item, index))}
             </List>
-          </Section>
+          </BasicSection>
+
           <Message negative={true} hidden={this.isPhraseConfirmed()}>
             {t('phraseMismatch')}
           </Message>
