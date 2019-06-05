@@ -17,7 +17,7 @@ import { KeyringPair } from '@polkadot/keyring/types'
 import formatBalance from '@polkadot/util/format/formatBalance'
 import Balance from '../account/Balance'
 import { AccountSection } from '../dashboard/Dashboard'
-import { AccountList } from '../account/AccountList'
+import { Form } from 'semantic-ui-react'
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
 }
 
@@ -136,9 +136,6 @@ class Send extends React.Component<IDashboardProps, ISendState> {
 
     return (
       <ContentContainer>
-        <AccountSection>
-          <AccountList parent={this.props}/>
-        </AccountSection>
         <AccountSection>
           <Balance address={this.props.settings.selectedAccount.address}/>
         </AccountSection>

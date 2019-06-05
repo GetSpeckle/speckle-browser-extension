@@ -1,8 +1,9 @@
 import * as React from 'react'
-import { getAccounts } from '../../services/keyring-vault-proxy'
+import { getAccounts, lockWallet } from '../../services/keyring-vault-proxy'
 import {
   GENERATE_PHRASE_ROUTE,
-  IMPORT_OPTIONS_ROUTE
+  IMPORT_OPTIONS_ROUTE,
+  LOGIN_ROUTE
 } from '../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router'
 import {
@@ -20,16 +21,12 @@ import 'react-tippy/dist/tippy.css'
 import { Tooltip } from 'react-tippy'
 import { Dropdown, Icon, Popup } from 'semantic-ui-react'
 import { colorSchemes } from '../styles/themes'
-import { AccountSection } from '../dashboard/Dashboard'
+import styled from 'styled-components'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
 }
 
-interface IAccountListProps {
-  parent: IDashboardProps
-}
-
-interface IAccountListState {
+interface IDashboardState {
   options: Array<Option>,
   message?: string,
   initializing: boolean,
@@ -46,7 +43,7 @@ interface Option {
   to?: string
 }
 
-export class AccountList extends React.Component<IAccountListProps, IAccountListState> {
+class AccountDropdown extends React.Component<IDashboardProps, IDashboardState> {
 
   constructor (props) {
     super(props)
@@ -57,10 +54,17 @@ export class AccountList extends React.Component<IAccountListProps, IAccountList
     }
   }
 
+  handleClickLogout = () => {
+    const { history } = this.props
+    lockWallet().then(() => {
+      history.push(LOGIN_ROUTE)
+    })
+  }
+
   handleSelectChange = (address: string) => {
     const dropdownOptions: Option[] = this.state.options.filter(o => o.key === address)
     if (dropdownOptions && dropdownOptions[0]) {
-      this.props.parent.saveSettings({ ...this.props.parent.settings, selectedAccount: {
+      this.props.saveSettings({ ...this.props.settings, selectedAccount: {
         address: dropdownOptions[0].value,
         name: dropdownOptions[0].text
       } })
@@ -87,7 +91,7 @@ export class AccountList extends React.Component<IAccountListProps, IAccountList
 
   copyToClipboard = () => {
     const el = document.createElement('textarea')
-    el.value = this.props.parent.settings.selectedAccount!!.address
+    el.value = this.props.settings.selectedAccount!!.address
     el.setAttribute('readonly', '')
     el.style.position = 'absolute'
     el.style.left = '-9999px'
@@ -115,11 +119,11 @@ export class AccountList extends React.Component<IAccountListProps, IAccountList
           }
         )
         // set first one to select account if it isn't set
-        if (!this.props.parent.settings.selectedAccount) {
-          this.props.parent.saveSettings({ ...this.props.parent.settings, selectedAccount: accounts[0] })
+        if (!this.props.settings.selectedAccount) {
+          this.props.saveSettings({ ...this.props.settings, selectedAccount: accounts[0] })
         }
 
-        this.props.parent.setAccounts(accounts)
+        this.props.setAccounts(accounts)
 
         const dynamicItems: Option[] = accounts.map(account => ({
           key: account.address,
@@ -145,11 +149,11 @@ export class AccountList extends React.Component<IAccountListProps, IAccountList
   }
 
   handleClickCreateAccount = () => {
-    this.props.parent.history.push(GENERATE_PHRASE_ROUTE)
+    this.props.history.push(GENERATE_PHRASE_ROUTE)
   }
 
   handleClickImport = () => {
-    this.props.parent.history.push(IMPORT_OPTIONS_ROUTE)
+    this.props.history.push(IMPORT_OPTIONS_ROUTE)
   }
 
   componentWillMount () {
@@ -163,14 +167,14 @@ export class AccountList extends React.Component<IAccountListProps, IAccountList
   }
 
   render () {
-    if (this.state.initializing || !this.props.parent.settings.selectedAccount) {
+    if (this.state.initializing || !this.props.settings.selectedAccount) {
       return (null)
     }
 
-    const selectedAccount = this.props.parent.settings.selectedAccount
+    const selectedAccount = this.props.settings.selectedAccount
 
     const backgroundStyle = {
-      backgroundColor: colorSchemes[this.props.parent.settings.color].backgroundColor,
+      backgroundColor: colorSchemes[this.props.settings.color].backgroundColor,
       color: 'white'
     }
 
@@ -186,11 +190,9 @@ export class AccountList extends React.Component<IAccountListProps, IAccountList
           >
             <Dropdown.Menu style={backgroundStyle}>
               <Dropdown.Menu scrolling={true} style={backgroundStyle}>
-                { this.state.options.map(
-                  option => (
-                  <Dropdown.Item key={option.value} {...option} />)
-                  )
-                }
+                {this.state.options.map(option => (
+                  <Dropdown.Item key={option.value} {...option} />
+                ))}
               </Dropdown.Menu>
 
               <Dropdown.Divider />
@@ -221,7 +223,7 @@ export class AccountList extends React.Component<IAccountListProps, IAccountList
             arrow={true}
           >
             <AccountAddress onClick={this.copyToClipboard}>
-              {this.getAddress(this.props.parent.settings.selectedAccount.address)}
+              {this.getAddress(this.props.settings.selectedAccount.address)}
             </AccountAddress>
             <Popup
               open={!!this.state.message}
@@ -235,7 +237,11 @@ export class AccountList extends React.Component<IAccountListProps, IAccountList
   }
 }
 
-
+export const AccountSection = styled.div`
+  width: 100%
+  margin: 8px 0 9px
+  text-align: center
+`
 
 const mapStateToProps = (state: IAppState) => {
   return {
@@ -248,4 +254,4 @@ type DispatchProps = typeof mapDispatchToProps
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AccountList))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AccountDropdown))
