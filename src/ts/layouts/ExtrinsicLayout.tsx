@@ -13,7 +13,7 @@ class DashboardLayout extends Component<IDashboardProps> {
   render () {
 
     const layoutStyle = {
-      backgroundImage: `url(/assets/background/color-bg-${this.props.settings.color}.svg)`,
+      backgroundImage: `url(/assets/background/color-bg-ext-${this.props.settings.color}.svg)`,
       backgroundRepeat: 'no-repeat',
       backgroundSize: 375
     }

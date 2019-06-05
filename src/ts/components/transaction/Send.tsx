@@ -18,6 +18,8 @@ import formatBalance from '@polkadot/util/format/formatBalance'
 import Balance from '../account/Balance'
 import { AccountSection } from '../dashboard/Dashboard'
 import { Form } from 'semantic-ui-react'
+import Amount from './Amount'
+import ToAddress from './ToAddress'
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
 }
 
@@ -121,8 +123,7 @@ class Send extends React.Component<IDashboardProps, ISendState> {
               } else {
                 console.log(`Status of transfer: ${status.type}`)
               }
-            }
-          )
+            })
         }
         )
       }
@@ -139,16 +140,13 @@ class Send extends React.Component<IDashboardProps, ISendState> {
         <AccountSection>
           <Balance address={this.props.settings.selectedAccount.address}/>
         </AccountSection>
+        <div style={{height: 27}} />
+        <AccountSection/>
         <Form>
-          <Form.Input
-            label='Amount (milli)'
-            onChange={this.changeAmount}
-          />
-          <Form.TextArea
-            label='toAddress'
-            value={this.state.toAddress}
-            onChange={this.changeAddress}
-          />
+          <Amount/>
+          <div style={{height: 27}} />
+          <ToAddress/>
+          <div style={{height: 212}} />
           <Section>
             <StyledButton onClick={this.confirm}>
               Confirm
