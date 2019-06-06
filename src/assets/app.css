@@ -13,15 +13,25 @@
 }
 
 .ui.horizontal.list.confirm-list {
-  min-height: 40px;
+  min-height: 60px;
   width: 100%;
-  border: solid 1px silver;
+  padding: 2px;
+  border: 1px solid rgba(34,36,38,.15);
 }
 
 .item>.ui.button {
   margin: 0px;
   padding: 2px;
   font-weight: normal;
+}
+
+.custom-label {
+  opacity: 0.6;
+  color: #3e5860;
+  font-weight: 700;
+  font-family: Avenir;
+  font-size: 11px;
+  margin: 0 0 .28571429rem 0;
 }
 
 .step {

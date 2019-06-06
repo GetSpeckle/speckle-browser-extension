@@ -152,15 +152,8 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
     return(
       <ContentContainer>
         <Form>
-          {/* <Form.TextArea
-            className='mnemonic'
-            label={t('phraseConfirmTitle')}
-            value={this.state.inputPhrase}
-            onChange={this.changePhrase}
-          /> */}
-
           <BasicSection>
-            <div>{t('phraseConfirmTitle')}</div>
+            <div className='custom-label'>{t('phraseConfirmTitle')}</div>
             <List horizontal={true} className='confirm-list'>
               {this.state.confirmList.map((item, index) => this.renderItem('confirmList', item, index))}
             </List>
