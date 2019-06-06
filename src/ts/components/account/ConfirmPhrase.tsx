@@ -21,7 +21,6 @@ import { saveSettings } from '../../background/store/settings'
 interface IConfirmPhraseProps extends StateProps, DispatchProps, RouteComponentProps {}
 
 interface IConfirmPhraseState {
-  inputPhrase: string
   candidateList: Array<string>
   confirmList: Array<string>
   keyringPair: KeyringPair$Json | null
@@ -32,7 +31,6 @@ type ListType = 'candidateList' | 'confirmList'
 class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseState> {
 
   state: IConfirmPhraseState = {
-    inputPhrase: '',
     candidateList: [],
     confirmList: [],
     keyringPair: null
@@ -58,15 +56,6 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
       a[j] = x
     }
     return a
-  }
-
-  changePhrase = event => {
-    const val = event.target.value
-    let formatted = val.trim().split(/\s+/).join(' ')
-    if (val.endsWith(' ')) {
-      formatted = formatted + ' '
-    }
-    this.setState({ inputPhrase: formatted })
   }
 
   isPhraseConfirmed = (): boolean => {
