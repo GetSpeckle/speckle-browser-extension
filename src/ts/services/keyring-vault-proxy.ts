@@ -72,19 +72,6 @@ export function walletExists (): Promise<boolean> {
   })
 }
 
-export function getAccount (address: string): Promise<KeyringPair$Json> {
-  return new Promise<KeyringPair$Json>((resolve, reject) => {
-    port.onMessage.addListener(msg => {
-      if (msg.method !== FUNCS.GET_ACCOUNT) return
-      if (msg.error) {
-        reject(msg.error.message)
-      }
-      resolve(msg.result)
-    })
-    port.postMessage({ method: FUNCS.GET_ACCOUNT, address: address })
-  })
-}
-
 export function signExtrinsic (extrinsic: IExtrinsic, address: string, signerOption: SignerOptions) {
   return new Promise<any>((resolve, reject) => {
     const { blockHash, genesisHash, nonce } = signerOption
@@ -158,21 +145,6 @@ export function updateAccountName (address: string, accountName: string):
       method: FUNCS.UPDATE_ACCOUNT_NAME,
       address: address,
       accountName: accountName
-    })
-  })
-}
-
-export function getPassword (): Promise<string> {
-  return new Promise<string>((resolve, reject) => {
-    port.onMessage.addListener(msg => {
-      if (msg.method !== FUNCS.GET_PASSWORD) return
-      if (msg.error) {
-        reject(msg.error.message)
-      }
-      resolve(msg.result)
-    })
-    port.postMessage({
-      method: FUNCS.GET_PASSWORD
     })
   })
 }

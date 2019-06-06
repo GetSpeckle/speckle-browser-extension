@@ -101,7 +101,7 @@ class Send extends React.Component<ISendProps, ISendState> {
 
     const currentAddress = this.props.settings.selectedAccount.address
 
-    const extrinsic: IExtrinsic = this.api.tx.balances
+    const extrinsic: IExtrinsic = await this.api.tx.balances
       .transfer(this.state.toAddress, this.state.amount)
 
     const signOptions: SignerOptions = {
@@ -113,6 +113,7 @@ class Send extends React.Component<ISendProps, ISendState> {
     signExtrinsic(extrinsic, currentAddress, signOptions).then(signature => {
       extrinsic.addSignature(currentAddress as any, signature, signOptions.nonce)
       this.api.rpc.author.submitAndWatchExtrinsic(extrinsic, (result: SubmittableResult) => {
+        console.log(result)
         // save extrinsic here
       })
     })
@@ -154,8 +155,8 @@ const mapStateToProps = (state: IAppState) => {
 }
 
 const mapDispatchToProps = {}
-type DispatchProps = typeof mapDispatchToProps
 
 type StateProps = ReturnType<typeof mapStateToProps>
+type DispatchProps = typeof mapDispatchToProps
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Send))
