@@ -157,7 +157,6 @@ class KeyringVault {
   }
 
   signExtrinsic = async (messageExtrinsicSign: MessageExtrinsicSign): Promise<string> => {
-    debugger
     const { address, blockHash, method, nonce } = messageExtrinsicSign
     const pair = this.keyring.getPair(address)
 
