@@ -4,7 +4,7 @@ import Progress from './Progress'
 import { IAppState } from '../../background/store/all'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
-import { Message, List, Button, Icon, Form, Label } from 'semantic-ui-react'
+import { Message, List, Button, Icon, Form } from 'semantic-ui-react'
 import { createAccount, unlockWallet } from '../../services/keyring-vault-proxy'
 import {
   Button as StyledButton,
@@ -21,9 +21,9 @@ import { saveSettings } from '../../background/store/settings'
 interface IConfirmPhraseProps extends StateProps, DispatchProps, RouteComponentProps {}
 
 interface IConfirmPhraseState {
-  inputPhrase: string,
-  candidateList: Array<string>,
-  confirmList: Array<string>,
+  inputPhrase: string
+  candidateList: Array<string>
+  confirmList: Array<string>
   keyringPair: KeyringPair$Json | null
 }
 
