@@ -1,5 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
+import { Dropdown } from 'semantic-ui-react'
 
 export default class Amount extends React.Component {
   render () {
@@ -8,7 +9,7 @@ export default class Amount extends React.Component {
         <Label>Amount</Label>
         <Field>
           <input type='text'/>
-          <button>Max</button>
+          <Digit options={options} defaultValue={options[5].value} scrolling={true}/>
         </Field>
       </div>
     )
@@ -38,11 +39,32 @@ const Label = styled.label`
 
 const Field = styled.div`
 {
-  width: 311px;
+  width: 250px;
   height: 42px;
   display: flex;
-}
-input {
-  flex: 1;
+  border: solid #808080 0.2px;
+  border-radius: 10px;
 }
 `
+
+const Digit = styled(Dropdown)`
+  margin-left: 31px;
+  width: 50px;
+`
+
+const options = [
+  { key: 'f', text: 'femto', value: '1' },
+  { key: 'p', text: 'pico', value: '1000' },
+  { key: 'n', text: 'nano', value: '1000000' },
+  { key: 'm', text: 'micro', value: '1000000000' },
+  { key: 'mi', text: 'milli', value: '1000000000000' },
+  { key: 'd', text: 'DOT', value:  '1000000000000000' },
+  { key: 'k', text: 'Kilo', value: '1000000000000000000' },
+  { key: 'm', text: 'Mega', value: '1000000000000000000000' },
+  { key: 'g', text: 'Giga', value: '1000000000000000000000000' },
+  { key: 't', text: 'Tera', value: '1000000000000000000000000000' },
+  { key: 'P', text: 'Peta', value: '1000000000000000000000000000000' },
+  { key: 'e', text: 'Exa', value:  '1000000000000000000000000000000000' },
+  { key: 'z', text: 'Zetta', value: '1000000000000000000000000000000000000' },
+  { key: 'y', text: 'Yotta', value: '1000000000000000000000000000000000000000' }
+]

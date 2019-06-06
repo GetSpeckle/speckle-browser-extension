@@ -140,13 +140,13 @@ class Send extends React.Component<IDashboardProps, ISendState> {
         <AccountSection>
           <Balance address={this.props.settings.selectedAccount.address}/>
         </AccountSection>
-        <div style={{height: 27}} />
+        <div style={{ height: 27 }} />
         <AccountSection/>
         <Form>
           <Amount/>
-          <div style={{height: 27}} />
+          <div style={{ height: 27 }} />
           <ToAddress/>
-          <div style={{height: 27}} />
+          <div style={{ height: 27 }} />
           <Section>
             <StyledButton onClick={this.confirm}>
               Confirm
