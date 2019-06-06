@@ -163,7 +163,6 @@ class KeyringVault {
     if (!pair) {
       return Promise.reject(new Error('Unable to find pair'))
     }
-    debugger
 
     pair.decodePkcs8(this._password)
 
