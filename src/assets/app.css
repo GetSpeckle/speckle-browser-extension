@@ -9,11 +9,29 @@
 }
 
 .ui.horizontal.list>.item {
-  font-size: 1rem;
-  background: rgba(220,220,220,0.5);
   margin: 2px;
-  padding: 4px;
-  border-radius: 3px
+}
+
+.ui.horizontal.list.confirm-list {
+  min-height: 60px;
+  width: 100%;
+  padding: 2px;
+  border: 1px solid rgba(34,36,38,.15);
+}
+
+.item>.ui.button {
+  margin: 0px;
+  padding: 2px;
+  font-weight: normal;
+}
+
+.custom-label {
+  opacity: 0.6;
+  color: #3e5860;
+  font-weight: 700;
+  font-family: Avenir;
+  font-size: 11px;
+  margin: 0 0 .28571429rem 0;
 }
 
 .step {
