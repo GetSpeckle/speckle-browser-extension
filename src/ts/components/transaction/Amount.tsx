@@ -7,10 +7,10 @@ export default class Amount extends React.Component {
     return (
       <div>
         <Label>Amount</Label>
-        <Field>
-          <input type='text'/>
+        <div style={{ display: 'flex' }}>
+          <Input type='text'/>
           <Digit options={options} defaultValue={options[5].value} scrolling={true}/>
-        </Field>
+        </div>
       </div>
     )
   }
@@ -37,19 +37,16 @@ const Label = styled.label`
   }
 `
 
-const Field = styled.div`
+const Input = styled.input`
 {
-  width: 250px;
+  width: 270px;
   height: 42px;
-  display: flex;
-  border: solid #808080 0.2px;
-  border-radius: 10px;
 }
 `
 
 const Digit = styled(Dropdown)`
   margin-left: 31px;
-  width: 50px;
+  width: 30px;
 `
 
 const options = [
