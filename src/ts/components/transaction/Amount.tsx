@@ -2,15 +2,52 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { Dropdown } from 'semantic-ui-react'
 
+/*
+interface IAccountProps {
+  changeAmount: any
+}
+*/
+
+/*
+interface IAmountState {
+  value: string
+  siUnit: string
+}
+ */
 
 export default class Amount extends React.Component {
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      value: '',
+      siUnit: '-'
+    }
+  }
+
+  /*
+  handleOnChange = (_e, data) => {
+    this.props.changeAmount(this.state.value, data.value)
+  }
+  */
+
+  updateValue = (event) => {
+    this.setState({ value: event.target.value })
+    console.log(event.target.value)
+  }
+
+  updateDigit = (_event: React.SyntheticEvent<HTMLDivElement>, data: any) => {
+    this.setState({ siUnit: data.value })
+    console.log(data.value)
+  }
+
   render () {
     return (
       <div>
         <Label>Amount</Label>
         <div style={{ display: 'flex', width: '311px' }}>
           <Input>
-          <input type='text'/>
+          <input type='text' onChange={this.updateValue}/>
           </Input>
           <Digit
             selection={true}
@@ -18,6 +55,7 @@ export default class Amount extends React.Component {
             defaultValue={options[8].value}
             scrolling={true}
             style={{ minWidth: '100px' }}
+            onChange={this.updateDigit}
           />
         </div>
       </div>
