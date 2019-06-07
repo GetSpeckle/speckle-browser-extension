@@ -7,9 +7,7 @@ import {
 } from '../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router'
 import {
-  Button as StyledButton,
   ContentContainer,
-  Section,
   AccountAddress
 } from '../basic-components'
 import { IAppState } from '../../background/store/all'
@@ -17,7 +15,6 @@ import { connect } from 'react-redux'
 import { IAccount, setAccounts } from '../../background/store/wallet'
 import t from '../../services/i18n'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
-import Balance from '../account/Balance'
 import Identicon from 'polkadot-identicon'
 import { saveSettings } from '../../background/store/settings'
 import 'react-tippy/dist/tippy.css'
@@ -46,7 +43,7 @@ interface Option {
   to?: string
 }
 
-class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
+class AccountDropdown extends React.Component<IDashboardProps, IDashboardState> {
 
   constructor (props) {
     super(props)
@@ -205,7 +202,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
                 onClick={this.handleClickCreateAccount}
               >
                 <Icon name='plus' />
-                  {t('createNewAccount')}
+                {t('createNewAccount')}
               </Dropdown.Item>
 
               <Dropdown.Item
@@ -213,7 +210,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
                 onClick={this.handleClickImport}
               >
                 <Icon name='redo' />
-                  {t('importExistingAccount')}
+                {t('importExistingAccount')}
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -225,31 +222,16 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
             trigger='mouseenter'
             arrow={true}
           >
-          <AccountAddress onClick={this.copyToClipboard}>
-            {this.getAddress(this.props.settings.selectedAccount.address)}
-          </AccountAddress>
-          <Popup
-            open={!!this.state.message}
-            content={t('copyAddressMessage')}
-            basic={true}
-          />
+            <AccountAddress onClick={this.copyToClipboard}>
+              {this.getAddress(this.props.settings.selectedAccount.address)}
+            </AccountAddress>
+            <Popup
+              open={!!this.state.message}
+              content={t('copyAddressMessage')}
+              basic={true}
+            />
           </Tooltip>
         </AccountSection>
-        <AccountSection>
-          <Identicon
-            account={this.props.settings.selectedAccount.address}
-            size={80}
-            className='identicon'
-          />
-        </AccountSection>
-        <AccountSection>
-          <Balance address={this.props.settings.selectedAccount.address}/>
-        </AccountSection>
-        <Section>
-          <StyledButton onClick={this.handleClickLogout}>
-            {t('logout')}
-          </StyledButton>
-        </Section>
       </ContentContainer>
     )
   }
@@ -272,4 +254,4 @@ type DispatchProps = typeof mapDispatchToProps
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Dashboard))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AccountDropdown))
