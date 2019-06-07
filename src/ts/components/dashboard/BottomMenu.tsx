@@ -2,7 +2,7 @@ import * as React from 'react'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { Menu, Icon } from 'semantic-ui-react'
 import t from '../../services/i18n'
-import { HOME_ROUTE } from '../../constants/routes'
+import { HOME_ROUTE, SEND_ROUTE } from '../../constants/routes'
 
 interface IBottomMenuProps extends RouteComponentProps {
 }
@@ -11,7 +11,7 @@ const NAME_MAP = {
   home: HOME_ROUTE,
   stake: '/stake',
   democracy: '/democracy',
-  send: '/send'
+  send: SEND_ROUTE
 }
 
 /**

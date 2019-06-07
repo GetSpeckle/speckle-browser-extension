@@ -93,6 +93,15 @@ browser.runtime.onConnect.addListener(function (port) {
           port.postMessage({ method: FUNCS.REMOVE_ACCOUNT, error: { message: err.message } })
         }
         break
+      case FUNCS.SIGN_EXTRINSIC:
+        try {
+          keyringVault.signExtrinsic(msg.messageExtrinsicSign).then(signature => {
+            port.postMessage({ method: FUNCS.SIGN_EXTRINSIC, result: signature })
+          })
+        } catch (err) {
+          port.postMessage({ method: FUNCS.SIGN_EXTRINSIC, error: { message: err.message } })
+        }
+        break
       case FUNCS.IMPORT_MNEMONIC:
         keyringVault.importAccountFromMnemonic(msg.mnemonic, msg.accountName).then((pairJson) => {
           port.postMessage({ method: FUNCS.IMPORT_MNEMONIC, result: pairJson })
