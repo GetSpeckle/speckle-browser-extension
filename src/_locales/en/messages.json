@@ -90,7 +90,7 @@
     "message": "Enter your backup phrase"
   },
   "phraseMismatch": {
-    "message": "Please enter the matched phrase"
+    "message": "Please pick the above words in th right order to match the phrase."
   },
   "confirmPhraseButton": {
     "message": "Confirm Backup Phrase"

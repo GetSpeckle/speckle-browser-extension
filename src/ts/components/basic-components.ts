@@ -34,11 +34,14 @@ export const ContentContainer = styled.div`
   margin: 0 auto
 `
 
-export const Section = styled.div`
+export const BasicSection = styled.div`
   width: 100%
   margin: 18px 0
-  text-align: center
   word-wrap: break-word
+`
+
+export const Section = styled(BasicSection)`
+  text-align: center
 `
 
 export const TopSection = styled(Section)`

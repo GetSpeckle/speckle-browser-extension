@@ -9,7 +9,8 @@ import { createAccount, unlockWallet } from '../../services/keyring-vault-proxy'
 import {
   Button as StyledButton,
   ContentContainer,
-  Section
+  Section,
+  BasicSection
 } from '../basic-components'
 import { HOME_ROUTE } from '../../constants/routes'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
@@ -20,38 +21,46 @@ import { saveSettings } from '../../background/store/settings'
 interface IConfirmPhraseProps extends StateProps, DispatchProps, RouteComponentProps {}
 
 interface IConfirmPhraseState {
-  inputPhrase: string,
-  wordList: Array<string>,
+  candidateList: Array<string>
+  confirmList: Array<string>
   keyringPair: KeyringPair$Json | null
 }
+
+type ListType = 'candidateList' | 'confirmList'
 
 class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseState> {
 
   state: IConfirmPhraseState = {
-    inputPhrase: '',
-    wordList: [],
+    candidateList: [],
+    confirmList: [],
     keyringPair: null
   }
 
   componentDidMount () {
     // split the new phrase to be a list
     if (this.props.wallet.newPhrase) {
-      this.setState({ wordList: this.props.wallet.newPhrase.split(/\s+/) })
+      this.setState({ candidateList: this.shuffle(this.props.wallet.newPhrase.split(/\s+/)) })
     }
   }
 
-  changePhrase = event => {
-    const val = event.target.value
-    let formatted = val.trim().split(/\s+/).join(' ')
-    if (val.endsWith(' ')) {
-      formatted = formatted + ' '
+  /**
+   * Shuffles array in place.
+   * @param {Array} a items An array containing the items.
+   */
+  private shuffle = (a: Array<string>): Array<string> => {
+    let i = 0
+    for (i = a.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1))
+      let x = a[i]
+      a[i] = a[j]
+      a[j] = x
     }
-    this.setState({ inputPhrase: formatted })
+    return a
   }
 
   isPhraseConfirmed = (): boolean => {
     return !!this.props.wallet && !!this.props.wallet.newPhrase
-        && this.props.wallet.newPhrase === this.state.inputPhrase
+        && this.props.wallet.newPhrase === this.state.confirmList.join(' ')
   }
 
   createAccount = (phrase: string, name?: string) => {
@@ -132,15 +141,19 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
     return(
       <ContentContainer>
         <Form>
-          <Form.TextArea
-            className='mnemonic'
-            label={t('phraseConfirmTitle')}
-            value={this.state.inputPhrase}
-            onChange={this.changePhrase}
-          />
-          <Section>
-            <List horizontal={true} items={this.state.wordList} />
-          </Section>
+          <BasicSection>
+            <div className='custom-label'>{t('phraseConfirmTitle')}</div>
+            <List horizontal={true} className='confirm-list'>
+              {this.state.confirmList.map((item, index) => this.renderItem('confirmList', item, index))}
+            </List>
+          </BasicSection>
+
+          <BasicSection>
+            <List horizontal={true}>
+              {this.state.candidateList.map((item, index) => this.renderItem('candidateList', item, index))}
+            </List>
+          </BasicSection>
+
           <Message negative={true} hidden={this.isPhraseConfirmed()}>
             {t('phraseMismatch')}
           </Message>
@@ -152,6 +165,27 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
         </Form>
       </ContentContainer>
     )
+  }
+
+  renderItem (type: ListType, item: string, index: number) {
+    return(
+      <List.Item>
+        <Button onClick={this.handleClickItem.bind(this, type, index)}>{item}</Button>
+      </List.Item>
+    )
+  }
+
+  handleClickItem = (type: ListType, index: number) => {
+    const fromList = this.state[type]
+    const toType: ListType = type === 'candidateList' ? 'confirmList' : 'candidateList'
+    const toList = this.state[toType]
+    const newFromList = fromList.slice(0, index).concat(fromList.slice(index + 1, fromList.length))
+    const newToList = [...toList, fromList[index]]
+    if (type === 'candidateList') {
+      this.setState({ candidateList: newFromList, confirmList: newToList })
+    } else {
+      this.setState({ confirmList: newFromList, candidateList: newToList})
+    }
   }
 
   renderBackupScreen () {

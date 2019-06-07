@@ -4,6 +4,9 @@ import { Prefix } from '@polkadot/keyring/address/types'
 import { LocalStore } from '../../services/local-store'
 import { mnemonicGenerate, cryptoWaitReady, mnemonicValidate } from '@polkadot/util-crypto'
 import t from '../../services/i18n'
+import { MessageExtrinsicSign } from '../types'
+import u8aToHex from '@polkadot/util/u8a/toHex'
+import RawPayload from '../RawPayload'
 
 const VAULT_KEY: string = 'speckle-vault'
 
@@ -151,6 +154,21 @@ class KeyringVault {
       if (pair) this.keyring.removePair(pair.address())
       return Promise.reject(new Error(t('importKeystoreError')))
     }
+  }
+
+  signExtrinsic = async (messageExtrinsicSign: MessageExtrinsicSign): Promise<string> => {
+    const { address, blockHash, method, nonce } = messageExtrinsicSign
+    const pair = this.keyring.getPair(address)
+
+    if (!pair) {
+      return Promise.reject(new Error('Unable to find pair'))
+    }
+
+    pair.decodePkcs8(this._password)
+
+    const payload = new RawPayload({ blockHash, method, nonce })
+    const signature = u8aToHex(payload.sign(pair))
+    return Promise.resolve(signature)
   }
 
   private saveAccount (pair: KeyringPair): Promise<KeyringPair$Json> {

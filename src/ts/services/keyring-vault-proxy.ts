@@ -3,6 +3,8 @@ import { KeyringPair$Json } from '@polkadot/keyring/types'
 import * as FUNCS from '../constants/keyring-vault-funcs'
 import { cryptoWaitReady } from '@polkadot/util-crypto'
 import Keyring from '@polkadot/keyring'
+import { SignerOptions } from '../background/types'
+import { IExtrinsic } from '@polkadot/types/types'
 
 const port = browser.runtime.connect(undefined, { name: '__SPECKLE__' })
 
@@ -67,6 +69,26 @@ export function walletExists (): Promise<boolean> {
       resolve(msg.result)
     })
     port.postMessage({ method: FUNCS.WALLET_EXISTS })
+  })
+}
+
+export function signExtrinsic (extrinsic: IExtrinsic, address: string, signerOption: SignerOptions) {
+  return new Promise<any>((resolve, reject) => {
+    const { blockHash, genesisHash, nonce } = signerOption
+    port.onMessage.addListener(msg => {
+      if (msg.method !== FUNCS.SIGN_EXTRINSIC) return
+      if (msg.error) {
+        reject(msg.error.message)
+      }
+      resolve(msg.result)
+    })
+    port.postMessage({ method: FUNCS.SIGN_EXTRINSIC, messageExtrinsicSign: JSON.parse(JSON.stringify({
+      address,
+      blockHash,
+      genesisHash,
+      method: extrinsic.method.toHex(),
+      nonce
+    }))})
   })
 }
 
