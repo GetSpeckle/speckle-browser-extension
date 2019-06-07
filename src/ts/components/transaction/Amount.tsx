@@ -15,7 +15,7 @@ export default class Amount extends React.Component {
           <Digit
             selection={true}
             options={options}
-            defaultValue={options[5].value}
+            defaultValue={options[8].value}
             scrolling={true}
             style={{ minWidth: '100px' }}
           />
@@ -61,18 +61,21 @@ const Digit = styled(Dropdown)`
 `
 
 const options = [
-  { key: 'f', text: 'femto', value: '1' },
-  { key: 'p', text: 'pico', value: '1000' },
-  { key: 'n', text: 'nano', value: '1000000' },
-  { key: 'm', text: 'micro', value: '1000000000' },
-  { key: 'mi', text: 'milli', value: '1000000000000' },
-  { key: 'd', text: 'DOT', value:  '1000000000000000' },
-  { key: 'k', text: 'Kilo', value: '1000000000000000000' },
-  { key: 'm', text: 'Mega', value: '1000000000000000000000' },
-  { key: 'g', text: 'Giga', value: '1000000000000000000000000' },
-  { key: 't', text: 'Tera', value: '1000000000000000000000000000' },
-  { key: 'P', text: 'Peta', value: '1000000000000000000000000000000' },
-  { key: 'e', text: 'Exa', value:  '1000000000000000000000000000000000' },
-  { key: 'z', text: 'Zetta', value: '1000000000000000000000000000000000000' },
-  { key: 'y', text: 'Yotta', value: '1000000000000000000000000000000000000000' }
+  { power: -24, value: 'y', text: 'yocto' },
+  { power: -21, value: 'z', text: 'zepto' },
+  { power: -18, value: 'a', text: 'atto' },
+  { power: -15, value: 'f', text: 'femto' },
+  { power: -12, value: 'p', text: 'pico' },
+  { power: -9, value: 'n', text: 'nano' },
+  { power: -6, value: 'µ', text: 'micro' },
+  { power: -3, value: 'm', text: 'milli' },
+  { power: 0, value: '-', text: 'DOT' }, // position 8
+  { power: 3, value: 'k', text: 'Kilo' },
+  { power: 6, value: 'M', text: 'Mega' },
+  { power: 9, value: 'G', text: 'Giga' },
+  { power: 12, value: 'T', text: 'Tera' },
+  { power: 15, value: 'P', text: 'Peta' },
+  { power: 18, value: 'E', text: 'Exa' },
+  { power: 21, value: 'Z', text: 'Zeta' },
+  { power: 24, value: 'Y', text: 'Yotta' }
 ]
