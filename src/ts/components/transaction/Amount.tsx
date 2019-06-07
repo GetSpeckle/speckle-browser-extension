@@ -2,14 +2,23 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { Dropdown } from 'semantic-ui-react'
 
+
 export default class Amount extends React.Component {
   render () {
     return (
       <div>
         <Label>Amount</Label>
-        <div style={{ display: 'flex' }}>
-          <Input type='text'/>
-          <Digit options={options} defaultValue={options[5].value} scrolling={true}/>
+        <div style={{ display: 'flex', width: '311px' }}>
+          <Input>
+          <input type='text'/>
+          </Input>
+          <Digit
+            selection={true}
+            options={options}
+            defaultValue={options[5].value}
+            scrolling={true}
+            style={{ minWidth: '100px' }}
+          />
         </div>
       </div>
     )
@@ -37,16 +46,18 @@ const Label = styled.label`
   }
 `
 
-const Input = styled.input`
+const Input = styled.div`
 {
-  width: 270px;
+  width: 200px;
   height: 42px;
 }
 `
 
 const Digit = styled(Dropdown)`
-  margin-left: 31px;
-  width: 30px;
+{
+  margin-left: 11px;
+  height: 32px;
+}
 `
 
 const options = [
