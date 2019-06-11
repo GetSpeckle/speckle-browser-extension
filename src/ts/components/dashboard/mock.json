@@ -1,0 +1,20 @@
+[
+  {
+    "purpose": "send",
+    "status": "pending",
+    "amount": 10,
+    "si": "-"
+  },
+  {
+    "purpose": "receive",
+    "status": "finalized",
+    "amount": 20,
+    "si": "y"
+  },
+  {
+    "purpose": "stake",
+    "status": "error",
+    "amount": 30,
+    "si": "m"
+  }
+]

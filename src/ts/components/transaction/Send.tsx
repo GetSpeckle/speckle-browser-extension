@@ -53,9 +53,7 @@ class Send extends React.Component<ISendProps, ISendState> {
     }
   }
 
-  changeAmount = event => {
-    this.setState({ amount: this.inputValueToBn(event.target.value) })
-  }
+
 
   getSiPowers = (siUnit = this.state.siUnit): [BN, number, number] => {
     const { isSi } = this.state
@@ -88,7 +86,19 @@ class Send extends React.Component<ISendProps, ISendState> {
 
   changeAddress = event => {
     const val = event.target.value
+    // console.log(val) TODO: remove this after testing
     this.setState({ toAddress: val })
+  }
+
+  changeAmount = event => {
+    // console.log(event.target.value) TODO: remove this after testing
+    this.setState({ amount: this.inputValueToBn(event.target.value) })
+  }
+
+  changeSiUnit = (_event, data) => {
+    // console.log(data.value) TODO: remove this after testing
+    const val = formatBalance.findSi(data.value).value
+    this.setState({ siUnit: val })
   }
 
   confirm = async () => {
@@ -129,9 +139,9 @@ class Send extends React.Component<ISendProps, ISendState> {
         <div style={{ height: 27 }} />
         <AccountSection />
         <Form>
-          <Amount />
+          <Amount handleAmountChange={this.changeAmount} handleDigitChange={this.changeSiUnit}/>
           <div style={{ height: 27 }} />
-          <ToAddress />
+          <ToAddress handleAddressChange={this.changeAddress}/>
           <div style={{ height: 27 }} />
           <AccountSection>
             <TxFee>Transaction Fee:

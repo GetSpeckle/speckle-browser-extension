@@ -1,13 +1,18 @@
 import * as React from 'react'
 import styled from 'styled-components'
 
-export default class ToAddress extends React.Component {
+interface IToAddressProps {
+  handleAddressChange: any
+}
+
+export default class ToAddress extends React.Component<IToAddressProps> {
+
   render () {
     return (
       <div>
         <Label>Send to</Label>
         <Field>
-          <input type='text'/>
+          <input type='text' onChange={this.props.handleAddressChange}/>
         </Field>
       </div>
     )
