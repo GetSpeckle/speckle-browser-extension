@@ -32,7 +32,7 @@ interface ISendState {
 
 const TEN = new BN(10)
 
-const si = formatBalance.findSi('m')
+const si = formatBalance.findSi('-')
 
 class Send extends React.Component<ISendProps, ISendState> {
   get api (): ApiPromise {
