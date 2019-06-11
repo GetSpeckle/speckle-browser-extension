@@ -23,7 +23,7 @@ import styled from 'styled-components'
 interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {}
 
 interface ISendState {
-  amount: BN
+  amount: string
   toAddress: string
   hasAvailable: boolean
   isSi: boolean
@@ -45,15 +45,13 @@ class Send extends React.Component<ISendProps, ISendState> {
     super(props)
 
     this.state = {
-      amount: new BN(0),
+      amount: '',
       toAddress: '',
       hasAvailable: true,
       isSi: true,
       siUnit: si.value
     }
   }
-
-
 
   getSiPowers = (siUnit = this.state.siUnit): [BN, number, number] => {
     const { isSi } = this.state
@@ -88,11 +86,12 @@ class Send extends React.Component<ISendProps, ISendState> {
     const val = event.target.value
     // console.log(val) TODO: remove this after testing
     this.setState({ toAddress: val })
+    console.log(this.state.toAddress)
   }
 
   changeAmount = event => {
     // console.log(event.target.value) TODO: remove this after testing
-    this.setState({ amount: this.inputValueToBn(event.target.value) })
+    this.setState({ amount: event.target.value })
   }
 
   changeSiUnit = (_event, data) => {
@@ -106,15 +105,16 @@ class Send extends React.Component<ISendProps, ISendState> {
       return
     }
 
+    const BnAmount = this.inputValueToBn(this.state.amount, this.state.siUnit)
     const currentAddress = this.props.settings.selectedAccount.address
 
-    // tslint:disable-next-line:max-line-length
-    const extrinsic: IExtrinsic = await this.api.tx.balances.transfer(this.state.toAddress, this.state.amount)
+    const extrinsic: IExtrinsic = await this.api.tx.balances
+      .transfer(this.state.toAddress, BnAmount)
 
     const signOptions: SignerOptions = {
       blockHash: await this.api.genesisHash,
       genesisHash: await this.api.genesisHash,
-      nonce: (await this.api.query.system.accountNonce(currentAddress)) as Index
+      nonce: await this.api.query.system.accountNonce(currentAddress) as Index
     }
 
     signExtrinsic(extrinsic, currentAddress, signOptions).then(signature => {
