@@ -65,7 +65,7 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
 
   renderPlaceHolder () {
     return (
-      <TxFee>Transaction Fee:
+      <TxFee>{t('transferFee')}
         <span/>
       </TxFee>
     )

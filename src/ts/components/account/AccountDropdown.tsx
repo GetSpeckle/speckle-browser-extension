@@ -1,13 +1,11 @@
 import * as React from 'react'
-import { getAccounts, lockWallet } from '../../services/keyring-vault-proxy'
+import { getAccounts } from '../../services/keyring-vault-proxy'
 import {
   GENERATE_PHRASE_ROUTE,
   IMPORT_OPTIONS_ROUTE,
-  LOGIN_ROUTE
 } from '../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router'
 import {
-  ContentContainer,
   AccountAddress
 } from '../basic-components'
 import { IAppState } from '../../background/store/all'
@@ -52,13 +50,6 @@ class AccountDropdown extends React.Component<IDashboardProps, IDashboardState> 
       options: [],
       initializing: true
     }
-  }
-
-  handleClickLogout = () => {
-    const { history } = this.props
-    lockWallet().then(() => {
-      history.push(LOGIN_ROUTE)
-    })
   }
 
   handleSelectChange = (address: string) => {
@@ -179,7 +170,7 @@ class AccountDropdown extends React.Component<IDashboardProps, IDashboardState> 
     }
 
     return (
-      <ContentContainer>
+      <Float>
         <AccountSection>
           <Dropdown
             text={selectedAccount.name ? this.shorten(selectedAccount.name) : 'N/A'}
@@ -232,7 +223,7 @@ class AccountDropdown extends React.Component<IDashboardProps, IDashboardState> 
             />
           </Tooltip>
         </AccountSection>
-      </ContentContainer>
+      </Float>
     )
   }
 }
@@ -241,6 +232,10 @@ export const AccountSection = styled.div`
   width: 100%
   margin: 8px 0 9px
   text-align: center
+`
+export const Float = styled.div`
+  z-index: 1000;
+  position: relative;
 `
 
 const mapStateToProps = (state: IAppState) => {

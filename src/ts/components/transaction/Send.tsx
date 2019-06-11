@@ -18,6 +18,7 @@ import { IExtrinsic } from '@polkadot/types/types'
 import { SignerOptions } from '../../background/types'
 import { Index } from '@polkadot/types'
 import { SubmittableResult } from '@polkadot/api'
+import AccountDropdown from '../../components/account/AccountDropdown'
 import Fee from './Fee'
 
 interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {}
@@ -135,6 +136,7 @@ class Send extends React.Component<ISendProps, ISendState> {
 
     return (
       <ContentContainer>
+        <AccountDropdown/>
         <AccountSection>
           <Balance address={this.props.settings.selectedAccount.address} />
         </AccountSection>
