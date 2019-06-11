@@ -18,7 +18,7 @@ import { IExtrinsic } from '@polkadot/types/types'
 import { SignerOptions } from '../../background/types'
 import { Index } from '@polkadot/types'
 import { SubmittableResult } from '@polkadot/api'
-import styled from 'styled-components'
+import Fee from './Fee'
 
 interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {}
 
@@ -28,6 +28,7 @@ interface ISendState {
   hasAvailable: boolean
   isSi: boolean
   siUnit: string
+  fee: any
 }
 
 const TEN = new BN(10)
@@ -49,7 +50,8 @@ class Send extends React.Component<ISendProps, ISendState> {
       toAddress: '',
       hasAvailable: true,
       isSi: true,
-      siUnit: si.value
+      siUnit: si.value,
+      fee: 0
     }
   }
 
@@ -144,9 +146,7 @@ class Send extends React.Component<ISendProps, ISendState> {
           <ToAddress handleAddressChange={this.changeAddress}/>
           <div style={{ height: 27 }} />
           <AccountSection>
-            <TxFee>Transaction Fee:
-            <span>  2</span>
-            </TxFee>
+          <Fee/>
           </AccountSection>
           <Section>
             <StyledButton onClick={this.confirm}>Confirm</StyledButton>
@@ -176,22 +176,3 @@ export default withRouter(
     mapDispatchToProps
   )(Send)
 )
-
-const TxFee = styled.p`
-{
-  opacity: 0.6;
-  color: #556267;
-  font-family: Nunito;
-  font-size: 14px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: 1.5;
-  letter-spacing: normal;
-}
-> span {
-  opacity: 1;
-  font-weight: bold;
-  color: #30383b;
-  }
-`

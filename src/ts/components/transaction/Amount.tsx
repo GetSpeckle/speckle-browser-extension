@@ -1,6 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import { Dropdown } from 'semantic-ui-react'
+import t from '../../services/i18n'
 
 interface IAmountProps {
   handleAmountChange: any,
@@ -12,7 +13,7 @@ export default class Amount extends React.Component<IAmountProps> {
   render () {
     return (
       <div>
-        <Label>Amount</Label>
+        <Label>{t('amount')}</Label>
         <div style={{ display: 'flex', width: '311px' }}>
           <Input>
           <input type='text' onChange={this.props.handleAmountChange}/>

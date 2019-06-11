@@ -199,5 +199,14 @@
   },
   "goBack": {
     "message": "Go Back"
+  },
+  "amount": {
+    "message": "Amount"
+  },
+  "toAddress": {
+    "message": "Send to"
+  },
+  "transferFee": {
+    "message": "Transfer Fee:"
   }
 }
