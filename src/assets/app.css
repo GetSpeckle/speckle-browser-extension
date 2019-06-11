@@ -9,7 +9,7 @@
 }
 
 .ui.horizontal.list>.item {
-  margin: 2px;
+  margin: 2px 4px;
 }
 
 .ui.horizontal.list.confirm-list {
@@ -21,7 +21,7 @@
 
 .item>.ui.button {
   margin: 0px;
-  padding: 2px;
+  padding: 2px 4px;
   font-weight: normal;
 }
 
