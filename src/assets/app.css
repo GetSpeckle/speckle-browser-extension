@@ -9,7 +9,15 @@
 }
 
 .ui.horizontal.list>.item {
-  margin: 2px 4px;
+  margin: 0px 4px;
+}
+
+.ui.horizontal.list.candidate-list>.item:first-child {
+  margin-left: 4px !important;
+}
+
+.ui.horizontal.list.confirm-list>.item:first-child {
+  margin-left: 4px !important;
 }
 
 .ui.horizontal.list.confirm-list {
@@ -21,8 +29,9 @@
 
 .item>.ui.button {
   margin: 0px;
-  padding: 2px 4px;
+  padding: 4px;
   font-weight: normal;
+  border-radius: 2px;
 }
 
 .custom-label {
