@@ -150,7 +150,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
           </BasicSection>
 
           <BasicSection>
-            <List horizontal={true}>
+            <List horizontal={true} className='candidate-list'>
               {this.state.candidateList.map((item, index) => this.renderItem('candidateList', item, index))}
             </List>
           </BasicSection>
