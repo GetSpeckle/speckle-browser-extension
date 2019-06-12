@@ -27,8 +27,9 @@ import DashboardLayout from '../layouts/DashboardLayout'
 import Dashboard from '../components/dashboard/Dashboard'
 import Welcome from '../components/Welcome'
 import ActionLayout from '../layouts/ActionLayout'
-import Missing from '../components/Missing';
-import Send from "../components/transaction/Send";
+import ExtrinsicLayout from '../layouts/ExtrinsicLayout'
+import Missing from '../components/Missing'
+import Send from '../components/transaction/Send'
 
 export class Routes extends React.Component {
   renderRoutes () {
@@ -41,7 +42,7 @@ export class Routes extends React.Component {
           exact={true}
         />
         <Authenticated
-          layout={DashboardLayout}
+          layout={ExtrinsicLayout}
           path={SEND_ROUTE}
           component={Send}
           exact={true}
