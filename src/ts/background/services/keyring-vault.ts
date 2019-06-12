@@ -77,7 +77,9 @@ class KeyringVault {
   }
 
   generateMnemonic (): string {
-    this._mnemonic = mnemonicGenerate()
+    if (!this._mnemonic) {
+      this._mnemonic = mnemonicGenerate()
+    }
     return this._mnemonic
   }
 

@@ -17,6 +17,7 @@ import { KeyringPair$Json } from '@polkadot/keyring/types'
 import { setLocked, setCreated, setNewPhrase } from '../../background/store/wallet'
 import { setError } from '../../background/store/error'
 import { saveSettings } from '../../background/store/settings'
+import { colorSchemes } from '../styles/themes'
 
 interface IConfirmPhraseProps extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -168,9 +169,16 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
   }
 
   renderItem (type: ListType, item: string, index: number) {
+    const itemStyle = {
+      backgroundColor: colorSchemes[this.props.settings.color].backgroundColor,
+      color: 'white'
+    }
+
     return(
       <List.Item>
-        <Button onClick={this.handleClickItem.bind(this, type, index)}>{item}</Button>
+        <Button onClick={this.handleClickItem.bind(this, type, index)} style={itemStyle}>
+          {item}
+        </Button>
       </List.Item>
     )
   }
