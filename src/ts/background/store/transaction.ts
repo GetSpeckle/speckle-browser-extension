@@ -13,6 +13,7 @@ export interface ITransaction {
   from: string
   to: string
   amount: Number
+  unit: string
   fee: Number
   type: TransactionType
   status: TransactionStatus
