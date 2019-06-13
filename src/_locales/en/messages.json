@@ -208,5 +208,14 @@
   },
   "tabStaked": {
     "message": "Staked"
+  },
+  "amount": {
+    "message": "Amount"
+  },
+  "toAddress": {
+    "message": "Send to"
+  },
+  "transferFee": {
+    "message": "Transfer Fee:"
   }
 }
