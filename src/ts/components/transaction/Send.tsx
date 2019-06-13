@@ -1,6 +1,7 @@
 import * as React from 'react'
 import BN from 'bn.js'
 import { signExtrinsic } from '../../services/keyring-vault-proxy'
+import { setError } from '../../background/store/error'
 import ApiPromise from '@polkadot/api/promise'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { Button as StyledButton, ContentContainer, Section } from '../basic-components'
@@ -104,6 +105,7 @@ class Send extends React.Component<ISendProps, ISendState> {
   }
 
   confirm = async () => {
+    this.props.setError('')
     if (!this.props.settings.selectedAccount) {
       return
     }
@@ -126,6 +128,8 @@ class Send extends React.Component<ISendProps, ISendState> {
         console.log(result)
         // save extrinsic here
       })
+    }).catch(err => {
+      this.props.setError(err.message)
     })
   }
 
@@ -167,7 +171,7 @@ const mapStateToProps = (state: IAppState) => {
   }
 }
 
-const mapDispatchToProps = {}
+const mapDispatchToProps = { setError }
 
 type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps

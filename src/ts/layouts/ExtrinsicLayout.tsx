@@ -4,6 +4,7 @@ import { IAppState } from '../background/store/all'
 import { LayoutContainer } from '../components/basic-components'
 import TopMenu from '../components/dashboard/TopMenu'
 import BottomMenu from '../components/dashboard/BottomMenu'
+import ErrorMessage from '../components/error/ErrorMessage'
 
 interface IDashboardProps extends StateProps {}
 
@@ -20,6 +21,7 @@ class DashboardLayout extends Component<IDashboardProps> {
     return (
       <LayoutContainer style={layoutStyle}>
         <TopMenu />
+        <ErrorMessage message={this.props.error} style={alignMiddle}/>
         {this.props.children}
         <BottomMenu />
       </LayoutContainer>
@@ -29,8 +31,14 @@ class DashboardLayout extends Component<IDashboardProps> {
 
 const mapStateToProps = (state: IAppState) => {
   return {
-    settings: state.settings
+    settings: state.settings,
+    error: state.error.message
   }
+}
+
+const alignMiddle = {
+  width: 311,
+  margin: 'auto'
 }
 
 type StateProps = ReturnType<typeof mapStateToProps>
