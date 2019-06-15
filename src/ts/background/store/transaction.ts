@@ -3,7 +3,7 @@ import { AnyAction, Reducer } from 'redux'
 import { SUCCESS } from './util'
 
 export type TransactionType = 'Sent' | 'Received' | 'Staked'
-export type TransactionStatus = 'Pending' | 'Success' | 'Failure'
+export type TransactionStatus = 'Pending' | 'Finalized' | 'Ready' | 'Invalid' | 'Failure'
 
 /**
  * Transaction model
@@ -12,14 +12,14 @@ export interface ITransaction {
   id: string // uuid
   from: string
   to: string
-  amount: Number
+  amount: string
   unit: string
-  fee: Number
+  fee: number
   type: TransactionType
   status: TransactionStatus
   txHash?: string
-  createTime: Date
-  updateTime?: Date
+  createTime: number
+  updateTime?: number
 }
 
 const initialState: ITransaction[] = []

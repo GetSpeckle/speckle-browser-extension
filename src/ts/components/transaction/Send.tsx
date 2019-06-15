@@ -20,6 +20,7 @@ import { Index } from '@polkadot/types'
 import { SubmittableResult } from '@polkadot/api'
 import AccountDropdown from '../../components/account/AccountDropdown'
 import Fee from './Fee'
+import { ITransaction, addTransaction, getTransactions } from '../../background/store/transaction';
 
 interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {}
 
@@ -120,11 +121,35 @@ class Send extends React.Component<ISendProps, ISendState> {
       nonce: await this.api.query.system.accountNonce(currentAddress) as Index
     }
 
+    const txItem: ITransaction = {
+      id: '',
+      from: currentAddress,
+      to: this.state.toAddress,
+      amount: this.state.amount,
+      unit: this.state.siUnit,
+      type: 'Sent',
+      createTime: new Date().getTime(),
+      status: 'Pending',
+      fee: this.state.fee
+    }
+
     signExtrinsic(extrinsic, currentAddress, signOptions).then(signature => {
       extrinsic.addSignature(currentAddress as any, signature, signOptions.nonce)
       this.api.rpc.author.submitAndWatchExtrinsic(extrinsic, (result: SubmittableResult) => {
         console.log(result)
         // save extrinsic here
+        if (result.status) {
+          if (result.status.isFinalized) {
+            txItem.status = 'Finalized'
+            txItem.txHash = result.status.asFinalized.toHex()
+          } else if (result.status.isReady) {
+            txItem.status = 'Ready'
+          }
+        } else {
+          txItem.status = 'Failure'
+        }
+        console.log('Saving transactions ', txItem)
+        this.props.addTransaction(txItem.from, txItem, this.props.transactions)
       })
     })
   }
@@ -163,11 +188,12 @@ class Send extends React.Component<ISendProps, ISendState> {
 const mapStateToProps = (state: IAppState) => {
   return {
     apiContext: state.apiContext,
-    settings: state.settings
+    settings: state.settings,
+    transactions: state.transactions
   }
 }
 
-const mapDispatchToProps = {}
+const mapDispatchToProps = { getTransactions, addTransaction }
 
 type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps

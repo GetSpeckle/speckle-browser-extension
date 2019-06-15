@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { withRouter, RouteComponentProps } from 'react-router'
-import { Tab, List } from 'semantic-ui-react'
+import { Tab, List, Grid, Icon } from 'semantic-ui-react'
 import { IAppState } from '../../background/store/all'
 import { getTransactions, TransactionType, ITransaction } from '../../background/store/transaction'
 import t from '../../services/i18n'
@@ -75,22 +75,62 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
       tranx = tranx.filter(item => item.type === type)
     }
 
+    console.log('prepare to render transactions ... ', tranx)
+
     return (
       <Tab.Pane>
-        Content for {type === '' ? 'All' : type}
-        <List celled={true}>
-          {tranx.map(tran => this.renderTransaction(tran))}
+        <List className='tran-list'>
+          {tranx.map((tran, index) => this.renderTransaction(tran, index))}
         </List>
       </Tab.Pane>
     )
   }
 
-  renderTransaction = (tran: ITransaction) => {
+  renderTransaction = (tran: ITransaction, index: number) => {
+    const iconName = tran.type === 'Sent' ? 'arrow right' :
+        tran.type === 'Received' ? 'arrow left' : 'pin'
+    const iconColor = tran.type === 'Sent' ? 'red' :
+        tran.type === 'Received' ? 'green' : 'grey'
+
+    const toAddress = tran.to.substring(0, 8) + '...' + tran.to.substring(tran.to.length - 10)
+
+    const createTime = tran.createTime && tran.createTime > 0 ?
+      new Date(tran.createTime).toDateString() : 'Time N/A'
+
+    const borderStyle = {
+      borderLeftColor: iconColor,
+      borderLeftWidth: '2px',
+      borderLeftStyle: 'solid'
+    }
+
     return (
-      <List.Item>
-        {tran.amount}
-        {tran.createTime}
-        {tran.to}
+      <List.Item key={index} style={borderStyle}>
+        <Grid>
+          <Grid.Row>
+          <Grid.Column width={4} verticalAlign='middle'>
+            <div>
+              {(tran.type === 'Sent' ? '-' : '') + tran.amount + tran.unit + ' DOTS'}
+            </div>
+            <div>
+              {createTime}
+            </div>
+          </Grid.Column>
+
+          <Grid.Column width={2} verticalAlign='middle'>
+            <Icon name={iconName} color={iconColor}/>
+          </Grid.Column>
+
+          <Grid.Column width={8} verticalAlign='middle'>
+            {toAddress}
+          </Grid.Column>
+
+          <Grid.Column width={2} verticalAlign='middle'>
+            <a>
+              <Icon name='linkify'/>
+            </a>
+          </Grid.Column>
+          </Grid.Row>
+        </Grid>
       </List.Item>
     )
   }
