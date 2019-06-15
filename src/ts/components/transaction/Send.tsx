@@ -148,7 +148,10 @@ class Send extends React.Component<ISendProps, ISendState> {
           <ToAddress handleAddressChange={this.changeAddress}/>
           <div style={{ height: 27 }} />
           <AccountSection>
-          <Fee/>
+          <Fee
+            address={this.props.settings.selectedAccount.address}
+            toAddress={this.state.toAddress}
+          />
           </AccountSection>
           <Section>
             <StyledButton onClick={this.confirm}>Confirm</StyledButton>
