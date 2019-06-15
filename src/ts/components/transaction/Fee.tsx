@@ -36,7 +36,6 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
 
   componentDidUpdate (prevProps) {
     if (this.props.toAddress !== prevProps.toAddress || this.props.address !== prevProps.address) {
-      this.setState({ ...this.state, fee: '' })
       this.updateBalance()
     }
   }
