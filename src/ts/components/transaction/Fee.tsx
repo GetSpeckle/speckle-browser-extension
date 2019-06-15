@@ -37,10 +37,12 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
   componentDidUpdate (prevProps) {
     if (this.props.toAddress !== prevProps.toAddress || this.props.address !== prevProps.address) {
       this.updateBalance()
+      this.props.handleFeeChange(this.state.fee)
     }
   }
 
   updateBalance = () => {
+    if (this.props.toAddress.length !== 32) return
     if (this.props.apiContext.apiReady) {
       this.setState({ ...this.state, tries: 1 })
       this.api.rpc.system.properties().then(properties => {
@@ -106,7 +108,7 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
   renderBalance () {
     return (
       <TxFee>{t('transferFee')}
-        <span>  {this.state.fee}</span>
+        <span>&nbsp;{this.state.fee}</span>
       </TxFee>
     )
   }
@@ -141,7 +143,8 @@ type StateProps = ReturnType<typeof mapStateToProps>
 
 interface IFeeProps extends StateProps {
   address: string,
-  toAddress: string
+  toAddress: string,
+  handleFeeChange: any
 }
 
 interface IFeeState {
