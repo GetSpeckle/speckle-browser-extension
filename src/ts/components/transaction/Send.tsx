@@ -96,7 +96,6 @@ class Send extends React.Component<ISendProps, ISendState> {
 
   changeFee (result) {
     this.setState({ fee: result })
-    console.log('post state', this.state.fee)
   }
 
   changeSiUnit = (_event, data) => {
