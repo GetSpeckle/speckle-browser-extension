@@ -2,10 +2,24 @@ import React from 'react'
 import t from '../../services/i18n'
 import { connect } from 'react-redux'
 import { IAppState } from '../../background/store/all'
-import { ChainProperties } from '@polkadot/types'
+import { ChainProperties, Balance } from '@polkadot/types'
 import ApiPromise from '@polkadot/api/promise'
-import { formatBalance } from '@polkadot/util'
+import { compactToU8a, formatBalance } from '@polkadot/util'
 import styled from 'styled-components'
+import { IExtrinsic } from '@polkadot/types/types'
+import { DerivedFees } from '@polkadot/api-derive/types'
+import BN = require('bn.js')
+
+const LENGTH_PUBLICKEY = 32 + 1 // publicKey + prefix
+const LENGTH_SIGNATURE = 64
+const LENGTH_ERA = 1
+export const SIGNATURE_SIZE = LENGTH_PUBLICKEY + LENGTH_SIGNATURE + LENGTH_ERA
+
+export const calcSignatureLength = (extrinsic?: IExtrinsic | null, accountNonce?: BN): number => {
+  return SIGNATURE_SIZE +
+    (accountNonce ? compactToU8a(accountNonce).length : 0) +
+    (extrinsic ? extrinsic.encodedLength : 0)
+}
 
 class Fee extends React.Component<IFeeProps, IFeeState> {
 
@@ -18,6 +32,13 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
     const api = this.props.apiContext.api
     if (api) return api
     throw new Error(t('apiError'))
+  }
+
+  componentDidUpdate (prevProps) {
+    if (this.props.toAddress !== prevProps.toAddress || this.props.address !== prevProps.address) {
+      this.setState({ ...this.state, fee: '' })
+      this.updateBalance()
+    }
   }
 
   updateBalance = () => {
@@ -40,14 +61,26 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
   }
 
   private doUpdate = () => {
-    this.api.query.balances.transferFee(currentFee => {
-      console.log('currentFee', currentFee)
-      const formattedFee = formatBalance(currentFee)
+    const address = this.props.address
+    const toAddress = this.props.toAddress
+    Promise.all([
+      this.api.derive.balances.fees() as unknown as DerivedFees,
+      this.api.query.system.accountNonce(address) as unknown as BN,
+      this.api.tx.balances.transfer(address, 1) as unknown as IExtrinsic,
+      this.api.query.balances.freeBalance(toAddress) as unknown as Balance,
+      this.api.query.balances.reservedBalance(toAddress) as unknown as Balance
+    ]).then(([fees, nonce, ext, freeBalance, rsvdBalance]) => {
+      const extLength = calcSignatureLength(ext, nonce)
+      const baseFee = new BN(fees.transactionBaseFee)
+      const byteFee = new BN(fees.transactionByteFee).muln(extLength)
+      const transferFee = new BN(fees.transferFee)
+      const totalFee = freeBalance.add(rsvdBalance).isZero() ?
+        baseFee.add(byteFee).add(transferFee).add(fees.creationFee) :
+        baseFee.add(byteFee).add(transferFee)
+      const formattedFee = formatBalance(totalFee)
       if (formattedFee !== this.state.fee) {
         this.setState({ ...this.state, fee: formattedFee })
       }
-    }).then(unsub => {
-      this.setState({ ...this.state, unsub: unsub })
     })
   }
 
@@ -107,7 +140,10 @@ const mapStateToProps = (state: IAppState) => {
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
-interface IFeeProps extends StateProps {}
+interface IFeeProps extends StateProps {
+  address: string,
+  toAddress: string
+}
 
 interface IFeeState {
   fee?: string
