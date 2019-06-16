@@ -21,7 +21,7 @@ import { Index } from '@polkadot/types'
 import { SubmittableResult } from '@polkadot/api'
 import AccountDropdown from '../../components/account/AccountDropdown'
 import Fee from './Fee'
-import { ITransaction, addTransaction, getTransactions } from '../../background/store/transaction';
+import { ITransaction, addTransaction, getTransactions } from '../../background/store/transaction'
 
 interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {}
 
