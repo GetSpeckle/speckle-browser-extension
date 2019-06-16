@@ -110,7 +110,7 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
       <ContentContainer>
         <TopSection>
           <Progress step={2}/>
-          <SecondaryText>
+          <SecondaryText style={{ textAlign: 'left' }}>
             {t('phraseDescription')}
           </SecondaryText>
         </TopSection>

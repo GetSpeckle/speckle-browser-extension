@@ -10,6 +10,7 @@ import { Button,
   ContentContainer,
   Section,
   TopSection,
+  BasicSection,
   SecondaryText,
   Title
 } from '../basic-components'
@@ -34,11 +35,11 @@ class Term extends React.Component<ITermProps> {
           </Title>
         </TopSection>
 
-        <Section>
+        <BasicSection>
           <TermSection>
             {t('termDescription')}
           </TermSection>
-        </Section>
+        </BasicSection>
 
         <Section>
           <Button onClick={this.handleClick}>

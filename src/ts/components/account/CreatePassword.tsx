@@ -62,7 +62,7 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
       <ContentContainer>
         <TopSection>
           <Progress step={1}/>
-          <SecondaryText>
+          <SecondaryText style={{ textAlign: 'left' }}>
             {t('passwordDescription')}
           </SecondaryText>
         </TopSection>
