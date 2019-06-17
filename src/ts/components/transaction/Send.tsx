@@ -17,11 +17,10 @@ import Amount from './Amount'
 import ToAddress from './ToAddress'
 import { IExtrinsic } from '@polkadot/types/types'
 import { SignerOptions } from '../../background/types'
-import { Index } from '@polkadot/types'
-import { SubmittableResult } from '@polkadot/api'
+import { Index, ExtrinsicStatus } from '@polkadot/types'
 import AccountDropdown from '../../components/account/AccountDropdown'
 import Fee from './Fee'
-import { ITransaction, addTransaction, getTransactions } from '../../background/store/transaction'
+import { ITransaction, getTransactions, upsertTransaction } from '../../background/store/transaction'
 
 interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {}
 
@@ -123,35 +122,39 @@ class Send extends React.Component<ISendProps, ISendState> {
       nonce: await this.api.query.system.accountNonce(currentAddress) as Index
     }
 
-    const txItem: ITransaction = {
-      id: '',
-      from: currentAddress,
-      to: this.state.toAddress,
-      amount: this.state.amount,
-      unit: this.state.siUnit,
-      type: 'Sent',
-      createTime: new Date().getTime(),
-      status: 'Pending',
-      fee: this.state.fee
-    }
-
     signExtrinsic(extrinsic, currentAddress, signOptions).then(signature => {
       extrinsic.addSignature(currentAddress as any, signature, signOptions.nonce)
-      this.api.rpc.author.submitAndWatchExtrinsic(extrinsic, (result: SubmittableResult) => {
+
+      const txItem: ITransaction = {
+        txHash: extrinsic.hash.toHex(),
+        from: currentAddress,
+        to: this.state.toAddress,
+        amount: this.state.amount,
+        unit: this.state.siUnit,
+        type: 'Sent',
+        createTime: new Date().getTime(),
+        status: 'Pending',
+        fee: this.state.fee
+      }
+
+      this.props.upsertTransaction(currentAddress, txItem, this.props.transactions)
+
+      this.api.rpc.author.submitAndWatchExtrinsic(extrinsic, (result: ExtrinsicStatus) => {
         console.log(result)
         // save extrinsic here
-        if (result.status) {
-          if (result.status.isFinalized) {
-            txItem.status = 'Finalized'
-            txItem.txHash = result.status.asFinalized.toHex()
-          } else if (result.status.isReady) {
-            txItem.status = 'Ready'
+        if (result) {
+          if (result.isFinalized) {
+            txItem.status = 'Success'
+            txItem.updateTime = new Date().getTime()
+            this.props.upsertTransaction(currentAddress, txItem, this.props.transactions)
+          } else if (result.isInvalid || result.isDropped || result.isUsurped) {
+            txItem.status = 'Failure'
+            txItem.updateTime = new Date().getTime()
+            this.props.upsertTransaction(currentAddress, txItem, this.props.transactions)
+          } else {
+            console.log('Status is ', result)
           }
-        } else {
-          txItem.status = 'Failure'
         }
-        console.log('Saving transactions ', txItem)
-        this.props.addTransaction(txItem.from, txItem, this.props.transactions)
       })
     }).catch(err => {
       this.props.setError(err.message)
@@ -197,7 +200,7 @@ const mapStateToProps = (state: IAppState) => {
   }
 }
 
-const mapDispatchToProps = { getTransactions, addTransaction, setError }
+const mapDispatchToProps = { getTransactions, upsertTransaction, setError }
 
 type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps

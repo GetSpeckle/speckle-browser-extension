@@ -3,13 +3,13 @@ import { AnyAction, Reducer } from 'redux'
 import { SUCCESS } from './util'
 
 export type TransactionType = 'Sent' | 'Received' | 'Staked'
-export type TransactionStatus = 'Pending' | 'Finalized' | 'Ready' | 'Invalid' | 'Failure'
+export type TransactionStatus = 'Pending' | 'Success' | 'Failure'
 
 /**
  * Transaction model
  */
 export interface ITransaction {
-  id: string // uuid
+  txHash: string
   from: string
   to: string
   amount: string
@@ -17,7 +17,6 @@ export interface ITransaction {
   fee: number
   type: TransactionType
   status: TransactionStatus
-  txHash?: string
   createTime: number
   updateTime?: number
 }
@@ -27,7 +26,8 @@ const initialState: ITransaction[] = []
 export const ACTION_TYPES = {
   GET_TRANSACTIONS: 'GET_TRANSACTIONS',
   SAVE_TRNASACTIONS: 'SAVE_TRNASACTIONS',
-  ADD_TRNASACTION: 'ADD_TRNASACTION'
+  ADD_TRNASACTION: 'ADD_TRNASACTION',
+  UPSERT_TRNASACTION: 'UPSERT_TRNASACTION'
 }
 
 const PREFIX = 'transactions_'
@@ -46,6 +46,23 @@ export function addTransaction (address: string,
   return {
     type: ACTION_TYPES.ADD_TRNASACTION,
     payload: LocalStore.setValue(PREFIX + address, list)
+  }
+}
+
+export function upsertTransaction (address: string,
+    tran: ITransaction, list: ITransaction[]): AnyAction {
+  const idx = list.findIndex(item => item.txHash === tran.txHash)
+  let updated = [tran]
+  if (idx < 0) {
+    console.log('Insert tran: ', tran)
+    updated = updated.concat(list)
+  } else {
+    console.log('Update tran: ', tran)
+    updated = [...list.slice(0, idx), tran, ...list.slice(idx + 1)]
+  }
+  return {
+    type: ACTION_TYPES.UPSERT_TRNASACTION,
+    payload: LocalStore.setValue(PREFIX + address, updated)
   }
 }
 
@@ -68,6 +85,10 @@ const transactions: Reducer<ITransaction[], AnyAction> = (state = initialState, 
 
     case SUCCESS(ACTION_TYPES.ADD_TRNASACTION):
       console.log('added transaction', action.payload)
+      return action.payload
+
+    case SUCCESS(ACTION_TYPES.UPSERT_TRNASACTION):
+      console.log('upserted transaction', action.payload)
       return action.payload
 
     case SUCCESS(ACTION_TYPES.GET_TRANSACTIONS):
