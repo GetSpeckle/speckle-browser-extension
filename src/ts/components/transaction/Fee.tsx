@@ -8,14 +8,15 @@ import { compactToU8a, formatBalance } from '@polkadot/util'
 import styled from 'styled-components'
 import { IExtrinsic } from '@polkadot/types/types'
 import { DerivedFees } from '@polkadot/api-derive/types'
-import BN = require('bn.js')
+import BN from 'bn.js'
 
 const LENGTH_PUBLICKEY = 32 + 1 // publicKey + prefix
 const LENGTH_SIGNATURE = 64
 const LENGTH_ERA = 1
-export const SIGNATURE_SIZE = LENGTH_PUBLICKEY + LENGTH_SIGNATURE + LENGTH_ERA
+const SIGNATURE_SIZE = LENGTH_PUBLICKEY + LENGTH_SIGNATURE + LENGTH_ERA
+const ADDRESS_LENGTH = 48
 
-export const calcSignatureLength = (extrinsic?: IExtrinsic | null, accountNonce?: BN): number => {
+const calcSignatureLength = (extrinsic?: IExtrinsic | null, accountNonce?: BN): number => {
   return SIGNATURE_SIZE +
     (accountNonce ? compactToU8a(accountNonce).length : 0) +
     (extrinsic ? extrinsic.encodedLength : 0)
@@ -36,13 +37,12 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
 
   componentDidUpdate (prevProps) {
     if (this.props.toAddress !== prevProps.toAddress || this.props.address !== prevProps.address) {
-      this.updateBalance()
-      this.props.handleFeeChange(this.state.fee)
+      this.updateFee()
     }
   }
 
-  updateBalance = () => {
-    if (this.props.toAddress.length !== 32) return
+  updateFee = () => {
+    if (this.props.toAddress.length !== ADDRESS_LENGTH) return
     if (this.props.apiContext.apiReady) {
       this.setState({ ...this.state, tries: 1 })
       this.api.rpc.system.properties().then(properties => {
@@ -52,9 +52,10 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
           unit: chainProperties.tokenSymbol
         })
         this.doUpdate()
+        this.props.handleFeeChange(this.state.fee)
       })
     } else if (this.state.tries <= 10) {
-      const nextTry = setTimeout(this.updateBalance, 1000)
+      const nextTry = setTimeout(this.updateFee, 1000)
       this.setState({ ...this.state, tries: this.state.tries + 1, nextTry: nextTry })
     } else {
       this.setState({ ...this.state, fee: t('balanceNA') })
@@ -86,7 +87,7 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
   }
 
   componentDidMount (): void {
-    this.updateBalance()
+    this.updateFee()
   }
 
   componentWillUnmount (): void {
@@ -94,7 +95,7 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
   }
 
   render () {
-    return this.state.fee !== undefined ? this.renderBalance() : this.renderPlaceHolder()
+    return this.state.fee !== undefined ? this.renderFee() : this.renderPlaceHolder()
   }
 
   renderPlaceHolder () {
@@ -105,7 +106,7 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
     )
   }
 
-  renderBalance () {
+  renderFee () {
     return (
       <TxFee>{t('transferFee')}
         <span>&nbsp;{this.state.fee}</span>
@@ -151,7 +152,6 @@ interface IFeeState {
   fee?: string
   tries: number
   nextTry?: any
-  unsub?: Function
 }
 
 export default connect(mapStateToProps)(Fee)

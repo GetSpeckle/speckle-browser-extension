@@ -86,8 +86,7 @@ class Send extends React.Component<ISendProps, ISendState> {
   }
 
   changeAddress = event => {
-    const val = event.target.value
-    this.setState({ toAddress: val })
+    this.setState({ toAddress: event.target.value })
   }
 
   changeAmount = event => {
