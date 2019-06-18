@@ -109,6 +109,35 @@
   width: 100%;
 }
 
+.bottom-menu .ui.blue.menu .active.item, .ui.menu .blue.active.item {
+  border-color: #24b6e8!important;
+  color: #24b6e8!important;
+}
+
+.bottom-menu .ui.orange.menu .active.item, .ui.menu .orange.active.item {
+  border-color: #ffb200!important;
+  color: #ffb200!important;
+}
+
+.bottom-menu .ui.green.menu .active.item, .ui.menu .green.active.item {
+  border-color: #51d8a7!important;
+  color: #51d8a7!important;
+}
+
+.bottom-menu .ui.purple.menu .active.item, .ui.menu .purple.active.item {
+  border-color: #b279f9!important;
+  color: #b279f9!important;
+}
+
+.bottom-menu .ui.red.menu .active.item, .ui.menu .red.active.item {
+  border-color: #f3536d!important;
+  color: #f3536d!important;
+}
+
+.bottom-menu .ui.icon.menu .item {
+  color: rgba(85, 98, 103, 0.7);
+}
+
 .mnemonic textarea {
   line-height: 1.8rem !important;
   word-spacing: 5px !important;
