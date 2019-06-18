@@ -153,6 +153,9 @@
 
 .ui.list.tran-list {
   font-size: 10px;
+  max-height: 140px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .ui.attached.segment {
   border: none;

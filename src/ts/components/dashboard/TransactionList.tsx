@@ -18,7 +18,7 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
     currentAddress: ''
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
+  static getDerivedStateFromProps (nextProps, prevState) {
     if (nextProps.account && nextProps.account.address !== prevState.currentAddress) {
       return { currentAddress: nextProps.account.address }
     } else {
