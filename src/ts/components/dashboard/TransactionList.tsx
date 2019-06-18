@@ -95,7 +95,7 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
     const toAddress = tran.to.substring(0, 8) + '...' + tran.to.substring(tran.to.length - 10)
 
     const createTime = tran.createTime && tran.createTime > 0 ?
-      new Date(tran.createTime).toDateString() : 'Time N/A'
+      new Date(tran.createTime).toLocaleString() : 'Time N/A'
 
     const borderStyle = {
       borderLeftColor: iconColor,
