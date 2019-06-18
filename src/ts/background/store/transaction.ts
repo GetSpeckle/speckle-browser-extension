@@ -26,7 +26,6 @@ const initialState: ITransaction[] = []
 export const ACTION_TYPES = {
   GET_TRANSACTIONS: 'GET_TRANSACTIONS',
   SAVE_TRNASACTIONS: 'SAVE_TRNASACTIONS',
-  ADD_TRNASACTION: 'ADD_TRNASACTION',
   UPSERT_TRNASACTION: 'UPSERT_TRNASACTION'
 }
 
@@ -36,16 +35,6 @@ export function getTransactions (address: string): AnyAction {
   return {
     type: ACTION_TYPES.GET_TRANSACTIONS,
     payload: LocalStore.getValue(PREFIX + address)
-  }
-}
-
-export function addTransaction (address: string,
-    tran: ITransaction, list: ITransaction[]): AnyAction {
-  // TODO: make some validation
-  list.unshift(tran)
-  return {
-    type: ACTION_TYPES.ADD_TRNASACTION,
-    payload: LocalStore.setValue(PREFIX + address, list)
   }
 }
 
@@ -82,10 +71,6 @@ export function saveTransactions (address: string, list: ITransaction[]): AnyAct
  */
 const transactions: Reducer<ITransaction[], AnyAction> = (state = initialState, action) => {
   switch (action.type) {
-
-    case SUCCESS(ACTION_TYPES.ADD_TRNASACTION):
-      console.log('added transaction', action.payload)
-      return action.payload
 
     case SUCCESS(ACTION_TYPES.UPSERT_TRNASACTION):
       console.log('upserted transaction', action.payload)
