@@ -53,7 +53,7 @@ class Send extends React.Component<ISendProps, ISendState> {
       hasAvailable: true,
       isSi: true,
       siUnit: si.value,
-      fee: 0
+      fee: ''
     }
   }
 
@@ -87,19 +87,18 @@ class Send extends React.Component<ISendProps, ISendState> {
   }
 
   changeAddress = event => {
-    const val = event.target.value
-    // console.log(val) TODO: remove this after testing
-    this.setState({ toAddress: val })
-    console.log(this.state.toAddress)
+    this.setState({ toAddress: event.target.value })
   }
 
   changeAmount = event => {
-    // console.log(event.target.value) TODO: remove this after testing
     this.setState({ amount: event.target.value })
   }
 
+  changeFee (result) {
+    this.setState({ fee: result })
+  }
+
   changeSiUnit = (_event, data) => {
-    // console.log(data.value) TODO: remove this after testing
     const val = formatBalance.findSi(data.value).value
     this.setState({ siUnit: val })
   }
@@ -180,7 +179,12 @@ class Send extends React.Component<ISendProps, ISendState> {
           <ToAddress handleAddressChange={this.changeAddress}/>
           <div style={{ height: 27 }} />
           <AccountSection>
-          <Fee/>
+          <Fee
+            address={this.props.settings.selectedAccount.address}
+            toAddress={this.state.toAddress}
+            /* tslint:disable-next-line:jsx-no-bind */
+            handleFeeChange={this.changeFee.bind(this)}
+          />
           </AccountSection>
           <Section>
             <StyledButton onClick={this.confirm}>Confirm</StyledButton>
