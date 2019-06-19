@@ -17,10 +17,10 @@ import Amount from './Amount'
 import ToAddress from './ToAddress'
 import { IExtrinsic } from '@polkadot/types/types'
 import { SignerOptions } from '../../background/types'
-import { Index } from '@polkadot/types'
-import { SubmittableResult } from '@polkadot/api'
+import { Index, ExtrinsicStatus } from '@polkadot/types'
 import AccountDropdown from '../../components/account/AccountDropdown'
 import Fee from './Fee'
+import { ITransaction, getTransactions, upsertTransaction } from '../../background/store/transaction'
 
 interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {}
 
@@ -124,9 +124,37 @@ class Send extends React.Component<ISendProps, ISendState> {
 
     signExtrinsic(extrinsic, currentAddress, signOptions).then(signature => {
       extrinsic.addSignature(currentAddress as any, signature, signOptions.nonce)
-      this.api.rpc.author.submitAndWatchExtrinsic(extrinsic, (result: SubmittableResult) => {
+
+      const txItem: ITransaction = {
+        txHash: extrinsic.hash.toHex(),
+        from: currentAddress,
+        to: this.state.toAddress,
+        amount: this.state.amount,
+        unit: this.state.siUnit,
+        type: 'Sent',
+        createTime: new Date().getTime(),
+        status: 'Pending',
+        fee: this.state.fee
+      }
+
+      this.props.upsertTransaction(currentAddress, txItem, this.props.transactions)
+
+      this.api.rpc.author.submitAndWatchExtrinsic(extrinsic, (result: ExtrinsicStatus) => {
         console.log(result)
         // save extrinsic here
+        if (result) {
+          if (result.isFinalized) {
+            txItem.status = 'Success'
+            txItem.updateTime = new Date().getTime()
+            this.props.upsertTransaction(currentAddress, txItem, this.props.transactions)
+          } else if (result.isInvalid || result.isDropped || result.isUsurped) {
+            txItem.status = 'Failure'
+            txItem.updateTime = new Date().getTime()
+            this.props.upsertTransaction(currentAddress, txItem, this.props.transactions)
+          } else {
+            console.log('Status is ', result)
+          }
+        }
       })
     }).catch(err => {
       this.props.setError(err.message)
@@ -167,11 +195,12 @@ class Send extends React.Component<ISendProps, ISendState> {
 const mapStateToProps = (state: IAppState) => {
   return {
     apiContext: state.apiContext,
-    settings: state.settings
+    settings: state.settings,
+    transactions: state.transactions
   }
 }
 
-const mapDispatchToProps = { setError }
+const mapDispatchToProps = { getTransactions, upsertTransaction, setError }
 
 type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps
