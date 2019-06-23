@@ -30,8 +30,10 @@ interface ISendState {
   hasAvailable: boolean
   isSi: boolean
   siUnit: string
-  fee: any
+  fee: BN
   extrinsic?: IExtrinsic | null
+  creationFee: BN
+  existentialDeposit: BN
 }
 
 const TEN = new BN(10)
@@ -54,8 +56,10 @@ class Send extends React.Component<ISendProps, ISendState> {
       hasAvailable: true,
       isSi: true,
       siUnit: si.value,
-      fee: '',
-      extrinsic: undefined
+      fee: new BN(0),
+      extrinsic: undefined,
+      creationFee: new BN(0),
+      existentialDeposit: new BN(0)
     }
   }
 
@@ -96,8 +100,12 @@ class Send extends React.Component<ISendProps, ISendState> {
     this.setState({ amount: event.target.value })
   }
 
-  changeFee (result) {
-    this.setState({ fee: result })
+  changeFee (fee, creationFee, existentialDeposit) {
+    this.setState({
+      fee: fee,
+      creationFee: creationFee,
+      existentialDeposit: existentialDeposit
+    })
   }
 
   changeSiUnit = (_event, data) => {
@@ -168,20 +176,20 @@ class Send extends React.Component<ISendProps, ISendState> {
               extrinsic={this.state.extrinsic}
               trigger={
                 <StyledButton
-                type={'submit'}
-                disabled={!this.state.toAddress || this.state.toAddress.length !== 48
-                || !this.state.amount
-                || !this.state.hasAvailable
-                }
-                onClick={this.saveExtrinsic}
-              >Confirm
+                  type={'submit'}
+                  disabled={!this.state.toAddress || this.state.toAddress.length !== 48 || !this.state.amount || !this.state.hasAvailable}
+                  onClick={this.saveExtrinsic}
+                >
+                  Confirm
                 </StyledButton>
               }
               fromName={this.props.settings.selectedAccount.name}
               fromAddress={this.props.settings.selectedAccount.address}
-              amount={this.state.amount}
+              amount={this.inputValueToBn(this.state.amount, this.state.siUnit)}
               toAddress={this.state.toAddress}
-              fee={this.state.fee}
+              fee={this.state.fee!}
+              creationFee={this.state.creationFee}
+              existentialDeposit={this.state.existentialDeposit}
             />
           </Section>
         </Form>

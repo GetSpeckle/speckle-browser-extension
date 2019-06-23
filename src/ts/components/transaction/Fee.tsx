@@ -52,7 +52,6 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
           unit: chainProperties.tokenSymbol
         })
         this.doUpdate()
-        this.props.handleFeeChange(this.state.fee)
       })
     } else if (this.state.tries <= 10) {
       const nextTry = setTimeout(this.updateFee, 1000)
@@ -82,6 +81,7 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
       const formattedFee = formatBalance(totalFee)
       if (formattedFee !== this.state.fee) {
         this.setState({ ...this.state, fee: formattedFee })
+        this.props.handleFeeChange(totalFee, fees.creationFee, fees.existentialDeposit)
       }
     })
   }

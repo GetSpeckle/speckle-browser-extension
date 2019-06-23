@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { Overlay } from './Overlay'
-import { Container, Icon, Modal } from 'semantic-ui-react'
+import { Button, Container, Icon, Modal } from 'semantic-ui-react'
 import * as React from 'react'
 import Identicon from 'polkadot-identicon'
 import 'react-tippy/dist/tippy.css'
@@ -8,30 +8,35 @@ import { Tooltip } from 'react-tippy'
 import t from '../../services/i18n'
 import { colorSchemes } from '../styles/themes'
 import { IExtrinsic } from '@polkadot/types/types'
+import { formatBalance } from '@polkadot/util'
+import BN = require('bn.js')
 
 interface IConfirmProps {
   network: string,
   trigger: any,
   fromAddress: string,
   fromName: string,
-  amount: string,
+  amount: BN,
   toAddress: string,
-  fee: string,
+  fee: BN,
+  creationFee: BN,
+  existentialDeposit: BN,
   extrinsic?: IExtrinsic | null,
-  color: string
+  color: string,
 }
 
 interface IConfirmState {
   status: string,
-  extHash?: string | null,
+  extHash?: string | null, // Get ext hash from saved extrinsic
   message?: string,
-  msgTimeout?: any
+  msgTimeout?: any,
 }
 
 export default class Confirm extends React.Component<IConfirmProps, IConfirmState> {
+
   state: IConfirmState = {
     status: '',
-    extHash: this.props.extrinsic === undefined ? null : this.props.extrinsic!.hash.toHex()
+    extHash: this.props.extrinsic === undefined ? null : this.props.extrinsic!.hash.toHex(),
   }
 
   truncate = (address: string) => {
@@ -58,8 +63,8 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
 
   render () {
     return (
-    <Modal trigger={this.props.trigger} style={{ 'zIndex': 3000 }}>
-      <Section>
+    <Modal trigger={this.props.trigger} style={{ 'zIndex': 3 }}>
+      <UpperSection>
         <Offset>
           <Status>
             <Identicon account={this.props.fromAddress} size={48}/>
@@ -67,32 +72,75 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
         </Offset>
         <Heading>Confirm Extrinsic</Heading>
         <Subheading>Review your extrinsic details</Subheading>
-      </Section>
+      </UpperSection>
       <OverlaySection>
         <Overlay/>
       </OverlaySection>
-      <Info>
+      <Section>
         <FromTo color={colorSchemes[this.props.color].backgroundColor}>
-          <Icon name='arrow circle right' size={'big'}/>
-          <Container textAlign={'left'}>
+          <Icon name='arrow circle right' size={'big'} style={{  'marginLeft': '10px' }}/>
+          <Container textAlign={'left'} style={{ 'marginLeft': '10px' }}>
             <Tooltip
               title={!this.state.message ? t('copyToClipboard') : t('copiedExclam')}
               position='bottom'
               trigger='mouseenter'
               arrow={true}
             >
-              <AccountName onClick={() => this.copyToClipboard(this.props.toAddress)}>{this.truncate(this.props.toAddress)}</AccountName>
+              <span onClick={() => this.copyToClipboard(this.props.toAddress)}>{this.truncate(this.props.toAddress)}</span>
             </Tooltip>
           </Container>
         </FromTo>
-        <Value>{this.state.extHash}</Value>
-      </Info>
+      </Section>
+      <Section>
+        <Info>
+          <Key>Fee</Key>
+          <Value>{formatBalance(this.props.fee)}</Value>
+        </Info>
+      </Section>
+      <Section>
+        <Info>
+          <Key>Amount</Key>
+          <Value>{formatBalance(this.props.amount)}</Value>
+        </Info>
+      </Section>
+      <Section>
+        <Info>
+          <Key>total</Key>
+          <Value>{formatBalance(this.props.amount.add(this.props.fee))}</Value>
+        </Info>
+      </Section>
+      <Section>
+        <Info>
+          <Warning>
+            <div>
+              <Icon name='warning sign' size={'small'}/>
+              The final recipient balance is less or equal to {formatBalance(this.props.existentialDeposit)} (the existential amount) and will not be reflected
+            </div>
+            <div>
+              <Icon name='warning sign' size={'small'}/>
+              A fee of {formatBalance(this.props.creationFee)} will be deducted from the sender since the destination account does not exist
+            </div>
+            <div>
+              <Icon name='warning sign' size={'small'}/>
+              Fees include the transaction fee and the per-byte fee
+            </div>
+          </Warning>
+        </Info>
+      </Section>
+      <Section style={{ 'marginTop': '20px' }}>
+        <Info>
+          <Button>Cancel</Button>
+          <ConfirmButton color={colorSchemes[this.props.color].backgroundColor}>
+            Confirm
+          </ConfirmButton>
+        </Info>
+      </Section>
     </Modal>
     )
   }
 }
 
-const Section = styled.div`
+const UpperSection = styled.div`
   width: 100%
   margin: 8px 0 9px
   text-align: center
@@ -133,9 +181,10 @@ const Subheading = styled.p`
 
 const OverlaySection = styled.div`
   width: 100%
-  margin: 18px 0 0px
+  margin-top: 18px
   text-align: center
 `
+
 const Status = styled.div`
   {
     width: 50px;
@@ -147,7 +196,7 @@ const Status = styled.div`
     align-items: center;
   }
 `
-/*
+
 const Key = styled.p`
   font-family: Nunito;
   font-size: 11px;
@@ -157,9 +206,7 @@ const Key = styled.p`
   line-height: normal;
   letter-spacing: normal;
   color: #a0aeb4;
-  margin-left: 15px;
 `
-*/
 
 const Value = styled.p`
   font-family: Nunito;
@@ -172,7 +219,7 @@ const Value = styled.p`
   color: #30383b;
 `
 
-const Info = styled.div`
+const Section = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
@@ -190,10 +237,21 @@ const FromTo = styled.div`
   margin: 10px;
  `
 
-const AccountName = styled.span`
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 50px;
-  font-size: 15px;
-  margin-left: 30px;
+const Info = styled.div`
+   width: 80%;
+   display: flex;
+   flex-direction: row;
+   align-items: center;
+   justify-content: space-between;
+`
+
+const Warning = styled.div`
+  background: #ffffe0;
+  border-color: #eeeeae;
+  font-size: 11px;
+`
+
+const ConfirmButton = styled(Button)`
+background-color: ${ props => props.color }!important;
+color: #fff!important;
 `
