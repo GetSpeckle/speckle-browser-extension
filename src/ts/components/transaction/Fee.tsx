@@ -52,7 +52,6 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
           unit: chainProperties.tokenSymbol
         })
         this.doUpdate()
-        this.props.handleFeeChange(this.state.fee)
       })
     } else if (this.state.tries <= 10) {
       const nextTry = setTimeout(this.updateFee, 1000)
@@ -76,12 +75,14 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
       const baseFee = new BN(fees.transactionBaseFee)
       const byteFee = new BN(fees.transactionByteFee).muln(extLength)
       const transferFee = new BN(fees.transferFee)
-      const totalFee = freeBalance.add(rsvdBalance).isZero() ?
+      const available = freeBalance.add(rsvdBalance)
+      const totalFee = available.isZero() ?
         baseFee.add(byteFee).add(transferFee).add(fees.creationFee) :
         baseFee.add(byteFee).add(transferFee)
       const formattedFee = formatBalance(totalFee)
       if (formattedFee !== this.state.fee) {
         this.setState({ ...this.state, fee: formattedFee })
+        this.props.handleFeeChange(totalFee, fees.creationFee, fees.existentialDeposit, available)
       }
     })
   }

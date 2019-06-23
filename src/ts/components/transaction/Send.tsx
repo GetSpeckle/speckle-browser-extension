@@ -18,9 +18,14 @@ import ToAddress from './ToAddress'
 import { IExtrinsic } from '@polkadot/types/types'
 import { SignerOptions } from '../../background/types'
 import { Index, ExtrinsicStatus } from '@polkadot/types'
-import AccountDropdown from '../../components/account/AccountDropdown'
 import Fee from './Fee'
-import { ITransaction, getTransactions, upsertTransaction } from '../../background/store/transaction'
+import Confirm from './Confirm'
+import AccountDropdown from '../account/AccountDropdown'
+import {
+  ITransaction,
+  getTransactions,
+  upsertTransaction
+} from '../../background/store/transaction'
 
 interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {}
 
@@ -30,7 +35,11 @@ interface ISendState {
   hasAvailable: boolean
   isSi: boolean
   siUnit: string
-  fee: any
+  fee: BN
+  extrinsic?: IExtrinsic | null
+  creationFee: BN
+  existentialDeposit: BN
+  recipientAvailable: BN
 }
 
 const TEN = new BN(10)
@@ -53,7 +62,11 @@ class Send extends React.Component<ISendProps, ISendState> {
       hasAvailable: true,
       isSi: true,
       siUnit: si.value,
-      fee: ''
+      fee: new BN(0),
+      extrinsic: undefined,
+      creationFee: new BN(0),
+      existentialDeposit: new BN(0),
+      recipientAvailable: new BN(0)
     }
   }
 
@@ -94,8 +107,13 @@ class Send extends React.Component<ISendProps, ISendState> {
     this.setState({ amount: event.target.value })
   }
 
-  changeFee (result) {
-    this.setState({ fee: result })
+  changeFee (fee, creationFee, existentialDeposit, recipientAvailable) {
+    this.setState({
+      fee: fee,
+      creationFee: creationFee,
+      existentialDeposit: existentialDeposit,
+      recipientAvailable: recipientAvailable
+    })
   }
 
   changeSiUnit = (_event, data) => {
@@ -103,7 +121,7 @@ class Send extends React.Component<ISendProps, ISendState> {
     this.setState({ siUnit: val })
   }
 
-  confirm = async () => {
+  saveExtrinsic = async () => {
     this.props.setError('')
     if (!this.props.settings.selectedAccount) {
       return
@@ -122,42 +140,64 @@ class Send extends React.Component<ISendProps, ISendState> {
     }
 
     signExtrinsic(extrinsic, currentAddress, signOptions).then(signature => {
-      extrinsic.addSignature(currentAddress as any, signature, signOptions.nonce)
+      const signedExtrinsic = extrinsic.addSignature(
+        currentAddress as any,
+        signature,
+        signOptions.nonce
+      )
+      this.setState({ extrinsic: signedExtrinsic })
+    })
+  }
 
-      const txItem: ITransaction = {
-        txHash: extrinsic.hash.toHex(),
-        from: currentAddress,
-        to: this.state.toAddress,
-        amount: this.state.amount,
-        unit: this.state.siUnit,
-        type: 'Sent',
-        createTime: new Date().getTime(),
-        status: 'Pending',
-        fee: this.state.fee
-      }
+  confirm = async () => {
 
-      this.props.upsertTransaction(currentAddress, txItem, this.props.transactions)
+    if (!this.state.extrinsic) { return }
 
-      this.api.rpc.author.submitAndWatchExtrinsic(extrinsic, (result: ExtrinsicStatus) => {
+    if (!this.props.settings.selectedAccount) {
+      return
+    }
+
+    const address = this.props.settings.selectedAccount.address
+
+    const txItem: ITransaction = {
+      txHash: this.state.extrinsic.hash.toHex(),
+      from: address,
+      to: this.state.toAddress,
+      amount: this.state.amount,
+      unit: this.state.siUnit,
+      type: 'Sent',
+      createTime: new Date().getTime(),
+      status: 'Pending',
+      fee: null
+    }
+
+    this.props.upsertTransaction(
+      this.props.settings.selectedAccount.address,
+      txItem,
+      this.props.transactions
+    )
+
+    this.api.rpc.author.submitAndWatchExtrinsic(
+      this.state.extrinsic as IExtrinsic,
+      (result: ExtrinsicStatus) => {
         console.log(result)
-        // save extrinsic here
+      // save extrinsic here
         if (result) {
           if (result.isFinalized) {
             txItem.status = 'Success'
             txItem.updateTime = new Date().getTime()
-            this.props.upsertTransaction(currentAddress, txItem, this.props.transactions)
+            this.props.upsertTransaction(address, txItem, this.props.transactions)
           } else if (result.isInvalid || result.isDropped || result.isUsurped) {
             txItem.status = 'Failure'
             txItem.updateTime = new Date().getTime()
-            this.props.upsertTransaction(currentAddress, txItem, this.props.transactions)
+            this.props.upsertTransaction(address, txItem, this.props.transactions)
           } else {
             console.log('Status is ', result)
           }
         }
+      }).catch(err => {
+        this.props.setError(err.message)
       })
-    }).catch(err => {
-      this.props.setError(err.message)
-    })
   }
 
   render () {
@@ -179,15 +219,31 @@ class Send extends React.Component<ISendProps, ISendState> {
           <ToAddress handleAddressChange={this.changeAddress}/>
           <div style={{ height: 27 }} />
           <AccountSection>
-          <Fee
-            address={this.props.settings.selectedAccount.address}
-            toAddress={this.state.toAddress}
-            /* tslint:disable-next-line:jsx-no-bind */
-            handleFeeChange={this.changeFee.bind(this)}
-          />
+            <Fee
+              address={this.props.settings.selectedAccount.address}
+              toAddress={this.state.toAddress}
+              /* tslint:disable-next-line:jsx-no-bind */
+              handleFeeChange={this.changeFee.bind(this)}
+            />
           </AccountSection>
           <Section>
-            <StyledButton onClick={this.confirm}>Confirm</StyledButton>
+            <Confirm
+              network={this.props.settings.network}
+              color={this.props.settings.color}
+              extrinsic={this.state.extrinsic}
+              trigger={<StyledButton type={'submit'} disabled={!this.state.toAddress || this.state.toAddress.length !== 48 || !this.state.amount || !this.state.hasAvailable} onClick={this.saveExtrinsic}>
+                  Confirm
+                </StyledButton>
+              }
+              fromAddress={this.props.settings.selectedAccount.address}
+              amount={this.inputValueToBn(this.state.amount, this.state.siUnit)}
+              toAddress={this.state.toAddress}
+              fee={this.state.fee!}
+              creationFee={this.state.creationFee}
+              existentialDeposit={this.state.existentialDeposit}
+              recipientAvailable={this.state.recipientAvailable}
+              confirm={this.confirm}
+            />
           </Section>
         </Form>
 

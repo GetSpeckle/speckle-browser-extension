@@ -13,7 +13,7 @@ export default class ToAddress extends React.Component<IToAddressProps> {
       <div>
         <Label>{t('toAddress')}</Label>
         <Field>
-          <input type='text' onChange={this.props.handleAddressChange}/>
+          <input type='text' onChange={this.props.handleAddressChange} size={34} maxLength={48}/>
         </Field>
       </div>
     )
@@ -49,5 +49,8 @@ const Field = styled.div`
 }
 input {
   flex: 1;
+  overflow: hidden;
+  white-space:nowrap;
+  text-overflow: ellipsis;
 }
 `
