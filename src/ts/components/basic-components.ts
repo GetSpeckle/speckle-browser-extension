@@ -6,7 +6,8 @@ import { Button as SemanticButton, Dropdown, Input } from 'semantic-ui-react'
 
 const mapStateToProps = (state: IAppState) => {
   return {
-    settings: state.settings
+    settings: state.settings,
+    selection: true
   }
 }
 
@@ -77,6 +78,11 @@ export const AccountAddress = styled.span`
 export const StyledChainDropdown = styled(Dropdown)`
     & .menu {
       background-color: ${(p: P) => colorSchemes[p.settings.color].backgroundColor} !important
+    }
+    .visible.transition {
+      border-bottom-left-radius: 12px!important;
+      border-bottom-right-radius: 12px!important;
+      border-color: white!important;
     }
 `
 

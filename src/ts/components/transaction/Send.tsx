@@ -18,8 +18,9 @@ import { IExtrinsic } from '@polkadot/types/types'
 import { SignerOptions } from '../../background/types'
 import { Index } from '@polkadot/types'
 import { SubmittableResult } from '@polkadot/api'
-import AccountDropdown from '../../components/account/AccountDropdown'
 import Fee from './Fee'
+import Confirm from './Confirm'
+import AccountDropdown from '../account/AccountDropdown'
 
 interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {}
 
@@ -30,6 +31,7 @@ interface ISendState {
   isSi: boolean
   siUnit: string
   fee: any
+  extrinsic?: IExtrinsic | null
 }
 
 const TEN = new BN(10)
@@ -52,7 +54,8 @@ class Send extends React.Component<ISendProps, ISendState> {
       hasAvailable: true,
       isSi: true,
       siUnit: si.value,
-      fee: ''
+      fee: '',
+      extrinsic: undefined
     }
   }
 
@@ -102,7 +105,7 @@ class Send extends React.Component<ISendProps, ISendState> {
     this.setState({ siUnit: val })
   }
 
-  confirm = async () => {
+  saveExtrinsic = async () => {
     if (!this.props.settings.selectedAccount) {
       return
     }
@@ -120,11 +123,15 @@ class Send extends React.Component<ISendProps, ISendState> {
     }
 
     signExtrinsic(extrinsic, currentAddress, signOptions).then(signature => {
-      extrinsic.addSignature(currentAddress as any, signature, signOptions.nonce)
-      this.api.rpc.author.submitAndWatchExtrinsic(extrinsic, (result: SubmittableResult) => {
-        console.log(result)
-        // save extrinsic here
-      })
+      const signedExtrinsic = extrinsic.addSignature(currentAddress as any, signature, signOptions.nonce)
+      this.setState({ extrinsic: signedExtrinsic })
+      // TODO: save signedExtrinsic to ext list to be used in dashboard
+    })
+  }
+
+  confirm = async () => {
+    this.api.rpc.author.submitAndWatchExtrinsic(this.state.extrinsic as IExtrinsic, (result: SubmittableResult) => {
+      console.log(result)
     })
   }
 
@@ -147,15 +154,35 @@ class Send extends React.Component<ISendProps, ISendState> {
           <ToAddress handleAddressChange={this.changeAddress}/>
           <div style={{ height: 27 }} />
           <AccountSection>
-          <Fee
-            address={this.props.settings.selectedAccount.address}
-            toAddress={this.state.toAddress}
-            /* tslint:disable-next-line:jsx-no-bind */
-            handleFeeChange={this.changeFee.bind(this)}
-          />
+            <Fee
+              address={this.props.settings.selectedAccount.address}
+              toAddress={this.state.toAddress}
+              /* tslint:disable-next-line:jsx-no-bind */
+              handleFeeChange={this.changeFee.bind(this)}
+            />
           </AccountSection>
           <Section>
-            <StyledButton onClick={this.confirm}>Confirm</StyledButton>
+            <Confirm
+              network={this.props.settings.network}
+              color={this.props.settings.color}
+              extrinsic={this.state.extrinsic}
+              trigger={
+                <StyledButton
+                type={'submit'}
+                disabled={!this.state.toAddress && this.state.toAddress.length !== 48
+                || !this.state.amount
+                || !this.state.hasAvailable
+                }
+                onClick={this.saveExtrinsic}
+              >Confirm
+                </StyledButton>
+              }
+              fromName={this.props.settings.selectedAccount.name}
+              fromAddress={this.props.settings.selectedAccount.address}
+              amount={this.state.amount}
+              toAddress={this.state.toAddress}
+              fee={this.state.fee}
+            />
           </Section>
         </Form>
 

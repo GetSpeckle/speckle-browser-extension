@@ -8,7 +8,6 @@ interface IAmountProps {
   handleDigitChange: any
 }
 
-
 export default class Amount extends React.Component<IAmountProps> {
   render () {
     return (
@@ -16,7 +15,7 @@ export default class Amount extends React.Component<IAmountProps> {
         <Label>{t('amount')}</Label>
         <div style={{ display: 'flex', width: '311px' }}>
           <Input>
-          <input type='text' onChange={this.props.handleAmountChange}/>
+            <TruncatedInput type='text' onChange={this.props.handleAmountChange} size={20}/>
           </Input>
           <Digit
             selection={true}
@@ -57,6 +56,9 @@ const Input = styled.div`
 {
   width: 200px;
   height: 42px;
+  text-overflow: ellipsis;
+  white-space:nowrap;
+  overflow: hidden;
 }
 `
 
@@ -86,3 +88,9 @@ const options = [
   { power: 21, value: 'Z', text: 'Zeta' },
   { power: 24, value: 'Y', text: 'Yotta' }
 ]
+
+const TruncatedInput = styled.input`
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`

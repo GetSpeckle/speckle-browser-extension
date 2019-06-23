@@ -4,10 +4,11 @@ import { IAppState } from '../background/store/all'
 import { LayoutContainer } from '../components/basic-components'
 import TopMenu from '../components/dashboard/TopMenu'
 import BottomMenu from '../components/dashboard/BottomMenu'
+import '../../assets/app.css'
 
-interface IDashboardProps extends StateProps {}
+interface IExtrinsicProps extends StateProps {}
 
-class DashboardLayout extends Component<IDashboardProps> {
+class ExtrinsicLayout extends Component<IExtrinsicProps> {
 
   render () {
 
@@ -35,4 +36,4 @@ const mapStateToProps = (state: IAppState) => {
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
-export default connect(mapStateToProps)(DashboardLayout)
+export default connect(mapStateToProps)(ExtrinsicLayout)
