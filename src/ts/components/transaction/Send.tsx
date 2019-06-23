@@ -1,6 +1,7 @@
 import * as React from 'react'
 import BN from 'bn.js'
 import { signExtrinsic } from '../../services/keyring-vault-proxy'
+import { setError } from '../../background/store/error'
 import ApiPromise from '@polkadot/api/promise'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { Button as StyledButton, ContentContainer, Section } from '../basic-components'
@@ -17,10 +18,11 @@ import ToAddress from './ToAddress'
 import { IExtrinsic } from '@polkadot/types/types'
 import { SignerOptions } from '../../background/types'
 import { Index } from '@polkadot/types'
-import { SubmittableResult } from '@polkadot/api'
+import { SubmittableResult, ExtrinsicStatus } from '@polkadot/api'
 import Fee from './Fee'
 import Confirm from './Confirm'
 import AccountDropdown from '../account/AccountDropdown'
+import { ITransaction, getTransactions, upsertTransaction } from '../../background/store/transaction'
 
 interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {}
 
@@ -117,6 +119,7 @@ class Send extends React.Component<ISendProps, ISendState> {
   }
 
   saveExtrinsic = async () => {
+    this.props.setError('')
     if (!this.props.settings.selectedAccount) {
       return
     }
@@ -136,13 +139,51 @@ class Send extends React.Component<ISendProps, ISendState> {
     signExtrinsic(extrinsic, currentAddress, signOptions).then(signature => {
       const signedExtrinsic = extrinsic.addSignature(currentAddress as any, signature, signOptions.nonce)
       this.setState({ extrinsic: signedExtrinsic })
-      // TODO: save signedExtrinsic to ext list to be used in dashboard
     })
   }
 
   confirm = async () => {
-    this.api.rpc.author.submitAndWatchExtrinsic(this.state.extrinsic as IExtrinsic, (result: SubmittableResult) => {
+
+    if (!this.state.extrinsic) {return}
+
+    if (!this.props.settings.selectedAccount) {
+      return
+    }
+
+    const address = this.props.settings.selectedAccount.address
+
+    const txItem: ITransaction = {
+      txHash: this.state.extrinsic.hash.toHex(),
+      from: address,
+      to: this.state.toAddress,
+      amount: this.state.amount,
+      unit: this.state.siUnit,
+      type: 'Sent',
+      createTime: new Date().getTime(),
+      status: 'Pending',
+      fee: null
+    }
+
+    this.props.upsertTransaction(this.props.settings.selectedAccount.address, txItem, this.props.transactions)
+
+    this.api.rpc.author.submitAndWatchExtrinsic(this.state.extrinsic as IExtrinsic, (result: ExtrinsicStatus) => {
       console.log(result)
+      // save extrinsic here
+      if (result) {
+        if (result.isFinalized) {
+          txItem.status = 'Success'
+          txItem.updateTime = new Date().getTime()
+          this.props.upsertTransaction(address, txItem, this.props.transactions)
+        } else if (result.isInvalid || result.isDropped || result.isUsurped) {
+          txItem.status = 'Failure'
+          txItem.updateTime = new Date().getTime()
+          this.props.upsertTransaction(address, txItem, this.props.transactions)
+        } else {
+          console.log('Status is ', result)
+        }
+      }
+    }).catch(err => {
+      this.props.setError(err.message)
     })
   }
 
@@ -206,11 +247,12 @@ class Send extends React.Component<ISendProps, ISendState> {
 const mapStateToProps = (state: IAppState) => {
   return {
     apiContext: state.apiContext,
-    settings: state.settings
+    settings: state.settings,
+    transactions: state.transactions
   }
 }
 
-const mapDispatchToProps = {}
+const mapDispatchToProps = { getTransactions, upsertTransaction, setError }
 
 type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps

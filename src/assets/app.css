@@ -9,7 +9,15 @@
 }
 
 .ui.horizontal.list>.item {
-  margin: 2px;
+  margin: 0px 4px;
+}
+
+.ui.horizontal.list.candidate-list>.item:first-child {
+  margin-left: 4px !important;
+}
+
+.ui.horizontal.list.confirm-list>.item:first-child {
+  margin-left: 4px !important;
 }
 
 .ui.horizontal.list.confirm-list {
@@ -21,8 +29,9 @@
 
 .item>.ui.button {
   margin: 0px;
-  padding: 2px;
+  padding: 4px;
   font-weight: normal;
+  border-radius: 2px;
 }
 
 .custom-label {
@@ -101,6 +110,35 @@
   width: 100%;
 }
 
+.bottom-menu .ui.blue.menu .active.item, .ui.menu .blue.active.item {
+  border-color: #24b6e8!important;
+  color: #24b6e8!important;
+}
+
+.bottom-menu .ui.orange.menu .active.item, .ui.menu .orange.active.item {
+  border-color: #ffb200!important;
+  color: #ffb200!important;
+}
+
+.bottom-menu .ui.green.menu .active.item, .ui.menu .green.active.item {
+  border-color: #51d8a7!important;
+  color: #51d8a7!important;
+}
+
+.bottom-menu .ui.purple.menu .active.item, .ui.menu .purple.active.item {
+  border-color: #b279f9!important;
+  color: #b279f9!important;
+}
+
+.bottom-menu .ui.red.menu .active.item, .ui.menu .red.active.item {
+  border-color: #f3536d!important;
+  color: #f3536d!important;
+}
+
+.bottom-menu .ui.icon.menu .item {
+  color: rgba(85, 98, 103, 0.7);
+}
+
 .mnemonic textarea {
   line-height: 1.8rem !important;
   word-spacing: 5px !important;
@@ -143,6 +181,7 @@
   color: #ffffff
 }
 
+
 .ui.page.modals.dimmer.transition.visible.active {
   background: rgba(41,53,58, 0.85) !important;
 
@@ -152,5 +191,39 @@
   width: 311px !important;
   height: 444px !important;
   background: url("./background/confirm-bg.svg") !important;
+}
+
+.ui.list.tran-list {
+  font-size: 10px;
+  max-height: 140px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.ui.attached.segment {
+  border: none;
+  padding: 0;
+}
+
+.ui.list.tran-list>.item {
+  margin-bottom: 10px;
+  box-shadow: 0 2px 8px 0 rgba(62, 88, 96, 0.1)
+}
+
+.ui.list.tran-list>.item:first-child {
+  padding-top: .21428571em;
+}
+
+.ui.list.tran-list>.item:last-child {
+  padding-bottom: .21428571em;
+}
+
+.item>.ui.grid {
+  margin-left: -5px;
+  margin-right: -5px;
+}
+
+.item>.ui.grid>.row>.column {
+  padding-left: 5px;
+  padding-right: 5px;
 }
 

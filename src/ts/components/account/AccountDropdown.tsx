@@ -20,6 +20,7 @@ import { Tooltip } from 'react-tippy'
 import { Dropdown, Icon, Popup } from 'semantic-ui-react'
 import { colorSchemes } from '../styles/themes'
 import styled from 'styled-components'
+import { getTransactions } from '../../background/store/transaction'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
 }
@@ -59,6 +60,9 @@ class AccountDropdown extends React.Component<IDashboardProps, IDashboardState> 
         address: dropdownOptions[0].value,
         name: dropdownOptions[0].text
       } })
+
+      // load transactions for the selected account
+      this.props.getTransactions(dropdownOptions[0].value)
     }
   }
 
@@ -157,6 +161,13 @@ class AccountDropdown extends React.Component<IDashboardProps, IDashboardState> 
     }
   }
 
+  componentDidMount () {
+    if (this.props.settings.selectedAccount) {
+      const account = this.props.settings.selectedAccount
+      this.props.getTransactions(account.address)
+    }
+  }
+
   render () {
     if (this.state.initializing || !this.props.settings.selectedAccount) {
       return (null)
@@ -244,7 +255,7 @@ const mapStateToProps = (state: IAppState) => {
   }
 }
 
-const mapDispatchToProps = { saveSettings, setAccounts }
+const mapDispatchToProps = { saveSettings, setAccounts, getTransactions }
 type DispatchProps = typeof mapDispatchToProps
 
 type StateProps = ReturnType<typeof mapStateToProps>
