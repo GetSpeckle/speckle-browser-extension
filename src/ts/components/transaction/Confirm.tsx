@@ -74,7 +74,7 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
       <Info>
         <FromTo color={colorSchemes[this.props.color].backgroundColor}>
           <Icon name='arrow circle right' size={'big'}/>
-          <Container textAlign={'center'}>
+          <Container textAlign={'left'}>
             <Tooltip
               title={!this.state.message ? t('copyToClipboard') : t('copiedExclam')}
               position='bottom'
@@ -187,6 +187,7 @@ const FromTo = styled.div`
   background-color: ${ props => props.color }
   color: #fff;
   margin-top: 10px;
+  margin: 10px;
  `
 
 const AccountName = styled.span`

@@ -169,7 +169,7 @@ class Send extends React.Component<ISendProps, ISendState> {
               trigger={
                 <StyledButton
                 type={'submit'}
-                disabled={!this.state.toAddress && this.state.toAddress.length !== 48
+                disabled={!this.state.toAddress || this.state.toAddress.length !== 48
                 || !this.state.amount
                 || !this.state.hasAvailable
                 }
