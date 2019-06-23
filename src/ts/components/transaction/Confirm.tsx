@@ -15,7 +15,6 @@ interface IConfirmProps {
   network: string,
   trigger: any,
   fromAddress: string,
-  fromName: string,
   amount: BN,
   toAddress: string,
   fee: BN,
@@ -23,6 +22,8 @@ interface IConfirmProps {
   existentialDeposit: BN,
   extrinsic?: IExtrinsic | null,
   color: string,
+  recipientAvailable: BN,
+  confirm: any
 }
 
 interface IConfirmState {
@@ -62,6 +63,30 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
   }
 
   render () {
+
+    // Conditional Rendering for warning article
+    const doesNotExist: boolean = this.props.recipientAvailable.cmp(this.props.existentialDeposit) === -1
+    let warning
+    if (doesNotExist) {
+      warning = (
+        <Warning>
+        <div>
+          <Icon name='warning sign' size={'small'}/>
+          The final recipient balance is less or equal
+          to {formatBalance(this.props.existentialDeposit)} (the existential amount) and will
+          not be reflected
+        </div>
+        <div>
+          <Icon name='warning sign' size={'small'}/>
+          A fee of {formatBalance(this.props.creationFee)} will be deducted from the sender
+          since the destination account does not exist
+        </div>
+      </Warning>
+      )
+    } else {
+      warning = null
+    }
+
     return (
     <Modal trigger={this.props.trigger} style={{ 'zIndex': 3 }}>
       <UpperSection>
@@ -88,6 +113,9 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
             >
               <span onClick={() => this.copyToClipboard(this.props.toAddress)}>{this.truncate(this.props.toAddress)}</span>
             </Tooltip>
+            <div>
+              <p>Available: {formatBalance(this.props.recipientAvailable)}</p>
+            </div>
           </Container>
         </FromTo>
       </Section>
@@ -111,26 +139,24 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
       </Section>
       <Section>
         <Info>
-          <Warning>
+          {warning}
+        </Info>
+        <Info>
+          <div style={{ 'fontSize': '11px' }}>
             <div>
-              <Icon name='warning sign' size={'small'}/>
-              The final recipient balance is less or equal to {formatBalance(this.props.existentialDeposit)} (the existential amount) and will not be reflected
-            </div>
-            <div>
-              <Icon name='warning sign' size={'small'}/>
-              A fee of {formatBalance(this.props.creationFee)} will be deducted from the sender since the destination account does not exist
-            </div>
-            <div>
-              <Icon name='warning sign' size={'small'}/>
+              <Icon name='arrow right' size={'small'}/>
               Fees include the transaction fee and the per-byte fee
             </div>
-          </Warning>
+          </div>
         </Info>
       </Section>
       <Section style={{ 'marginTop': '20px' }}>
         <Info>
-          <Button>Cancel</Button>
-          <ConfirmButton color={colorSchemes[this.props.color].backgroundColor}>
+          <Button id='reset'>Cancel</Button>
+          <ConfirmButton
+            color={colorSchemes[this.props.color].backgroundColor}
+            onClick={this.props.confirm}
+          >
             Confirm
           </ConfirmButton>
         </Info>
@@ -222,6 +248,8 @@ const Value = styled.p`
 const Section = styled.div`
   width: 100%;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
 `
 const FromTo = styled.div`

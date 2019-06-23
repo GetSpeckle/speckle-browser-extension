@@ -34,6 +34,7 @@ interface ISendState {
   extrinsic?: IExtrinsic | null
   creationFee: BN
   existentialDeposit: BN
+  recipientAvailable: BN
 }
 
 const TEN = new BN(10)
@@ -59,7 +60,8 @@ class Send extends React.Component<ISendProps, ISendState> {
       fee: new BN(0),
       extrinsic: undefined,
       creationFee: new BN(0),
-      existentialDeposit: new BN(0)
+      existentialDeposit: new BN(0),
+      recipientAvailable: new BN(0)
     }
   }
 
@@ -100,11 +102,12 @@ class Send extends React.Component<ISendProps, ISendState> {
     this.setState({ amount: event.target.value })
   }
 
-  changeFee (fee, creationFee, existentialDeposit) {
+  changeFee (fee, creationFee, existentialDeposit, recipientAvailable) {
     this.setState({
       fee: fee,
       creationFee: creationFee,
-      existentialDeposit: existentialDeposit
+      existentialDeposit: existentialDeposit,
+      recipientAvailable: recipientAvailable
     })
   }
 
@@ -183,13 +186,14 @@ class Send extends React.Component<ISendProps, ISendState> {
                   Confirm
                 </StyledButton>
               }
-              fromName={this.props.settings.selectedAccount.name}
               fromAddress={this.props.settings.selectedAccount.address}
               amount={this.inputValueToBn(this.state.amount, this.state.siUnit)}
               toAddress={this.state.toAddress}
               fee={this.state.fee!}
               creationFee={this.state.creationFee}
               existentialDeposit={this.state.existentialDeposit}
+              recipientAvailable={this.state.recipientAvailable}
+              confirm={this.confirm}
             />
           </Section>
         </Form>
