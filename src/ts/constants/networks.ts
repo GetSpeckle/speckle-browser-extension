@@ -11,7 +11,7 @@ export const Alexander: Network = {
   chain: Polkadot,
   name: 'Alexander',
   rpcServer: 'wss://poc3-rpc.polkadot.io/',
-  txExplorer: 'https://polkadot.js.org/apps/#/explorer'
+  txExplorer: 'https://polkascan.io/pre/alexander/system/extrinsic/'
 }
 
 export const CharredCherry: Network = {

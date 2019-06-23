@@ -5,6 +5,7 @@ import { Tab, List, Grid, Icon } from 'semantic-ui-react'
 import { IAppState } from '../../background/store/all'
 import { getTransactions, TransactionType, ITransaction } from '../../background/store/transaction'
 import t from '../../services/i18n'
+import { networks } from '../../constants/networks';
 
 interface ITransactionListProps extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -103,6 +104,8 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
       borderLeftStyle: 'solid'
     }
 
+    const txBaseUrl = networks[this.props.network].txExplorer
+
     return (
       <List.Item key={index} style={borderStyle}>
         <Grid>
@@ -125,7 +128,7 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
           </Grid.Column>
 
           <Grid.Column width={2} verticalAlign='middle'>
-            <a>
+            <a href={txBaseUrl + tran.txHash} target='_blank'>
               <Icon name='linkify'/>
             </a>
           </Grid.Column>
@@ -140,7 +143,8 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
 const mapStateToProps = (state: IAppState) => {
   return {
     transactions: state.transactions,
-    account: state.settings.selectedAccount
+    account: state.settings.selectedAccount,
+    network: state.settings.network
   }
 }
 
