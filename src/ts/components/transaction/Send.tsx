@@ -17,12 +17,15 @@ import Amount from './Amount'
 import ToAddress from './ToAddress'
 import { IExtrinsic } from '@polkadot/types/types'
 import { SignerOptions } from '../../background/types'
-import { Index } from '@polkadot/types'
-import { SubmittableResult, ExtrinsicStatus } from '@polkadot/api'
+import { Index, ExtrinsicStatus } from '@polkadot/types'
 import Fee from './Fee'
 import Confirm from './Confirm'
 import AccountDropdown from '../account/AccountDropdown'
-import { ITransaction, getTransactions, upsertTransaction } from '../../background/store/transaction'
+import {
+  ITransaction,
+  getTransactions,
+  upsertTransaction
+} from '../../background/store/transaction'
 
 interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {}
 
@@ -137,14 +140,18 @@ class Send extends React.Component<ISendProps, ISendState> {
     }
 
     signExtrinsic(extrinsic, currentAddress, signOptions).then(signature => {
-      const signedExtrinsic = extrinsic.addSignature(currentAddress as any, signature, signOptions.nonce)
+      const signedExtrinsic = extrinsic.addSignature(
+        currentAddress as any,
+        signature,
+        signOptions.nonce
+      )
       this.setState({ extrinsic: signedExtrinsic })
     })
   }
 
   confirm = async () => {
 
-    if (!this.state.extrinsic) {return}
+    if (!this.state.extrinsic) { return }
 
     if (!this.props.settings.selectedAccount) {
       return
@@ -164,27 +171,33 @@ class Send extends React.Component<ISendProps, ISendState> {
       fee: null
     }
 
-    this.props.upsertTransaction(this.props.settings.selectedAccount.address, txItem, this.props.transactions)
+    this.props.upsertTransaction(
+      this.props.settings.selectedAccount.address,
+      txItem,
+      this.props.transactions
+    )
 
-    this.api.rpc.author.submitAndWatchExtrinsic(this.state.extrinsic as IExtrinsic, (result: ExtrinsicStatus) => {
-      console.log(result)
+    this.api.rpc.author.submitAndWatchExtrinsic(
+      this.state.extrinsic as IExtrinsic,
+      (result: ExtrinsicStatus) => {
+        console.log(result)
       // save extrinsic here
-      if (result) {
-        if (result.isFinalized) {
-          txItem.status = 'Success'
-          txItem.updateTime = new Date().getTime()
-          this.props.upsertTransaction(address, txItem, this.props.transactions)
-        } else if (result.isInvalid || result.isDropped || result.isUsurped) {
-          txItem.status = 'Failure'
-          txItem.updateTime = new Date().getTime()
-          this.props.upsertTransaction(address, txItem, this.props.transactions)
-        } else {
-          console.log('Status is ', result)
+        if (result) {
+          if (result.isFinalized) {
+            txItem.status = 'Success'
+            txItem.updateTime = new Date().getTime()
+            this.props.upsertTransaction(address, txItem, this.props.transactions)
+          } else if (result.isInvalid || result.isDropped || result.isUsurped) {
+            txItem.status = 'Failure'
+            txItem.updateTime = new Date().getTime()
+            this.props.upsertTransaction(address, txItem, this.props.transactions)
+          } else {
+            console.log('Status is ', result)
+          }
         }
-      }
-    }).catch(err => {
-      this.props.setError(err.message)
-    })
+      }).catch(err => {
+        this.props.setError(err.message)
+      })
   }
 
   render () {
@@ -218,12 +231,7 @@ class Send extends React.Component<ISendProps, ISendState> {
               network={this.props.settings.network}
               color={this.props.settings.color}
               extrinsic={this.state.extrinsic}
-              trigger={
-                <StyledButton
-                  type={'submit'}
-                  disabled={!this.state.toAddress || this.state.toAddress.length !== 48 || !this.state.amount || !this.state.hasAvailable}
-                  onClick={this.saveExtrinsic}
-                >
+              trigger={<StyledButton type={'submit'} disabled={!this.state.toAddress || this.state.toAddress.length !== 48 || !this.state.amount || !this.state.hasAvailable} onClick={this.saveExtrinsic}>
                   Confirm
                 </StyledButton>
               }
