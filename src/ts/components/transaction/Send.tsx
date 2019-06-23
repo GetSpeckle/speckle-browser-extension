@@ -26,6 +26,7 @@ import {
   getTransactions,
   upsertTransaction
 } from '../../background/store/transaction'
+import { HOME_ROUTE } from '../../constants/routes'
 
 interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {}
 
@@ -150,6 +151,7 @@ class Send extends React.Component<ISendProps, ISendState> {
   }
 
   confirm = async () => {
+    const { history } = this.props
 
     if (!this.state.extrinsic) { return }
 
@@ -187,10 +189,12 @@ class Send extends React.Component<ISendProps, ISendState> {
             txItem.status = 'Success'
             txItem.updateTime = new Date().getTime()
             this.props.upsertTransaction(address, txItem, this.props.transactions)
+            history.push(HOME_ROUTE)
           } else if (result.isInvalid || result.isDropped || result.isUsurped) {
             txItem.status = 'Failure'
             txItem.updateTime = new Date().getTime()
             this.props.upsertTransaction(address, txItem, this.props.transactions)
+            this.props.setError('Failed to send the transaction')
           } else {
             console.log('Status is ', result)
           }
