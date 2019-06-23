@@ -37,7 +37,7 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
 
   state: IConfirmState = {
     status: '',
-    extHash: this.props.extrinsic === undefined ? null : this.props.extrinsic!.hash.toHex(),
+    extHash: this.props.extrinsic === undefined ? null : this.props.extrinsic!.hash.toHex()
   }
 
   truncate = (address: string) => {
