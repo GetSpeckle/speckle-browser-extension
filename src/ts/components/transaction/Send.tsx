@@ -41,6 +41,7 @@ interface ISendState {
   creationFee: BN
   existentialDeposit: BN
   recipientAvailable: BN
+  modalOpen: boolean
 }
 
 const TEN = new BN(10)
@@ -67,7 +68,8 @@ class Send extends React.Component<ISendProps, ISendState> {
       extrinsic: undefined,
       creationFee: new BN(0),
       existentialDeposit: new BN(0),
-      recipientAvailable: new BN(0)
+      recipientAvailable: new BN(0),
+      modalOpen: false
     }
   }
 
@@ -122,6 +124,10 @@ class Send extends React.Component<ISendProps, ISendState> {
     this.setState({ siUnit: val })
   }
 
+  changeModal = (open) => {
+    this.setState({ modalOpen: open })
+  }
+
   saveExtrinsic = async () => {
     this.props.setError('')
     if (!this.props.settings.selectedAccount) {
@@ -146,12 +152,11 @@ class Send extends React.Component<ISendProps, ISendState> {
         signature,
         signOptions.nonce
       )
-      this.setState({ extrinsic: signedExtrinsic })
+      this.setState({ extrinsic: signedExtrinsic, modalOpen: true })
     })
   }
 
   confirm = async () => {
-    const { history } = this.props
 
     if (!this.state.extrinsic) { return }
 
@@ -170,7 +175,7 @@ class Send extends React.Component<ISendProps, ISendState> {
       type: 'Sent',
       createTime: new Date().getTime(),
       status: 'Pending',
-      fee: null
+      fee: 0
     }
 
     this.props.upsertTransaction(
@@ -183,13 +188,12 @@ class Send extends React.Component<ISendProps, ISendState> {
       this.state.extrinsic as IExtrinsic,
       (result: ExtrinsicStatus) => {
         console.log(result)
-      // save extrinsic here
         if (result) {
           if (result.isFinalized) {
             txItem.status = 'Success'
             txItem.updateTime = new Date().getTime()
             this.props.upsertTransaction(address, txItem, this.props.transactions)
-            history.push(HOME_ROUTE)
+            // TODO: Add Browser notification
           } else if (result.isInvalid || result.isDropped || result.isUsurped) {
             txItem.status = 'Failure'
             txItem.updateTime = new Date().getTime()
@@ -235,7 +239,12 @@ class Send extends React.Component<ISendProps, ISendState> {
               network={this.props.settings.network}
               color={this.props.settings.color}
               extrinsic={this.state.extrinsic}
-              trigger={<StyledButton type={'submit'} disabled={!this.state.toAddress || this.state.toAddress.length !== 48 || !this.state.amount || !this.state.hasAvailable} onClick={this.saveExtrinsic}>
+              trigger={
+                <StyledButton
+                  type={'submit'}
+                  disabled={!this.state.toAddress || this.state.toAddress.length !== 48 || !this.state.amount || !this.state.hasAvailable}
+                  onClick={this.saveExtrinsic}
+                >
                   Confirm
                 </StyledButton>
               }
@@ -247,6 +256,8 @@ class Send extends React.Component<ISendProps, ISendState> {
               existentialDeposit={this.state.existentialDeposit}
               recipientAvailable={this.state.recipientAvailable}
               confirm={this.confirm}
+              open={this.state.modalOpen}
+              handleModal={this.changeModal}
             />
           </Section>
         </Form>

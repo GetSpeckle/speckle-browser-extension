@@ -24,6 +24,8 @@ interface IConfirmProps {
   color: string,
   recipientAvailable: BN,
   confirm: any
+  open: boolean
+  handleModal: any
 }
 
 interface IConfirmState {
@@ -38,6 +40,12 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
   state: IConfirmState = {
     status: '',
     extHash: this.props.extrinsic === undefined ? null : this.props.extrinsic!.hash.toHex()
+  }
+
+  handleClose = () => this.props.handleModal(false)
+  handleConfirm = () => {
+    this.handleClose()
+    this.props.confirm()
   }
 
   truncate = (address: string) => {
@@ -88,7 +96,12 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
     }
 
     return (
-    <Modal trigger={this.props.trigger} style={{ 'zIndex': 3 }}>
+    <Modal
+      trigger={this.props.trigger}
+      style={{ 'zIndex': 3 }}
+      onClose={this.handleClose}
+      open={this.props.open}
+    >
       <UpperSection>
         <Offset>
           <Status>
@@ -152,10 +165,10 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
       </Section>
       <Section style={{ 'marginTop': '20px' }}>
         <Info>
-          <Button id='reset'>Cancel</Button>
+          <Button onClick={this.handleClose}>Cancel</Button>
           <ConfirmButton
             color={colorSchemes[this.props.color].backgroundColor}
-            onClick={this.props.confirm}
+            onClick={this.handleConfirm}
           >
             Confirm
           </ConfirmButton>
