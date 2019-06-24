@@ -170,7 +170,7 @@ class Send extends React.Component<ISendProps, ISendState> {
       type: 'Sent',
       createTime: new Date().getTime(),
       status: 'Pending',
-      fee: null
+      fee: 0
     }
 
     this.props.upsertTransaction(
