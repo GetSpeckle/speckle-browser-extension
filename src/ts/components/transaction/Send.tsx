@@ -12,7 +12,7 @@ import t from '../../services/i18n'
 import formatBalance from '@polkadot/util/format/formatBalance'
 import Balance from '../account/Balance'
 import { AccountSection } from '../dashboard/Dashboard'
-import { Form } from 'semantic-ui-react'
+import { Dimmer, Form, Loader } from 'semantic-ui-react'
 import Amount from './Amount'
 import ToAddress from './ToAddress'
 import { IExtrinsic } from '@polkadot/types/types'
@@ -28,6 +28,7 @@ import {
 } from '../../background/store/transaction'
 import { SubmittableResult } from '@polkadot/api/SubmittableExtrinsic'
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types'
+import { HOME_ROUTE } from '../../constants/routes'
 
 interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {}
 
@@ -36,6 +37,7 @@ interface ISendState {
   toAddress: string
   hasAvailable: boolean
   isSi: boolean
+  isLoading: boolean
   siUnit: string
   fee: BN
   extrinsic?: IExtrinsic | null
@@ -64,6 +66,7 @@ class Send extends React.Component<ISendProps, ISendState> {
       toAddress: '',
       hasAvailable: true,
       isSi: true,
+      isLoading: false,
       siUnit: si.value,
       fee: new BN(0),
       extrinsic: undefined,
@@ -186,9 +189,11 @@ class Send extends React.Component<ISendProps, ISendState> {
 
     const submittable = this.state.extrinsic as SubmittableExtrinsic
     submittable.send(({ events, status }: SubmittableResult) => {
+      const { history } = this.props
       console.log('Transaction status:', status.type)
-
+      this.setState({ isLoading: true })
       if (status.isFinalized) {
+        this.setState({ isLoading: false })
         console.log('Completed at block hash', status.value.toHex())
         console.log('Events:')
         txItem.status = 'Success'
@@ -197,11 +202,10 @@ class Send extends React.Component<ISendProps, ISendState> {
         events.forEach(({ phase, event: { data, method, section } }: EventRecord) => {
           console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString())
         })
-
-        if (events.length) {
-          done()
-        }
+        done && done()
+        history.push(HOME_ROUTE)
       } else if (status.isInvalid || status.isDropped || status.isUsurped) {
+        this.setState({ isLoading: false })
         txItem.status = 'Failure'
         txItem.updateTime = new Date().getTime()
         this.props.upsertTransaction(address, txItem, this.props.transactions)
@@ -217,6 +221,9 @@ class Send extends React.Component<ISendProps, ISendState> {
 
     return (
       <ContentContainer>
+        <Dimmer active={this.state.isLoading}>
+          <Loader indeterminate={true}> Processing transaction, please wait ...</Loader>
+        </Dimmer>
         <AccountDropdown/>
         <AccountSection>
           <Balance address={this.props.settings.selectedAccount.address} />
@@ -288,4 +295,3 @@ export default withRouter(
     mapDispatchToProps
   )(Send)
 )
-
