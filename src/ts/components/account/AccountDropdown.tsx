@@ -22,10 +22,10 @@ import { colorSchemes } from '../styles/themes'
 import styled from 'styled-components'
 import { getTransactions } from '../../background/store/transaction'
 
-interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
+interface IAccountDropdownProps extends StateProps, RouteComponentProps, DispatchProps {
 }
 
-interface IDashboardState {
+interface IAccountDropdownState {
   options: Array<Option>,
   message?: string,
   initializing: boolean,
@@ -42,7 +42,7 @@ interface Option {
   to?: string
 }
 
-class AccountDropdown extends React.Component<IDashboardProps, IDashboardState> {
+class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDropdownState> {
 
   constructor (props) {
     super(props)
