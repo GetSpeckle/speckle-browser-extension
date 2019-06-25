@@ -17,7 +17,7 @@ import Amount from './Amount'
 import ToAddress from './ToAddress'
 import { IExtrinsic } from '@polkadot/types/types'
 import { SignerOptions } from '../../background/types'
-import { Index, ExtrinsicStatus } from '@polkadot/types'
+import { Index, EventRecord } from '@polkadot/types'
 import Fee from './Fee'
 import Confirm from './Confirm'
 import AccountDropdown from '../account/AccountDropdown'
@@ -26,7 +26,8 @@ import {
   getTransactions,
   upsertTransaction
 } from '../../background/store/transaction'
-import { HOME_ROUTE } from '../../constants/routes'
+import { SubmittableResult } from '@polkadot/api/SubmittableExtrinsic'
+import { SubmittableExtrinsic } from '@polkadot/api/promise/types'
 
 interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {}
 
@@ -41,6 +42,7 @@ interface ISendState {
   creationFee: BN
   existentialDeposit: BN
   recipientAvailable: BN
+  modalOpen: boolean
 }
 
 const TEN = new BN(10)
@@ -67,7 +69,8 @@ class Send extends React.Component<ISendProps, ISendState> {
       extrinsic: undefined,
       creationFee: new BN(0),
       existentialDeposit: new BN(0),
-      recipientAvailable: new BN(0)
+      recipientAvailable: new BN(0),
+      modalOpen: false
     }
   }
 
@@ -122,8 +125,11 @@ class Send extends React.Component<ISendProps, ISendState> {
     this.setState({ siUnit: val })
   }
 
+  changeModal = (open) => {
+    this.setState({ modalOpen: open })
+  }
+
   saveExtrinsic = async () => {
-    this.props.setError('')
     if (!this.props.settings.selectedAccount) {
       return
     }
@@ -146,12 +152,11 @@ class Send extends React.Component<ISendProps, ISendState> {
         signature,
         signOptions.nonce
       )
-      this.setState({ extrinsic: signedExtrinsic })
+      this.setState({ extrinsic: signedExtrinsic, modalOpen: true })
     })
   }
 
-  confirm = async () => {
-    const { history } = this.props
+  confirm = async (done) => {
 
     if (!this.state.extrinsic) { return }
 
@@ -179,29 +184,30 @@ class Send extends React.Component<ISendProps, ISendState> {
       this.props.transactions
     )
 
-    this.api.rpc.author.submitAndWatchExtrinsic(
-      this.state.extrinsic as IExtrinsic,
-      (result: ExtrinsicStatus) => {
-        console.log(result)
-      // save extrinsic here
-        if (result) {
-          if (result.isFinalized) {
-            txItem.status = 'Success'
-            txItem.updateTime = new Date().getTime()
-            this.props.upsertTransaction(address, txItem, this.props.transactions)
-            history.push(HOME_ROUTE)
-          } else if (result.isInvalid || result.isDropped || result.isUsurped) {
-            txItem.status = 'Failure'
-            txItem.updateTime = new Date().getTime()
-            this.props.upsertTransaction(address, txItem, this.props.transactions)
-            this.props.setError('Failed to send the transaction')
-          } else {
-            console.log('Status is ', result)
-          }
+    const submittable = this.state.extrinsic as SubmittableExtrinsic
+    submittable.send(({ events, status }: SubmittableResult) => {
+      console.log('Transaction status:', status.type)
+
+      if (status.isFinalized) {
+        console.log('Completed at block hash', status.value.toHex())
+        console.log('Events:')
+        txItem.status = 'Success'
+        txItem.updateTime = new Date().getTime()
+        this.props.upsertTransaction(address, txItem, this.props.transactions)
+        events.forEach(({ phase, event: { data, method, section } }: EventRecord) => {
+          console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString())
+        })
+
+        if (events.length) {
+          done()
         }
-      }).catch(err => {
-        this.props.setError(err.message)
-      })
+      } else if (status.isInvalid || status.isDropped || status.isUsurped) {
+        txItem.status = 'Failure'
+        txItem.updateTime = new Date().getTime()
+        this.props.upsertTransaction(address, txItem, this.props.transactions)
+        this.props.setError('Failed to send the transaction')
+      }
+    })
   }
 
   render () {
@@ -235,7 +241,12 @@ class Send extends React.Component<ISendProps, ISendState> {
               network={this.props.settings.network}
               color={this.props.settings.color}
               extrinsic={this.state.extrinsic}
-              trigger={<StyledButton type={'submit'} disabled={!this.state.toAddress || this.state.toAddress.length !== 48 || !this.state.amount || !this.state.hasAvailable} onClick={this.saveExtrinsic}>
+              trigger={
+                <StyledButton
+                  type={'submit'}
+                  disabled={!this.state.toAddress || this.state.toAddress.length !== 48 || !this.state.amount || !this.state.hasAvailable}
+                  onClick={this.saveExtrinsic}
+                >
                   Confirm
                 </StyledButton>
               }
@@ -247,6 +258,8 @@ class Send extends React.Component<ISendProps, ISendState> {
               existentialDeposit={this.state.existentialDeposit}
               recipientAvailable={this.state.recipientAvailable}
               confirm={this.confirm}
+              open={this.state.modalOpen}
+              handleModal={this.changeModal}
             />
           </Section>
         </Form>
@@ -275,3 +288,4 @@ export default withRouter(
     mapDispatchToProps
   )(Send)
 )
+
