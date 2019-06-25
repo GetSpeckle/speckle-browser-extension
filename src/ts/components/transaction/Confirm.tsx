@@ -126,8 +126,9 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
             >
               <span onClick={() => this.copyToClipboard(this.props.toAddress)}>{this.truncate(this.props.toAddress)}</span>
             </Tooltip>
-            <div>
-              <p>Available: {formatBalance(this.props.recipientAvailable)}</p>
+            <div style={{ 'display': 'flex', 'alignItems': 'center', 'fontSize': '13px' }}>
+              <Identicon account={this.props.toAddress} size={15}/>
+              <p>  {formatBalance(this.props.recipientAvailable)}</p>
             </div>
           </Container>
         </FromTo>
