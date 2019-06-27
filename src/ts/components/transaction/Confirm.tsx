@@ -77,19 +77,23 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
     let warning
     if (doesNotExist) {
       warning = (
-        <Warning>
-          <div>
-            <Icon name='warning sign' size={'small'}/>
-            The final recipient balance is less or equal
-            to {formatBalance(this.props.existentialDeposit)} (the existential amount) and will
-            not be reflected
-          </div>
-          <div>
-            <Icon name='warning sign' size={'small'}/>
-            A fee of {formatBalance(this.props.creationFee)} will be deducted from the sender
-            since the destination account does not exist
-          </div>
-        </Warning>
+        <Section style={{ 'marginTop': '-10px' }}>
+          <Info>
+          <Warning>
+            <div>
+              <Icon name='warning sign' size={'small'}/>
+              The final recipient balance is less or equal
+              to {formatBalance(this.props.existentialDeposit)} (the existential amount) and will
+              not be reflected
+            </div>
+            <div>
+              <Icon name='warning sign' size={'small'}/>
+              A fee of {formatBalance(this.props.creationFee)} will be deducted from the sender
+              since the destination account does not exist
+            </div>
+          </Warning>
+          </Info>
+        </Section>
       )
     } else {
       warning = null
@@ -147,29 +151,27 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
             </Container>
           </FromTo>
         </Section>
-        <Section style={{ 'marginTop': '16px' }}>
+        <Section style={{ 'marginTop': '8px' }}>
           <Info>
             <Key>Fee</Key>
             <Value>{formatBalance(this.props.fee)}</Value>
           </Info>
           <div style={{ 'border': '1px solid gray' }}/>
         </Section>
-        <Section>
+        <Section style={{ 'marginTop': '8px' }}>
           <Info>
             <Key>Amount</Key>
             <Value>{formatBalance(this.props.amount)}</Value>
           </Info>
         </Section>
-        <Section style={{ 'marginBottom': '16px' }}>
+        <Section style={{ 'marginTop': '8px','marginBottom': '16px' }}>
           <Info>
             <Key>Total</Key>
             <Value>{formatBalance(this.props.amount.add(this.props.fee))}</Value>
           </Info>
         </Section>
+        {warning}
         <Section>
-          <Info>
-            {warning}
-          </Info>
           <Info>
             <div style={{ 'fontSize': '11px' }}>
               <div>
@@ -179,7 +181,7 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
             </div>
           </Info>
         </Section>
-        <Section style={{ 'marginTop': '20px' }}>
+        <Section style={{ 'marginTop': '16px' }}>
           <Info>
             <Button onClick={this.handleClose}>Cancel</Button>
             <ConfirmButton
@@ -237,7 +239,7 @@ const Subheading = styled.p`
 
 const OverlaySection = styled.div`
   width: 100%
-  margin-top: 10px
+  margin-top: 7px
   text-align: center
 `
 
@@ -310,6 +312,7 @@ const Warning = styled.div`
   background: #ffffe0;
   border-color: #eeeeae;
   font-size: 11px;
+  margin-top: 0px;
 `
 
 const ConfirmButton = styled(Button)`
