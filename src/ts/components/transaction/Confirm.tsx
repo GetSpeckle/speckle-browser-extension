@@ -77,105 +77,122 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
     let warning
     if (doesNotExist) {
       warning = (
-        <Warning>
-        <div>
-          <Icon name='warning sign' size={'small'}/>
-          The final recipient balance is less or equal
-          to {formatBalance(this.props.existentialDeposit)} (the existential amount) and will
-          not be reflected
-        </div>
-        <div>
-          <Icon name='warning sign' size={'small'}/>
-          A fee of {formatBalance(this.props.creationFee)} will be deducted from the sender
-          since the destination account does not exist
-        </div>
-      </Warning>
+        <Section style={{ 'marginTop': '-10px' }}>
+          <Info>
+          <Warning>
+            <div>
+              <Icon name='warning sign' size={'small'}/>
+              The final recipient balance is less or equal
+              to {formatBalance(this.props.existentialDeposit)} (the existential amount) and will
+              not be reflected
+            </div>
+            <div>
+              <Icon name='warning sign' size={'small'}/>
+              A fee of {formatBalance(this.props.creationFee)} will be deducted from the sender
+              since the destination account does not exist
+            </div>
+          </Warning>
+          </Info>
+        </Section>
       )
     } else {
       warning = null
     }
 
     return (
-    <Modal
-      trigger={this.props.trigger}
-      style={{ 'zIndex': 3 }}
-      onClose={this.handleClose}
-      open={this.props.open}
-    >
-      <UpperSection>
-        <Offset>
-          <Status>
-            <Identicon account={this.props.fromAddress} size={48}/>
-          </Status>
-        </Offset>
-        <Heading>Confirm Extrinsic</Heading>
-        <Subheading>Review your extrinsic details</Subheading>
-      </UpperSection>
-      <OverlaySection>
-        <Overlay/>
-      </OverlaySection>
-      <Section>
-        <FromTo color={colorSchemes[this.props.color].backgroundColor}>
-          <Icon name='arrow circle right' size={'big'} style={{  'marginLeft': '10px' }}/>
-          <Container textAlign={'left'} style={{ 'marginLeft': '10px' }}>
-            <Tooltip
-              title={!this.state.message ? t('copyToClipboard') : t('copiedExclam')}
-              position='bottom'
-              trigger='mouseenter'
-              arrow={true}
-            >
-              <span onClick={() => this.copyToClipboard(this.props.toAddress)}>{this.truncate(this.props.toAddress)}</span>
-            </Tooltip>
-            <div style={{ 'display': 'flex', 'alignItems': 'center', 'fontSize': '13px' }}>
-              <Identicon account={this.props.toAddress} size={15}/>
-              <p>  {formatBalance(this.props.recipientAvailable)}</p>
-            </div>
-          </Container>
-        </FromTo>
-      </Section>
-      <Section>
-        <Info>
-          <Key>Fee</Key>
-          <Value>{formatBalance(this.props.fee)}</Value>
-        </Info>
-      </Section>
-      <Section>
-        <Info>
-          <Key>Amount</Key>
-          <Value>{formatBalance(this.props.amount)}</Value>
-        </Info>
-      </Section>
-      <Section>
-        <Info>
-          <Key>total</Key>
-          <Value>{formatBalance(this.props.amount.add(this.props.fee))}</Value>
-        </Info>
-      </Section>
-      <Section>
-        <Info>
-          {warning}
-        </Info>
-        <Info>
-          <div style={{ 'fontSize': '11px' }}>
-            <div>
-              <Icon name='arrow right' size={'small'}/>
-              Fees include the transaction fee and the per-byte fee
-            </div>
-          </div>
-        </Info>
-      </Section>
-      <Section style={{ 'marginTop': '20px' }}>
-        <Info>
-          <Button onClick={this.handleClose}>Cancel</Button>
-          <ConfirmButton
-            color={colorSchemes[this.props.color].backgroundColor}
-            onClick={this.handleConfirm}
+      <Modal
+        trigger={this.props.trigger}
+        style={{ 'zIndex': 3 }}
+        onClose={this.handleClose}
+        open={this.props.open}
+      >
+        <UpperSection>
+          <Offset>
+            <Status>
+              <Identicon account={this.props.fromAddress} size={48}/>
+            </Status>
+          </Offset>
+          <Tooltip
+            title={!this.state.message ? t('copyToClipboard') : t('copiedExclam')}
+            position='bottom'
+            trigger='mouseenter'
+            arrow={true}
           >
-            Confirm
-          </ConfirmButton>
-        </Info>
-      </Section>
-    </Modal>
+            <FromAddress>
+              <span onClick={() => this.copyToClipboard(this.props.fromAddress)}>
+                {this.props.fromAddress.substring(0, 8) + '...' + this.props.fromAddress.substring(this.props.fromAddress.length - 10)}
+              </span>
+            </FromAddress>
+          </Tooltip>
+          <Heading>Confirm Extrinsic</Heading>
+          <Subheading>Review your extrinsic details</Subheading>
+        </UpperSection>
+        <OverlaySection>
+          <Overlay/>
+        </OverlaySection>
+        <Section>
+          <FromTo color={colorSchemes[this.props.color].backgroundColor}>
+            <Icon name='arrow circle right' size={'big'} style={{  'marginLeft': '10px' }}/>
+            <Container textAlign={'left'} style={{ 'marginLeft': '10px' }}>
+              <div style={{ 'display': 'flex', 'alignItems': 'center', 'fontSize': '13px', 'marginLeft': '-10px' }}>
+                <Identicon account={this.props.toAddress} size={20} style={{ 'marginRight': '5px' }}/>
+                <Tooltip
+                  title={!this.state.message ? t('copyToClipboard') : t('copiedExclam')}
+                  position='bottom'
+                  trigger='mouseenter'
+                  arrow={true}
+                >
+                  <span onClick={() => this.copyToClipboard(this.props.toAddress)}>{this.truncate(this.props.toAddress)}</span>
+                </Tooltip>
+              </div>
+              <div style={{ 'display': 'flex', 'alignItems': 'center', 'fontSize': '11px', 'marginLeft': '10px' }}>
+                <p>Available: {formatBalance(this.props.recipientAvailable)}</p>
+              </div>
+            </Container>
+          </FromTo>
+        </Section>
+        <Section style={{ 'marginTop': '8px' }}>
+          <Info>
+            <Key>Fee</Key>
+            <Value>{formatBalance(this.props.fee)}</Value>
+          </Info>
+          <div style={{ 'border': '1px solid gray' }}/>
+        </Section>
+        <Section style={{ 'marginTop': '8px' }}>
+          <Info>
+            <Key>Amount</Key>
+            <Value>{formatBalance(this.props.amount)}</Value>
+          </Info>
+        </Section>
+        <Section style={{ 'marginTop': '8px','marginBottom': '16px' }}>
+          <Info>
+            <Key>Total</Key>
+            <Value>{formatBalance(this.props.amount.add(this.props.fee))}</Value>
+          </Info>
+        </Section>
+        {warning}
+        <Section>
+          <Info>
+            <div style={{ 'fontSize': '11px' }}>
+              <div>
+                <Icon name='arrow right' size={'small'}/>
+                Fees include the transaction fee and the per-byte fee
+              </div>
+            </div>
+          </Info>
+        </Section>
+        <Section style={{ 'marginTop': '16px' }}>
+          <Info>
+            <Button onClick={this.handleClose}>Cancel</Button>
+            <ConfirmButton
+              color={colorSchemes[this.props.color].backgroundColor}
+              onClick={this.handleConfirm}
+            >
+              Confirm
+            </ConfirmButton>
+          </Info>
+        </Section>
+      </Modal>
     )
   }
 }
@@ -190,10 +207,11 @@ width: 100%
 margin-top:-34px;
 display: flex;
 justify-content: center;
+margin-bottom: 8px;
 `
 const Heading = styled.h3`
 {
-  margin-top: 20px;
+  margin-top: 8px;
   margin-bottom: 4px;
   font-family: Nunito;
   font-size: 19px;
@@ -221,7 +239,7 @@ const Subheading = styled.p`
 
 const OverlaySection = styled.div`
   width: 100%
-  margin-top: 18px
+  margin-top: 7px
   text-align: center
 `
 
@@ -238,28 +256,32 @@ const Status = styled.div`
 `
 
 const Key = styled.p`
+  margin-top: 3px;
   font-family: Nunito;
   font-size: 11px;
   font-weight: bold;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: normal;
-  letter-spacing: normal;
+  color: #a0aeb4;
+  margin-bottom: 0px;
+`
+const FromAddress = styled.span`
+  font-family: Nunito;
+  font-size: 8px;
+  font-weight: bold;
   color: #a0aeb4;
 `
 
 const Value = styled.p`
   font-family: Nunito;
   font-size: 14px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
   line-height: 1.43;
-  letter-spacing: normal;
   color: #30383b;
 `
 
-const Section = styled.div`
+interface MarginProps {
+  margin?: string | null
+}
+
+const Section = styled.div<MarginProps>`
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -275,8 +297,7 @@ const FromTo = styled.div`
   align-items: center;
   background-color: ${ props => props.color }
   color: #fff;
-  margin-top: 10px;
-  margin: 10px;
+  margin-top: 15px;
  `
 
 const Info = styled.div`
@@ -291,6 +312,7 @@ const Warning = styled.div`
   background: #ffffe0;
   border-color: #eeeeae;
   font-size: 11px;
+  margin-top: 0px;
 `
 
 const ConfirmButton = styled(Button)`
