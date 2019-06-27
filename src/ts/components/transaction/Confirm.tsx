@@ -115,7 +115,9 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
             arrow={true}
           >
             <FromAddress>
-              {this.props.fromAddress.substring(0, 8) + '...' + this.props.fromAddress.substring(this.props.fromAddress.length - 10)}
+              <span onClick={() => this.copyToClipboard(this.props.fromAddress)}>
+                {this.props.fromAddress.substring(0, 8) + '...' + this.props.fromAddress.substring(this.props.fromAddress.length - 10)}
+              </span>
             </FromAddress>
           </Tooltip>
           <Heading>Confirm Extrinsic</Heading>
@@ -139,13 +141,13 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
                   <span onClick={() => this.copyToClipboard(this.props.toAddress)}>{this.truncate(this.props.toAddress)}</span>
                 </Tooltip>
               </div>
-              <div style={{ 'display': 'flex', 'alignItems': 'center', 'fontSize': '11px', 'marginLeft': '5px' }}>
+              <div style={{ 'display': 'flex', 'alignItems': 'center', 'fontSize': '11px', 'marginLeft': '10px' }}>
                 <p>Available: {formatBalance(this.props.recipientAvailable)}</p>
               </div>
             </Container>
           </FromTo>
         </Section>
-        <Section>
+        <Section style={{ 'marginTop': '16px' }}>
           <Info>
             <Key>Fee</Key>
             <Value>{formatBalance(this.props.fee)}</Value>
@@ -158,9 +160,9 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
             <Value>{formatBalance(this.props.amount)}</Value>
           </Info>
         </Section>
-        <Section>
+        <Section style={{ 'marginBottom': '16px' }}>
           <Info>
-            <Key>total</Key>
+            <Key>Total</Key>
             <Value>{formatBalance(this.props.amount.add(this.props.fee))}</Value>
           </Info>
         </Section>
@@ -252,38 +254,32 @@ const Status = styled.div`
 `
 
 const Key = styled.p`
+  margin-top: 3px;
   font-family: Nunito;
   font-size: 11px;
   font-weight: bold;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: normal;
-  letter-spacing: normal;
   color: #a0aeb4;
+  margin-bottom: 0px;
 `
 const FromAddress = styled.span`
   font-family: Nunito;
   font-size: 8px;
   font-weight: bold;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: normal;
-  letter-spacing: normal;
   color: #a0aeb4;
 `
 
 const Value = styled.p`
   font-family: Nunito;
   font-size: 14px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
   line-height: 1.43;
-  letter-spacing: normal;
   color: #30383b;
 `
 
-const Section = styled.div`
+interface MarginProps {
+  margin?: string | null
+}
+
+const Section = styled.div<MarginProps>`
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -300,7 +296,6 @@ const FromTo = styled.div`
   background-color: ${ props => props.color }
   color: #fff;
   margin-top: 15px;
-  margin-left: 10px;
  `
 
 const Info = styled.div`
