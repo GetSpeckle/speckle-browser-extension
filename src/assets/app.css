@@ -193,8 +193,19 @@
   background: url("./background/confirm-bg.svg") !important;
 }
 
+.ui.menu {
+  font-family: Nunito;
+  font-size: 13px;
+}
+
+.ui.secondary.pointing.menu .item {
+  color: #556267;
+  padding: 5px 38px;
+}
+
 .ui.list.tran-list {
   font-size: 10px;
+  color: #556267;
   max-height: 140px;
   overflow-y: auto;
   overflow-x: hidden;

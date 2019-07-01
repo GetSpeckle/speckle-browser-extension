@@ -61,9 +61,14 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
       { menuItem: t('tabStaked'), render: () => this.renderWithFilter('Staked') },
     ]
 
+    const color = this.props.color
+
     return (
       <div>
-        <Tab menu={{ secondary: true, pointing: true }} panes={panes} />
+        <Tab
+          menu={{ color: color, secondary: true, pointing: true }}
+          panes={panes}
+        />
       </div>
     )
   }
@@ -144,7 +149,8 @@ const mapStateToProps = (state: IAppState) => {
   return {
     transactions: state.transactions,
     account: state.settings.selectedAccount,
-    network: state.settings.network
+    network: state.settings.network,
+    color: state.settings.color
   }
 }
 
