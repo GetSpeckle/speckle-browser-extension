@@ -44,7 +44,8 @@ interface ISendState {
   creationFee: BN
   existentialDeposit: BN
   recipientAvailable: BN
-  modalOpen: boolean
+  modalOpen: boolean,
+  isTimeout: boolean
 }
 
 const TEN = new BN(10)
@@ -73,7 +74,8 @@ class Send extends React.Component<ISendProps, ISendState> {
       creationFee: new BN(0),
       existentialDeposit: new BN(0),
       recipientAvailable: new BN(0),
-      modalOpen: false
+      modalOpen: false,
+      isTimeout: false
     }
   }
 
@@ -188,30 +190,51 @@ class Send extends React.Component<ISendProps, ISendState> {
     )
 
     const submittable = this.state.extrinsic as SubmittableExtrinsic
+    const sendTimer = this.startSendTimer()
     submittable.send(({ events, status }: SubmittableResult) => {
       const { history } = this.props
       console.log('Transaction status:', status.type)
       this.setState({ isLoading: true })
       if (status.isFinalized) {
         this.setState({ isLoading: false })
-        console.log('Completed at block hash', status.value.toHex())
-        console.log('Events:')
         txItem.status = 'Success'
         txItem.updateTime = new Date().getTime()
         this.props.upsertTransaction(address, txItem, this.props.transactions)
+        console.log('Completed at block hash', status.value.toHex())
+        console.log('Events:')
         events.forEach(({ phase, event: { data, method, section } }: EventRecord) => {
           console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString())
         })
         done && done()
-        history.push(HOME_ROUTE)
+        if (!this.state.isTimeout) {
+          clearInterval(sendTimer)
+          history.push(HOME_ROUTE)
+        }
       } else if (status.isInvalid || status.isDropped || status.isUsurped) {
         this.setState({ isLoading: false })
         txItem.status = 'Failure'
         txItem.updateTime = new Date().getTime()
         this.props.upsertTransaction(address, txItem, this.props.transactions)
         this.props.setError('Failed to send the transaction')
+        if (!this.state.isTimeout) {
+          clearInterval(sendTimer)
+        }
       }
     })
+  }
+
+  startSendTimer = () => {
+    const { history } = this.props
+    let timeLeft = 10
+    const timer = setInterval(() => {
+      timeLeft -= 1
+      if (timeLeft <= 0) {
+        this.setState({ isLoading: false, isTimeout: true })
+        clearInterval(timer)
+        history.push(HOME_ROUTE)
+      }
+    }, 1000)
+    return timer
   }
 
   render () {
