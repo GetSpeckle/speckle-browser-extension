@@ -13,6 +13,7 @@ import { setLocked, setCreated } from '../../background/store/wallet'
 import { createApi, destroyApi } from '../../background/store/api-context'
 import { networks } from '../../constants/networks'
 import { WsProvider } from '@polkadot/rpc-provider'
+import Initializing from '../../components/Initializing'
 
 interface IPopupApp extends StateProps, DispatchProps {
 }
@@ -24,17 +25,12 @@ interface IPopupState {
 
 class PopupApp extends React.Component<IPopupApp, IPopupState> {
 
-  constructor (props) {
-    super(props)
-    this.tryCreateApi = this.tryCreateApi.bind(this)
-  }
-
   state = {
     initializing: true,
     tries: 0
   }
 
-  tryCreateApi () {
+  tryCreateApi = () => {
     if (!this.props.apiContext.apiReady) {
       this.setState({ ...this.state, tries: this.state.tries++ })
       const network = networks[this.props.settings.network]
@@ -48,6 +44,7 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
   }
 
   initializeApp = () => {
+    this.tryCreateApi()
     const loadAppSetting = this.props.getSettings()
     const checkAppState = isWalletLocked().then(
       result => {
@@ -60,18 +57,19 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
           this.props.setCreated(result)
         }
     )
-
     Promise.all([loadAppSetting, checkAppState, checkAccountCreated]).then(
       () => {
-        this.setState({
-          initializing: false
-        })
-        this.tryCreateApi()
+        setTimeout(
+          () => this.setState({
+            initializing: false
+          }),
+          1000
+        )
       }
     )
   }
 
-  componentWillMount () {
+  componentDidMount () {
     this.initializeApp()
   }
 
@@ -82,7 +80,7 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
 
   render () {
     if (this.state.initializing) {
-      return (null)
+      return <Initializing/>
     }
     return (
       <ThemeProvider theme={themes[this.props.settings.theme]}>
