@@ -98,10 +98,18 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
     const iconColor = tran.type === 'Sent' ? 'red' :
         tran.type === 'Received' ? 'green' : 'grey'
 
+    const statusIcon = tran.status === 'Pending' ? 'spinner' :
+        tran.status === 'Success' ? 'check circle' : 'times circle'
+    const statusColor = tran.status === 'Pending' ? 'grey' :
+        tran.status === 'Success' ? 'green' : 'red'
+
     const toAddress = tran.to.substring(0, 8) + '...' + tran.to.substring(tran.to.length - 10)
 
-    const createTime = tran.createTime && tran.createTime > 0 ?
+    const createTimeFull = tran.createTime && tran.createTime > 0 ?
       new Date(tran.createTime).toLocaleString() : 'Time N/A'
+
+    // remove seconds
+    const createTime = createTimeFull.replace(/(\d{1,2}):(\d{1,2}):\d{1,2}/, '$1:$2')
 
     const borderStyle = {
       borderLeftColor: iconColor,
@@ -115,20 +123,21 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
       <List.Item key={index} style={borderStyle}>
         <Grid>
           <Grid.Row>
-          <Grid.Column width={4} verticalAlign='middle'>
-            <div>
+          <Grid.Column width={5} verticalAlign='middle'>
+            <div className='tran-amount'>
               {(tran.type === 'Sent' ? '-' : '') + tran.amount + tran.unit + ' DOTS'}
             </div>
-            <div>
+            <div className='tran-time' title={createTimeFull}>
               {createTime}
             </div>
           </Grid.Column>
 
           <Grid.Column width={2} verticalAlign='middle'>
             <Icon name={iconName} color={iconColor}/>
+            <Icon name={statusIcon} color={statusColor}/>
           </Grid.Column>
 
-          <Grid.Column width={8} verticalAlign='middle'>
+          <Grid.Column width={7} verticalAlign='middle'>
             {toAddress}
           </Grid.Column>
 
