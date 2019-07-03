@@ -70,10 +70,20 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
     this.setState({ msgTimeout: timeout })
   }
 
+  copyFromAddressToClipboard = () => this.copyToClipboard(this.props.fromAddress)
+
+  copyToAddressToClipboard = () => this.copyToClipboard(this.props.toAddress)
+
+  shortenFromAddress = () => {
+    return this.props.fromAddress.substring(0, 8)
+      + '...'
+      + this.props.fromAddress.substring(this.props.fromAddress.length - 10)
+  }
+
   render () {
 
     // Conditional Rendering for warning article
-    const doesNotExist: boolean = this.props.recipientAvailable.cmp(this.props.existentialDeposit) === -1
+    const doesNotExist = this.props.recipientAvailable.cmp(this.props.existentialDeposit) < 0
     let warning
     if (doesNotExist) {
       warning = (
@@ -119,8 +129,8 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
             arrow={true}
           >
             <FromAddress>
-              <span onClick={() => this.copyToClipboard(this.props.fromAddress)}>
-                {this.props.fromAddress.substring(0, 8) + '...' + this.props.fromAddress.substring(this.props.fromAddress.length - 10)}
+              <span onClick={this.copyFromAddressToClipboard}>
+                {this.shortenFromAddress()}
               </span>
             </FromAddress>
           </Tooltip>
@@ -134,20 +144,26 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
           <FromTo color={colorSchemes[this.props.color].backgroundColor}>
             <Icon name='arrow circle right' size={'big'} style={{  'marginLeft': '10px' }}/>
             <Container textAlign={'left'} style={{ 'marginLeft': '10px' }}>
-              <div style={{ 'display': 'flex', 'alignItems': 'center', 'fontSize': '13px', 'marginLeft': '-10px' }}>
-                <Identicon account={this.props.toAddress} size={20} style={{ 'marginRight': '5px' }}/>
+              <To>
+                <Identicon
+                  account={this.props.toAddress}
+                  size={20}
+                  style={{ 'marginRight': '5px' }}
+                />
                 <Tooltip
                   title={!this.state.message ? t('copyToClipboard') : t('copiedExclam')}
                   position='bottom'
                   trigger='mouseenter'
                   arrow={true}
                 >
-                  <span onClick={() => this.copyToClipboard(this.props.toAddress)}>{this.truncate(this.props.toAddress)}</span>
+                  <span onClick={this.copyToAddressToClipboard}>
+                    {this.truncate(this.props.toAddress)}
+                  </span>
                 </Tooltip>
-              </div>
-              <div style={{ 'display': 'flex', 'alignItems': 'center', 'fontSize': '11px', 'marginLeft': '10px' }}>
+              </To>
+              <AvailableBalance>
                 <p>Available: {formatBalance(this.props.recipientAvailable)}</p>
-              </div>
+              </AvailableBalance>
             </Container>
           </FromTo>
         </Section>
@@ -316,6 +332,19 @@ const Warning = styled.div`
 `
 
 const ConfirmButton = styled(Button)`
-background-color: ${ props => props.color }!important;
-color: #fff!important;
+  background-color: ${ props => props.color }!important;
+  color: #fff!important;
+`
+
+const To = styled.div`
+  display: 'flex';
+  alignItems: 'center';
+  fontSize: '13px';
+  marginLeft: '-10px'
+`
+const AvailableBalance = styled.div`
+  display: 'flex';
+  alignItems: 'center';
+  fontSize: '11px';
+  marginLeft: '10px'
 `
