@@ -233,12 +233,21 @@
 }
 
 .item>.ui.grid {
-  margin-left: -5px;
-  margin-right: -5px;
+  margin-left: -3px;
+  margin-right: -3px;
 }
 
 .item>.ui.grid>.row>.column {
-  padding-left: 5px;
-  padding-right: 5px;
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
+.tran-amount {
+  font-size: 11px;
+}
+
+.tran-time {
+  font-size: 9px;
+  margin-top: 3px;
 }
 
