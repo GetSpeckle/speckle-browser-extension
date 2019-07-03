@@ -130,6 +130,10 @@ class KeyringVault {
     if (!this.isMnemonicValid(mnemonic)) return Promise.reject(new Error(t('mnemonicInvalid')))
     return cryptoWaitReady().then(() => {
       let pair = this.keyring.addFromUri(mnemonic, { name: accountName, imported: true })
+      const keyringPair$Json = pair.toJson(this._password) // encrypt with new password
+      this.keyring.removePair(pair.address())
+      pair = this.keyring.addFromJson(keyringPair$Json)
+      pair.decodePkcs8(this._password)
       return this.saveAccount(pair)
     })
   }
@@ -152,7 +156,7 @@ class KeyringVault {
       pair.setMeta({ ...pair.getMeta(), imported: true })
       const keyringPair$Json = pair.toJson(this._password) // encrypt with new password
       this.keyring.removePair(pair.address())
-      pair = this.keyring.addFromJson(keyringPair$Json, true)
+      pair = this.keyring.addFromJson(keyringPair$Json)
       pair.decodePkcs8(this._password)
       return this.saveAccount(pair)
     } catch (e) {

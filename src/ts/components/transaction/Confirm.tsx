@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { Overlay } from './Overlay'
-import { Button, Container, Icon, Modal } from 'semantic-ui-react'
+import { Button, Icon, Modal } from 'semantic-ui-react'
 import * as React from 'react'
 import Identicon from 'polkadot-identicon'
 import 'react-tippy/dist/tippy.css'
@@ -49,7 +49,7 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
   }
 
   truncate = (address: string) => {
-    return `${address.slice(0, 15)}...${address.slice(-3)}`
+    return `${address.slice(0, 13)}...${address.slice(-3)}`
   }
 
   copyToClipboard = (val: string) => {
@@ -74,12 +74,6 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
 
   copyToAddressToClipboard = () => this.copyToClipboard(this.props.toAddress)
 
-  shortenFromAddress = () => {
-    return this.props.fromAddress.substring(0, 8)
-      + '...'
-      + this.props.fromAddress.substring(this.props.fromAddress.length - 10)
-  }
-
   render () {
 
     // Conditional Rendering for warning article
@@ -89,19 +83,21 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
       warning = (
         <Section style={{ 'marginTop': '-10px' }}>
           <Info>
-          <Warning>
-            <div>
-              <Icon name='warning sign' size={'small'}/>
-              The final recipient balance is less or equal
-              to {formatBalance(this.props.existentialDeposit)} (the existential amount) and will
-              not be reflected
-            </div>
-            <div>
-              <Icon name='warning sign' size={'small'}/>
-              A fee of {formatBalance(this.props.creationFee)} will be deducted from the sender
-              since the destination account does not exist
-            </div>
-          </Warning>
+            <Warning>
+              <div>
+                <Icon name='warning sign' size={'small'}/>
+                The final recipient balance is less or equal
+                to {formatBalance(this.props.existentialDeposit)} (the
+                existential amount) and will
+                not be reflected
+              </div>
+              <div>
+                <Icon name='warning sign' size={'small'}/>
+                A fee of {formatBalance(this.props.creationFee)} will be
+                deducted from the sender
+                since the destination account does not exist
+              </div>
+            </Warning>
           </Info>
         </Section>
       )
@@ -130,7 +126,7 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
           >
             <FromAddress>
               <span onClick={this.copyFromAddressToClipboard}>
-                {this.shortenFromAddress()}
+                {this.truncate(this.props.fromAddress)}
               </span>
             </FromAddress>
           </Tooltip>
@@ -142,29 +138,27 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
         </OverlaySection>
         <Section>
           <FromTo color={colorSchemes[this.props.color].backgroundColor}>
-            <Icon name='arrow circle right' size={'big'} style={{  'marginLeft': '10px' }}/>
-            <Container textAlign={'left'} style={{ 'marginLeft': '10px' }}>
-              <To>
-                <Identicon
-                  account={this.props.toAddress}
-                  size={20}
-                  style={{ 'marginRight': '5px' }}
-                />
-                <Tooltip
-                  title={!this.state.message ? t('copyToClipboard') : t('copiedExclam')}
-                  position='bottom'
-                  trigger='mouseenter'
-                  arrow={true}
-                >
+            <Icon name='arrow circle right' size={'big'} style={{ 'marginLeft': '10px' }}/>
+            <Identicon
+              account={this.props.toAddress}
+              size={28}
+              style={{ 'marginRight': '5px' }}
+            />
+            <To>
+              <Tooltip
+                title={!this.state.message ? t('copyToClipboard') : t('copiedExclam')}
+                position='bottom'
+                trigger='mouseenter'
+                arrow={true}
+              >
                   <span onClick={this.copyToAddressToClipboard}>
                     {this.truncate(this.props.toAddress)}
                   </span>
-                </Tooltip>
-              </To>
+              </Tooltip>
               <AvailableBalance>
                 <p>Available: {formatBalance(this.props.recipientAvailable)}</p>
               </AvailableBalance>
-            </Container>
+            </To>
           </FromTo>
         </Section>
         <Section style={{ 'marginTop': '8px' }}>
@@ -180,7 +174,7 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
             <Value>{formatBalance(this.props.amount)}</Value>
           </Info>
         </Section>
-        <Section style={{ 'marginTop': '8px','marginBottom': '16px' }}>
+        <Section style={{ 'marginTop': '8px', 'marginBottom': '16px' }}>
           <Info>
             <Key>Total</Key>
             <Value>{formatBalance(this.props.amount.add(this.props.fee))}</Value>
@@ -311,7 +305,7 @@ const FromTo = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  background-color: ${ props => props.color }
+  background-color: ${props => props.color}
   color: #fff;
   margin-top: 15px;
  `
@@ -332,7 +326,7 @@ const Warning = styled.div`
 `
 
 const ConfirmButton = styled(Button)`
-  background-color: ${ props => props.color }!important;
+  background-color: ${props => props.color}!important;
   color: #fff!important;
 `
 
