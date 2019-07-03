@@ -77,6 +77,10 @@
   line-height: normal;
 }
 
+.ui.dropdown>.text {
+  padding-left: 1em
+}
+
 .ui.dropdown.chain .menu>.item>.image, .ui.dropdown.chain .menu>.item>img {
   margin-top: 0;
   margin-bottom: 0;
