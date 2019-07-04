@@ -17,6 +17,7 @@
 	},
 	"dependencies": {
 		"@polkadot/api": "^0.76.1",
+		"@polkadot/extension-dapp": "^0.1.1-beta.3",
 		"@polkadot/keyring": "^0.76.1",
 		"@polkadot/util": "^0.76.1",
 		"@types/react-dropzone": "^4.2.2",

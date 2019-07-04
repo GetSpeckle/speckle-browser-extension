@@ -378,6 +378,11 @@
     "@polkadot/types" "^0.76.1"
     "@polkadot/util-crypto" "^0.76.1"
 
+"@polkadot/extension-dapp@^0.1.1-beta.3":
+  version "0.1.1-beta.3"
+  resolved "https://registry.yarnpkg.com/@polkadot/extension-dapp/-/extension-dapp-0.1.1-beta.3.tgz#ca11a4fc07f0374698652cfe24d417798b832b94"
+  integrity sha512-J6noa6qP/501VWd7f8eaLxARa7nQDI0wDC0EqSHANWUV/EajaguxIC2CMOvlaBeGmuE5x2UHrEE9rASGWmQL7g==
+
 "@polkadot/extrinsics@^0.76.1":
   version "0.76.1"
   resolved "https://registry.yarnpkg.com/@polkadot/extrinsics/-/extrinsics-0.76.1.tgz#9eb8d70a93787bb44c14f977a42b623e4efd32ac"
