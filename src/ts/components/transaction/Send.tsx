@@ -207,7 +207,7 @@ class Send extends React.Component<ISendProps, ISendState> {
         })
         done && done()
         if (!this.state.isTimeout) {
-          clearInterval(sendTimer)
+          clearTimeout(sendTimer)
           history.push(HOME_ROUTE)
         }
       } else if (status.isInvalid || status.isDropped || status.isUsurped) {
@@ -217,7 +217,7 @@ class Send extends React.Component<ISendProps, ISendState> {
         this.props.upsertTransaction(address, txItem, this.props.transactions)
         this.props.setError('Failed to send the transaction')
         if (!this.state.isTimeout) {
-          clearInterval(sendTimer)
+          clearTimeout(sendTimer)
         }
       }
     })
@@ -225,15 +225,10 @@ class Send extends React.Component<ISendProps, ISendState> {
 
   startSendTimer = () => {
     const { history } = this.props
-    let timeLeft = 10
-    const timer = setInterval(() => {
-      timeLeft -= 1
-      if (timeLeft <= 0) {
-        this.setState({ isLoading: false, isTimeout: true })
-        clearInterval(timer)
-        history.push(HOME_ROUTE)
-      }
-    }, 1000)
+    const timer = setTimeout(() => {
+      this.setState({ isLoading: false, isTimeout: true })
+      history.push(HOME_ROUTE)
+    }, 6000)
     return timer
   }
 
