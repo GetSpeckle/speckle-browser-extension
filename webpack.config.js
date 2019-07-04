@@ -16,8 +16,8 @@ module.exports = {
     background: path.join(sourceRootPath, 'ts', 'background', 'index.ts'),
     options: path.join(sourceRootPath, 'ts', 'options', 'index.tsx'),
     popup: path.join(sourceRootPath, 'ts', 'popup', 'index.tsx'),
-    // Content Scripts
-    extension: path.join(sourceRootPath, 'ts', 'contentScripts', 'extension', 'index.tsx'),
+    page: path.join(sourceRootPath, 'ts', 'page', 'index.ts'),
+    content: path.join(sourceRootPath, 'ts', 'content', 'index.tsx')
   },
   output: {
     path: distRootPath,
