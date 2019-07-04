@@ -42,9 +42,9 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
 
   private doUpdate = () => {
     console.log(this.props.address)
-    this.api.query.balances.freeBalance(this.props.address, currentBalance => {
-      console.log('currentBalance', currentBalance)
-      const formattedBalance = formatBalance(currentBalance)
+    this.api.derive.balances.all(this.props.address, derivedBalances => {
+      console.log('derivedBalances', derivedBalances)
+      const formattedBalance = formatBalance(derivedBalances.availableBalance)
       if (formattedBalance !== this.state.balance) {
         this.setState({ ...this.state, balance: formattedBalance })
       }
