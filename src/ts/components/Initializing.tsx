@@ -17,10 +17,6 @@ const Initializing = () => {
         <div/>
         <div/>
         <div/>
-        <div/>
-        <div/>
-        <div/>
-        <div/>
       </div>
     </div>
   )

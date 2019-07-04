@@ -276,55 +276,33 @@
 .lds-grid div:nth-child(1) {
   top: 6px;
   left: 6px;
-  background: #4AABE0;
+  background-image: radial-gradient(#F3536D, #FF7396);
   animation-delay: 0s;
 }
 .lds-grid div:nth-child(2) {
   top: 6px;
-  left: 26px;
-  background: #52C48D;
-  animation-delay: -0.4s;
+  left: 45px;
+  background-image: radial-gradient(#B279F9, #D396FF);
+  animation-delay: -0.8s;
 }
 .lds-grid div:nth-child(3) {
-  top: 6px;
-  left: 45px;
-  background: #FFB200;
+  top: 23px;
+  left: 23px;
+  width: 19px;
+  height: 19px;
+  background-image: radial-gradient(#4AABE0, #44C5EE);
   animation-delay: -0.8s;
 }
 .lds-grid div:nth-child(4) {
-  top: 26px;
+  top: 45px;
   left: 6px;
-  background: #B279F9;
-  animation-delay: -0.4s;
+  background-image: radial-gradient(#52C48D, #51DFB0);
+  animation-delay: -0.8s;
 }
 .lds-grid div:nth-child(5) {
-  top: 26px;
-  left: 26px;
-  background: #F3536D;
-  animation-delay: -0.8s;
-}
-.lds-grid div:nth-child(6) {
-  top: 26px;
-  left: 45px;
-  background: #4AABE0;
-  animation-delay: -1.2s;
-}
-.lds-grid div:nth-child(7) {
-  top: 45px;
-  left: 6px;
-  background: #52C48D;
-  animation-delay: -0.8s;
-}
-.lds-grid div:nth-child(8) {
-  top: 45px;
-  left: 26px;
-  background: #FFB200;
-  animation-delay: -1.2s;
-}
-.lds-grid div:nth-child(9) {
   top: 45px;
   left: 45px;
-  background: #B279F9;
+  background-image: radial-gradient(#FFB200, #FFC10B);
   animation-delay: -1.6s;
 }
 @keyframes lds-grid {
