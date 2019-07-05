@@ -8,6 +8,8 @@ import { createDomAnchor } from '../../scripts/dom'
 
 createDomAnchor('speckle-root')
 
+const rootEl = document.getElementById('speckle-root')
+
 const store = new Store({
   // Communication port between the background component and views such as browser tabs.
   portName: 'ExPort'
@@ -18,5 +20,5 @@ store.ready().then(() => {
         <Provider store={store}>
             <SpeckleApp />
         </Provider>
-        , document.getElementById('speckle-root'))
+        , rootEl)
 })

@@ -70,7 +70,7 @@ module.exports = {
       'WEB_BROWSER': JSON.stringify(webBrowser),
     }),
   ],
-}
+};
 
 if (nodeEnv === 'watch') {
   module.exports.watch = true;
