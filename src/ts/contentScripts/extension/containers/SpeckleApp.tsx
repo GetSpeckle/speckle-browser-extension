@@ -24,10 +24,15 @@ class SpeckleApp extends React.Component<ISpeckleApp, SpeckleAppState> {
   buttonOnClick = () => {
     this.setState({ isVisible: !this.state.isVisible })
   }
+  toggleVisibility = () => {
+    this.setState({ isVisible: !this.state.isVisible })
+  }
 
   render () {
+
     return (
       <div>
+        <h1>jhjhjhljhlhjhlk</h1>
         <button onClick={this.buttonOnClick}>
           Open Dock
         </button>
@@ -36,9 +41,9 @@ class SpeckleApp extends React.Component<ISpeckleApp, SpeckleAppState> {
           dimMode={'transparent'}
           defaultSize={0.4}
           isVisible={this.state.isVisible}
+          onVisibleChange={this.toggleVisibility}
         >
-          <h1>sdfasdfsd</h1>
-          <Vote address={'5FutNRx6QuXgE2HQAWSzeyvxe6txkufuvPmXNyDycChc9M9R'}/>
+          <Vote/>
         </Dock>
       </div>
     )

@@ -5,7 +5,7 @@ import { Tab, List, Grid, Icon } from 'semantic-ui-react'
 import { IAppState } from '../../background/store/all'
 import { getTransactions, TransactionType, ITransaction } from '../../background/store/transaction'
 import t from '../../services/i18n'
-import { networks } from '../../constants/networks';
+import { networks } from '../../constants/networks'
 
 interface ITransactionListProps extends StateProps, DispatchProps, RouteComponentProps {}
 

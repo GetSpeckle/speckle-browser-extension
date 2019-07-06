@@ -314,3 +314,24 @@
   }
 }
 
+
+.speckle-button-vote
+{
+  background: url('./icon-128.png');
+  background-repeat: no-repeat;
+  background-size: 18px 18px;
+  width: 18px;
+  height:18px;
+  padding-bottom: 5px;
+  font-size:9px;
+  border-radius:9px;
+}
+
+.speckle-button-vote:hover
+{
+  cursor: pointer;
+  background: url('./icon-128.png');
+  background-repeat: no-repeat;
+  background-size: 18px 18px;
+}
+
