@@ -1,9 +1,10 @@
 import { createStore } from 'redux'
 import reducers, { IAppState } from './store/all'
-import { wrapStore, Store } from 'react-chrome-redux'
+import { wrapStore, Store } from 'webext-redux'
 import { browser } from 'webextension-polyfill-ts'
 import keyringVault from './services/keyring-vault'
 import * as FUNCS from '../constants/keyring-vault-funcs'
+import { PORT_POPUP } from '../constants/ports'
 
 const store: Store<IAppState> = createStore(reducers)
 
@@ -15,7 +16,7 @@ wrapStore(store, {
 
 // listen to the port
 browser.runtime.onConnect.addListener(function (port) {
-  if (port.name !== '__SPECKLE__') return
+  if (port.name !== PORT_POPUP) return
   port.onMessage.addListener(function (msg) {
     switch (msg.method) {
       case FUNCS.IS_LOCKED:

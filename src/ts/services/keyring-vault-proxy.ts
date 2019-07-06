@@ -5,8 +5,9 @@ import { cryptoWaitReady } from '@polkadot/util-crypto'
 import Keyring from '@polkadot/keyring'
 import { SignerOptions } from '../background/types'
 import { IExtrinsic } from '@polkadot/types/types'
+import { PORT_POPUP } from '../constants/ports'
 
-const port = browser.runtime.connect(undefined, { name: '__SPECKLE__' })
+const port = browser.runtime.connect(undefined, { name: PORT_POPUP })
 
 export function isWalletLocked (): Promise<boolean> {
   return new Promise<boolean>(resolve => {

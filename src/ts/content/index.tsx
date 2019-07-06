@@ -1,7 +1,7 @@
 import * as React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-import { Store } from 'react-chrome-redux'
+import { Store } from 'webext-redux'
 import SpeckleApp from './SpeckleApp'
 
 import { createDomAnchor } from '../scripts/dom'

@@ -5338,15 +5338,6 @@ rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-chrome-redux@^2.0.0-alpha.5:
-  version "2.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/react-chrome-redux/-/react-chrome-redux-2.0.0-alpha.5.tgz#a955f533a9b4a495d87397249609df26686cd084"
-  integrity sha512-I7t19N+5idulXhWnDeKX206sYmt5f/KfvrCJ10NrzldPDlUTofRzUzrBEnrR4QO5HSQ7etQmQkRkg7tcH4Yfvw==
-  dependencies:
-    lodash.assignin "^4.2.0"
-    lodash.clonedeep "^4.5.0"
-    redux "^3.7.2"
-
 react-dom@^16.8.6:
   version "16.8.6"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.8.6.tgz#71d6303f631e8b0097f56165ef608f051ff6e10f"
@@ -5395,19 +5386,6 @@ react-is@^16.8.6:
   version "16.8.6"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.8.6.tgz#5bbc1e2d29141c9fbdfed456343fe2bc430a6a16"
   integrity sha512-aUk3bHfZ2bRSVFFbbeVS4i+lNPZr3/WM5jT2J5omUVV1zzcs1nAaf3l51ctA5FFvCRbhrH0bdAsRRQddFJZPtA==
-
-react-lifecycles-compat@^3.0.2:
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
-  integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
-
-react-redux-loading-bar@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/react-redux-loading-bar/-/react-redux-loading-bar-4.3.0.tgz#f46bf8c2e57afb5ef79dcf974cdd7b30241f30ec"
-  integrity sha512-+qNCpJnNWhwhdQ2+yaG/6onytQgdxbO39Z+AHJeTzaW1NFkDyvX6SGomm5kXMYwVxsgLrOA4zdntAwY30wQSwA==
-  dependencies:
-    prop-types "^15.6.2"
-    react-lifecycles-compat "^3.0.2"
 
 react-redux@^7.1.0:
   version "7.1.0"
@@ -5537,11 +5515,6 @@ redux-promise-middleware@^6.1.1:
   version "6.1.1"
   resolved "https://registry.yarnpkg.com/redux-promise-middleware/-/redux-promise-middleware-6.1.1.tgz#0c26358712c2d5be3698faf7aaf53e7a7dc888dd"
   integrity sha512-h/qDMWG+QzT/1LucCJt6S1A9T5+bCVUI3a0yGQb5XOanNzjvFe5sRdPbfQgYUShc0uWG8cLu8QxpkAj9xCBH8Q==
-
-redux-thunk@^2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.3.0.tgz#51c2c19a185ed5187aaa9a2d08b666d0d6467622"
-  integrity sha512-km6dclyFnmcvxhAcrQV2AkZmPQjzPDjgVlQtR0EQjxZPyJ0BnMf3in1ryuR8A2qU0HldVRfxYXbFSKlI3N7Slw==
 
 redux@*, redux@^4.0.0, redux@^4.0.1:
   version "4.0.1"
@@ -6846,6 +6819,15 @@ watchpack@^1.5.0:
     chokidar "^2.0.2"
     graceful-fs "^4.1.2"
     neo-async "^2.5.0"
+
+webext-redux@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/webext-redux/-/webext-redux-2.1.2.tgz#7d1b72b20e8cc4172f164773008c4914c56ece24"
+  integrity sha512-LtSg8Eb1eGcxho8tF5pEc8iQupUdiMdKC/W4lliK1G5MLaI/9gcQDD/CK3WRh+J7AeX8C4zPih+xxayTIZ3CzQ==
+  dependencies:
+    lodash.assignin "^4.2.0"
+    lodash.clonedeep "^4.5.0"
+    redux "^3.7.2"
 
 webextension-polyfill-ts@^0.8.9:
   version "0.8.9"
