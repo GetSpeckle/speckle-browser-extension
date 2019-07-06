@@ -3,7 +3,8 @@ import settings, { IAppSettings } from './settings/reducer'
 import wallet, { IWallet } from './wallet/reducer'
 import error, { IError } from './error/reducer'
 import apiContext, { IApiContext } from './api-context/reducer'
-import transactions, { ITransaction } from './transaction'
+import transactions from './transaction/reducer'
+import { ITransaction } from './transaction'
 
 export interface IAppState {
   settings: IAppSettings
