@@ -8,9 +8,6 @@ import {
 import { Alexander } from '../../../constants/networks'
 import { IAccount } from '../wallet'
 
-/**
- * Settings state
- */
 export interface IAppSettings {
   updating: boolean,
   theme: ThemeTypes,
@@ -29,12 +26,6 @@ const initialState: IAppSettings = {
   network: Alexander.name
 }
 
-/**
- * create settings reducer
- *
- * @param state the current state
- * @param action the action received
- */
 const settings: Reducer<IAppSettings, AnyAction> = (state = initialState, action) => {
   switch (action.type) {
     case REQUEST(ACTION_TYPES.GET_SETTINGS):
