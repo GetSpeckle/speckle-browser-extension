@@ -1,1 +1,2 @@
-export const PORT_SPECKLE = '__SPECKLE__'
+export const PORT_POPUP = 'SPECKLE_POPUP'
+export const PORT_CONTENT = 'SPECKLE_CONTENT'

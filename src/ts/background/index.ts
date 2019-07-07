@@ -1,11 +1,11 @@
 import { browser } from 'webextension-polyfill-ts'
 import keyringVault from './services/keyring-vault'
 import * as FUNCS from '../constants/keyring-vault-funcs'
-import { PORT_SPECKLE } from '../constants/ports'
+import { PORT_POPUP } from '../constants/ports'
 
 // listen to the port
 browser.runtime.onConnect.addListener(function (port) {
-  if (port.name !== PORT_SPECKLE) return
+  if (port.name !== PORT_POPUP) return
   port.onMessage.addListener(function (msg) {
     switch (msg.method) {
       case FUNCS.IS_LOCKED:
