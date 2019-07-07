@@ -31,9 +31,10 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
   }
 
   tryCreateApi = () => {
-    if (!this.props.apiContext.apiReady) {
+    const { apiContext, settings } = this.props
+    if (!apiContext.apiReady && settings) {
       this.setState({ ...this.state, tries: this.state.tries++ })
-      const network = networks[this.props.settings.network]
+      const network = networks[settings.network]
       const provider = new WsProvider(network.rpcServer)
       this.props.createApi(provider)
       if (this.state.tries <= 5) {
@@ -44,8 +45,7 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
   }
 
   initializeApp = () => {
-    this.tryCreateApi()
-    const loadAppSetting = this.props.getSettings()
+    this.props.getSettings()
     const checkAppState = isWalletLocked().then(
       result => {
         console.log(`isLocked ${result}`)
@@ -57,13 +57,14 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
           this.props.setCreated(result)
         }
     )
-    Promise.all([loadAppSetting, checkAppState, checkAccountCreated]).then(
+    Promise.all([checkAppState, checkAccountCreated]).then(
       () => {
+        this.tryCreateApi()
         setTimeout(
           () => this.setState({
             initializing: false
           }),
-          1000
+          1500
         )
       }
     )

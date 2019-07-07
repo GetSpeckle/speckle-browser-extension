@@ -12,6 +12,7 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
 
   state: IBalanceState = {
     balance: undefined,
+    bonded: undefined,
     tries: 1
   }
 
@@ -44,9 +45,10 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
     console.log(this.props.address)
     this.api.derive.balances.all(this.props.address, derivedBalances => {
       console.log('derivedBalances', derivedBalances)
-      const formattedBalance = formatBalance(derivedBalances.availableBalance)
-      if (formattedBalance !== this.state.balance) {
-        this.setState({ ...this.state, balance: formattedBalance })
+      const availableBalance = formatBalance(derivedBalances.availableBalance)
+      const bondedBalance = formatBalance(derivedBalances.lockedBalance)
+      if (availableBalance !== this.state.balance || bondedBalance !== this.state.bonded) {
+        this.setState({ ...this.state, balance: availableBalance, bonded: bondedBalance })
       }
     }).then(unsub => {
       this.setState({ ...this.state, unsub: unsub })
@@ -69,10 +71,10 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
   }
 
   render () {
-    return this.state.balance !== undefined ? this.renderBalance() : this.renderPlaceHolder()
+    return this.state.balance !== undefined ? this.renderBalance() : Balance.renderPlaceHolder()
   }
 
-  renderPlaceHolder () {
+  static renderPlaceHolder () {
     return (
       <BalanceBox>
         <SecondaryText>
@@ -85,10 +87,18 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
   renderBalance () {
     return (
       <BalanceBox>
-        <Title>
-          {this.state.balance}
-        </Title>
+        {this.state.bonded === '0' && <Title>{this.state.balance}</Title>}
+        {this.state.bonded !== '0' && this.availableAndBonded()}
       </BalanceBox>
+    )
+  }
+
+  availableAndBonded () {
+    return (
+      <div>
+        <div>{this.state.balance} (available)</div>
+        <label>{this.state.bonded} (bonded)</label>
+      </div>
     )
   }
 }
@@ -97,6 +107,7 @@ const BalanceBox = styled.div`
   width: 215px;
   height: 73px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   margin: 0 auto;
@@ -119,6 +130,7 @@ interface IBalanceProps extends StateProps {
 
 interface IBalanceState {
   balance?: string
+  bonded?: string
   tries: number
   nextTry?: any
   unsub?: Function
