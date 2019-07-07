@@ -47,7 +47,6 @@
 		"semantic-ui-css": "^2.4.1",
 		"semantic-ui-react": "^0.86.0",
 		"styled-components": "^4.3.1",
-		"webext-redux": "^2.1.2",
 		"webextension-polyfill-ts": "^0.8.9"
 	},
 	"devDependencies": {

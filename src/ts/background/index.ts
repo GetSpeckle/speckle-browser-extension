@@ -1,18 +1,7 @@
-import { createStore } from 'redux'
-import reducers, { IAppState } from './store/all'
-import { wrapStore, Store } from 'webext-redux'
 import { browser } from 'webextension-polyfill-ts'
 import keyringVault from './services/keyring-vault'
 import * as FUNCS from '../constants/keyring-vault-funcs'
 import { PORT_SPECKLE } from '../constants/ports'
-
-const store: Store<IAppState> = createStore(reducers)
-
-wrapStore(store, {
-  // Communication port between the background component
-  // nd views such as browser tabs.
-  portName: 'ExPort'
-})
 
 // listen to the port
 browser.runtime.onConnect.addListener(function (port) {

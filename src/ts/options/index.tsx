@@ -1,15 +1,8 @@
 import * as React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-import { Store } from 'webext-redux'
 import OptionsApp from './containers/OptionsApp'
+import { store } from '../background/store'
 
-const store = new Store({
-  // Communication port between the background component and views such as browser tabs.
-  portName: 'ExPort'
-})
-
-store.ready().then(() => {
-  ReactDOM.render(
-    <Provider store={store}><OptionsApp /></Provider>, document.getElementById('options-root'))
-})
+ReactDOM.render(<Provider store={store}><OptionsApp /></Provider>,
+  document.getElementById('options-root'))
