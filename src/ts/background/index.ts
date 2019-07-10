@@ -1,9 +1,9 @@
 import { createStore } from 'redux'
 import reducers, { IAppState } from './store/all'
 import { wrapStore, Store } from 'react-chrome-redux'
-import { browser } from 'webextension-polyfill-ts'
 import keyringVault from './services/keyring-vault'
 import * as FUNCS from '../constants/keyring-vault-funcs'
+import extension from 'extensionizer'
 
 const store: Store<IAppState> = createStore(reducers)
 
@@ -14,7 +14,7 @@ wrapStore(store, {
 })
 
 // listen to the port
-browser.runtime.onConnect.addListener(function (port) {
+extension.runtime.onConnect.addListener(function (port) {
   if (port.name !== '__SPECKLE__') return
   port.onMessage.addListener(function (msg) {
     switch (msg.method) {
@@ -120,4 +120,27 @@ browser.runtime.onConnect.addListener(function (port) {
         break
     }
   })
+})
+
+// Open a popup
+extension.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  if (request && request.action === 'createWindow' && request.url) {
+    extension.windows.create({
+      focused: true,
+      height: 600,
+      left: 150,
+      top: 150,
+      type: 'popup',
+      url: request.url,
+      width: 375
+    }, function () {
+      console.log(sender, sendResponse)
+    })
+  }
+})
+
+extension.tabs.onUpdated.addListener((tabId, changeInfo, _tab) => {
+  if (changeInfo.url !== undefined && changeInfo.url.includes('twitter')) {
+    extension.tabs.sendMessage(tabId, 'url-update')
+  }
 })

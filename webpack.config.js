@@ -1,6 +1,9 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const WebpackExtensionManifestPlugin = require('webpack-extension-manifest-plugin');
+const baseManifest = require('./src/manifest.json');
+const pkg = require('./package.json');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const {CheckerPlugin} = require('awesome-typescript-loader');
@@ -69,6 +72,14 @@ module.exports = {
       'NODE_ENV': JSON.stringify(nodeEnv),
       'WEB_BROWSER': JSON.stringify(webBrowser),
     }),
+    new WebpackExtensionManifestPlugin({
+      config: {
+        base: baseManifest,
+        extend: {
+          version: pkg.version
+        }
+      }
+    })
   ],
 };
 
