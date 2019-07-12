@@ -181,6 +181,14 @@ class KeyringVault {
     return Promise.resolve(signature)
   }
 
+  accountExists = (address: string): boolean => {
+    return !!this.keyring.getPair(address)
+  }
+
+  getPair = (address: string): KeyringPair => {
+    return this.keyring.getPair(address)
+  }
+
   private saveAccount (pair: KeyringPair): Promise<KeyringPair$Json> {
     this.addTimestamp(pair)
     const keyringPair$Json: KeyringPair$Json = pair.toJson(this._password)

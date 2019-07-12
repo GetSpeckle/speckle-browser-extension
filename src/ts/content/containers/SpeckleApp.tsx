@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { Dispatch } from 'redux'
-import { IAppState } from '../background/store/all'
-import { ThemeTypes } from '../components/styles/themes'
+import { IAppState } from '../../background/store/all'
+import { ThemeTypes } from '../../components/styles/themes'
 
 interface ISpeckleApp {
   theme: ThemeTypes

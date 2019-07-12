@@ -1,7 +1,10 @@
 import { browser } from 'webextension-polyfill-ts'
 import keyringVault from './services/keyring-vault'
 import * as FUNCS from '../constants/keyring-vault-funcs'
-import { PORT_POPUP } from '../constants/ports'
+import { PORT_POPUP, PORT_CONTENT } from '../constants/ports'
+import extension from 'extensionizer'
+import { assert } from '@polkadot/util'
+import handlers from './handlers'
 
 // listen to the port
 browser.runtime.onConnect.addListener(function (port) {
@@ -110,4 +113,16 @@ browser.runtime.onConnect.addListener(function (port) {
         break
     }
   })
+})
+
+extension.browserAction.setBadgeBackgroundColor({ color: '#d90000' })
+
+// listen to all messages and handle appropriately
+extension.runtime.onConnect.addListener((port) => {
+  // shouldn't happen, however... only listen to what we know about
+  assert([PORT_CONTENT, PORT_POPUP].includes(port.name), `Unknown connection from ${port.name}`)
+
+  // message and disconnect handlers
+  port.onMessage.addListener((data) => handlers(data, port))
+  port.onDisconnect.addListener(() => console.log(`Disconnected from ${port.name}`))
 })
