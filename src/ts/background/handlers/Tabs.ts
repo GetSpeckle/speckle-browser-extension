@@ -9,6 +9,7 @@ import { assert } from '@polkadot/util'
 import State from './State'
 import { createSubscription, unsubscribe } from './subscriptions'
 import keyringVault from '../services/keyring-vault'
+import { Runtime } from 'webextension-polyfill-ts'
 
 type Accounts = Array<{ address: string, name?: string }>
 
@@ -20,15 +21,17 @@ export default class Tabs {
   }
 
   private authorize (url: string, request: MessageAuthorize) {
+    console.log(url, request)
     return this.state.authorizeUrl(url, request)
   }
 
   private accountsList (url: string): Accounts {
     console.log(url)
-    return []
+    return keyringVault.getAccounts().map(
+      keyringPairJson => ({ address: keyringPairJson.address, name: keyringPairJson.meta.name }))
   }
 
-  private accountsSubscribe (url: string, id: string, port: chrome.runtime.Port): boolean {
+  private accountsSubscribe (url: string, id: string, port: Runtime.Port): boolean {
     console.log(url)
     const cb = createSubscription(id, port)
     cb(keyringVault.getAccounts().map(
@@ -50,7 +53,7 @@ export default class Tabs {
   }
 
   async handle (id: string, type: MessageTypes,
-                request: any, url: string, port: chrome.runtime.Port): Promise<any> {
+                request: any, url: string, port: Runtime.Port): Promise<any> {
     switch (type) {
       case 'authorize.tab':
         return this.authorize(url, request)

@@ -6,7 +6,7 @@ import { approveAuthRequest, rejectAuthRequest } from '../../services/messaging'
 import { Button } from '../basic-components'
 
 const AuthorizingRequest = (props) => {
-  const { authId, origin, url } = props.request
+  const [ authId, { origin }, url ] = [...props.request]
   const onApprove = () =>
     approveAuthRequest(authId)
       .catch(console.error)

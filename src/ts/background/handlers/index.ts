@@ -3,6 +3,7 @@
 // of the Apache-2.0 license. See the LICENSE file for details.
 
 import { MessageRequest } from '../types'
+import { Runtime } from 'webextension-polyfill-ts'
 
 import { PORT_POPUP } from '../../constants/ports'
 import Extension from './Extension'
@@ -14,7 +15,7 @@ const extension = new Extension(state)
 const tabs = new Tabs(state)
 
 export default function handler ({ id, message, request }: MessageRequest,
-                                 port: chrome.runtime.Port): void {
+                                 port: Runtime.Port): void {
   const isPopup = port.name === PORT_POPUP
   const sender = port.sender as chrome.runtime.MessageSender
   const from = isPopup

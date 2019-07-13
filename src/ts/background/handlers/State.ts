@@ -58,14 +58,6 @@ export default class State {
   readonly signSubject: BehaviorSubject<Array<SigningRequest>> =
     new BehaviorSubject([] as Array<SigningRequest>)
 
-  get hasAuthRequests (): boolean {
-    return this.numAuthRequests === 0
-  }
-
-  get hasSignRequests (): boolean {
-    return this.numSignRequests === 0
-  }
-
   get numAuthRequests (): number {
     return Object.keys(this._authRequests).length
   }
@@ -164,7 +156,9 @@ export default class State {
   }
 
   private updateIconAuth (shouldClose?: boolean): void {
-    this.authSubject.next(this.allAuthRequests)
+    const requests = this.allAuthRequests
+    console.log('requests', requests)
+    this.authSubject.next(requests)
     this.updateIcon(shouldClose)
   }
 
@@ -194,19 +188,10 @@ export default class State {
         reject: this.authComplete(id, reject),
         url
       }
-
+      console.log('_authRequests', this._authRequests)
       this.updateIconAuth()
       this.popupOpen()
     })
-  }
-
-  isUrlAuthorized (url: string): boolean {
-    const entry = this._authUrls[this.stripUrl(url)]
-
-    assert(entry, `The source ${url} has not been enabled yet`)
-    assert(entry.isAllowed, `The source ${url} is not allowed to interact with this extension`)
-
-    return true
   }
 
   getAuthRequest (id: string): AuthRequest {

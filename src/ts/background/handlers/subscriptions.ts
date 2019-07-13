@@ -1,15 +1,13 @@
-// Copyright 2019 @polkadot/extension authors & contributors
-// This software may be modified and distributed under the terms
-// of the Apache-2.0 license. See the LICENSE file for details.
+import { Runtime } from 'webextension-polyfill-ts'
 
 type Subscriptions = {
-  [index: string]: chrome.runtime.Port
+  [index: string]: Runtime.Port
 }
 
 const subscriptions: Subscriptions = {}
 
 // return a subscription callback, that will send the data to the caller via the port
-export function createSubscription (id: string, port: chrome.runtime.Port): (data: any) => void {
+export function createSubscription (id: string, port: Runtime.Port): (data: any) => void {
   subscriptions[id] = port
 
   return (subscription: any) => {

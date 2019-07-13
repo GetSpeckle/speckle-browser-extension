@@ -14,6 +14,7 @@ import { assert, u8aToHex } from '@polkadot/util'
 import State from './State'
 import { createSubscription, unsubscribe } from './subscriptions'
 import keyringVault from '../services/keyring-vault'
+import { Runtime } from 'webextension-polyfill-ts'
 
 export default class Extension {
   state: State
@@ -22,11 +23,12 @@ export default class Extension {
     this.state = state
   }
 
-  private authorizeSubscribe (id: string, port: chrome.runtime.Port): boolean {
+  private authorizeSubscribe (id: string, port: Runtime.Port): boolean {
     const cb = createSubscription(id, port)
-    const subscription = this.state.authSubject.subscribe((requests: Array<AuthorizeRequest>) =>
-      cb(requests)
-    )
+    const subscription = this.state.authSubject.subscribe((requests: Array<AuthorizeRequest>) => {
+      console.log('authorize.subscribe requests', requests)
+      return cb(requests)
+    })
 
     port.onDisconnect.addListener(() => {
       unsubscribe(id)
@@ -36,7 +38,7 @@ export default class Extension {
     return true
   }
 
-  private signingSubscribe (id: string, port: chrome.runtime.Port): boolean {
+  private signingSubscribe (id: string, port: Runtime.Port): boolean {
     const cb = createSubscription(id, port)
     const subscription = this.state.signSubject.subscribe((requests: Array<SigningRequest>) =>
       cb(requests)
@@ -51,6 +53,7 @@ export default class Extension {
   }
 
   private authorizeApprove ({ id }: MessageAuthorizeApprove): boolean {
+    console.log('id', id)
     const queued = this.state.getAuthRequest(id)
 
     assert(queued, 'Unable to find request')
@@ -111,7 +114,7 @@ export default class Extension {
     return true
   }
 
-  async handle (id: string, type: MessageTypes, request: any, port: chrome.runtime.Port)
+  async handle (id: string, type: MessageTypes, request: any, port: Runtime.Port)
     : Promise<any> {
     switch (type) {
       case 'authorize.approve':
