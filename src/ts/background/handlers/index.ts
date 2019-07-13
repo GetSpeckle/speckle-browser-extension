@@ -23,7 +23,7 @@ export default function handler ({ id, message, request }: MessageRequest,
     : (sender.tab && sender.tab.url) || sender.url || '<unknown>'
   const source = `${from}: ${id}: ${message}`
 
-  console.log(` [in] ${source}`) // :: ${JSON.stringify(request)}`)
+  console.log(` [in] ${source}`)
 
   const promise = isPopup
     ? extension.handle(id, message, request, port)
@@ -31,8 +31,7 @@ export default function handler ({ id, message, request }: MessageRequest,
 
   promise
     .then((response) => {
-      console.log(`[out] ${source}`) // :: ${JSON.stringify(response)}`)
-
+      console.log(`[out] ${source}`)
       port.postMessage({ id, response })
     })
     .catch((error) => {

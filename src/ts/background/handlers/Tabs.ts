@@ -1,4 +1,5 @@
 import {
+  Accounts,
   MessageTypes,
   MessageAuthorize,
   MessageExtrinsicSign,
@@ -10,8 +11,6 @@ import State from './State'
 import { createSubscription, unsubscribe } from './subscriptions'
 import keyringVault from '../services/keyring-vault'
 import { Runtime } from 'webextension-polyfill-ts'
-
-type Accounts = Array<{ address: string, name?: string }>
 
 export default class Tabs {
   state: State
@@ -25,17 +24,15 @@ export default class Tabs {
     return this.state.authorizeUrl(url, request)
   }
 
-  private accountsList (url: string): Accounts {
+  private accountsList (url: string): Promise<Accounts> {
     console.log(url)
-    return keyringVault.getAccounts().map(
-      keyringPairJson => ({ address: keyringPairJson.address, name: keyringPairJson.meta.name }))
+    return keyringVault.getAccountsToInject()
   }
 
   private accountsSubscribe (url: string, id: string, port: Runtime.Port): boolean {
     console.log(url)
     const cb = createSubscription(id, port)
-    cb(keyringVault.getAccounts().map(
-      keyringPairJson => ({ address: keyringPairJson.address, name: keyringPairJson.meta.name })))
+    keyringVault.getAccountsToInject().then(accounts => cb(accounts))
     port.onDisconnect.addListener(() => {
       unsubscribe(id)
     })

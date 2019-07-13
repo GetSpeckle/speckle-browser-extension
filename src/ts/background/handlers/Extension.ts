@@ -25,10 +25,8 @@ export default class Extension {
 
   private authorizeSubscribe (id: string, port: Runtime.Port): boolean {
     const cb = createSubscription(id, port)
-    const subscription = this.state.authSubject.subscribe((requests: Array<AuthorizeRequest>) => {
-      console.log('authorize.subscribe requests', requests)
-      return cb(requests)
-    })
+    const subscription = this.state.authSubject.subscribe(
+      (requests: Array<AuthorizeRequest>) => (cb(requests)))
 
     port.onDisconnect.addListener(() => {
       unsubscribe(id)
@@ -53,64 +51,45 @@ export default class Extension {
   }
 
   private authorizeApprove ({ id }: MessageAuthorizeApprove): boolean {
-    console.log('id', id)
     const queued = this.state.getAuthRequest(id)
-
     assert(queued, 'Unable to find request')
-
     const { resolve } = queued
-
     resolve(true)
-
     return true
   }
 
   private authorizeReject ({ id }: MessageAuthorizeReject): boolean {
     const queued = this.state.getAuthRequest(id)
-
     assert(queued, 'Unable to find request')
-
     const { reject } = queued
-
     reject(new Error('Rejected'))
-
     return true
   }
 
   private signingApprove ({ id, password }: MessageExtrinsicSignApprove): boolean {
     const queued = this.state.getSignRequest(id)
-
     assert(queued, 'Unable to find request')
-
     const { request: { address, blockHash, method, nonce }, resolve, reject } = queued
     if (!keyringVault.accountExists(address)) {
       reject(new Error('Unable to find pair'))
-
       return false
     }
-
     const payload = new SignaturePayloadRaw({ blockHash, method, nonce })
     let pair = keyringVault.getPair(address)
     pair.decodePkcs8(password)
     const signature = u8aToHex(payload.sign(pair))
-
     resolve({
       id,
       signature
     })
-
     return true
   }
 
   private signingCancel ({ id }: MessageExtrinsicSignCancel): boolean {
     const queued = this.state.getSignRequest(id)
-
     assert(queued, 'Unable to find request')
-
     const { reject } = queued
-
     reject(new Error('Cancelled'))
-
     return true
   }
 

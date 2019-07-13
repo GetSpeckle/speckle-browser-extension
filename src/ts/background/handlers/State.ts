@@ -1,7 +1,3 @@
-// Copyright 2019 @polkadot/extension-bg authors & contributors
-// This software may be modified and distributed under the terms
-// of the Apache-2.0 license. See the LICENSE file for details.
-
 import {
   AuthorizeRequest,
   MessageAuthorize,
@@ -88,12 +84,12 @@ export default class State {
   private popupOpen (): void {
     extension.windows.create({
       focused: true,
-      height: 580,
-      left: 150,
-      top: 150,
+      height: 600,
+      left: Math.floor((window.screen.availWidth - 375) / 2),
+      top: Math.floor((window.screen.availHeight - 600) / 2),
       type: 'popup',
       url: extension.extension.getURL('popup.html'),
-      width: 480
+      width: 375
     }, (window?: chrome.windows.Window) => {
       if (window) {
         this._windows.push(window.id)

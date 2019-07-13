@@ -1,11 +1,8 @@
-// Copyright 2019 @polkadot/extension authors & contributors
-// This software may be modified and distributed under the terms
-// of the Apache-2.0 license. See the LICENSE file for details.
-
 import { InjectedWindow } from '@polkadot/extension-dapp/types'
 import { MessageTypes } from '../background/types'
 
 import Injected from './Injected'
+import { ORIGIN_CONTENT, ORIGIN_PAGE } from '../constants/origins'
 
 // when sending a message from the injector to the extension, we
 //  - create an event - this we send to the loader
@@ -38,7 +35,7 @@ function sendMessage (message: MessageTypes, request: any = null,
 
     handlers[id] = { resolve, reject, subscriber }
 
-    window.postMessage({ id, message, origin: 'page', request }, '*')
+    window.postMessage({ id, message, origin: ORIGIN_PAGE, request }, '*')
   })
 }
 
@@ -52,7 +49,7 @@ async function enable (origin: string): Promise<Injected> {
 // setup a response listener (events created by the loader for extension responses)
 window.addEventListener('message', ({ data, source }) => {
   // only allow messages from our window, by the loader
-  if (source !== window || data.origin !== 'content') {
+  if (source !== window || data.origin !== ORIGIN_CONTENT) {
     return
   }
 

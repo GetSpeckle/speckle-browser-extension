@@ -4,7 +4,7 @@ import { Prefix } from '@polkadot/util-crypto/address/types'
 import { LocalStore } from '../../services/local-store'
 import { mnemonicGenerate, cryptoWaitReady, mnemonicValidate } from '@polkadot/util-crypto'
 import t from '../../services/i18n'
-import { MessageExtrinsicSign } from '../types'
+import { Accounts, MessageExtrinsicSign } from '../types'
 import u8aToHex from '@polkadot/util/u8a/toHex'
 import RawPayload from '../RawPayload'
 
@@ -89,11 +89,18 @@ class KeyringVault {
 
   getAccounts (): Array<KeyringPair$Json> {
     if (this.isLocked()) throw new Error(t('walletLocked'))
-    let accounts = new Array<KeyringPair$Json>()
-    this.keyring.getPairs().forEach(pair => {
-      accounts.push(pair.toJson(this._password))
+    return this.keyring.getPairs().map(pair => pair.toJson(this._password))
+  }
+
+  getAccountsToInject (): Promise<Accounts> {
+    return LocalStore.getValue(VAULT_KEY).then(vault => {
+      if (!vault) return []
+      let accounts = Object.values(vault)
+      return accounts.map(account => {
+        const keyringPairJson = (account as KeyringPair$Json)
+        return { address: keyringPairJson.address, name: keyringPairJson.meta.name }
+      })
     })
-    return accounts
   }
 
   createAccount (mnemonic: string, accountName: string): Promise<KeyringPair$Json> {

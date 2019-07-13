@@ -79,12 +79,9 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
       subscribeSigning(this.setSignRequests)
     ]).then(() => {
       this.tryCreateApi()
-      setTimeout(
-        () => this.setState({
-          initializing: false
-        }),
-        1500
-      )
+      this.setState({
+        initializing: false
+      })
     })
   }
 

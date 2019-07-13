@@ -10,13 +10,14 @@ const sourceRootPath = path.join(__dirname, 'src');
 const distRootPath = path.join(__dirname, 'dist');
 const nodeEnv = process.env.NODE_ENV ? process.env.NODE_ENV : 'development';
 const webBrowser = process.env.WEB_BROWSER ? process.env.WEB_BROWSER : 'chrome';
+const pkgJson = require('./package.json');
 
 module.exports = {
   entry: {
     background: path.join(sourceRootPath, 'ts', 'background', 'index.ts'),
     options: path.join(sourceRootPath, 'ts', 'options', 'index.tsx'),
     popup: path.join(sourceRootPath, 'ts', 'popup', 'index.tsx'),
-    page: path.join(sourceRootPath, 'ts', 'page', 'index.ts'),
+    speckle: path.join(sourceRootPath, 'ts', 'page', 'index.ts'),
     content: path.join(sourceRootPath, 'ts', 'content', 'index.tsx')
   },
   output: {
@@ -30,7 +31,7 @@ module.exports = {
     rules: [
       {test: /\.(js|ts|tsx)?$/, loader: "awesome-typescript-loader", exclude: /node_modules/},
       {test: /\.css$/, use: ['style-loader', 'css-loader', 'resolve-url-loader']},
-      {test: /\.(jpg|png|gif|jpeg|woff|woff2|eot|ttf|svg)$/,loader: 'url-loader?limit=100000'}
+      {test: /\.(jpg|png|gif|jpeg|woff|woff2|eot|ttf|svg)$/, loader: 'url-loader?limit=100000'}
     ]
   },
   plugins: [
@@ -66,8 +67,12 @@ module.exports = {
       }
     ]),
     new webpack.DefinePlugin({
-      'NODE_ENV': JSON.stringify(nodeEnv),
-      'WEB_BROWSER': JSON.stringify(webBrowser),
+      'process.env': {
+        NODE_ENV: JSON.stringify(nodeEnv),
+        WEB_BROWSER: JSON.stringify(webBrowser),
+        PKG_NAME: JSON.stringify(pkgJson.name),
+        PKG_VERSION: JSON.stringify(pkgJson.version),
+      }
     }),
   ],
 }
@@ -82,7 +87,7 @@ if (nodeEnv === 'watch') {
         background: 'background',
         options: 'options',
         popup: 'popup',
-        contentScript: ['extension'],
+        contentScript: ['content'],
       }
     })
   );

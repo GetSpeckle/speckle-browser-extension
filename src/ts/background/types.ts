@@ -6,6 +6,8 @@ export type MessageTypes = 'authorize.approve' | 'authorize.reject'
   | 'accounts.list' | 'accounts.subscribe' | 'extrinsic.sign'
   | 'signing.approve' | 'signing.cancel' | 'signing.requests' | 'signing.subscribe'
 
+export type Accounts = Array<{ address: string, name?: string }>
+
 export type AuthorizeRequest = [string, MessageAuthorize, string]
 
 export type SigningRequest = [string, MessageExtrinsicSign, string]
@@ -54,14 +56,4 @@ export type MessageExtrinsicSign = {
 export type MessageExtrinsicSign$Response = {
   id: string,
   signature: string
-}
-
-export type MessageSeedCreate$Response = {
-  address: string,
-  seed: string
-}
-
-export type MessageSeedValidate$Response = {
-  address: string,
-  seed: string
 }
