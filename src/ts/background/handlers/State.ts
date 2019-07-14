@@ -81,15 +81,15 @@ export default class State {
     this._windows = []
   }
 
-  private popupOpen (): void {
+  private popupOpen (height, width): void {
     extension.windows.create({
       focused: true,
-      height: 600,
-      left: Math.floor((window.screen.availWidth - 375) / 2),
-      top: Math.floor((window.screen.availHeight - 600) / 2),
+      height: height,
+      left: Math.floor((window.screen.availWidth - width) / 2),
+      top: Math.floor((window.screen.availHeight - height) / 2),
       type: 'popup',
       url: extension.extension.getURL('popup.html'),
-      width: 375
+      width: width
     }, (window?: chrome.windows.Window) => {
       if (window) {
         this._windows.push(window.id)
@@ -186,7 +186,7 @@ export default class State {
       }
       console.log('_authRequests', this._authRequests)
       this.updateIconAuth()
-      this.popupOpen()
+      this.popupOpen(600, 375)
     })
   }
 
@@ -211,7 +211,7 @@ export default class State {
       }
 
       this.updateIconSign()
-      this.popupOpen()
+      this.popupOpen(700, 500)
     })
   }
 }
