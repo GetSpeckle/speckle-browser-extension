@@ -217,5 +217,8 @@
   },
   "transferFee": {
     "message": "Transfer Fee:"
+  },
+  "authorization": {
+    "message": "Authorization Request"
   }
 }

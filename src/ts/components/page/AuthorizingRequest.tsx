@@ -26,10 +26,9 @@ const AuthorizingRequest = (props) => {
         Approving gives the application access to the addresses of your
         accounts.
       </div>
-      <Button
-        label='Yes, allow this application access'
-        onClick={onApprove}
-      />
+      <Button onClick={onApprove}>
+        Yes, allow this application access
+      </Button>
     </div>
   )
 }
