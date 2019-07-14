@@ -180,7 +180,7 @@ class Send extends React.Component<ISendProps, ISendState> {
       type: 'Sent',
       createTime: new Date().getTime(),
       status: 'Pending',
-      fee: 0
+      fee: formatBalance(this.state.fee)
     }
 
     this.props.upsertTransaction(
