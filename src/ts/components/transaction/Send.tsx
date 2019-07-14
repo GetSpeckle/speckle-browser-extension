@@ -176,7 +176,7 @@ class Send extends React.Component<ISendProps, ISendState> {
       from: address,
       to: this.state.toAddress,
       amount: this.state.amount,
-      unit: this.state.siUnit,
+      unit: this.state.siUnit === '-' ? '' : this.state.siUnit,
       type: 'Sent',
       createTime: new Date().getTime(),
       status: 'Pending',
@@ -197,13 +197,19 @@ class Send extends React.Component<ISendProps, ISendState> {
       this.setState({ isLoading: true })
       if (status.isFinalized) {
         this.setState({ isLoading: false })
-        txItem.status = 'Success'
         txItem.updateTime = new Date().getTime()
-        this.props.upsertTransaction(address, txItem, this.props.transactions)
         console.log('Completed at block hash', status.value.toHex())
         console.log('Events:')
         events.forEach(({ phase, event: { data, method, section } }: EventRecord) => {
           console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString())
+          // TODO: const the value
+          if (method === 'ExtrinsicSuccess') {
+            txItem.status = 'Success'
+            this.props.upsertTransaction(address, txItem, this.props.transactions)
+          } else if (method === 'ExtrinsicFailed') {
+            txItem.status = 'Failure'
+            this.props.upsertTransaction(address, txItem, this.props.transactions)
+          }
         })
         done && done()
         if (!this.state.isTimeout) {
