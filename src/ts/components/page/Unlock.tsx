@@ -34,9 +34,10 @@ export default function Unlock ({ onSign }: Props) {
         type='password'
       />
       <Button
-        label='Sign the transaction'
         onClick={onClick}
-      />
+      >
+        Sign the transaction
+      </Button>
     </Form>
   )
 }

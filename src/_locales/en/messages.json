@@ -220,5 +220,8 @@
   },
   "authorization": {
     "message": "Authorization Request"
+  },
+  "signing": {
+    "message": "Signing Transaction"
   }
 }
