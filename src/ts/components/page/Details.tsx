@@ -1,16 +1,19 @@
 import React from 'react'
 import styled from 'styled-components'
-import fromMetadata from '@polkadot/extrinsics/fromMetadata'
-import { Metadata, Method } from '@polkadot/types'
+import fromMetadata from '@polkadot/api-metadata/extrinsics/fromMetadata'
+import { Metadata, Method, ExtrinsicEra } from '@polkadot/types'
 import { findNetwork } from '../../constants/networks'
+import { formatNumber } from '@polkadot/util'
 
 type MethodJson = {
   args: { [index: string]: any }
 }
 
 type Props = {
+  blockNumber: number,
   genesisHash: string,
   isDecoded: boolean,
+  era?: string,
   method: string,
   nonce: string,
   url: string
@@ -57,8 +60,19 @@ function renderMethod (data: string, meta?: Metadata | null) {
   )
 }
 
-function Details ({ genesisHash, isDecoded, method, nonce, url }: Props) {
+function renderMortality (era: ExtrinsicEra, blockNumber: number): string {
+  if (era.isImmortalEra) {
+    return 'immortal'
+  }
+  const mortal = era.asMortalEra
+  const birthBlock = formatNumber(mortal.birth(blockNumber))
+  const deathBlock = formatNumber(mortal.death(blockNumber))
+  return `mortal (birth #${birthBlock}, death #${deathBlock})`
+}
+
+function Details ({ blockNumber, genesisHash, isDecoded, era, method, nonce, url }: Props) {
   const network = findNetwork(genesisHash)
+  const eera = new ExtrinsicEra(era)
 
   return (
     <table>
@@ -76,6 +90,10 @@ function Details ({ genesisHash, isDecoded, method, nonce, url }: Props) {
           <td className='data'>{nonce}</td>
         </tr>
         {renderMethod(method, (network && isDecoded) ? network.meta : null)}
+        <tr>
+          <td className='label'>mortality</td>
+          <td className='data'>{renderMortality(eera, blockNumber)}</td>
+        </tr>
       </tbody>
     </table>
   )

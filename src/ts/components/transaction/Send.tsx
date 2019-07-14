@@ -146,6 +146,7 @@ class Send extends React.Component<ISendProps, ISendState> {
       .transfer(this.state.toAddress, BnAmount)
 
     const signOptions: SignerOptions = {
+      blockNumber: (await this.api.query.system.number()) as unknown as BN,
       blockHash: await this.api.genesisHash,
       genesisHash: await this.api.genesisHash,
       nonce: await this.api.query.system.accountNonce(currentAddress) as Index
@@ -233,7 +234,7 @@ class Send extends React.Component<ISendProps, ISendState> {
   }
 
   readyToSubmit = (): boolean => {
-    return !!this.state.toAddress && this.state.toAddress.length !== 48
+    return !!this.state.toAddress && this.state.toAddress.length === 48
       && !!this.state.amount && this.state.hasAvailable
   }
 

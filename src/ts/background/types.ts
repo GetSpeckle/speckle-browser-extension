@@ -39,6 +39,8 @@ export type MessageExtrinsicSignCancel = {
 export type MessageExtrinsicSign = {
   address: string,
   blockHash: string,
+  blockNumber: number,
+  era?: string,
   genesisHash: string,
   method: string,
   nonce: string

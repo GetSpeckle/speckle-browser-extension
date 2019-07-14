@@ -69,12 +69,12 @@ export default class Extension {
   private signingApprove ({ id, password }: MessageExtrinsicSignApprove): boolean {
     const queued = this.state.getSignRequest(id)
     assert(queued, 'Unable to find request')
-    const { request: { address, blockHash, method, nonce }, resolve, reject } = queued
+    const { request: { address, genesisHash, method, nonce }, resolve, reject } = queued
     if (!keyringVault.accountExists(address)) {
       reject(new Error('Unable to find pair'))
       return false
     }
-    const payload = new SignaturePayloadRaw({ blockHash, method, nonce })
+    const payload = new SignaturePayloadRaw({ genesisHash, method, nonce })
     let pair = keyringVault.getPair(address)
     pair.decodePkcs8(password)
     const signature = u8aToHex(payload.sign(pair))
