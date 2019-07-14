@@ -1,6 +1,3 @@
-import { Hash } from '@polkadot/types'
-import { AnyU8a, AnyNumber } from '@polkadot/types/types'
-
 export type MessageTypes = 'authorize.approve' | 'authorize.reject'
   | 'authorize.requests' | 'authorize.subscribe' | 'authorize.tab'
   | 'accounts.list' | 'accounts.subscribe' | 'extrinsic.sign'
@@ -11,12 +8,6 @@ export type Accounts = Array<{ address: string, name?: string }>
 export type AuthorizeRequest = [string, MessageAuthorize, string]
 
 export type SigningRequest = [string, MessageExtrinsicSign, string]
-
-export type SignerOptions = {
-  blockHash: AnyU8a
-  genesisHash: Hash
-  nonce: AnyNumber
-}
 
 export type MessageAuthorize = {
   origin: string

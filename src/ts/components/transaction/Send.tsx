@@ -16,7 +16,7 @@ import { Dimmer, Form, Loader } from 'semantic-ui-react'
 import Amount from './Amount'
 import ToAddress from './ToAddress'
 import { IExtrinsic } from '@polkadot/types/types'
-import { SignerOptions } from '../../background/types'
+import { SignerOptions } from '@polkadot/api/types'
 import { Index, EventRecord } from '@polkadot/types'
 import Fee from './Fee'
 import Confirm from './Confirm'
@@ -232,10 +232,25 @@ class Send extends React.Component<ISendProps, ISendState> {
     return timer
   }
 
+  readyToSubmit = (): boolean => {
+    return !!this.state.toAddress && this.state.toAddress.length !== 48
+      && !!this.state.amount && this.state.hasAvailable
+  }
+
   render () {
     if (!this.props.settings.selectedAccount) {
       return null
     }
+
+    const submitButton = (
+      <StyledButton
+        type={'submit'}
+        disabled={!this.readyToSubmit()}
+        onClick={this.saveExtrinsic}
+      >
+        Confirm
+      </StyledButton>
+    )
 
     return (
       <ContentContainer>
@@ -266,15 +281,7 @@ class Send extends React.Component<ISendProps, ISendState> {
               network={this.props.settings.network}
               color={this.props.settings.color}
               extrinsic={this.state.extrinsic}
-              trigger={
-                <StyledButton
-                  type={'submit'}
-                  disabled={!this.state.toAddress || this.state.toAddress.length !== 48 || !this.state.amount || !this.state.hasAvailable}
-                  onClick={this.saveExtrinsic}
-                >
-                  Confirm
-                </StyledButton>
-              }
+              trigger={submitButton}
               fromAddress={this.props.settings.selectedAccount.address}
               amount={this.inputValueToBn(this.state.amount, this.state.siUnit)}
               toAddress={this.state.toAddress}

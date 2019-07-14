@@ -3,7 +3,7 @@ import { KeyringPair$Json } from '@polkadot/keyring/types'
 import * as FUNCS from '../constants/keyring-vault-funcs'
 import { cryptoWaitReady } from '@polkadot/util-crypto'
 import Keyring from '@polkadot/keyring'
-import { SignerOptions } from '../background/types'
+import { SignerOptions } from '@polkadot/api/types'
 import { IExtrinsic } from '@polkadot/types/types'
 import { PORT_KEYRING } from '../constants/ports'
 
