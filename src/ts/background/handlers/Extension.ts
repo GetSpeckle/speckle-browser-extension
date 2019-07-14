@@ -74,7 +74,7 @@ export default class Extension {
       reject(new Error('Unable to find pair'))
       return false
     }
-    const payload = new SignaturePayloadRaw({ genesisHash, method, nonce })
+    const payload = new SignaturePayloadRaw({ blockHash: genesisHash, method, nonce })
     let pair = keyringVault.getPair(address)
     pair.decodePkcs8(password)
     const signature = u8aToHex(payload.sign(pair))
