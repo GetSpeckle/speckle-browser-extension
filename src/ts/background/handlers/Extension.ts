@@ -75,12 +75,14 @@ export default class Extension {
       return false
     }
     const payload = new SignaturePayloadRaw({ blockHash: genesisHash, method, nonce })
-    let pair = keyringVault.getPair(address)
-    pair.decodePkcs8(password)
-    const signature = u8aToHex(payload.sign(pair))
-    resolve({
-      id,
-      signature
+    keyringVault.unlock(password).then(() => {
+      const pair = keyringVault.getPair(address)
+      pair.decodePkcs8(password)
+      const signature = u8aToHex(payload.sign(pair))
+      resolve({
+        id,
+        signature
+      })
     })
     return true
   }

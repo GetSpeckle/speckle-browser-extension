@@ -15,6 +15,7 @@ class KeyringVault {
   private _keyring?: KeyringInstance
   private _password?: string
   private _mnemonic?: string
+  private accountsToInject?: Accounts
 
   private get keyring (): KeyringInstance {
     if (this._keyring) {
@@ -96,10 +97,11 @@ class KeyringVault {
     return LocalStore.getValue(VAULT_KEY).then(vault => {
       if (!vault) return []
       let accounts = Object.values(vault)
-      return accounts.map(account => {
+      this.accountsToInject = accounts.map(account => {
         const keyringPairJson = (account as KeyringPair$Json)
         return { address: keyringPairJson.address, name: keyringPairJson.meta.name }
       })
+      return this.accountsToInject
     })
   }
 
@@ -189,7 +191,8 @@ class KeyringVault {
   }
 
   accountExists = (address: string): boolean => {
-    return !!this.keyring.getPair(address)
+    return !!this.accountsToInject &&
+      this.accountsToInject!!.filter(account => account.address === address).length > 0
   }
 
   getPair = (address: string): KeyringPair => {
