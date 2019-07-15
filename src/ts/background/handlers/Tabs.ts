@@ -44,7 +44,7 @@ export default class Tabs {
     const { address } = request
     const accountExists = keyringVault.accountExists(address)
 
-    assert(accountExists, 'Unable to find keypair')
+    assert(accountExists, 'Unable to find account')
 
     return this.state.signQueue(url, request)
   }
