@@ -3,7 +3,7 @@ export type MessageTypes = 'authorize.approve' | 'authorize.reject'
   | 'accounts.list' | 'accounts.subscribe' | 'extrinsic.sign'
   | 'signing.approve' | 'signing.cancel' | 'signing.requests' | 'signing.subscribe'
 
-export type Accounts = Array<{ address: string, name?: string }>
+export type SimpleAccounts = Array<{ address: string, name?: string }>
 
 export type AuthorizeRequest = [string, MessageAuthorize, string]
 

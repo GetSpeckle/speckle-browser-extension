@@ -1,5 +1,5 @@
 import {
-  Accounts,
+  SimpleAccounts,
   MessageTypes,
   MessageAuthorize,
   MessageExtrinsicSign,
@@ -24,15 +24,15 @@ export default class Tabs {
     return this.state.authorizeUrl(url, request)
   }
 
-  private accountsList (url: string): Promise<Accounts> {
+  private accountsList (url: string): Promise<SimpleAccounts> {
     console.log(url)
-    return keyringVault.getAccountsToInject()
+    return keyringVault.getSimpleAccounts()
   }
 
   private accountsSubscribe (url: string, id: string, port: Runtime.Port): boolean {
     console.log(url)
     const cb = createSubscription(id, port)
-    keyringVault.getAccountsToInject().then(accounts => cb(accounts))
+    keyringVault.getSimpleAccounts().then(accounts => cb(accounts))
     port.onDisconnect.addListener(() => {
       unsubscribe(id)
     })

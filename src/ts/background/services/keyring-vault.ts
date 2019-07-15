@@ -4,7 +4,7 @@ import { Prefix } from '@polkadot/util-crypto/address/types'
 import { LocalStore } from '../../services/local-store'
 import { mnemonicGenerate, cryptoWaitReady, mnemonicValidate } from '@polkadot/util-crypto'
 import t from '../../services/i18n'
-import { Accounts, MessageExtrinsicSign } from '../types'
+import { SimpleAccounts, MessageExtrinsicSign } from '../types'
 import u8aToHex from '@polkadot/util/u8a/toHex'
 import RawPayload from '../RawPayload'
 
@@ -15,7 +15,7 @@ class KeyringVault {
   private _keyring?: KeyringInstance
   private _password?: string
   private _mnemonic?: string
-  private accountsToInject?: Accounts
+  private simpleAccounts?: SimpleAccounts
 
   private get keyring (): KeyringInstance {
     if (this._keyring) {
@@ -93,15 +93,15 @@ class KeyringVault {
     return this.keyring.getPairs().map(pair => pair.toJson(this._password))
   }
 
-  getAccountsToInject (): Promise<Accounts> {
+  getSimpleAccounts (): Promise<SimpleAccounts> {
     return LocalStore.getValue(VAULT_KEY).then(vault => {
       if (!vault) return []
       let accounts = Object.values(vault)
-      this.accountsToInject = accounts.map(account => {
+      this.simpleAccounts = accounts.map(account => {
         const keyringPairJson = (account as KeyringPair$Json)
         return { address: keyringPairJson.address, name: keyringPairJson.meta.name }
       })
-      return this.accountsToInject
+      return this.simpleAccounts
     })
   }
 
@@ -191,8 +191,8 @@ class KeyringVault {
   }
 
   accountExists = (address: string): boolean => {
-    return !!this.accountsToInject &&
-      this.accountsToInject!!.filter(account => account.address === address).length > 0
+    return !!this.simpleAccounts &&
+      this.simpleAccounts!!.filter(account => account.address === address).length > 0
   }
 
   getPair = (address: string): KeyringPair => {
