@@ -17,7 +17,7 @@ const tabs = new Tabs(state)
 export default function handler ({ id, message, request }: MessageRequest,
                                  port: Runtime.Port): void {
   const isPopup = port.name === PORT_POPUP
-  const sender = port.sender as chrome.runtime.MessageSender
+  const sender = port.sender as Runtime.MessageSender
   const from = isPopup
     ? 'popup'
     : (sender.tab && sender.tab.url) || sender.url || '<unknown>'

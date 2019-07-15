@@ -5,7 +5,7 @@ import {
   MessageExtrinsicSign$Response,
   SigningRequest
 } from '../types'
-
+import { Windows } from 'webextension-polyfill-ts'
 import extension from 'extensionizer'
 import { BehaviorSubject } from 'rxjs'
 import { assert } from '@polkadot/util'
@@ -90,9 +90,9 @@ export default class State {
       type: 'popup',
       url: extension.extension.getURL('popup.html'),
       width: width
-    }, (window?: chrome.windows.Window) => {
+    }, (window?: Windows.Window) => {
       if (window) {
-        this._windows.push(window.id)
+        this._windows.push(window.id!!)
       }
     })
   }
