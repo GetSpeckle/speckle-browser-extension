@@ -52,7 +52,7 @@ function renderMethod (data: string, meta?: Metadata | null) {
         <td className='data'>{methodData}</td>
       </tr>
       <tr>
-        <td className='label'>&nbsp</td>
+        <td className='label'>&nbsp;</td>
         <td className='data'><pre>{JSON.stringify(json.args, null, 2)}</pre></td>
       </tr>
       {methodMeta}
