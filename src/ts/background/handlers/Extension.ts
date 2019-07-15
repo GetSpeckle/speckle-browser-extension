@@ -71,7 +71,7 @@ export default class Extension {
     assert(queued, 'Unable to find request')
     const { request: { address, genesisHash, method, nonce }, resolve, reject } = queued
     if (!keyringVault.accountExists(address)) {
-      reject(new Error('Unable to find pair'))
+      reject(new Error('Unable to find account'))
       return false
     }
     const payload = new SignaturePayloadRaw({ blockHash: genesisHash, method, nonce })
