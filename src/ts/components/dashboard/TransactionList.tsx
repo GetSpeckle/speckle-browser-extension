@@ -124,7 +124,7 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
         <Grid>
           <Grid.Row>
           <Grid.Column width={5} verticalAlign='middle'>
-            <div className='tran-amount'>
+            <div className='tran-amount' title={'Fee: ' + tran.fee}>
               {(tran.type === 'Sent' ? '-' : '') + tran.amount + tran.unit + ' DOTS'}
             </div>
             <div className='tran-time' title={createTimeFull}>
@@ -137,7 +137,7 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
             <Icon name={statusIcon} color={statusColor}/>
           </Grid.Column>
 
-          <Grid.Column width={7} verticalAlign='middle'>
+          <Grid.Column width={7} verticalAlign='middle' className='tran-address'>
             {toAddress}
           </Grid.Column>
 

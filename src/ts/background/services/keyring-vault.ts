@@ -182,9 +182,6 @@ class KeyringVault {
     if (!pair) {
       return Promise.reject(new Error('Unable to find pair'))
     }
-
-    pair.decodePkcs8(this._password)
-
     const payload = new RawPayload({ blockHash, method, nonce })
     const signature = u8aToHex(payload.sign(pair))
     return Promise.resolve(signature)

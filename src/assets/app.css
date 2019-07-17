@@ -243,12 +243,17 @@
 }
 
 .tran-amount {
-  font-size: 11px;
+  font-size: 12px;
+  padding: 3px 0px;
 }
 
 .tran-time {
   font-size: 9px;
-  margin-top: 3px;
+  padding: 3px 0px;
+}
+
+.tran-address {
+  font-size: 11px;
 }
 
 .lds-grid-container {
