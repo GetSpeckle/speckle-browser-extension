@@ -3,10 +3,11 @@ import { KeyringPair$Json } from '@polkadot/keyring/types'
 import * as FUNCS from '../constants/keyring-vault-funcs'
 import { cryptoWaitReady } from '@polkadot/util-crypto'
 import Keyring from '@polkadot/keyring'
-import { SignerOptions } from '../background/types'
+import { SignerOptions } from '@polkadot/api/types'
 import { IExtrinsic } from '@polkadot/types/types'
+import { PORT_KEYRING } from '../constants/ports'
 
-const port = browser.runtime.connect(undefined, { name: '__SPECKLE__' })
+const port = browser.runtime.connect(undefined, { name: PORT_KEYRING })
 
 export function isWalletLocked (): Promise<boolean> {
   return new Promise<boolean>(resolve => {

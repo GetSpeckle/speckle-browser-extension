@@ -1,0 +1,3 @@
+export const PORT_POPUP = 'SPECKLE_POPUP'
+export const PORT_CONTENT = 'SPECKLE_CONTENT'
+export const PORT_KEYRING = 'SPECKLE_KEYRING'

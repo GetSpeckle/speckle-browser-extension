@@ -14,26 +14,42 @@ import { createApi, destroyApi } from '../../background/store/api-context'
 import { networks } from '../../constants/networks'
 import { WsProvider } from '@polkadot/rpc-provider'
 import Initializing from '../../components/Initializing'
+import { AuthorizeRequest, SigningRequest } from '../../background/types'
+import { subscribeAuthorize, subscribeSigning } from '../../services/messaging'
+import Authorizing from '../../components/page/Authorizing'
+import Signing from '../../components/page/Signing'
 
-interface IPopupApp extends StateProps, DispatchProps {
-}
+interface IPopupApp extends StateProps, DispatchProps { }
 
 interface IPopupState {
   initializing: boolean
   tries: number
+  authRequests: Array<AuthorizeRequest>
+  signRequests: Array<SigningRequest>
 }
 
 class PopupApp extends React.Component<IPopupApp, IPopupState> {
 
   state = {
     initializing: true,
-    tries: 0
+    tries: 0,
+    authRequests: [],
+    signRequests: []
+  }
+
+  setAuthRequests = (authRequests: Array<AuthorizeRequest>) => {
+    this.setState({ ...this.state, authRequests: authRequests })
+  }
+
+  setSignRequests = (signRequests: Array<SigningRequest>) => {
+    this.setState({ ...this.state, signRequests: signRequests })
   }
 
   tryCreateApi = () => {
-    if (!this.props.apiContext.apiReady) {
+    const { apiContext, settings } = this.props
+    if (!apiContext.apiReady && settings) {
       this.setState({ ...this.state, tries: this.state.tries++ })
-      const network = networks[this.props.settings.network]
+      const network = networks[settings.network]
       const provider = new WsProvider(network.rpcServer)
       this.props.createApi(provider)
       if (this.state.tries <= 5) {
@@ -44,8 +60,7 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
   }
 
   initializeApp = () => {
-    this.tryCreateApi()
-    const loadAppSetting = this.props.getSettings()
+    this.props.getSettings()
     const checkAppState = isWalletLocked().then(
       result => {
         console.log(`isLocked ${result}`)
@@ -57,16 +72,17 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
           this.props.setCreated(result)
         }
     )
-    Promise.all([loadAppSetting, checkAppState, checkAccountCreated]).then(
-      () => {
-        setTimeout(
-          () => this.setState({
-            initializing: false
-          }),
-          1000
-        )
-      }
-    )
+    Promise.all([
+      checkAppState,
+      checkAccountCreated,
+      subscribeAuthorize(this.setAuthRequests),
+      subscribeSigning(this.setSignRequests)
+    ]).then(() => {
+      this.tryCreateApi()
+      this.setState({
+        initializing: false
+      })
+    })
   }
 
   componentDidMount () {
@@ -78,10 +94,7 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
     provider && this.props.destroyApi(provider)
   }
 
-  render () {
-    if (this.state.initializing) {
-      return <Initializing/>
-    }
+  renderExtensionPopup () {
     return (
       <ThemeProvider theme={themes[this.props.settings.theme]}>
         <React.Fragment>
@@ -94,6 +107,23 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
         </React.Fragment>
       </ThemeProvider>
     )
+  }
+
+  renderPagePopup () {
+    const { authRequests, signRequests } = this.state
+    return authRequests.length > 0 && <Authorizing requests={authRequests}/> ||
+      signRequests.length > 0 && <Signing requests={signRequests}/>
+  }
+
+  render () {
+    const { initializing, authRequests, signRequests } = this.state
+    if (initializing) {
+      return <Initializing/>
+    }
+    if (authRequests.length > 0 || signRequests.length > 0) {
+      return this.renderPagePopup()
+    }
+    return this.renderExtensionPopup()
   }
 }
 
