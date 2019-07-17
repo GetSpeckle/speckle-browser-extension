@@ -46,7 +46,6 @@ class KeyringVault {
       )
     }
     if (!password.length) return Promise.reject(new Error(t('passwordError')))
-    // this will be redundant if we have polkadot js api initialisation
     return cryptoWaitReady().then(async () => {
       this._keyring = new Keyring({ addressPrefix, type: 'sr25519' })
       let vault = await LocalStore.getValue(VAULT_KEY)
@@ -130,10 +129,6 @@ class KeyringVault {
     if (!this.isMnemonicValid(mnemonic)) return Promise.reject(new Error(t('mnemonicInvalid')))
     return cryptoWaitReady().then(() => {
       let pair = this.keyring.addFromUri(mnemonic, { name: accountName, imported: true })
-      const keyringPair$Json = pair.toJson(this._password) // encrypt with new password
-      this.keyring.removePair(pair.address())
-      pair = this.keyring.addFromJson(keyringPair$Json)
-      pair.decodePkcs8(this._password)
       return this.saveAccount(pair)
     })
   }
@@ -154,10 +149,6 @@ class KeyringVault {
         pair.decodePkcs8(password)
       }
       pair.setMeta({ ...pair.getMeta(), imported: true })
-      const keyringPair$Json = pair.toJson(this._password) // encrypt with new password
-      this.keyring.removePair(pair.address())
-      pair = this.keyring.addFromJson(keyringPair$Json)
-      pair.decodePkcs8(this._password)
       return this.saveAccount(pair)
     } catch (e) {
       console.log(e)
@@ -173,9 +164,6 @@ class KeyringVault {
     if (!pair) {
       return Promise.reject(new Error('Unable to find pair'))
     }
-
-    pair.decodePkcs8(this._password)
-
     const payload = new RawPayload({ blockHash, method, nonce })
     const signature = u8aToHex(payload.sign(pair))
     return Promise.resolve(signature)
