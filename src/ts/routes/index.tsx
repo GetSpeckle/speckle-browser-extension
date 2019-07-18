@@ -12,7 +12,8 @@ import {
   GENERATE_PHRASE_ROUTE,
   CONFIRM_PHRASE_ROUTE,
   LOGIN_ROUTE,
-  INITIALIZE_ROUTE, SEND_ROUTE
+  INITIALIZE_ROUTE, SEND_ROUTE,
+  VOTE_ROUTE
 } from '../constants/routes'
 import { RouteWithLayout } from './RouteWithLayout'
 import LoginLayout from '../layouts/LoginLayout'
@@ -28,6 +29,8 @@ import Dashboard from '../components/dashboard/Dashboard'
 import Welcome from '../components/Welcome'
 import ActionLayout from '../layouts/ActionLayout'
 import ExtrinsicLayout from '../layouts/ExtrinsicLayout'
+import DemocracyLayout from '../layouts/DemocracyLayout'
+import Vote from '../components/democracy/Vote'
 import Missing from '../components/Missing'
 import Send from '../components/transaction/Send'
 
@@ -93,6 +96,12 @@ export class Routes extends React.Component {
           layout={LoginLayout}
           path={LOGIN_ROUTE}
           component={Login}
+          exact={true}
+        />
+        <RouteWithLayout
+          layout={DemocracyLayout}
+          path={VOTE_ROUTE}
+          component={Vote}
           exact={true}
         />
         <Route

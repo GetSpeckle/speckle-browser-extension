@@ -127,7 +127,7 @@ extension.runtime.onMessage.addListener(function (request, sender, sendResponse)
   if (request && request.action === 'createWindow' && request.url) {
     extension.windows.create({
       focused: true,
-      height: 600,
+      height: 630,
       left: 150,
       top: 150,
       type: 'popup',

@@ -13,7 +13,7 @@ export const modifyTweets = () => {
       let tweetText: HTMLElement | null = tweet.getElementsByClassName('tweet-text')[0].querySelector('.twitter-hashtag')
       if (tweetText && tweetText.innerText.search('#speckleproposal') !== -1) {
         // Find proposal Id
-        // let proposalId: number = parseInt(tweetText.innerText.replace('#speckleproposal', ''), 10)
+        let proposalId: number = parseInt(tweetText.innerText.replace('#speckleproposal', ''), 10)
         // Inject UI
         let username = tweet.getAttribute('data-screen-name')!
         let userIdTwitter = tweet.getAttribute('data-user-id')!
@@ -46,10 +46,9 @@ export const modifyTweets = () => {
             button.setAttributeNode(dataTweet)
 
             button.addEventListener('click', () => {
-              console.log(extension.getURL('popup.html') + '#/democracy')
               extension.sendMessage({
                 action: 'createWindow',
-                url: extension.getURL('popup.html')
+                url: extension.getURL('popup.html') + `#/vote/${proposalId}`
               }, function (createdWindow) {
                 console.log(createdWindow)
               })

@@ -14,7 +14,7 @@ const store = new Store({
 store.ready().then(() => {
   ReactDOM.render(
     <Provider store={store}>
-      <SpeckleApp />
+      <SpeckleApp />v
     </Provider>,
     document.getElementById('speckle-root'))
 })
