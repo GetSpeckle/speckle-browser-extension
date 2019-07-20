@@ -87,7 +87,6 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
   }
 
   private doUpdate = () => {
-    Promise.all[]
     this.api.query.democracy.referendumInfoOf(this.props.match.params['proposalId'], (referendum) => {
       if (referendum !== this.state.referendum) {
         // Parse referendum info
@@ -108,6 +107,14 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
         })
       }
     })
+  }
+
+  voteAye () {
+    this.api.tx.democracy.vote(this.state.idNumber, true)
+  }
+
+  voteNay () {
+    this.api.tx.democracy.vote(this.state.idNumber, false)
   }
 
   componentDidMount (): void {
@@ -170,25 +177,23 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
             {
               colors: ['#44C5EE', '#4AABE0'],
               label: `Aye`,
-              value: new BN(10)
+              value: new BN(0)
             },
             {
               colors: ['#C7EBF9', '#C7EBFF'],
               label: `Nay`,
-              value: new BN(20)
+              value: new BN(0)
             }
           ]}
           votes={0}
         />
         <ProposalSection>
-          <ProposalDetail>
-            <h1>None</h1>
-          </ProposalDetail>
+          <ProposalDetail/>
         </ProposalSection>
         <ProposalSection>
           <ButtonSection>
-            <Button>Aye</Button>
-            <Button>Nay</Button>
+            <Button onClick={this.voteAye}>Aye</Button>
+            <Button onClick={this.voteNay}>Nay</Button>
           </ButtonSection>
         </ProposalSection>
       </ContentContainer>
