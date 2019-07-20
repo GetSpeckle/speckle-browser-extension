@@ -77,7 +77,6 @@ export default class Extension {
     const payload = new SignaturePayloadRaw({ blockHash: genesisHash, method, nonce })
     keyringVault.unlock(password).then(() => {
       const pair = keyringVault.getPair(address)
-      pair.decodePkcs8(password)
       const signature = u8aToHex(payload.sign(pair))
       resolve({
         id,
