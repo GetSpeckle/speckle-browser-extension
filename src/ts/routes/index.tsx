@@ -31,6 +31,7 @@ import ActionLayout from '../layouts/ActionLayout'
 import ExtrinsicLayout from '../layouts/ExtrinsicLayout'
 import Missing from '../components/Missing'
 import Send from '../components/transaction/Send'
+import SelectNetwork from '../components/account/SelectNetwork'
 
 export class Routes extends React.Component {
   renderRoutes () {
