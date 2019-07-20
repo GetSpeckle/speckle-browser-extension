@@ -95,8 +95,8 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
   renderTransaction = (tran: ITransaction, index: number) => {
     const iconName = tran.type === 'Sent' ? 'arrow right' :
         tran.type === 'Received' ? 'arrow left' : 'pin'
-    const iconColor = tran.type === 'Sent' ? 'red' :
-        tran.type === 'Received' ? 'green' : 'grey'
+    // use the theme color
+    const iconColor = this.props.color
 
     const statusIcon = tran.status === 'Pending' ? 'spinner' :
         tran.status === 'Success' ? 'check circle' : 'times circle'
@@ -112,7 +112,7 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
     const createTime = createTimeFull.replace(/(\d{1,2}):(\d{1,2}):\d{1,2}/, '$1:$2')
 
     const borderStyle = {
-      borderLeftColor: iconColor,
+      borderLeftColor: statusColor,
       borderLeftWidth: '2px',
       borderLeftStyle: 'solid'
     }
