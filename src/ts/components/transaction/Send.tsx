@@ -164,11 +164,12 @@ class Send extends React.Component<ISendProps, ISendState> {
 
   confirm = async (done) => {
 
-    if (!this.state.extrinsic) { return }
-
-    if (!this.props.settings.selectedAccount) {
+    if (!this.state.extrinsic || !this.props.settings.selectedAccount) {
+      this.props.setError('error occurred when processing your transaction.')
       return
     }
+
+    this.setState({ isLoading: true })
 
     const address = this.props.settings.selectedAccount.address
 
@@ -195,7 +196,6 @@ class Send extends React.Component<ISendProps, ISendState> {
     submittable.send(({ events, status }: SubmittableResult) => {
       const { history } = this.props
       console.log('Transaction status:', status.type)
-      this.setState({ isLoading: true })
       if (status.isFinalized) {
         this.setState({ isLoading: false })
         txItem.updateTime = new Date().getTime()
@@ -232,6 +232,9 @@ class Send extends React.Component<ISendProps, ISendState> {
       txItem.updateTime = new Date().getTime()
       this.props.upsertTransaction(address, txItem, this.props.transactions)
       this.props.setError('Failed to send the transaction')
+      if (!this.state.isTimeout) {
+        clearTimeout(sendTimer)
+      }
     })
   }
 
