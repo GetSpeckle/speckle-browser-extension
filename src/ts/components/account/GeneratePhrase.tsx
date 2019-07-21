@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { Button, Icon, Form, Divider, Popup } from 'semantic-ui-react'
 import { generateMnemonic } from '../../services/keyring-vault-proxy'
 import { setNewPhrase } from '../../background/store/wallet'
-import { CONFIRM_PHRASE_ROUTE } from '../../constants/routes'
+import { SELECT_NETWORK_ROUTE } from '../../constants/routes'
 import {
   Button as StyledButton,
   ContentContainer,
@@ -66,7 +66,7 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
   handleClick = () => {
     this.setState({ message: '' })
     this.props.setNewPhrase(this.state.mnemonic, this.state.accountName)
-    this.props.history.push(CONFIRM_PHRASE_ROUTE)
+    this.props.history.push(SELECT_NETWORK_ROUTE)
   }
 
   selectAll = (event) => {

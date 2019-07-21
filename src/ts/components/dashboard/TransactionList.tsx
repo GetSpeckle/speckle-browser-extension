@@ -68,6 +68,7 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
         <Tab
           menu={{ color: color, secondary: true, pointing: true }}
           panes={panes}
+          style={{ 'zIndex': 0 }}
         />
       </div>
     )

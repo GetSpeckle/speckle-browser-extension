@@ -22,7 +22,7 @@ class NetworkList extends React.Component<INetworkListProps> {
     const color = this.props.color
 
     return (
-      <div style={{ 'width': '224px' }}>
+      <div>
         <Tab
           menu={{ color: color, secondary: true, pointing: true }}
           panes={panes}
@@ -38,20 +38,48 @@ class NetworkList extends React.Component<INetworkListProps> {
 
     return (
 
-      <CardPane>
+      <CardTabPane>
+        <CarouselWrapper>
+        <CardCarousel>
           <NetworkCard>
-            <NetworkImage src={'assets/chain-logo/polkadot.png'} alt={'chain-logo'}/>
-            <NetworkName>Alexander</NetworkName>
+            <NetworkDetail>
+              <NetworkImage src={'assets/chain-logo/polkadot.png'} alt={'chain-logo'}/>
+              <NetworkName><p>Alexander</p></NetworkName>
+            </NetworkDetail>
           </NetworkCard>
           <NetworkCard>
-            <NetworkImage src={'assets/chain-logo/substrate.png'} alt={'chain-logo'}/>
-            <NetworkName>Charred Cherry</NetworkName>
+            <NetworkDetail>
+              <NetworkImage src={'assets/chain-logo/substrate.png'} alt={'chain-logo'}/>
+              <NetworkName><p>Charred Cherry</p></NetworkName>
+            </NetworkDetail>
           </NetworkCard>
           <NetworkCard>
-            <NetworkImage src={'assets/chain-logo/kusama.png'} alt={'chain-logo'}/>
-            <NetworkName>Kusama(coming soon)</NetworkName>
+            <NetworkDetail>
+              <NetworkImage src={'assets/chain-logo/kusama.png'} alt={'chain-logo'}/>
+              <NetworkName>
+                <ComingSoon>Kusama<br/><span>(coming soon)</span></ComingSoon>
+              </NetworkName>
+            </NetworkDetail>
           </NetworkCard>
-      </CardPane>
+        <NetworkCard>
+          <NetworkDetail>
+            <NetworkImage src={'assets/chain-logo/bitcoin.png'} alt={'chain-logo'}/>
+            <NetworkName>
+              <p>Bitcoin</p>
+            </NetworkName>
+          </NetworkDetail>
+        </NetworkCard>
+        <NetworkCard>
+          <NetworkDetail>
+            <NetworkImage src={'assets/chain-logo/ethereum.png'} alt={'chain-logo'}/>
+            <NetworkName>
+              <p>Ethereum</p>
+            </NetworkName>
+          </NetworkDetail>
+        </NetworkCard>
+        </CardCarousel>
+        </CarouselWrapper>
+      </CardTabPane>
     )
   }
 }
@@ -69,33 +97,65 @@ const mapDispatchToProps = { getTransactions }
 export default (connect(mapStateToProps, mapDispatchToProps)(NetworkList))
 
 const NetworkCard = styled.div`
-width: 100px
+min-width: 100px
 height: 100px
-border-radius: 4px
-box-shadow: 0 2px 8px 0 rgba(62, 88, 96, 0.1);
+border-radius: 4px;
+display: flex
+align-items: center
 justify-content: center
+box-shadow: 0 2px 8px 0 rgba(62, 88, 96, 0.1);
 background-color: #ffffff
-margin-left: 12px
+`
+const NetworkDetail = styled.div`
+flex-direction: column
+justify-content: space-around
+text-align: center
+align-self: center
 `
 const NetworkImage = styled.img`
-  margin-top: 12px
   width: 48px
   height: 48px
   object-fit: contain
 `
 
-const NetworkName = styled.p`
+const NetworkName = styled.div`
 width: 70px
-margin-top: 12px
 font-size: 12px
 color: #3e5860
 font-weight: bold
 font-family: Nunito
 `
 
-const CardPane = styled(Tab.Pane)`
-width: 500px !important
+const CardTabPane = styled(Tab.Pane)`
+min-width: 319px !important
+height: 150px
+display: flex
+align-items: center
+`
+
+const CardCarousel = styled.div`
 display: flex !important
-justify-content: center
+flex-direction: row
+align-items: center
 margin: 12px
+overflow-x: hidden
+`
+
+const CarouselWrapper = styled.div`
+box-sizing: border-box
+transform-style: preserve-3d
+`
+
+const ComingSoon = styled.p`
+{
+width: 70px
+margin-top: 6px
+font-size: 12px
+color: #3e5860
+font-weight: bold
+font-family: Nunito
+}
+> span {
+font-size: 10px
+}
 `

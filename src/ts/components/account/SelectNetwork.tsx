@@ -38,7 +38,7 @@ class SelectNetwork extends React.Component<ISelectNetworkProps> {
         <NetworkSection>
           <NetworkList/>
         </NetworkSection>
-        <ChainQuote>Start by selecting <span>2 chains</span></ChainQuote>
+        <ChainQuote>Start by selecting <span>3 chains</span></ChainQuote>
         <Divider />
         <StyledButton type='button' onClick={this.gotoDashboard}>
           {t('selectNetwork')}
@@ -73,21 +73,6 @@ const ChainInput = styled(Input)`
   font-family: Nunito
 `
 
-/*
-const SelectAndStart = styled(Button)`
-width: 311px
-height: 45px
-opacity: 0.5
-border-radius: 4px
-font-family: Nunito
-line-height: 1.31;
-font-size: 16px
-font-weight: 800
-color: #ffffff !important
-background-color: ${props => props.color} !important
-`
-*/
-
 export const NetworkSection = styled.div`
   width: 100%
   margin: 8px 0 9px
@@ -96,7 +81,7 @@ export const NetworkSection = styled.div`
 
 export const ChainQuote = styled.h3`
 {
-margin-top: 50px
+margin-top: 10px
 opacity: 0.6
 color: #3e5860
 font-size: 14px
