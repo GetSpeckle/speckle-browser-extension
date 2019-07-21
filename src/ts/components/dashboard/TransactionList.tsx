@@ -100,8 +100,10 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
 
     const statusIcon = tran.status === 'Pending' ? 'spinner' :
         tran.status === 'Success' ? 'check circle' : 'times circle'
-    const statusColor = tran.status === 'Pending' ? 'grey' :
+    const statusIconColor = tran.status === 'Pending' ? 'grey' :
         tran.status === 'Success' ? 'green' : 'red'
+    const statusBorderColor = tran.status === 'Pending' ? 'grey' :
+    tran.status === 'Success' ? '#51d8a7' : '#f3536d'
 
     const toAddress = tran.to.substring(0, 8) + '...' + tran.to.substring(tran.to.length - 10)
 
@@ -112,9 +114,10 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
     const createTime = createTimeFull.replace(/(\d{1,2}):(\d{1,2}):\d{1,2}/, '$1:$2')
 
     const borderStyle = {
-      borderLeftColor: statusColor,
+      borderLeftColor: statusBorderColor,
       borderLeftWidth: '2px',
-      borderLeftStyle: 'solid'
+      borderLeftStyle: 'solid',
+      borderRadius: '2px'
     }
 
     const txBaseUrl = networks[this.props.network].txExplorer
@@ -134,7 +137,7 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
 
           <Grid.Column width={2} verticalAlign='middle'>
             <Icon name={iconName} color={iconColor}/>
-            <Icon name={statusIcon} color={statusColor}/>
+            <Icon name={statusIcon} color={statusIconColor}/>
           </Grid.Column>
 
           <Grid.Column width={7} verticalAlign='middle' className='tran-address'>
