@@ -81,7 +81,7 @@ export const NetworkSection = styled.div`
 
 export const ChainQuote = styled.h3`
 {
-margin-top: 10px
+margin-top: 0px
 opacity: 0.6
 color: #3e5860
 font-size: 14px
