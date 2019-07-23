@@ -1,56 +1,73 @@
 import * as React from 'react'
 import styled from 'styled-components'
+import { ColorScheme } from '../styles/themes'
+import { Selected } from './Selected'
+
+type Selected = true | false
 
 interface INetworkCardProps {
   imgPath: string
   name: string
   supported: boolean
+  colorScheme: ColorScheme
+  selected: Selected
 }
 
 interface INetworkCardState {
-  selected: boolean
+  selected: Selected
 }
 
 export default class NetworkCard extends React.Component<INetworkCardProps, INetworkCardState> {
 
-  state = {
+  static defaultProps = {
     selected: false
   }
 
+  state = {
+    selected: this.props.selected
+  }
+
+  toggleSelected = () => {
+    this.setState((prevState) => {
+      return {
+        selected: prevState.selected === false /* if false true if true false */
+      }
+    })
+  }
+
   render () {
-    return this.state.selected ? this.renderClicked() : this.renderDefault()
+    return this.state.selected ? this.renderSelected() : this.renderDefault()
   }
 
   renderDefault () {
     return (
-      <Card onClick={this.toggleSelected}>
-        <NetworkDetail>
-          <NetworkImage src={this.props.imgPath} alt={'chain-logo'}/>
-          <div>
-            <NetworkName>
-              {this.props.name}<br/><span>{!this.props.supported ? '(comming soon)' : ''}</span>
-            </NetworkName>
-          </div>
-        </NetworkDetail>
-      </Card>
+      <div style={{ 'position': 'relative' }}>
+        <Card onClick={this.toggleSelected}>
+          <NetworkDetail>
+            <NetworkImage src={this.props.imgPath} alt={'chain-logo'}/>
+                <NetworkName>
+                {this.props.name}<br/><span>{!this.props.supported ? '(coming soon)' : ''}</span>
+                </NetworkName>
+            </NetworkDetail>
+          </Card>
+      </div>
     )
   }
 
-  renderClicked () {
+  renderSelected () {
     return (
-      <Card onClick={this.toggleSelected}>
-        <NetworkDetail>
-          <NetworkImage src={this.props.imgPath} alt={'chain-logo'}/>
+      <div style={{ 'position': 'relative' }}>
+        <SelectedCard color={this.props.colorScheme.stopColorOne} onClick={this.toggleSelected}>
+          <NetworkDetail>
+            <NetworkImage src={this.props.imgPath} alt={'chain-logo'}/>
             <NetworkName>
               {this.props.name}<br/><span>{!this.props.supported ? '(coming soon)' : ''}</span>
             </NetworkName>
-        </NetworkDetail>
-      </Card>
+          </NetworkDetail>
+        </SelectedCard>
+        <Check colorScheme={this.props.colorScheme}/>
+      </div>
     )
-  }
-
-  toggleSelected () {
-    this.setState({ selected: !this.state.selected })
   }
 }
 
@@ -82,6 +99,19 @@ box-shadow: 0 0 11px rgba(33,33,33,.2)
 }
 `
 
+const SelectedCard = styled.div`
+{
+min-width: 100px
+height: 100px
+border-radius: 4px;
+display: flex
+align-items: center
+justify-content: center
+border: solid 1px ${props => props.color}
+background-color: #ffffff
+}
+`
+
 const NetworkName = styled.p`
 {
 width: 70px
@@ -94,4 +124,11 @@ font-family: Nunito
 > span {
 font-size: 8px
 }
+`
+
+const Check = styled(Selected)`
+position: absolute
+top: 5px
+left: 5px
+z-index: 3000
 `
