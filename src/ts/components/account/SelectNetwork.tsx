@@ -1,28 +1,35 @@
 import * as React from 'react'
 import t from '../../services/i18n'
 import Progress from './Progress'
-import { IAppState } from '../../background/store/all'
 import { withRouter, RouteComponentProps } from 'react-router'
-import { connect } from 'react-redux'
 import {
   Button as StyledButton,
   ContentContainer,
   TopSection
 } from '../basic-components'
-import { setLocked, setCreated, setNewPhrase } from '../../background/store/wallet'
-import { setError } from '../../background/store/error'
-import { saveSettings } from '../../background/store/settings'
 import { HOME_ROUTE } from '../../constants/routes'
 import { Divider, Form, Input } from 'semantic-ui-react'
 import styled from 'styled-components'
 import NetworkList from './NetworkList'
 
-interface ISelectNetworkProps extends RouteComponentProps, StateProps, DispatchProps {}
+interface ISelectNetworkProps extends RouteComponentProps {}
 
-class SelectNetwork extends React.Component<ISelectNetworkProps> {
+interface ISelectNetworkState {
+  search: string
+}
+
+class SelectNetwork extends React.Component<ISelectNetworkProps, ISelectNetworkState> {
+
+  state = {
+    search: ''
+  }
 
   gotoDashboard = () => {
     this.props.history.push(HOME_ROUTE)
+  }
+
+  handleChange = (event) => {
+    this.setState({ search: event.target.value })
   }
 
   render () {
@@ -33,10 +40,10 @@ class SelectNetwork extends React.Component<ISelectNetworkProps> {
           <Progress step={3}/>
         </TopSection>
         <Form>
-          <ChainInput placeholder={'Chain Search'}/>
+          <ChainInput placeholder={'Chain Search'} onChange={this.handleChange}/>
         </Form>
         <NetworkSection>
-          <NetworkList/>
+          <NetworkList search={this.state.search}/>
         </NetworkSection>
         <ChainQuote>Start by selecting <span>3 chains</span></ChainQuote>
         <Divider />
@@ -48,20 +55,7 @@ class SelectNetwork extends React.Component<ISelectNetworkProps> {
   }
 }
 
-const mapStateToProps = (state: IAppState) => {
-  return {
-    settings: state.settings,
-    color: state.settings.color
-  }
-}
-
-const mapDispatchToProps = { saveSettings, setLocked, setCreated, setError, setNewPhrase }
-
-type StateProps = ReturnType<typeof mapStateToProps>
-
-type DispatchProps = typeof mapDispatchToProps
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SelectNetwork))
+export default withRouter(SelectNetwork)
 
 const ChainInput = styled(Input)`
   width: 311px

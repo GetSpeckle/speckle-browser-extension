@@ -41,11 +41,9 @@ export default class NetworkCard extends React.Component<INetworkCardProps, INet
       <Card onClick={this.toggleSelected}>
         <NetworkDetail>
           <NetworkImage src={this.props.imgPath} alt={'chain-logo'}/>
-          <div>
             <NetworkName>
               {this.props.name}<br/><span>{!this.props.supported ? '(coming soon)' : ''}</span>
             </NetworkName>
-          </div>
         </NetworkDetail>
       </Card>
     )

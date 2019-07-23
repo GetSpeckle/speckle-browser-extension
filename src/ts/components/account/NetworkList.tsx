@@ -2,14 +2,15 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { Tab } from 'semantic-ui-react'
 import { IAppState } from '../../background/store/all'
-import { getTransactions } from '../../background/store/transaction'
 import t from '../../services/i18n'
 import styled from 'styled-components'
 import NetworkCard from './NetworkCard'
 import { ScrollButton } from './ScrollButton'
 import { colorSchemes } from '../styles/themes'
 
-interface INetworkListProps extends StateProps {}
+interface INetworkListProps extends StateProps {
+  search: string
+}
 
 class NetworkList extends React.Component<INetworkListProps> {
 
@@ -44,8 +45,8 @@ class NetworkList extends React.Component<INetworkListProps> {
 
   renderWithFilter = (/*type: NetworkType | ''*/ type) => {
 
-    // TODO: filter network with the network type and search
-    console.log('prepare to render Networks ... ', type)
+    // TODO: filter network with the network type and search from SelectNetwork
+    console.log('preparing to render Networks ... ', type)
 
     return (
       <CardTabPane>
@@ -69,7 +70,8 @@ const mapStateToProps = (state: IAppState) => {
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
-const mapDispatchToProps = { getTransactions }
+// TODO: Get networks
+const mapDispatchToProps = { /* getNetworks */ }
 
 export default (connect(mapStateToProps, mapDispatchToProps)(NetworkList))
 
