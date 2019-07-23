@@ -51,8 +51,8 @@ class NetworkList extends React.Component<INetworkListProps> {
       <CardTabPane>
         <Networks id={'scroll-menu'}>
           <NetworkCard imgPath={'assets/chain-logo/polkadot.png'} name={'Alexander'} supported={true}/>
-          <NetworkCard imgPath={'assets/chain-logo/edgeware.png'} name={'Edgeware'} supported={false} />
           <NetworkCard imgPath={'assets/chain-logo/kusama.png'} name={'Kusama'} supported={false} />
+          <NetworkCard imgPath={'assets/chain-logo/edgeware.png'} name={'Edgeware'} supported={false} />
          </Networks>
         <PrevButton onMouseDown={this.prev} colorScheme={colorSchemes[this.props.color]}/>
         <NextButton onMouseDown={this.next} colorScheme={colorSchemes[this.props.color]}/>
