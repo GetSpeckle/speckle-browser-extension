@@ -17,7 +17,7 @@ import Amount from './Amount'
 import ToAddress from './ToAddress'
 import { IExtrinsic } from '@polkadot/types/types'
 import { SignerOptions } from '@polkadot/api/types'
-import { Index, EventRecord } from '@polkadot/types'
+import { Index, EventRecord, Balance as BalanceType } from '@polkadot/types'
 import Fee from './Fee'
 import Confirm from './Confirm'
 import AccountDropdown from '../account/AccountDropdown'
@@ -165,13 +165,20 @@ class Send extends React.Component<ISendProps, ISendState> {
   confirm = async (done) => {
 
     if (!this.state.extrinsic || !this.props.settings.selectedAccount) {
-      this.props.setError('error occurred when processing your transaction.')
+      this.props.setError('Error occurred when processing your transaction.')
+      return
+    }
+
+    const address = this.props.settings.selectedAccount.address
+
+    const available = await this.api.query.balances.freeBalance(address) as BalanceType
+
+    if (available.isZero()) {
+      this.props.setError('You account has 0 balance.')
       return
     }
 
     this.setState({ isLoading: true })
-
-    const address = this.props.settings.selectedAccount.address
 
     const txItem: ITransaction = {
       txHash: this.state.extrinsic.hash.toHex(),
@@ -186,7 +193,7 @@ class Send extends React.Component<ISendProps, ISendState> {
     }
 
     this.props.upsertTransaction(
-      this.props.settings.selectedAccount.address,
+      address,
       txItem,
       this.props.transactions
     )
