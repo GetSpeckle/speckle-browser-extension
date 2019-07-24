@@ -79,6 +79,10 @@ class Send extends React.Component<ISendProps, ISendState> {
     }
   }
 
+  componentWillUnmount () {
+    this.props.setError(null)
+  }
+
   getSiPowers = (siUnit = this.state.siUnit): [BN, number, number] => {
     const { isSi } = this.state
 
