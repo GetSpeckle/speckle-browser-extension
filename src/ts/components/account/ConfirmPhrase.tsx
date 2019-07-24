@@ -12,7 +12,7 @@ import {
   Section,
   BasicSection
 } from '../basic-components'
-import { HOME_ROUTE } from '../../constants/routes'
+import { SELECT_NETWORK_ROUTE } from '../../constants/routes'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import { setLocked, setCreated, setNewPhrase } from '../../background/store/wallet'
 import { setError } from '../../background/store/error'
@@ -123,8 +123,8 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
     document.body.removeChild(element)
   }
 
-  gotoDashboard = () => {
-    this.props.history.push(HOME_ROUTE)
+  handleClick = () => {
+    this.props.history.push(SELECT_NETWORK_ROUTE)
   }
 
   render () {
@@ -213,7 +213,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
         </Section>
 
         <Section>
-          <Button onClick={this.gotoDashboard} primary={true} fluid={true}>
+          <Button onClick={this.handleClick} primary={true} fluid={true}>
             <Icon name='play' />
             {t('proceedButton')}
           </Button>

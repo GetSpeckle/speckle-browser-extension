@@ -5,7 +5,7 @@ import { Tab, List, Grid, Icon } from 'semantic-ui-react'
 import { IAppState } from '../../background/store/all'
 import { getTransactions, TransactionType, ITransaction } from '../../background/store/transaction'
 import t from '../../services/i18n'
-import { networks } from '../../constants/networks';
+import { networks } from '../../constants/networks'
 
 interface ITransactionListProps extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -58,7 +58,7 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
     const panes = [
       { menuItem: t('tabAll'), render: () => this.renderWithFilter('') },
       { menuItem: t('tabSent'), render: () => this.renderWithFilter('Sent') },
-      { menuItem: t('tabStaked'), render: () => this.renderWithFilter('Staked') },
+      { menuItem: t('tabStaked'), render: () => this.renderWithFilter('Staked') }
     ]
 
     const color = this.props.color
@@ -68,6 +68,7 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
         <Tab
           menu={{ color: color, secondary: true, pointing: true }}
           panes={panes}
+          style={{ 'zIndex': 0 }}
         />
       </div>
     )

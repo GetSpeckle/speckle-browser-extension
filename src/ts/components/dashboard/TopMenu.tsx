@@ -5,7 +5,7 @@ import { Image, Grid } from 'semantic-ui-react'
 import { networks } from '../../constants/networks'
 import { IAppState } from '../../background/store/all'
 import { saveSettings } from '../../background/store/settings'
-import {ChainDropdown} from '../basic-components'
+import { ChainDropdown } from '../basic-components'
 
 
 interface ITopMenuProps extends StateProps, DispatchProps, RouteComponentProps {}

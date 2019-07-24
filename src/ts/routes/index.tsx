@@ -11,6 +11,7 @@ import {
   IMPORT_JSON_ROUTE,
   GENERATE_PHRASE_ROUTE,
   CONFIRM_PHRASE_ROUTE,
+  SELECT_NETWORK_ROUTE,
   LOGIN_ROUTE,
   INITIALIZE_ROUTE, SEND_ROUTE
 } from '../constants/routes'
@@ -30,6 +31,7 @@ import ActionLayout from '../layouts/ActionLayout'
 import ExtrinsicLayout from '../layouts/ExtrinsicLayout'
 import Missing from '../components/Missing'
 import Send from '../components/transaction/Send'
+import SelectNetwork from '../components/account/SelectNetwork'
 
 export class Routes extends React.Component {
   renderRoutes () {
@@ -87,6 +89,12 @@ export class Routes extends React.Component {
           layout={LoginLayout}
           path={CONFIRM_PHRASE_ROUTE}
           component={ConfirmPhrase}
+          exact={true}
+        />
+        <RouteWithLayout
+          layout={LoginLayout}
+          path={SELECT_NETWORK_ROUTE}
+          component={SelectNetwork}
           exact={true}
         />
         <RouteWithLayout
