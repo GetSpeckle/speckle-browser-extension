@@ -14,3 +14,24 @@ browser.runtime.onConnect.addListener(port => {
   }
   port.onDisconnect.addListener(() => console.log(`Disconnected from ${port.name}`))
 })
+
+// Open a popup
+browser.runtime.onMessage.addListener(function handleMessage (request, sender) {
+  if (request && request.action === 'createWindow' && request.url) {
+    browser.windows.create({
+      height: 630,
+      left: 150,
+      top: 150,
+      type: 'popup',
+      url: request.url,
+      width: 375
+    }).then(() => console.log(sender))
+  }
+})
+
+// Send message to open a popup
+browser.tabs.onUpdated.addListener((tabId, changeInfo, _tab) => {
+  if (changeInfo.url !== undefined && changeInfo.url.includes('twitter')) {
+    browser.tabs.sendMessage(tabId, 'url-update')
+  }
+})
