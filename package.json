@@ -34,9 +34,11 @@
 		"bn.js": "^4.11.8",
 		"chart.js": "^2.8.0",
 		"extensionizer": "^1.0.1",
+		"jquery": "^3.4.1",
 		"polkadot-identicon": "^1.1.45",
 		"react": "^16.8.6",
 		"react-chartjs-2": "^2.7.6",
+		"react-chrome-redux": "^2.0.0-alpha.5",
 		"react-dom": "^16.8.6",
 		"react-dropzone": "^10.1.5",
 		"react-image-mapper": "^0.0.14",
@@ -49,7 +51,8 @@
 		"semantic-ui-css": "^2.4.1",
 		"semantic-ui-react": "^0.86.0",
 		"styled-components": "^4.3.1",
-		"webextension-polyfill-ts": "^0.8.9"
+		"webextension-polyfill-ts": "^0.8.9",
+		"webpack-extension-manifest-plugin": "^0.4.3"
 	},
 	"devDependencies": {
 		"@babel/runtime": "^7.5.4",
