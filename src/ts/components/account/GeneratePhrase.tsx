@@ -5,7 +5,7 @@ import { IAppState } from '../../background/store/all'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
 import { Button, Icon, Form, Divider, Popup } from 'semantic-ui-react'
-import { generateMnemonic } from '../../services/keyring-vault-proxy'
+import { getSimpleAccounts, generateMnemonic } from '../../services/keyring-vault-proxy'
 import { setNewPhrase } from '../../background/store/wallet'
 import { CONFIRM_PHRASE_ROUTE } from '../../constants/routes'
 import {
@@ -39,6 +39,9 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
   }
 
   componentDidMount () {
+    getSimpleAccounts().then(result => {
+      this.setState({ accountName: 'Account ' + (result.length + 1) })
+    })
     // generate the mnemonic or restore it from the store if exists
     if (this.props.wallet.newPhrase) {
       this.setState({ mnemonic: this.props.wallet.newPhrase })

@@ -50,6 +50,19 @@ const handle = (msg, port: Runtime.Port) => {
         })
       }
       break
+    case FUNCS.GET_SIMPLE_ACCOUNTS:
+      keyringVault.getSimpleAccounts().then(result => {
+        port.postMessage({
+          method: FUNCS.GET_SIMPLE_ACCOUNTS,
+          result: result
+        })
+      }).catch(err => {
+        port.postMessage({
+          method: FUNCS.GET_SIMPLE_ACCOUNTS,
+          error: { message: err.message }
+        })
+      })
+      break
     case FUNCS.GENERATE_MNEMONIC:
       try {
         port.postMessage({

@@ -6,6 +6,7 @@ import Keyring from '@polkadot/keyring'
 import { SignerOptions } from '@polkadot/api/types'
 import { IExtrinsic } from '@polkadot/types/types'
 import { PORT_KEYRING } from '../constants/ports'
+import { SimpleAccounts } from '../background/types'
 
 const port = browser.runtime.connect(undefined, { name: PORT_KEYRING })
 
@@ -73,7 +74,9 @@ export function walletExists (): Promise<boolean> {
   })
 }
 
-export function signExtrinsic (extrinsic: IExtrinsic, address: string, signerOption: SignerOptions) {
+export function signExtrinsic (extrinsic: IExtrinsic,
+                               address: string,
+                               signerOption: SignerOptions) {
   return new Promise<any>((resolve, reject) => {
     const { blockHash, genesisHash, nonce } = signerOption
     port.onMessage.addListener(msg => {
@@ -83,13 +86,16 @@ export function signExtrinsic (extrinsic: IExtrinsic, address: string, signerOpt
       }
       resolve(msg.result)
     })
-    port.postMessage({ method: FUNCS.SIGN_EXTRINSIC, messageExtrinsicSign: JSON.parse(JSON.stringify({
-      address,
-      blockHash,
-      genesisHash,
-      method: extrinsic.method.toHex(),
-      nonce
-    }))})
+    port.postMessage({
+      method: FUNCS.SIGN_EXTRINSIC,
+      messageExtrinsicSign: JSON.parse(JSON.stringify({
+        address,
+        blockHash,
+        genesisHash,
+        method: extrinsic.method.toHex(),
+        nonce
+      }))
+    })
   })
 }
 
@@ -103,6 +109,19 @@ export function getAccounts (): Promise<Array<KeyringPair$Json>> {
       resolve(msg.result)
     })
     port.postMessage({ method: FUNCS.GET_ACCOUNTS })
+  })
+}
+
+export function getSimpleAccounts (): Promise<SimpleAccounts> {
+  return new Promise<SimpleAccounts>((resolve, reject) => {
+    port.onMessage.addListener(msg => {
+      if (msg.method !== FUNCS.GET_SIMPLE_ACCOUNTS) return
+      if (msg.error) {
+        reject(msg.error.message)
+      }
+      resolve(msg.result)
+    })
+    port.postMessage({ method: FUNCS.GET_SIMPLE_ACCOUNTS })
   })
 }
 

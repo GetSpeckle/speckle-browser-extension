@@ -1,6 +1,9 @@
 import * as React from 'react'
 import t from '../../services/i18n'
-import { importAccountFromMnemonic } from '../../services/keyring-vault-proxy'
+import {
+  getSimpleAccounts,
+  importAccountFromMnemonic
+} from '../../services/keyring-vault-proxy'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import { Form, Message } from 'semantic-ui-react'
@@ -28,7 +31,13 @@ class ImportMnemonic extends React.Component<IImportMnemonicProps, IImportMnemon
 
   state: IImportMnemonicState = {
     mnemonic: '',
-    accountName: t('importedAccount')
+    accountName: ''
+  }
+
+  componentDidMount () {
+    getSimpleAccounts().then(result => {
+      this.setState({ accountName: 'Account ' + (result.length + 1) })
+    })
   }
 
   handleImport = () => {
