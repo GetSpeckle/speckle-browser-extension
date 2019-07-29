@@ -5,9 +5,10 @@ import { bnToBn } from '@polkadot/util'
 import BN = require('bn.js')
 import styled from 'styled-components'
 
-interface IDoughnutProps {
+interface IVoteStatusProps {
   values: Value[],
   votes: number
+  legendColor: string
 }
 
 interface Value {
@@ -23,7 +24,7 @@ interface Options {
   labels: string[]
 }
 
-class VoteStatus extends React.Component<IDoughnutProps> {
+class VoteStatus extends React.Component<IVoteStatusProps> {
   componentWillMount (): void {
     Chart.pluginService.register({
       beforeDraw: function (chart) {
@@ -73,7 +74,7 @@ class VoteStatus extends React.Component<IDoughnutProps> {
   }
 
   render () {
-    const { values, votes } = this.props
+    const { values, votes, legendColor } = this.props
     const options: Options = { colorNormal: [], colorHover: [], data: [], labels: [] }
     values.forEach(({ colors: [normalColor = '#00f', hoverColor], label, value }): void => {
       options.colorNormal.push(normalColor)
@@ -103,7 +104,7 @@ class VoteStatus extends React.Component<IDoughnutProps> {
               center: {
                 text: 'Total votes',
                 votes: votes,
-                color: '#36A2EB',
+                color: `${legendColor}`,
                 fontStyle: 'Nunito',
                 sidePadding: 0
               }

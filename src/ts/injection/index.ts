@@ -11,9 +11,11 @@ function modifyTweets () {
   let tweets = document.getElementsByClassName(CLASS_TWEET)
   for (let i = 0, len = tweets.length; i < len; i++) {
     let tweet: any = tweets[i]
-    let matches = tweet.innerText.match(/#speckleproposal(\d+)/g)
+    let matches = tweet.innerText.match(/#(\S+)proposal(\d+)/g)
     if (matches !== null) {
-      let proposalId: number = parseInt(matches[matches.length - 1].slice('#speckleproposal'.length), 10)
+      console.log(matches)
+      let proposalId: number = parseInt(matches[matches.length - 1].match(/\d+/g)[0], 10)
+      let network: string = matches[matches.length - 1].match(/(\w*)proposal/g)[0].replace('proposal', '')
       let userActionButtons = tweet.getElementsByClassName(CLASS_BTNCONTAINER)[0]
       if (userActionButtons !== undefined && !userActionButtons.classList.contains('speckle-button-added')) {
         userActionButtons.classList.add('speckle-button-added')
@@ -27,7 +29,7 @@ function modifyTweets () {
         button.addEventListener('click', () => {
           extension.sendMessage({
             action: 'createWindow',
-            url: extension.getURL('popup.html') + `#/vote/${proposalId}`
+            url: extension.getURL('popup.html') + `#/vote/${network}/${proposalId}`
           }, function (createdWindow) {
             console.log(createdWindow)
           })

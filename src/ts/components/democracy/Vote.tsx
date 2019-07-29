@@ -119,6 +119,8 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
 
           ballot.voteCount++
           ballot.votedTotal = ballot.votedTotal.add(balance)
+
+          return ballot
         }, {
           voteCount: 0,
           voteCountAye: 0,
@@ -164,23 +166,25 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
 
   renderProposal () {
     const { voteCount, votedAye, voteCountAye, votedNay, voteCountNay, votedTotal } = this.state.ballot
+    const { chartColorAye, chartColorNay, stopColorOne, stopColorTwo, backgroundColor } = colorSchemes[this.props.settings.color]
     return (
       <ContentContainer>
         <AccountDropdown/>
         <VoteStatus
           values={[
             {
-              colors: colorSchemes[this.props.settings.color].chartColorAye,
+              colors: chartColorAye,
               label: `Aye, ${formatBalance(votedAye)} (${formatNumber(voteCountAye)})`,
               value: votedAye.muln(10000).div(votedTotal).toNumber() / 100
             },
             {
-              colors: colorSchemes[this.props.settings.color].chartColorNay,
+              colors: chartColorNay,
               label: `Nay, ${formatBalance(votedNay)} (${formatNumber(voteCountNay)})`,
               value: votedNay.muln(10000).div(votedTotal).toNumber() / 100
             }
           ]}
           votes={voteCount}
+          legendColor={backgroundColor}
         />
         <ProposalSection>
           <ProposalDetail>
@@ -191,7 +195,8 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
         <ProposalSection>
           <ButtonSection>
             <AyeButton
-              color={colorSchemes[this.props.settings.color].stopColorOne}
+              color={stopColorOne}
+              hoverColor={stopColorTwo}
             >
               Aye
             </AyeButton>
@@ -203,23 +208,25 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
   }
 
   renderPlaceHolder () {
+    const { chartColorAye, chartColorNay, backgroundColor } = colorSchemes[this.props.settings.color]
     return (
       <ContentContainer>
         <AccountDropdown/>
         <VoteStatus
           values={[
             {
-              colors: ['#44C5EE', '#4AABE0'],
+              colors: chartColorAye,
               label: `Aye`,
-              value: new BN(0)
+              value: new BN(30)
             },
             {
-              colors: ['#C7EBF9', '#C7EBFF'],
+              colors: chartColorNay,
               label: `Nay`,
-              value: new BN(0)
+              value: new BN(20)
             }
           ]}
           votes={0}
+          legendColor={backgroundColor}
         />
         <ProposalSection>
           <ProposalDetail/>
@@ -227,7 +234,7 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
         <ProposalSection>
           <ButtonSection>
             <AyeButton
-              color={colorSchemes[this.props.settings.color].stopColorOne}
+              color={this.props.settings.color}
               onClick={this.voteAye}
             >
               Aye
@@ -277,6 +284,18 @@ const ButtonSection = styled.div`
   justify-content: space-between
 `
 
-const AyeButton = styled.button`
-background-color: ${props => props.color}
+const AyeButton = styled(Button)`
+{
+cursor: pointer
+background-color: ${(props) => colorSchemes[props.color].stopColorOne} !important
+padding: .78571429em 1.5em .78571429em
+margin: 0 0 0 .25em
+font-family: nunito
+color: #ffffff
+border-radius: 5px
+border: none
+}
+:hover {
+background-color: ${(props) => colorSchemes[props.color].stopColorTwo} !important
+}
 `

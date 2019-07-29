@@ -35,7 +35,7 @@ export const blueColorScheme: ColorScheme = {
   headerShadow: '0 0 0 0 0.223431156 0 0 0 0 0.734036715 0 0 0 0 0.974888393 0 0 0 0.601704031 0',
   backgroundColor: '#24b6e8',
   shadowColor: 'rgba(72, 178, 228, 0.21)',
-  chartColorAye: [this.stopColorOne, this.stopColorTwo],
+  chartColorAye: ['#44C5EE', '#4AABE0'],
   chartColorNay: ['#C7EBF9', '#C7EBFF']
 }
 
@@ -45,7 +45,7 @@ export const greenColorScheme: ColorScheme = {
   headerShadow: '0 0 0 0 0.317647059 0 0 0 0 0.847058824 0 0 0 0 0.654901961 0 0 0 0.597599638 0',
   backgroundColor: '#51d8a7',
   shadowColor: 'rgba(81, 216, 167, 0.1)',
-  chartColorAye: [this.stopColorOne, this.stopColorTwo],
+  chartColorAye: ['#51DFB0', '#52C48D'],
   chartColorNay: ['#CDEAE2', '#CEF0E9']
 }
 
@@ -55,7 +55,7 @@ export const orangeColorScheme: ColorScheme = {
   headerShadow: '0 0 0 0 1 0 0 0 0 0.698039216 0 0 0 0 0 0 0 0 0.6 0',
   backgroundColor: '#ffb200',
   shadowColor: 'rgba(243, 83, 109, 0.1)',
-  chartColorAye: [this.stopColorOne, this.stopColorTwo],
+  chartColorAye: ['#FFC10B', '#FFB200'],
   chartColorNay: ['#FFE78F', '#FFED8A']
 }
 
@@ -65,7 +65,7 @@ export const purpleColorScheme: ColorScheme = {
   headerShadow: '0 0 0 0 0.698039216 0 0 0 0 0.474509804 0 0 0 0 0.976470588 0 0 0 0.6 0',
   backgroundColor: '#b279f9',
   shadowColor: 'rgba(178, 121, 249, 0.1)',
-  chartColorAye: [this.stopColorOne, this.stopColorTwo],
+  chartColorAye: ['#D396FF', '#B279F9'],
   chartColorNay: ['#EBDCF5','#F0DBFA']
 }
 
@@ -75,7 +75,7 @@ export const redColorScheme: ColorScheme = {
   headerShadow: '0 0 0 0 0.952941176 0 0 0 0 0.325490196 0 0 0 0 0.42745098 0 0 0 0.5 0',
   backgroundColor: '#f3536d',
   shadowColor: 'rgba(243, 83, 109, 0.1)',
-  chartColorAye: [this.stopColorOne, this.stopColorTwo],
+  chartColorAye: ['#FF7396', '#F3536D'],
   chartColorNay: ['#FFF2F5', '#FFEDF0']
 }
 
