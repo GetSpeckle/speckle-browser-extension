@@ -18,8 +18,7 @@
     "128": "assets/icon-128.png"
   },
   "web_accessible_resources": [
-    "speckle.js",
-    "popup.html"
+    "speckle.js"
   ],
   "content_security_policy": "script-src 'self' 'unsafe-eval' 'wasm-eval'; object-src 'self'",
   "permissions": [
@@ -51,12 +50,13 @@
   "content_scripts": [
     {
       "js": [
-        "content.js"
+        "content.js",
+        "injection.js"
       ],
       "matches": [
         "*://*/*"
       ],
-      "run_at": "document_start"
+      "run_at": "document_end"
     }
   ]
 }

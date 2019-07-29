@@ -15,8 +15,8 @@ type P = ReturnType<typeof mapStateToProps>
 
 export const LayoutContainer = styled('div')`
     width: 375px
-    height: 600px
-    border-radius: 4px
+    height: 630px
+    border-radius: 0px 0px 4px 4px
     box-shadow: 0 6px 30px 0 ${props => props.theme['shadowColor']}
     border: 0
     background-color: ${props => props.theme['backgroundColor']}

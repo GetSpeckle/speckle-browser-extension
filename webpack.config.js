@@ -3,7 +3,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const {CheckerPlugin} = require('awesome-typescript-loader');
+const {CheckerPlugin}  = require('awesome-typescript-loader');
 const ChromeExtensionReloader = require('webpack-chrome-extension-reloader');
 
 const sourceRootPath = path.join(__dirname, 'src');
@@ -18,7 +18,8 @@ module.exports = {
     options: path.join(sourceRootPath, 'ts', 'options', 'index.tsx'),
     popup: path.join(sourceRootPath, 'ts', 'popup', 'index.tsx'),
     speckle: path.join(sourceRootPath, 'ts', 'page', 'index.ts'),
-    content: path.join(sourceRootPath, 'ts', 'content', 'index.tsx')
+    content: path.join(sourceRootPath, 'ts', 'content', 'index.tsx'),
+    injection: path.join(sourceRootPath, 'ts', 'injection', 'index.ts')
   },
   output: {
     path: distRootPath,
@@ -87,7 +88,7 @@ if (nodeEnv === 'watch') {
         background: 'background',
         options: 'options',
         popup: 'popup',
-        contentScript: ['content'],
+        contentScript: ['content', 'injection'],
       }
     })
   );

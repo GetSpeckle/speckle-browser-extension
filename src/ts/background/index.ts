@@ -18,6 +18,7 @@ browser.runtime.onConnect.addListener(port => {
 // Open a popup
 browser.runtime.onMessage.addListener(function handleMessage (request, sender) {
   if (request && request.action === 'createWindow' && request.url) {
+    console.log(request.url)
     browser.windows.create({
       height: 630,
       left: 150,
@@ -28,6 +29,7 @@ browser.runtime.onMessage.addListener(function handleMessage (request, sender) {
     }).then(() => console.log(sender))
   }
 })
+
 
 // Send message to open a popup
 browser.tabs.onUpdated.addListener((tabId, changeInfo, _tab) => {

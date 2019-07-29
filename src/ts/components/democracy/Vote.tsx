@@ -13,7 +13,9 @@ import BN = require('bn.js')
 import VoteStatus from './VoteStatus'
 import styled from 'styled-components'
 import { Button } from 'semantic-ui-react'
-import { formatBalance } from '@polkadot/util'
+import { formatBalance, formatNumber } from '@polkadot/util'
+import { INITIALIZE_ROUTE } from '../../constants/routes'
+import { colorSchemes } from '../styles/themes'
 
 interface IVoteProps extends StateProps, RouteComponentProps {
   chain_bestNumber?: BN
@@ -22,15 +24,19 @@ interface IVoteProps extends StateProps, RouteComponentProps {
   value: ReferendumInfo
 }
 
-interface IVoteState {
-  idNumber: number
-  referendumInfo?: ReferendumInfo | null
+interface IBallot {
   voteCount: number
   voteCountAye: number
   voteCountNay: number
   votedAye: BN
   votedNay: BN
   votedTotal: BN
+}
+
+interface IVoteState {
+  idNumber: number
+  referendumInfo?: ReferendumInfo | null
+  ballot: IBallot
   tries: number
   nextTry?: any
   header: string
@@ -50,15 +56,23 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
 
     this.state = {
       idNumber: this.props.match.params['proposalId'],
-      voteCount: 0,
-      voteCountAye: 0,
-      voteCountNay: 0,
-      votedAye: new BN(0),
-      votedNay: new BN(0),
-      votedTotal: new BN(0),
+      ballot: {
+        voteCount: 0,
+        voteCountAye: 0,
+        voteCountNay: 0,
+        votedAye: new BN(0),
+        votedNay: new BN(0),
+        votedTotal: new BN(0)
+      },
       tries: 0,
       header: '',
       documentation: ''
+    }
+  }
+
+  componentWillMount (): void {
+    if (this.props.settings.selectedAccount == null) {
+      this.props.history.push(INITIALIZE_ROUTE)
     }
   }
 
@@ -93,12 +107,33 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
           : null
 
         // Get votes
+        const votes: DerivedReferendumVote[] = this.api.derive.referendumVotesFor(this.state.idNumber)
+        const newBallot = votes.reduce((ballot: IBallot, { balance, vote }): IBallot => {
+          if (vote.isAye) {
+            ballot.voteCountAye++
+            ballot.votedAye = ballot.votedAye.add(balance)
+          } else {
+            ballot.voteCountNay++
+            ballot.votedNay = ballot.votedNay.add(balance)
+          }
+
+          ballot.voteCount++
+          ballot.votedTotal = ballot.votedTotal.add(balance)
+        }, {
+          voteCount: 0,
+          voteCountAye: 0,
+          voteCountNay: 0,
+          votedAye: new BN(0),
+          votedNay: new BN(0),
+          votedTotal: new BN(0)
+        })
 
         this.setState({
           ...this.state,
           referendumInfo: referendumInfo,
           header: header,
-          documentation: documentation
+          documentation: documentation,
+          ballot: newBallot
         })
       }
     })
@@ -128,24 +163,24 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
   }
 
   renderProposal () {
-
+    const { voteCount, votedAye, voteCountAye, votedNay, voteCountNay, votedTotal } = this.state.ballot
     return (
       <ContentContainer>
         <AccountDropdown/>
         <VoteStatus
           values={[
             {
-              colors: ['#44C5EE', '#4AABE0'],
-              label: `Aye`,
-              value: new BN(10)
+              colors: colorSchemes[this.props.settings.color].chartColorAye,
+              label: `Aye, ${formatBalance(votedAye)} (${formatNumber(voteCountAye)})`,
+              value: votedAye.muln(10000).div(votedTotal).toNumber() / 100
             },
             {
-              colors: ['#C7EBF9', '#C7EBFF'],
-              label: `Nay`,
-              value: new BN(20)
+              colors: colorSchemes[this.props.settings.color].chartColorNay,
+              label: `Nay, ${formatBalance(votedNay)} (${formatNumber(voteCountNay)})`,
+              value: votedNay.muln(10000).div(votedTotal).toNumber() / 100
             }
           ]}
-          votes={0}
+          votes={voteCount}
         />
         <ProposalSection>
           <ProposalDetail>
@@ -155,7 +190,11 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
         </ProposalSection>
         <ProposalSection>
           <ButtonSection>
-            <Button>Aye</Button>
+            <AyeButton
+              color={colorSchemes[this.props.settings.color].stopColorOne}
+            >
+              Aye
+            </AyeButton>
             <Button>Nay</Button>
           </ButtonSection>
         </ProposalSection>
@@ -187,7 +226,12 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
         </ProposalSection>
         <ProposalSection>
           <ButtonSection>
-            <Button onClick={this.voteAye}>Aye</Button>
+            <AyeButton
+              color={colorSchemes[this.props.settings.color].stopColorOne}
+              onClick={this.voteAye}
+            >
+              Aye
+            </AyeButton>
             <Button onClick={this.voteNay}>Nay</Button>
           </ButtonSection>
         </ProposalSection>
@@ -219,16 +263,20 @@ const ProposalDetail = styled.div`
   border: 1px solid #DDD
 `
 
-export const ProposalSection = styled.div`
+const ProposalSection = styled.div`
   width: 100%
   margin: 8px 0 9px
   display: flex
   justify-content: center
 `
 
-export const ButtonSection = styled.div`
+const ButtonSection = styled.div`
   width: 90%
   margin: 8px 0 9px
   display: flex
   justify-content: space-between
+`
+
+const AyeButton = styled.button`
+background-color: ${props => props.color}
 `
