@@ -319,13 +319,3 @@
   }
 }
 
-
-
-:root .ui.secondary.pointing.menu .item {
-  padding: .85714286em 1.14285714em !important;
-}
-
-:root .ui.secondary.pointing.menu  {
-  border-bottom: none;
-}
-
