@@ -6,6 +6,7 @@ import { networks } from '../../constants/networks'
 import { IAppState } from '../../background/store/all'
 import { saveSettings } from '../../background/store/settings'
 import { ChainDropdown } from '../basic-components'
+import { TweenMax, Elastic } from "gsap/TweenMax";
 
 
 interface ITopMenuProps extends StateProps, DispatchProps, RouteComponentProps {}
@@ -19,7 +20,8 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
 
   state = {
     network: this.props.settings.network,
-    chainIconUrl: networks[this.props.settings.network].chain.iconUrl
+    chainIconUrl: networks[this.props.settings.network].chain.iconUrl,
+    profileLogoClicked: false
   }
 
   changeNetwork = (e, data) => {
@@ -29,6 +31,10 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
       chainIconUrl: networks[data.value].chain.iconUrl
     })
     this.props.saveSettings({ ...this.props.settings, network: data.value })
+  }
+
+  changeSettings = () => {
+
   }
 
   render () {
