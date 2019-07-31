@@ -6,16 +6,14 @@ import {
 } from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
-import { setAccounts } from '../../background/store/wallet'
 import Balance from '../account/Balance'
 import { AccountSection } from '../dashboard/Dashboard'
-import { saveSettings } from '../../background/store/settings'
 import 'react-tippy/dist/tippy.css'
 import styled from 'styled-components'
 import AccountDropdown from '../account/AccountDropdown'
 import t from '../../services/i18n'
 
-interface IQRProps extends StateProps, RouteComponentProps, DispatchProps {
+interface IQRProps extends StateProps, RouteComponentProps {
 }
 
 class QR extends React.Component<IQRProps> {
@@ -57,25 +55,22 @@ const mapStateToProps = (state: IAppState) => {
   }
 }
 
-const mapDispatchToProps = { saveSettings, setAccounts }
-type DispatchProps = typeof mapDispatchToProps
-
 type StateProps = ReturnType<typeof mapStateToProps>
 
-const PublicKey = connect(mapStateToProps)(styled.div`
+const PublicKey = styled.div`
   font-size: 17px
   width: 261px
   font-weight: 800
   padding-left: 20px
   line-height: 1.05
-`)
+`
 
-const SecondaryText = connect(mapStateToProps)(styled.div`
+const SecondaryText = styled.div`
   font-size: 17px
   padding: 20px 20px 10px 20px
   line-height: normal
   color: #6F797C
-`)
+`
 
 const QRContainer = styled.div`
   display: flex
@@ -95,4 +90,4 @@ const QRSection = styled(Section)`
   box-shadow: 0 2px 8px 0 rgba(62, 88, 96, 0.1)
 `
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(QR))
+export default withRouter(connect(mapStateToProps)(QR))
