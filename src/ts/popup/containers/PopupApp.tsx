@@ -111,8 +111,8 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
 
   renderPagePopup () {
     const { authRequests, signRequests } = this.state
-    return authRequests.length > 0 && <Authorizing requests={authRequests}/> ||
-      signRequests.length > 0 && <Signing requests={signRequests}/>
+    return authRequests.length > 0 && <Authorizing settings={this.props.settings} requests={authRequests}/> ||
+      signRequests.length > 0 && <Signing settings={this.props.settings} requests={signRequests}/>
   }
 
   render () {
