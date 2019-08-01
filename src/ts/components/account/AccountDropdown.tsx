@@ -3,6 +3,7 @@ import { getAccounts } from '../../services/keyring-vault-proxy'
 import {
   GENERATE_PHRASE_ROUTE,
   IMPORT_OPTIONS_ROUTE,
+  QR_ROUTE
 } from '../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router'
 import {
@@ -151,6 +152,10 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
     this.props.history.push(IMPORT_OPTIONS_ROUTE)
   }
 
+  handleClickQR = () => {
+    this.props.history.push(QR_ROUTE)
+  }
+
   componentWillMount () {
     this.loadAccounts()
   }
@@ -192,9 +197,7 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
           >
             <Dropdown.Menu style={backgroundStyle}>
               <Dropdown.Menu scrolling={true} style={backgroundStyle}>
-                {this.state.options.map(option => (
-                  <Dropdown.Item key={option.value} {...option} />
-                ))}
+                {this.state.options.map(option => <Dropdown.Item key={option.value} {...option} />)}
               </Dropdown.Menu>
 
               <Dropdown.Divider />
@@ -227,12 +230,19 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
             <AccountAddress onClick={this.copyToClipboard}>
               {this.getAddress(this.props.settings.selectedAccount.address)}
             </AccountAddress>
+
             <Popup
               open={!!this.state.message}
               content={t('copyAddressMessage')}
               basic={true}
             />
           </Tooltip>
+          <Icon
+            name='qrcode'
+            size={'small'}
+            style={{ 'marginLeft': '5px', 'color': 'white', 'cursor': 'pointer' }}
+            onClick={this.handleClickQR}
+          />
         </AccountSection>
       </Float>
     )
