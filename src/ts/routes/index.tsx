@@ -13,7 +13,9 @@ import {
   CONFIRM_PHRASE_ROUTE,
   SELECT_NETWORK_ROUTE,
   LOGIN_ROUTE,
-  INITIALIZE_ROUTE, SEND_ROUTE
+  INITIALIZE_ROUTE,
+  SEND_ROUTE,
+  QR_ROUTE
 } from '../constants/routes'
 import { RouteWithLayout } from './RouteWithLayout'
 import LoginLayout from '../layouts/LoginLayout'
@@ -32,6 +34,7 @@ import ExtrinsicLayout from '../layouts/ExtrinsicLayout'
 import Missing from '../components/Missing'
 import Send from '../components/transaction/Send'
 import SelectNetwork from '../components/account/SelectNetwork'
+import QR from '../components/account/QR'
 
 export class Routes extends React.Component {
   renderRoutes () {
@@ -47,6 +50,12 @@ export class Routes extends React.Component {
           layout={ExtrinsicLayout}
           path={SEND_ROUTE}
           component={Send}
+          exact={true}
+        />
+        <Authenticated
+          layout={ExtrinsicLayout}
+          path={QR_ROUTE}
+          component={QR}
           exact={true}
         />
         <Authenticated

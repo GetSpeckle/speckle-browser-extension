@@ -1,9 +1,9 @@
 import React from 'react'
 
 import SigningRequest from './SigningRequest'
-import { Image } from 'semantic-ui-react'
 import { ContentContainer, Section, Title } from '../basic-components'
 import t from '../../services/i18n'
+import WithLayout from './WithLayout'
 
 const Signing = (props) => {
   const { requests } = props
@@ -17,8 +17,6 @@ const Signing = (props) => {
     />
   ))
   return (
-    <div>
-      <div><Image src='/assets/logo-3-x.svg' style={logo}/></div>
       <ContentContainer>
         <Section>
           <Title>
@@ -27,17 +25,7 @@ const Signing = (props) => {
         </Section>
         {signingRequests}
       </ContentContainer>
-    </div>
   )
 }
 
-const logo = {
-  marginTop: 36,
-  marginBottom: 36,
-  marginLeft: 'auto',
-  marginRight: 'auto',
-  width: 150,
-  height: 65
-}
-
-export default Signing
+export default WithLayout(Signing)

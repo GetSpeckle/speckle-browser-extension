@@ -1,16 +1,13 @@
 import * as React from 'react'
 import { getAccounts, lockWallet } from '../../services/keyring-vault-proxy'
 import {
-  GENERATE_PHRASE_ROUTE,
-  IMPORT_OPTIONS_ROUTE,
   LOGIN_ROUTE
 } from '../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router'
 import {
   Button as StyledButton,
   ContentContainer,
-  Section,
-  AccountAddress
+  Section
 } from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
@@ -21,11 +18,9 @@ import Balance from '../account/Balance'
 import Identicon from 'polkadot-identicon'
 import { saveSettings } from '../../background/store/settings'
 import 'react-tippy/dist/tippy.css'
-import { Tooltip } from 'react-tippy'
-import { Dropdown, Icon, Popup } from 'semantic-ui-react'
-import { colorSchemes } from '../styles/themes'
 import styled from 'styled-components'
-import TransactionList from './TransactionList';
+import TransactionList from './TransactionList'
+import AccountDropdown from '../account/AccountDropdown'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
 }
@@ -93,24 +88,6 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     )
   }
 
-  copyToClipboard = () => {
-    const el = document.createElement('textarea')
-    el.value = this.props.settings.selectedAccount!!.address
-    el.setAttribute('readonly', '')
-    el.style.position = 'absolute'
-    el.style.left = '-9999px'
-    document.body.appendChild(el)
-    el.select()
-    document.execCommand('copy')
-    document.body.removeChild(el)
-
-    this.setState({ message: t('copyAddressMessage') })
-    const timeout = setTimeout(() => {
-      this.setState({ message: '' })
-    }, 2000)
-    this.setState({ msgTimeout: timeout })
-  }
-
   loadAccounts = () => {
     getAccounts().then(
       result => {
@@ -152,14 +129,6 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     return s
   }
 
-  handleClickCreateAccount = () => {
-    this.props.history.push(GENERATE_PHRASE_ROUTE)
-  }
-
-  handleClickImport = () => {
-    this.props.history.push(IMPORT_OPTIONS_ROUTE)
-  }
-
   componentWillMount () {
     this.loadAccounts()
   }
@@ -175,67 +144,9 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
       return (null)
     }
 
-    const selectedAccount = this.props.settings.selectedAccount
-
-    const backgroundStyle = {
-      backgroundColor: colorSchemes[this.props.settings.color].backgroundColor,
-      color: 'white'
-    }
-
     return (
       <ContentContainer>
-        <AccountSection>
-          <Dropdown
-            text={selectedAccount.name ? this.shorten(selectedAccount.name) : 'N/A'}
-            button={true}
-            fluid={true}
-            className='account-dropdown'
-            style={{ fontSize: '19px' }}
-          >
-            <Dropdown.Menu style={backgroundStyle}>
-              <Dropdown.Menu scrolling={true} style={backgroundStyle}>
-                {this.state.options.map(option => (
-                  <Dropdown.Item key={option.value} {...option} />
-                ))}
-              </Dropdown.Menu>
-
-              <Dropdown.Divider />
-
-              <Dropdown.Item
-                style={backgroundStyle}
-                onClick={this.handleClickCreateAccount}
-              >
-                <Icon name='plus' />
-                  {t('createNewAccount')}
-              </Dropdown.Item>
-
-              <Dropdown.Item
-                style={backgroundStyle}
-                onClick={this.handleClickImport}
-              >
-                <Icon name='redo' />
-                  {t('importExistingAccount')}
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-        </AccountSection>
-        <AccountSection>
-          <Tooltip
-            title={!this.state.message ? t('copyToClipboard') : t('copiedExclam')}
-            position='bottom'
-            trigger='mouseenter'
-            arrow={true}
-          >
-          <AccountAddress onClick={this.copyToClipboard}>
-            {this.getAddress(this.props.settings.selectedAccount.address)}
-          </AccountAddress>
-          <Popup
-            open={!!this.state.message}
-            content={t('copyAddressMessage')}
-            basic={true}
-          />
-          </Tooltip>
-        </AccountSection>
+        <AccountDropdown />
         <AccountSection>
           <Identicon
             account={this.props.settings.selectedAccount.address}

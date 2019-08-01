@@ -34,6 +34,7 @@
 		"bn.js": "^4.11.8",
 		"extensionizer": "^1.0.1",
 		"polkadot-identicon": "^1.1.45",
+		"qrcode.react": "^0.9.3",
 		"react": "^16.8.6",
 		"react-dom": "^16.8.6",
 		"react-dropzone": "^10.1.5",

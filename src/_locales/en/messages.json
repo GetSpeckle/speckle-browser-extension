@@ -62,6 +62,9 @@
   "phraseTitle": {
     "message": "Secret Backup Phrase"
   },
+  "qrDesc": {
+    "message": "Use your QR scanner or camera to access this public key."
+  },
   "accountNameTitle": {
     "message": "Enter Account Name"
   },
