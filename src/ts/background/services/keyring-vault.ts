@@ -12,6 +12,7 @@ class KeyringVault {
 
   private _keyring?: KeyringInstance
   private _password?: string
+  private _tempPassword: string = ''
   private _mnemonic?: string
   private simpleAccounts?: SimpleAccounts
 
@@ -20,6 +21,23 @@ class KeyringVault {
       return this._keyring
     }
     throw new Error(t('keyringNotInit'))
+  }
+
+  getTempPassword (): string {
+    return this._tempPassword
+  }
+
+  setTempPassword (tempPassword: string): void {
+    this._tempPassword = tempPassword
+
+    // Trigger clear interval for tempPassword
+    this.clearTempPassword()
+  }
+
+  clearTempPassword (): void {
+    setTimeout(() => {
+      this._tempPassword = ''
+    }, 300 * 1000) // 5 minutes
   }
 
   isLocked (): boolean {

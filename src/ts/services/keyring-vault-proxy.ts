@@ -218,3 +218,29 @@ export function importAccountFromJson (json: KeyringPair$Json, password?: string
     })
   })
 }
+
+// TODO check if ignoreChecksum is necessary anymore
+export function decodeAddress (key: string | Uint8Array, ignoreChecksum?: boolean):
+  Promise<Uint8Array> {
+  return cryptoWaitReady().then(() => {
+    return new Keyring({ type: 'sr25519' }).decodeAddress(key, ignoreChecksum)
+  })
+}
+
+export function getTempPassword (): Promise<string> {
+  return new Promise<string>(resolve => {
+    port.onMessage.addListener(msg => {
+      if (msg.method === FUNCS.GET_TEMP_PASSWORD) {
+        resolve(msg.result)
+      }
+    })
+    port.postMessage({ method: FUNCS.GET_TEMP_PASSWORD })
+  })
+}
+
+export function setTempPassword (tempPassword: string): void {
+  port.postMessage({
+    method: FUNCS.SET_TEMP_PASSWORD,
+    tempPassword: tempPassword
+  })
+}

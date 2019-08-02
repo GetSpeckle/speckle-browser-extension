@@ -139,6 +139,15 @@ const handle = (msg, port: Runtime.Port) => {
         })
       })
       break
+    case FUNCS.GET_TEMP_PASSWORD:
+      port.postMessage({
+        method: FUNCS.GET_TEMP_PASSWORD,
+        result: keyringVault.getTempPassword()
+      })
+      break
+    case FUNCS.SET_TEMP_PASSWORD:
+      keyringVault.setTempPassword(msg.tempPassword)
+      break
     default:
       break
   }

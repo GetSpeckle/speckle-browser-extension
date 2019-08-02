@@ -15,20 +15,35 @@ import {
 } from '../basic-components'
 import { setNewPassword } from '../../background/store/wallet'
 import { setError } from '../../background/store/error'
+import { getTempPassword, setTempPassword } from '../../services/keyring-vault-proxy'
 
 interface ICreatePasswordProps extends DispatchProps, RouteComponentProps {}
 
 interface ICreatePasswordState {
   newPassword: string,
   confirmPassword: string,
-  errorMessage?: string
+  errorMessage?: string,
+  showNewPassword: boolean,
+  showConfirmNewPassword: boolean,
 }
 
 class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswordState> {
 
   state: ICreatePasswordState = {
     newPassword: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    showNewPassword: false,
+    showConfirmNewPassword: false
+  }
+
+  async componentDidMount () {
+    const tempPassword = await getTempPassword()
+    if (tempPassword) {
+      this.setState({
+        newPassword: tempPassword,
+        confirmPassword: tempPassword
+      })
+    }
   }
 
   setNewPassword = (event) => {
@@ -53,11 +68,21 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
 
     // set the new password to the store for later use
     this.props.setNewPassword(this.state.newPassword)
+    setTempPassword(this.state.newPassword)
     this.props.history.push(GENERATE_PHRASE_ROUTE)
+  }
 
+  handleShowPassword = () => {
+    this.setState({ showNewPassword: !this.state.showNewPassword })
+  }
+
+  handleShowConfirmPassword = () => {
+    this.setState({ showConfirmNewPassword: !this.state.showConfirmNewPassword })
   }
 
   render () {
+    const { showNewPassword, showConfirmNewPassword } = this.state
+
     return (
       <ContentContainer>
         <TopSection>
@@ -69,7 +94,8 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
 
         <Section>
           <StyledPassword
-            type='password'
+            type={showNewPassword ? 'text' : 'password'}
+            icon={<i className={`eye ${showNewPassword ? '' : 'slash'} link icon`} onClick={this.handleShowPassword}/>}
             placeholder={t('Create new password')}
             value={this.state.newPassword}
             onChange={this.setNewPassword}
@@ -78,7 +104,8 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
 
         <Section>
           <StyledPassword
-            type='password'
+            type={showConfirmNewPassword ? 'text' : 'password'}
+            icon={<i className={`eye ${showConfirmNewPassword ? '' : 'slash'} link icon`} onClick={this.handleShowConfirmPassword}/>}
             placeholder={t('Repeat password')}
             value={this.state.confirmPassword}
             onChange={this.setConfirmPassword}
