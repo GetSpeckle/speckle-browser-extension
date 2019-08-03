@@ -22,10 +22,15 @@ export const LayoutContainer = styled('div')`
     background-color: ${props => props.theme['backgroundColor']}
 `
 
-const StyledButton = styled(SemanticButton).attrs({ fluid: true })`
-  box-shadow: 0 3px 10px 0 ${(p: P) => colorSchemes[p.settings.color].shadowColor} !important
-  background-color: ${(p: P) => colorSchemes[p.settings.color].backgroundColor} !important
-  color: #ffffff !important
+const StyledButton = styled(SemanticButton).attrs({ fluid: true })` && {
+  box-shadow: 0 3px 10px 0 ${(p: P) => colorSchemes[p.settings.color].shadowColor};
+  background-color: ${(p: P) => colorSchemes[p.settings.color].backgroundColor};
+  color: white;
+}
+  &&:hover {
+    background-color: ${(p: P) => colorSchemes[p.settings.color].backgroundColor};
+    color: white;
+  }
 `
 
 export const Button = connect(mapStateToProps)(StyledButton)
