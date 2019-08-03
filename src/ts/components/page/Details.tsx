@@ -14,7 +14,6 @@ type MethodJson = {
 
 interface Props {
   blockNumber: BlockNumber
-  className?: string
   genesisHash: string
   isDecoded: boolean
   method: string
@@ -73,10 +72,15 @@ function renderMortality (era: ExtrinsicEra, blockNumber: BlockNumber): string {
   return `mortal (birth #${birthBlock}, death #${deathBlock})`
 }
 
-function Details ({ blockNumber, genesisHash, isDecoded, method, payload: { era, nonce }, url }
+function Details ({ blockNumber, genesisHash, isDecoded, method, payload: { era, nonce, tip }, url }
   : Props) {
   const network = findNetwork(genesisHash)
-
+  const tipInfo = !tip.isEmpty && (
+    <tr>
+      <td className='label'>tip</td>
+      <td className='data'>{formatNumber(tip)}</td>
+    </tr>
+  )
   return (
     <table>
       <tbody>
@@ -90,8 +94,9 @@ function Details ({ blockNumber, genesisHash, isDecoded, method, payload: { era,
         </tr>
         <tr>
           <td className='label'>nonce</td>
-          <td className='data'>{nonce}</td>
+          <td className='data'>{formatNumber(nonce)}</td>
         </tr>
+        {tipInfo}
         {renderMethod(method, (network && isDecoded) ? network.meta : null)}
         <tr>
           <td className='label'>mortality</td>
