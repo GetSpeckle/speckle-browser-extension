@@ -1,9 +1,11 @@
 import { KeyringInstance, KeyringPair, KeyringPair$Json } from '@polkadot/keyring/types'
 import Keyring from '@polkadot/keyring'
-import { Prefix } from '@polkadot/keyring/address/types'
+import { Prefix } from '@polkadot/util-crypto/address/types'
 import { LocalStore } from '../../services/local-store'
 import { mnemonicGenerate, cryptoWaitReady, mnemonicValidate } from '@polkadot/util-crypto'
 import t from '../../services/i18n'
+import { SimpleAccounts, MessageExtrinsicSign } from '../types'
+import { createType } from '@polkadot/types'
 
 const VAULT_KEY: string = 'speckle-vault'
 
@@ -12,6 +14,7 @@ class KeyringVault {
   private _keyring?: KeyringInstance
   private _password?: string
   private _mnemonic?: string
+  private simpleAccounts?: SimpleAccounts
 
   private get keyring (): KeyringInstance {
     if (this._keyring) {
@@ -59,7 +62,7 @@ class KeyringVault {
           return accounts as Array<KeyringPair$Json>
         } catch (e) {
           this.keyring.getPairs().forEach(pair => {
-            this.keyring.removePair(pair.address())
+            this.keyring.removePair(pair.address)
           })
           return Promise.reject(new Error(t('passwordError')))
         }
@@ -74,7 +77,9 @@ class KeyringVault {
   }
 
   generateMnemonic (): string {
-    this._mnemonic = mnemonicGenerate()
+    if (!this._mnemonic) {
+      this._mnemonic = mnemonicGenerate()
+    }
     return this._mnemonic
   }
 
@@ -84,11 +89,19 @@ class KeyringVault {
 
   getAccounts (): Array<KeyringPair$Json> {
     if (this.isLocked()) throw new Error(t('walletLocked'))
-    let accounts = new Array<KeyringPair$Json>()
-    this.keyring.getPairs().forEach(pair => {
-      accounts.push(pair.toJson(this._password))
+    return this.keyring.getPairs().map(pair => pair.toJson(this._password))
+  }
+
+  getSimpleAccounts (): Promise<SimpleAccounts> {
+    return LocalStore.getValue(VAULT_KEY).then(vault => {
+      if (!vault) return []
+      let accounts = Object.values(vault)
+      this.simpleAccounts = accounts.map(account => {
+        const keyringPairJson = (account as KeyringPair$Json)
+        return { address: keyringPairJson.address, name: keyringPairJson.meta.name }
+      })
+      return this.simpleAccounts
     })
-    return accounts
   }
 
   createAccount (mnemonic: string, accountName: string): Promise<KeyringPair$Json> {
@@ -105,7 +118,7 @@ class KeyringVault {
     if (this.isLocked()) return Promise.reject(new Error(t('walletLocked')))
     const pair = this.keyring.getPair(address)
     if (!pair) return Promise.reject(new Error(t('accountNotFound')))
-    pair.setMeta({ ...pair.getMeta(), name: accountName })
+    pair.setMeta({ ...pair.meta, name: accountName })
     return this.saveAccount(pair)
   }
 
@@ -144,13 +157,34 @@ class KeyringVault {
       if (password) {
         pair.decodePkcs8(password)
       }
-      pair.setMeta({ ...pair.getMeta(), imported: true })
+      pair.setMeta({ ...pair.meta, imported: true })
       return this.saveAccount(pair)
     } catch (e) {
       console.log(e)
-      if (pair) this.keyring.removePair(pair.address())
+      if (pair) this.keyring.removePair(pair.address)
       return Promise.reject(new Error(t('importKeystoreError')))
     }
+  }
+
+  signExtrinsic = async (messageExtrinsicSign: MessageExtrinsicSign): Promise<string> => {
+    const { address } = messageExtrinsicSign
+    const pair = this.keyring.getPair(address)
+
+    if (!pair) {
+      return Promise.reject(new Error('Unable to find pair'))
+    }
+    const payload = createType('ExtrinsicPayload', messageExtrinsicSign)
+    const result = payload.sign(pair)
+    return Promise.resolve(result.signature)
+  }
+
+  accountExists = (address: string): boolean => {
+    return !!this.simpleAccounts &&
+      this.simpleAccounts!!.filter(account => account.address === address).length > 0
+  }
+
+  getPair = (address: string): KeyringPair => {
+    return this.keyring.getPair(address)
   }
 
   private saveAccount (pair: KeyringPair): Promise<KeyringPair$Json> {
@@ -169,8 +203,8 @@ class KeyringVault {
   }
 
   private addTimestamp (pair: KeyringPair): void {
-    if (!pair.getMeta().whenCreated) {
-      pair.setMeta({ ...pair.getMeta(), whenCreated: Date.now() })
+    if (!pair.meta.whenCreated) {
+      pair.setMeta({ ...pair.meta, whenCreated: Date.now() })
     }
   }
 }

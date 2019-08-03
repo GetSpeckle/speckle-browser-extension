@@ -31,7 +31,16 @@ export class LocalStore {
    * @param value the value to be set and returned in the promise
    */
   static setValue (key: string, value: any): Promise<any> {
-    return LocalStore.set({ [key]: value }).then(() => value)
+    return LocalStore.set({ [key]: value }).then(() => {
+      // make sure to return a copy (even shallow copy)
+      if (Array.isArray(value)) {
+        return [ ...value ]
+      } else if (typeof value === 'object') {
+        return { ...value }
+      } else {
+        return value
+      }
+    })
   }
 
   /**

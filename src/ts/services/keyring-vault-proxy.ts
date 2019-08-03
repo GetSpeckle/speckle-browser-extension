@@ -3,8 +3,12 @@ import { KeyringPair$Json } from '@polkadot/keyring/types'
 import * as FUNCS from '../constants/keyring-vault-funcs'
 import { cryptoWaitReady } from '@polkadot/util-crypto'
 import Keyring from '@polkadot/keyring'
+import { SignerOptions } from '@polkadot/api/types'
+import { IExtrinsic } from '@polkadot/types/types'
+import { PORT_KEYRING } from '../constants/ports'
+import { SimpleAccounts } from '../background/types'
 
-const port = browser.runtime.connect(undefined, { name: '__SPECKLE__' })
+const port = browser.runtime.connect(undefined, { name: PORT_KEYRING })
 
 export function isWalletLocked (): Promise<boolean> {
   return new Promise<boolean>(resolve => {
@@ -70,6 +74,34 @@ export function walletExists (): Promise<boolean> {
   })
 }
 
+export function signExtrinsic (extrinsic: IExtrinsic,
+                               address: string,
+                               signerOption: SignerOptions) {
+  return new Promise<any>((resolve, reject) => {
+    const { blockHash, genesisHash, nonce, blockNumber } = signerOption
+    port.onMessage.addListener(msg => {
+      if (msg.method !== FUNCS.SIGN_EXTRINSIC) return
+      if (msg.error) {
+        reject(msg.error.message)
+      }
+      resolve(msg.result)
+    })
+    port.postMessage({
+      method: FUNCS.SIGN_EXTRINSIC,
+      messageExtrinsicSign: JSON.parse(JSON.stringify({
+        address,
+        blockHash,
+        genesisHash,
+        blockNumber,
+        method: extrinsic.method.toHex(),
+        era: extrinsic.era,
+        nonce,
+        version: extrinsic.version
+      }))
+    })
+  })
+}
+
 export function getAccounts (): Promise<Array<KeyringPair$Json>> {
   return new Promise<Array<KeyringPair$Json>>((resolve, reject) => {
     port.onMessage.addListener(msg => {
@@ -80,6 +112,19 @@ export function getAccounts (): Promise<Array<KeyringPair$Json>> {
       resolve(msg.result)
     })
     port.postMessage({ method: FUNCS.GET_ACCOUNTS })
+  })
+}
+
+export function getSimpleAccounts (): Promise<SimpleAccounts> {
+  return new Promise<SimpleAccounts>((resolve, reject) => {
+    port.onMessage.addListener(msg => {
+      if (msg.method !== FUNCS.GET_SIMPLE_ACCOUNTS) return
+      if (msg.error) {
+        reject(msg.error.message)
+      }
+      resolve(msg.result)
+    })
+    port.postMessage({ method: FUNCS.GET_SIMPLE_ACCOUNTS })
   })
 }
 

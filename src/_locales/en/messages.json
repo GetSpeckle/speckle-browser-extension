@@ -90,10 +90,25 @@
     "message": "Enter your backup phrase"
   },
   "phraseMismatch": {
-    "message": "Please enter the matched phrase"
+    "message": "Click the words above in the correct order to confirm your seed phrase."
   },
   "confirmPhraseButton": {
     "message": "Confirm Backup Phrase"
+  },
+  "selectNetwork": {
+    "message": "Select And Start"
+  },
+  "popular": {
+    "message": "Popular"
+  },
+  "recommended": {
+    "message": "Recommended"
+  },
+  "games": {
+    "message": "Games"
+  },
+  "trade": {
+    "message": "Trade"
   },
   "backupKeypairMessage": {
     "message": "Great! Your first account has been created. Before you proceed, it is strongly recommended that you download the password protected key pair file and backup to a secure place."
@@ -199,5 +214,29 @@
   },
   "goBack": {
     "message": "Go Back"
+  },
+  "tabAll": {
+    "message": "All"
+  },
+  "tabSent": {
+    "message": "Sent"
+  },
+  "tabStaked": {
+    "message": "Staked"
+  },
+  "amount": {
+    "message": "Amount"
+  },
+  "toAddress": {
+    "message": "Send to"
+  },
+  "transferFee": {
+    "message": "Transfer Fee:"
+  },
+  "authorization": {
+    "message": "Authorization Request"
+  },
+  "signing": {
+    "message": "Signing Transaction"
   }
 }

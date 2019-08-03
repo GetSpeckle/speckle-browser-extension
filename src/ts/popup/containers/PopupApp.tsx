@@ -13,43 +13,55 @@ import { setLocked, setCreated } from '../../background/store/wallet'
 import { createApi, destroyApi } from '../../background/store/api-context'
 import { networks } from '../../constants/networks'
 import { WsProvider } from '@polkadot/rpc-provider'
-import { Edgeware } from '../../constants/chains'
+import Initializing from '../../components/Initializing'
+import { AuthorizeRequest, SigningRequest } from '../../background/types'
+import { subscribeAuthorize, subscribeSigning } from '../../services/messaging'
+import Authorizing from '../../components/page/Authorizing'
+import Signing from '../../components/page/Signing'
 import { ApiOptions } from '@polkadot/api/types'
-import { Identity, Governance, Voting } from 'edgeware-api'
+import { Edgeware } from '../../constants/chains'
+import { IdentityTypes } from 'edgeware-node-types/dist/identity'
+import { VotingTypes } from 'edgeware-node-types/dist/voting'
+import { GovernanceTypes } from 'edgeware-node-types/dist/governance'
 
-interface IPopupApp extends StateProps, DispatchProps {
-}
+interface IPopupApp extends StateProps, DispatchProps { }
 
 interface IPopupState {
   initializing: boolean
   tries: number
+  authRequests: Array<AuthorizeRequest>
+  signRequests: Array<SigningRequest>
 }
 
 class PopupApp extends React.Component<IPopupApp, IPopupState> {
 
-  constructor (props) {
-    super(props)
-    this.tryCreateApi = this.tryCreateApi.bind(this)
-  }
-
   state = {
     initializing: true,
-    tries: 0
+    tries: 0,
+    authRequests: [],
+    signRequests: []
   }
 
-  tryCreateApi () {
-    if (!this.props.apiContext.apiReady) {
+  setAuthRequests = (authRequests: Array<AuthorizeRequest>) => {
+    this.setState({ ...this.state, authRequests: authRequests })
+  }
+
+  setSignRequests = (signRequests: Array<SigningRequest>) => {
+    this.setState({ ...this.state, signRequests: signRequests })
+  }
+
+  tryCreateApi = () => {
+    const { apiContext, settings } = this.props
+    if (!apiContext.apiReady && settings) {
       this.setState({ ...this.state, tries: this.state.tries++ })
-      const network = networks[this.props.settings.network]
+      const network = networks[settings.network]
       const provider = new WsProvider(network.rpcServer)
       let apiOptions: ApiOptions = { provider }
       if (network.chain === Edgeware) {
-        console.log('Edgeware detected')
-        apiOptions = { ...apiOptions, types: {
-          ...Identity.IdentityTypes,
-          ...Governance.GovernanceTypes,
-          ...Voting.VotingTypes
-        } }
+        apiOptions = {
+          ...apiOptions,
+          types: { ...IdentityTypes, ...VotingTypes, ...GovernanceTypes }
+        }
       }
       this.props.createApi(apiOptions)
       if (this.state.tries <= 5) {
@@ -60,30 +72,32 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
   }
 
   initializeApp = () => {
-    const loadAppSetting = this.props.getSettings()
+    this.props.getSettings()
     const checkAppState = isWalletLocked().then(
       result => {
         console.log(`isLocked ${result}`)
         this.props.setLocked(result)
       })
     const checkAccountCreated = walletExists().then(
-        result => {
-          console.log(`isWalletCreated ${result}`)
-          this.props.setCreated(result)
-        }
-    )
-
-    Promise.all([loadAppSetting, checkAppState, checkAccountCreated]).then(
-      () => {
-        this.setState({
-          initializing: false
-        })
-        this.tryCreateApi()
+      result => {
+        console.log(`isWalletCreated ${result}`)
+        this.props.setCreated(result)
       }
     )
+    Promise.all([
+      checkAppState,
+      checkAccountCreated,
+      subscribeAuthorize(this.setAuthRequests),
+      subscribeSigning(this.setSignRequests)
+    ]).then(() => {
+      this.tryCreateApi()
+      this.setState({
+        initializing: false
+      })
+    })
   }
 
-  componentWillMount () {
+  componentDidMount () {
     this.initializeApp()
   }
 
@@ -92,10 +106,7 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
     provider && this.props.destroyApi(provider)
   }
 
-  render () {
-    if (this.state.initializing) {
-      return (null)
-    }
+  renderExtensionPopup () {
     return (
       <ThemeProvider theme={themes[this.props.settings.theme]}>
         <React.Fragment>
@@ -108,6 +119,23 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
         </React.Fragment>
       </ThemeProvider>
     )
+  }
+
+  renderPagePopup () {
+    const { authRequests, signRequests } = this.state
+    return authRequests.length > 0 && <Authorizing requests={authRequests}/> ||
+      signRequests.length > 0 && <Signing requests={signRequests}/>
+  }
+
+  render () {
+    const { initializing, authRequests, signRequests } = this.state
+    if (initializing) {
+      return <Initializing/>
+    }
+    if (authRequests.length > 0 || signRequests.length > 0) {
+      return this.renderPagePopup()
+    }
+    return this.renderExtensionPopup()
   }
 }
 

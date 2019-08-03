@@ -9,11 +9,38 @@
 }
 
 .ui.horizontal.list>.item {
-  font-size: 1rem;
-  background: rgba(220,220,220,0.5);
-  margin: 2px;
+  margin: 0px 4px;
+}
+
+.ui.horizontal.list.candidate-list>.item:first-child {
+  margin-left: 4px !important;
+}
+
+.ui.horizontal.list.confirm-list>.item:first-child {
+  margin-left: 4px !important;
+}
+
+.ui.horizontal.list.confirm-list {
+  min-height: 60px;
+  width: 100%;
+  padding: 2px;
+  border: 1px solid rgba(34,36,38,.15);
+}
+
+.item>.ui.button {
+  margin: 0px;
   padding: 4px;
-  border-radius: 3px
+  font-weight: normal;
+  border-radius: 2px;
+}
+
+.custom-label {
+  opacity: 0.6;
+  color: #3e5860;
+  font-weight: 700;
+  font-family: Avenir;
+  font-size: 11px;
+  margin: 0 0 .28571429rem 0;
 }
 
 .step {
@@ -38,6 +65,7 @@
   padding-top: 5px;
   padding-bottom: 5px;
   min-height: min-content;
+  z-index: 2;
 }
 
 .top-menu>.ui.grid>.column:not(.row) {
@@ -47,6 +75,10 @@
 
 .ui.dropdown.chain .menu>.item {
   line-height: normal;
+}
+
+.ui.dropdown>.text {
+  padding-left: 1em
 }
 
 .ui.dropdown.chain .menu>.item>.image, .ui.dropdown.chain .menu>.item>img {
@@ -80,6 +112,35 @@
   position: absolute;
   bottom: 0;
   width: 100%;
+}
+
+.bottom-menu .ui.blue.menu .active.item, .ui.menu .blue.active.item {
+  border-color: #24b6e8!important;
+  color: #24b6e8!important;
+}
+
+.bottom-menu .ui.orange.menu .active.item, .ui.menu .orange.active.item {
+  border-color: #ffb200!important;
+  color: #ffb200!important;
+}
+
+.bottom-menu .ui.green.menu .active.item, .ui.menu .green.active.item {
+  border-color: #51d8a7!important;
+  color: #51d8a7!important;
+}
+
+.bottom-menu .ui.purple.menu .active.item, .ui.menu .purple.active.item {
+  border-color: #b279f9!important;
+  color: #b279f9!important;
+}
+
+.bottom-menu .ui.red.menu .active.item, .ui.menu .red.active.item {
+  border-color: #f3536d!important;
+  color: #f3536d!important;
+}
+
+.bottom-menu .ui.icon.menu .item {
+  color: rgba(85, 98, 103, 0.7);
 }
 
 .mnemonic textarea {
@@ -123,3 +184,138 @@
   font-size: 10px;
   color: #ffffff
 }
+
+
+.ui.page.modals.dimmer.transition.visible.active {
+  background: rgba(41,53,58, 0.85) !important;
+
+}
+
+.ui.modal.transition.visible.active {
+  width: 311px !important;
+  height: 444px !important;
+  background: url("./background/confirm-bg.svg") !important;
+}
+
+.ui.menu {
+  font-family: Nunito;
+  font-size: 13px;
+}
+
+.ui.secondary.pointing.menu .item {
+  color: #556267;
+  padding: 5px 38px;
+}
+
+.ui.list.tran-list {
+  font-size: 10px;
+  color: #556267;
+  max-height: 140px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.ui.attached.segment {
+  border: none;
+  padding: 0;
+}
+
+.ui.list.tran-list>.item {
+  margin-bottom: 10px;
+  box-shadow: 0 2px 8px 0 rgba(62, 88, 96, 0.1)
+}
+
+.ui.list.tran-list>.item:first-child {
+  padding-top: .21428571em;
+}
+
+.ui.list.tran-list>.item:last-child {
+  padding-bottom: .21428571em;
+}
+
+.item>.ui.grid {
+  margin-left: -3px;
+  margin-right: -3px;
+}
+
+.item>.ui.grid>.row>.column {
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
+.tran-amount {
+  font-size: 12px;
+  padding: 3px 0px;
+}
+
+.tran-time {
+  font-size: 9px;
+  padding: 3px 0px;
+}
+
+.tran-address {
+  font-size: 11px;
+}
+
+.lds-grid-container {
+  width: 375px;
+  height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.lds-grid {
+  display: inline-block;
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+.lds-grid div {
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  animation: lds-grid 1.2s linear infinite;
+}
+.lds-grid div:nth-child(1) {
+  top: 6px;
+  left: 6px;
+  background-image: radial-gradient(#F3536D, #FF7396);
+  animation-delay: 0s;
+}
+.lds-grid div:nth-child(2) {
+  top: 6px;
+  left: 45px;
+  background-image: radial-gradient(#B279F9, #D396FF);
+  animation-delay: -0.8s;
+}
+.lds-grid div:nth-child(3) {
+  top: 23px;
+  left: 23px;
+  width: 19px;
+  height: 19px;
+  background-image: radial-gradient(#4AABE0, #44C5EE);
+  animation-delay: -0.8s;
+}
+.lds-grid div:nth-child(4) {
+  top: 45px;
+  left: 6px;
+  background-image: radial-gradient(#52C48D, #51DFB0);
+  animation-delay: -0.8s;
+}
+.lds-grid div:nth-child(5) {
+  top: 45px;
+  left: 45px;
+  background-image: radial-gradient(#FFB200, #FFC10B);
+  animation-delay: -1.6s;
+}
+@keyframes lds-grid {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+

@@ -25,6 +25,7 @@ import { Tooltip } from 'react-tippy'
 import { Dropdown, Icon, Popup } from 'semantic-ui-react'
 import { colorSchemes } from '../styles/themes'
 import styled from 'styled-components'
+import TransactionList from './TransactionList';
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
 }
@@ -189,6 +190,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
             button={true}
             fluid={true}
             className='account-dropdown'
+            style={{ fontSize: '19px' }}
           >
             <Dropdown.Menu style={backgroundStyle}>
               <Dropdown.Menu scrolling={true} style={backgroundStyle}>
@@ -243,6 +245,9 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
         </AccountSection>
         <AccountSection>
           <Balance address={this.props.settings.selectedAccount.address}/>
+        </AccountSection>
+        <AccountSection>
+          <TransactionList />
         </AccountSection>
         <Section>
           <StyledButton onClick={this.handleClickLogout}>

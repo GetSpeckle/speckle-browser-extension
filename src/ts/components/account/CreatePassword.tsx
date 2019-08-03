@@ -1,7 +1,6 @@
 import * as React from 'react'
 import t from '../../services/i18n'
 import Progress from './Progress'
-import { IAppState } from '../../background/store/all'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
 import { Message } from 'semantic-ui-react'
@@ -17,7 +16,7 @@ import {
 import { setNewPassword } from '../../background/store/wallet'
 import { setError } from '../../background/store/error'
 
-interface ICreatePasswordProps extends StateProps, DispatchProps, RouteComponentProps {}
+interface ICreatePasswordProps extends DispatchProps, RouteComponentProps {}
 
 interface ICreatePasswordState {
   newPassword: string,
@@ -62,8 +61,8 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
     return (
       <ContentContainer>
         <TopSection>
-          <Progress color={this.props.settings.color} progress={1}/>
-          <SecondaryText>
+          <Progress step={1}/>
+          <SecondaryText style={{ textAlign: 'left' }}>
             {t('passwordDescription')}
           </SecondaryText>
         </TopSection>
@@ -102,16 +101,8 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
   }
 }
 
-const mapStateToProps = (state: IAppState) => {
-  return {
-    settings: state.settings
-  }
-}
-
 const mapDispatchToProps = { setNewPassword, setError }
-
-type StateProps = ReturnType<typeof mapStateToProps>
 
 type DispatchProps = typeof mapDispatchToProps
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CreatePassword))
+export default withRouter(connect(null, mapDispatchToProps)(CreatePassword))

@@ -2,10 +2,11 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { Image, Grid } from 'semantic-ui-react'
-import { ChainDropdown } from '../basic-components'
 import { networks } from '../../constants/networks'
 import { IAppState } from '../../background/store/all'
 import { saveSettings } from '../../background/store/settings'
+import { ChainDropdown } from '../basic-components'
+
 
 interface ITopMenuProps extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -53,7 +54,6 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
               <ChainDropdown
                 className='chain'
                 fluid={true}
-                selection={true}
                 value={this.state.network}
                 onChange={this.changeNetwork}
                 icon={<img src={this.state.chainIconUrl} alt='Chain logo'/>}

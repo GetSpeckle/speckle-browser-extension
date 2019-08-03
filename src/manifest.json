@@ -1,43 +1,49 @@
 {
-    "name": "__MSG_appName__",
-    "author": "speckle",
-    "version": "0.0.1",
-    "description": "__MSG_appDescription__",
-    "default_locale": "en",
-    "icons": {
-        "128": "assets/icon-128.png"
-    },
-
-    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
-    "permissions": [
-        "activeTab",
-        "alarms",
-        "storage",
-        "webRequest",
-        "webRequestBlocking",
-        "*://*/*"
+  "name": "__MSG_appName__",
+  "author": "speckle",
+  "version": "0.0.1",
+  "description": "__MSG_appDescription__",
+  "default_locale": "en",
+  "icons": {
+    "128": "assets/icon-128.png"
+  },
+  "web_accessible_resources": [
+    "speckle.js"
+  ],
+  "content_security_policy": "script-src 'self' 'unsafe-eval' 'wasm-eval'; object-src 'self'",
+  "permissions": [
+    "activeTab",
+    "alarms",
+    "storage",
+    "webRequest",
+    "webRequestBlocking",
+    "*://*/*"
+  ],
+  "manifest_version": 2,
+  "background": {
+    "scripts": [
+      "background.js"
     ],
-    "manifest_version": 2,
-
-    "background": {
-        "scripts": [
-            "background.js"
-        ],
-        "persistent": true
-    },
-    "browser_action": {
-        "default_title": "__MSG_browserActionTitle__",
-        "default_icon": "assets/icon-48.png",
-        "default_popup": "popup.html"
-    },
-    "options_ui": {
-        "page": "options.html",
-        "open_in_tab": true
-    },
-    "content_scripts": [
-        {
-            "js": ["extension.js"],
-            "matches": ["*://*/*"]
-        }
-    ]
+    "persistent": true
+  },
+  "browser_action": {
+    "default_title": "__MSG_browserActionTitle__",
+    "default_icon": "assets/icon-48.png",
+    "default_popup": "popup.html"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "content_scripts": [
+    {
+      "js": [
+        "content.js"
+      ],
+      "matches": [
+        "*://*/*"
+      ],
+      "run_at": "document_end"
+    }
+  ]
 }

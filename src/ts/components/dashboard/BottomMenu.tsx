@@ -2,16 +2,20 @@ import * as React from 'react'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { Menu, Icon } from 'semantic-ui-react'
 import t from '../../services/i18n'
-import { HOME_ROUTE } from '../../constants/routes'
+import { HOME_ROUTE, SEND_ROUTE } from '../../constants/routes'
+import { IAppState } from '../../background/store/all'
+import { connect } from 'react-redux'
+import { SemanticCOLORS } from 'semantic-ui-react/dist/commonjs/generic'
 
-interface IBottomMenuProps extends RouteComponentProps {
-}
+type StateProps = ReturnType<typeof mapStateToProps>
+
+interface IBottomMenuProps extends StateProps, RouteComponentProps {}
 
 const NAME_MAP = {
   home: HOME_ROUTE,
   stake: '/stake',
   democracy: '/democracy',
-  send: '/send'
+  send: SEND_ROUTE
 }
 
 /**
@@ -27,11 +31,13 @@ class BottomMenu extends React.Component<IBottomMenuProps> {
   render () {
 
     const { pathname } = this.props.location
+    const { color } = this.props.settings
 
     return (
       <div className='bottom-menu'>
         <Menu fluid={true} widths={4} icon='labeled' borderless={true} size='mini'>
           <Menu.Item
+            color={color as SemanticCOLORS}
             name='home'
             active={pathname === NAME_MAP.home}
             onClick={this.handleItemClick.bind(this, 'home')}
@@ -41,6 +47,7 @@ class BottomMenu extends React.Component<IBottomMenuProps> {
           </Menu.Item>
 
           <Menu.Item
+            color={color as SemanticCOLORS}
             name='stake'
             active={pathname === NAME_MAP.stake}
             onClick={this.handleItemClick.bind(this, 'stake')}
@@ -50,6 +57,7 @@ class BottomMenu extends React.Component<IBottomMenuProps> {
           </Menu.Item>
 
           <Menu.Item
+            color={color as SemanticCOLORS}
             name='democracy'
             active={pathname === NAME_MAP.democracy}
             onClick={this.handleItemClick.bind(this, 'democracy')}
@@ -59,6 +67,7 @@ class BottomMenu extends React.Component<IBottomMenuProps> {
           </Menu.Item>
 
           <Menu.Item
+            color={color as SemanticCOLORS}
             name='send'
             active={pathname === NAME_MAP.send}
             onClick={this.handleItemClick.bind(this, 'send')}
@@ -74,4 +83,10 @@ class BottomMenu extends React.Component<IBottomMenuProps> {
   }
 }
 
-export default withRouter(BottomMenu)
+const mapStateToProps = (state: IAppState) => {
+  return {
+    settings: state.settings
+  }
+}
+
+export default withRouter(connect(mapStateToProps)(BottomMenu))
