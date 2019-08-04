@@ -27,10 +27,10 @@ const StyledButton = styled(SemanticButton).attrs({ fluid: true })` && {
   background-color: ${(p: P) => colorSchemes[p.settings.color].backgroundColor};
   color: white;
 }
-  &&:hover {
-    background-color: ${(p: P) => colorSchemes[p.settings.color].backgroundColor};
-    color: white;
-  }
+&&:hover, &&:focus {
+  background-color: ${(p: P) => colorSchemes[p.settings.color].backgroundColor};
+  color: white;
+}
 `
 
 export const Button = connect(mapStateToProps)(StyledButton)
