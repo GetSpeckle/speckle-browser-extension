@@ -347,3 +347,20 @@
   padding: 0.7em 1em;
 }
 
+.auth-description {
+  text-align: center;
+  color: #556267;
+  font-family: Nunito;
+}
+
+.request-box {
+  width: 120px;
+  height: 110px;
+  padding-top: 4px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px 0 rgba(62, 88, 96, 0.1);
+  background-color: #ffffff;
+  text-align: center;
+  font-family: Nunito;
+  color: #556267;
+}
