@@ -8,10 +8,10 @@ export const ACTION_TYPES = {
   DESTROY: 'DESTROY'
 }
 
-type ApiWithProvider = { api: ApiPromise, provider: ProviderInterface }
+type ApiWithProvider = { api: ApiPromise, provider?: ProviderInterface }
 
 function doCreateApi (options: ApiOptions): Promise<ApiWithProvider> {
-  return ApiPromise.create(options).then(api => ({ api, provider: options.provider!! }))
+  return ApiPromise.create(options).then(api => ({ api, provider: options.provider }))
 }
 
 export function createApi (options: ApiOptions) {
