@@ -151,6 +151,7 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
   voteAye = () => {
     if (this.props.apiContext.apiReady) {
       this.setState({ ...this.state, tries: 1 })
+      console.log('ready')
       this.doVote(this.state.idNumber, true)
     } else if (this.state.tries <= 10) {
       const nextTry = setTimeout(this.voteAye, 1000)
@@ -163,6 +164,7 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
   voteNay = () => {
     if (this.props.apiContext.apiReady) {
       this.setState({ ...this.state, tries: 1 })
+      console.log('ready')
       this.doVote(this.state.idNumber, false)
     } else if (this.state.tries <= 10) {
       const nextTry = setTimeout(this.voteAye, 1000)
@@ -173,10 +175,47 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
   }
 
   doVote = async (id: number, choice: boolean) => {
+    console.log(this.api)
+    const currentAddress = this.props.settings.selectedAccount!.address
     const extrinsic = this.api.tx.democracy.vote(id, choice)
-    extrinsic.send().then(() => {
-      this.updateVote()
+    console.log(extrinsic)
+
+    const signOptions: SignerOptions = {
+      blockNumber: (await this.api.query.system.number()) as unknown as BN,
+      blockHash: await this.api.genesisHash,
+      genesisHash: await this.api.genesisHash,
+      nonce: await this.api.query.system.accountNonce(currentAddress) as Index
+    }
+
+    signExtrinsic(extrinsic, currentAddress, signOptions).then(signature => {
+      const signedExtrinsic = extrinsic.addSignature(
+        currentAddress as any,
+        signature,
+        signOptions.nonce
+      )
+      return signedExtrinsic
+    }).then(async (signedExtrinsic) => {
+      if (!signedExtrinsic || !this.props.settings.selectedAccount) {
+        console.log(signedExtrinsic)
+        console.log(this.props.settings.selectedAccount)
+        return
+      }
+
+      const available = await this.api.query.balances.freeBalance(currentAddress) as BalanceType
+
+      if (available.isZero()) {
+        this.props.setError('You account has 0 balance.')
+        return
+      }
+
+      const submittable = signedExtrinsic as SubmittableExtrinsic
+      console.log(submittable)
+
+      submittable.send().then(() => {
+        this.updateVote()
+      })
     })
+
   }
 
   componentDidMount (): void {
