@@ -1,7 +1,7 @@
 import * as React from 'react'
 import ApiPromise from '@polkadot/api/promise'
 import { DerivedReferendumVote } from '@polkadot/api-derive/types'
-import { ReferendumInfo, ChainProperties, Method, Option } from '@polkadot/types'
+import {ReferendumInfo, Method, Option, Index, Balance as BalanceType} from '@polkadot/types'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { ContentContainer } from '../basic-components'
 import { IAppState } from '../../background/store/all'
@@ -14,14 +14,16 @@ import VoteStatus from './VoteStatus'
 import styled from 'styled-components'
 import { Button } from 'semantic-ui-react'
 import { formatBalance, formatNumber } from '@polkadot/util'
-import { INITIALIZE_ROUTE } from '../../constants/routes'
+import { INITIALIZE_ROUTE, LOGIN_ROUTE } from '../../constants/routes'
 import { colorSchemes } from '../styles/themes'
+import { isWalletLocked, signExtrinsic } from '../../services/keyring-vault-proxy'
+import { SignerOptions } from '@polkadot/api/types'
+import { IExtrinsic } from '@polkadot/types/types'
+import { setError } from '../../background/store/error'
+import {SubmittableExtrinsic} from '@polkadot/api/promise/types'
 
-interface IVoteProps extends StateProps, RouteComponentProps {
-  chain_bestNumber?: BN
+interface IVoteProps extends StateProps, RouteComponentProps, DispatchProps {
   democracy_referendumVotesFor?: DerivedReferendumVote[]
-  democracy_publicDelay?: BN
-  value: ReferendumInfo
 }
 
 interface IBallot {
@@ -35,8 +37,9 @@ interface IBallot {
 
 interface IVoteState {
   idNumber: number
-  referendumInfo?: ReferendumInfo | null
   ballot: IBallot
+  referendumInfo?: ReferendumInfo | null
+  extrinsic?: IExtrinsic | null
   tries: number
   nextTry?: any
   header: string
@@ -44,49 +47,46 @@ interface IVoteState {
 }
 
 class Vote extends React.Component<IVoteProps, IVoteState> {
-
   get api (): ApiPromise {
     const api = this.props.apiContext.api
     if (api) return api
     throw new Error(t('apiError'))
   }
 
-  constructor (props) {
-    super(props)
+  set api (api: ApiPromise) {
+    this.api = api
+  }
 
-    this.state = {
-      idNumber: this.props.match.params['proposalId'],
-      ballot: {
-        voteCount: 0,
-        voteCountAye: 0,
-        voteCountNay: 0,
-        votedAye: new BN(0),
-        votedNay: new BN(0),
-        votedTotal: new BN(0)
-      },
-      tries: 0,
-      header: '',
-      documentation: ''
-    }
+  public ballot: IBallot = {
+    voteCount: 0,
+    voteCountAye: 0,
+    voteCountNay: 0,
+    votedAye: new BN(0),
+    votedNay: new BN(0),
+    votedTotal: new BN(0)
+  }
+
+  public state: IVoteState = {
+    idNumber: this.props.match.params['proposalId'],
+    ballot: this.ballot,
+    tries: 0,
+    header: '',
+    documentation: ''
   }
 
   componentWillMount (): void {
     if (this.props.settings.selectedAccount == null) {
       this.props.history.push(INITIALIZE_ROUTE)
     }
+    isWalletLocked().then(result => {
+      if (result) this.props.history.push(LOGIN_ROUTE)
+    })
   }
 
   updateVote = () => {
     if (this.props.apiContext.apiReady) {
       this.setState({ ...this.state, tries: 1 })
-      this.api.rpc.system.properties().then(properties => {
-        const chainProperties = (properties as ChainProperties)
-        formatBalance.setDefaults({
-          decimals: chainProperties.tokenDecimals,
-          unit: chainProperties.tokenSymbol
-        })
-        this.doUpdate()
-      })
+      this.doUpdate(this.state.idNumber)
     } else if (this.state.tries <= 10) {
       const nextTry = setTimeout(this.updateVote, 1000)
       this.setState({ ...this.state, tries: this.state.tries + 1, nextTry: nextTry })
@@ -95,8 +95,41 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
     }
   }
 
-  private doUpdate = () => {
-    this.api.query.democracy.referendumInfoOf(this.props.match.params['proposalId'], (referendum: Option<ReferendumInfo>) => {
+  updateStats (id: number) {
+    // Get votes
+    this.api.derive.democracy.referendumVotesFor(id).then((votes: DerivedReferendumVote[]) => {
+      const newBallot = votes.reduce((ballot: IBallot, { balance, vote }: DerivedReferendumVote): IBallot => {
+        if (vote.isAye) {
+          ballot.voteCountAye++
+          ballot.votedAye = ballot.votedAye.add(balance)
+        } else {
+          ballot.voteCountNay++
+          ballot.votedNay = ballot.votedNay.add(balance)
+        }
+
+        ballot.voteCount++
+        ballot.votedTotal = ballot.votedTotal.add(balance)
+
+        return ballot
+      }, {
+        voteCount: 0,
+        voteCountAye: 0,
+        voteCountNay: 0,
+        votedAye: new BN(0),
+        votedNay: new BN(0),
+        votedTotal: new BN(0)
+      })
+      if (newBallot !== this.state.ballot) {
+        this.setState({
+          ...this.state,
+          ballot: newBallot
+        })
+      }
+    })
+  }
+
+  doUpdate = (id) => {
+    this.api.query.democracy.referendumInfoOf(id, (referendum: Option<ReferendumInfo>) => {
       const referendumInfo: ReferendumInfo | null = referendum.unwrapOr(null)
       if (referendumInfo !== this.state.referendumInfo && referendumInfo !== null) {
         // Parse referendum info
@@ -105,48 +138,45 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
         const documentation = (meta && meta.documentation) ? (
             meta.documentation.join(' '))
           : null
-
-        // Get votes
-        const votes: DerivedReferendumVote[] = this.api.derive.referendumVotesFor(this.state.idNumber)
-        const newBallot = votes.reduce((ballot: IBallot, { balance, vote }): IBallot => {
-          if (vote.isAye) {
-            ballot.voteCountAye++
-            ballot.votedAye = ballot.votedAye.add(balance)
-          } else {
-            ballot.voteCountNay++
-            ballot.votedNay = ballot.votedNay.add(balance)
-          }
-
-          ballot.voteCount++
-          ballot.votedTotal = ballot.votedTotal.add(balance)
-
-          return ballot
-        }, {
-          voteCount: 0,
-          voteCountAye: 0,
-          voteCountNay: 0,
-          votedAye: new BN(0),
-          votedNay: new BN(0),
-          votedTotal: new BN(0)
-        })
-
         this.setState({
           ...this.state,
-          referendumInfo: referendumInfo,
           header: header,
-          documentation: documentation,
-          ballot: newBallot
+          documentation: documentation
         })
+        this.updateStats(id)
       }
     })
   }
 
-  voteAye () {
-    this.api.tx.democracy.vote(this.state.idNumber, true)
+  voteAye = () => {
+    if (this.props.apiContext.apiReady) {
+      this.setState({ ...this.state, tries: 1 })
+      this.doVote(this.state.idNumber, true)
+    } else if (this.state.tries <= 10) {
+      const nextTry = setTimeout(this.voteAye, 1000)
+      this.setState({ ...this.state, tries: this.state.tries + 1, nextTry: nextTry })
+    } else {
+      this.setState({ ...this.state, referendumInfo: null })
+    }
   }
 
-  voteNay () {
-    this.api.tx.democracy.vote(this.state.idNumber, false)
+  voteNay = () => {
+    if (this.props.apiContext.apiReady) {
+      this.setState({ ...this.state, tries: 1 })
+      this.doVote(this.state.idNumber, false)
+    } else if (this.state.tries <= 10) {
+      const nextTry = setTimeout(this.voteAye, 1000)
+      this.setState({ ...this.state, tries: this.state.tries + 1, nextTry: nextTry })
+    } else {
+      this.setState({ ...this.state, referendumInfo: null })
+    }
+  }
+
+  doVote = async (id: number, choice: boolean) => {
+    const extrinsic = this.api.tx.democracy.vote(id, choice)
+    extrinsic.send().then(() => {
+      this.updateVote()
+    })
   }
 
   componentDidMount (): void {
@@ -161,50 +191,7 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
     if (!this.props.settings.selectedAccount) {
       return null
     }
-    return this.state.referendumInfo !== undefined ? this.renderProposal() : this.renderPlaceHolder()
-  }
-
-  renderProposal () {
-    const { voteCount, votedAye, voteCountAye, votedNay, voteCountNay, votedTotal } = this.state.ballot
-    const { chartColorAye, chartColorNay, stopColorOne, stopColorTwo, backgroundColor } = colorSchemes[this.props.settings.color]
-    return (
-      <ContentContainer>
-        <AccountDropdown/>
-        <VoteStatus
-          values={[
-            {
-              colors: chartColorAye,
-              label: `Aye, ${formatBalance(votedAye)} (${formatNumber(voteCountAye)})`,
-              value: votedAye.muln(10000).div(votedTotal).toNumber() / 100
-            },
-            {
-              colors: chartColorNay,
-              label: `Nay, ${formatBalance(votedNay)} (${formatNumber(voteCountNay)})`,
-              value: votedNay.muln(10000).div(votedTotal).toNumber() / 100
-            }
-          ]}
-          votes={voteCount}
-          legendColor={backgroundColor}
-        />
-        <ProposalSection>
-          <ProposalDetail>
-            <h1>{this.state.header}</h1>
-            <summary>{this.state.documentation}</summary>
-          </ProposalDetail>
-        </ProposalSection>
-        <ProposalSection>
-          <ButtonSection>
-            <AyeButton
-              color={stopColorOne}
-              hoverColor={stopColorTwo}
-            >
-              Aye
-            </AyeButton>
-            <Button>Nay</Button>
-          </ButtonSection>
-        </ProposalSection>
-      </ContentContainer>
-    )
+    return this.state.referendumInfo === undefined ? this.renderPlaceHolder() : this.renderProposal()
   }
 
   renderPlaceHolder () {
@@ -217,12 +204,12 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
             {
               colors: chartColorAye,
               label: `Aye`,
-              value: new BN(30)
+              value: new BN(0)
             },
             {
               colors: chartColorNay,
               label: `Nay`,
-              value: new BN(20)
+              value: new BN(0)
             }
           ]}
           votes={0}
@@ -230,6 +217,48 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
         />
         <ProposalSection>
           <ProposalDetail/>
+        </ProposalSection>
+        <ProposalSection>
+          <ButtonSection>
+            <AyeButton
+              color={this.props.settings.color}
+              onClick={this.voteAye}
+            >
+              Aye
+            </AyeButton>
+            <Button onClick={this.voteNay}>Nay</Button>
+          </ButtonSection>
+        </ProposalSection>
+      </ContentContainer>
+    )
+  }
+
+  renderProposal () {
+    const { chartColorAye, chartColorNay, backgroundColor } = colorSchemes[this.props.settings.color]
+    return (
+      <ContentContainer>
+        <AccountDropdown/>
+        <VoteStatus
+          values={[
+            {
+              colors: chartColorAye,
+              label: `Aye, ${formatBalance(this.state.ballot.votedAye)} (${formatNumber(this.state.ballot.voteCountAye)})`,
+              value: this.state.ballot.voteCount === 0 ? 0 : this.state.ballot.votedAye.muln(10000).div(this.state.ballot.votedTotal).toNumber() / 100
+            },
+            {
+              colors: chartColorNay,
+              label: `Nay, ${formatBalance(this.state.ballot.votedNay)} (${formatNumber(this.state.ballot.voteCountNay)})`,
+              value: this.state.ballot.voteCount === 0 ? 0 : this.state.ballot.votedNay.muln(10000).div(this.state.ballot.votedTotal).toNumber() / 100
+            }
+          ]}
+          votes={this.state.ballot.voteCount}
+          legendColor={backgroundColor}
+        />
+        <ProposalSection>
+          <ProposalDetail>
+            <h1>{this.state.header}</h1>
+            <summary>{this.state.documentation}</summary>
+          </ProposalDetail>
         </ProposalSection>
         <ProposalSection>
           <ButtonSection>
@@ -255,11 +284,15 @@ const mapStateToProps = (state: IAppState) => {
   }
 }
 
+const mapDispatchToProps = { setError }
+
 type StateProps = ReturnType<typeof mapStateToProps>
+type DispatchProps = typeof mapDispatchToProps
 
 export default withRouter(
   connect(
-    mapStateToProps
+    mapStateToProps,
+    mapDispatchToProps
   )(Vote)
 )
 

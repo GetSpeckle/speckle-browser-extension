@@ -48,7 +48,6 @@ function addObserver () {
   }
 
   obAttmpts++
-  console.log(obAttmpts)
 
   let observer = new MutationObserver(mutations => {
     mutations.forEach(() => {

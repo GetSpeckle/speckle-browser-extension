@@ -37,6 +37,7 @@
 		"jquery": "^3.4.1",
 		"polkadot-identicon": "^1.1.45",
 		"react": "^16.8.6",
+		"react-animated-number": "^0.4.4",
 		"react-chartjs-2": "^2.7.6",
 		"react-chrome-redux": "^2.0.0-alpha.5",
 		"react-dom": "^16.8.6",
