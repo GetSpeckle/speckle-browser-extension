@@ -77,10 +77,10 @@ export default class Extension {
     const payload = createType('ExtrinsicPayload', request, { version: request.version })
     keyringVault.unlock(password).then(() => {
       const pair = keyringVault.getPair(request.address)
-      const result = payload.sign(pair)
+      const signature = payload.sign(pair)
       resolve({
         id,
-        ...result
+        ...signature
       })
     })
     return true
