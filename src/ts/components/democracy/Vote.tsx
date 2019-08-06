@@ -1,7 +1,7 @@
 import * as React from 'react'
 import ApiPromise from '@polkadot/api/promise'
 import { DerivedReferendumVote } from '@polkadot/api-derive/types'
-import {ReferendumInfo, Method, Option, Index, Balance as BalanceType} from '@polkadot/types'
+import { ReferendumInfo, Method, Option, Index, Balance as BalanceType } from '@polkadot/types'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { ContentContainer } from '../basic-components'
 import { IAppState } from '../../background/store/all'
@@ -20,10 +20,9 @@ import { isWalletLocked, signExtrinsic } from '../../services/keyring-vault-prox
 import { SignerOptions } from '@polkadot/api/types'
 import { IExtrinsic } from '@polkadot/types/types'
 import { setError } from '../../background/store/error'
-import {SubmittableExtrinsic} from '@polkadot/api/promise/types'
+import { SubmittableExtrinsic } from '@polkadot/api/promise/types'
 
 interface IVoteProps extends StateProps, RouteComponentProps, DispatchProps {
-  democracy_referendumVotesFor?: DerivedReferendumVote[]
 }
 
 interface IBallot {
@@ -38,38 +37,37 @@ interface IBallot {
 interface IVoteState {
   idNumber: number
   ballot: IBallot
-  referendumInfo?: ReferendumInfo | null
+  referendumInfo?: ReferendumInfo | undefined
   extrinsic?: IExtrinsic | null
   tries: number
+  voteTries: number
   nextTry?: any
+  nextVoteTry?: any
   header: string
   documentation?: string | null
 }
 
 class Vote extends React.Component<IVoteProps, IVoteState> {
+
   get api (): ApiPromise {
     const api = this.props.apiContext.api
     if (api) return api
     throw new Error(t('apiError'))
   }
 
-  set api (api: ApiPromise) {
-    this.api = api
-  }
-
-  public ballot: IBallot = {
-    voteCount: 0,
-    voteCountAye: 0,
-    voteCountNay: 0,
-    votedAye: new BN(0),
-    votedNay: new BN(0),
-    votedTotal: new BN(0)
-  }
-
   public state: IVoteState = {
     idNumber: this.props.match.params['proposalId'],
-    ballot: this.ballot,
+    ballot:  {
+      voteCount: 0,
+      voteCountAye: 0,
+      voteCountNay: 0,
+      votedAye: new BN(0),
+      votedNay: new BN(0),
+      votedTotal: new BN(0)
+    },
     tries: 0,
+    voteTries: 0,
+    referendumInfo: undefined,
     header: '',
     documentation: ''
   }
@@ -84,66 +82,63 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
   }
 
   updateVote = () => {
+    console.log('updateVote')
+    console.log(this.state.idNumber)
     if (this.props.apiContext.apiReady) {
       this.setState({ ...this.state, tries: 1 })
       this.doUpdate(this.state.idNumber)
-    } else if (this.state.tries <= 10) {
+    } else if (this.state.voteTries <= 10) {
       const nextTry = setTimeout(this.updateVote, 1000)
-      this.setState({ ...this.state, tries: this.state.tries + 1, nextTry: nextTry })
+      this.setState({ ...this.state, voteTries: this.state.voteTries + 1, nextTry: nextTry })
     } else {
-      this.setState({ ...this.state, referendumInfo: null })
+      this.setState({ ...this.state, referendumInfo: undefined })
     }
   }
 
-  updateStats (id: number) {
-    // Get votes
-    this.api.derive.democracy.referendumVotesFor(id).then((votes: DerivedReferendumVote[]) => {
-      const newBallot = votes.reduce((ballot: IBallot, { balance, vote }: DerivedReferendumVote): IBallot => {
-        if (vote.isAye) {
-          ballot.voteCountAye++
-          ballot.votedAye = ballot.votedAye.add(balance)
-        } else {
-          ballot.voteCountNay++
-          ballot.votedNay = ballot.votedNay.add(balance)
-        }
-
-        ballot.voteCount++
-        ballot.votedTotal = ballot.votedTotal.add(balance)
-
-        return ballot
-      }, {
-        voteCount: 0,
-        voteCountAye: 0,
-        voteCountNay: 0,
-        votedAye: new BN(0),
-        votedNay: new BN(0),
-        votedTotal: new BN(0)
-      })
-      if (newBallot !== this.state.ballot) {
-        this.setState({
-          ...this.state,
-          ballot: newBallot
-        })
-      }
-    })
-  }
-
-  doUpdate = (id) => {
+  doUpdate = async (id) => {
+    console.log('doUpdate')
     this.api.query.democracy.referendumInfoOf(id, (referendum: Option<ReferendumInfo>) => {
-      const referendumInfo: ReferendumInfo | null = referendum.unwrapOr(null)
-      if (referendumInfo !== this.state.referendumInfo && referendumInfo !== null) {
+      const referendumInfo: ReferendumInfo | undefined = referendum.unwrapOr(undefined)
+      if (referendumInfo !== this.state.referendumInfo && referendumInfo !== undefined) {
         // Parse referendum info
         const { meta, method, section } = Method.findFunction(referendumInfo.proposal.callIndex)
         const header = `#${this.state.idNumber}: ${section}.${method}`
         const documentation = (meta && meta.documentation) ? (
             meta.documentation.join(' '))
           : null
-        this.setState({
-          ...this.state,
-          header: header,
-          documentation: documentation
+        this.api.derive.democracy.referendumVotesFor(id).then((votes: DerivedReferendumVote[]) => {
+          const newBallot = votes.reduce((ballot: IBallot, { balance, vote }: DerivedReferendumVote): IBallot => {
+            if (vote.isAye) {
+              ballot.voteCountAye++
+              ballot.votedAye = ballot.votedAye.add(balance)
+            } else {
+              ballot.voteCountNay++
+              ballot.votedNay = ballot.votedNay.add(balance)
+            }
+
+            ballot.voteCount++
+            ballot.votedTotal = ballot.votedTotal.add(balance)
+
+            return ballot
+          }, {
+            voteCount: 0,
+            voteCountAye: 0,
+            voteCountNay: 0,
+            votedAye: new BN(0),
+            votedNay: new BN(0),
+            votedTotal: new BN(0)
+          })
+
+          if (newBallot !== this.state.ballot) {
+            this.setState({
+              ...this.state,
+              referendumInfo: referendumInfo,
+              header: header,
+              documentation: documentation,
+              ballot: newBallot
+            })
+          }
         })
-        this.updateStats(id)
       }
     })
   }
@@ -151,34 +146,26 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
   voteAye = () => {
     if (this.props.apiContext.apiReady) {
       this.setState({ ...this.state, tries: 1 })
-      console.log('ready')
       this.doVote(this.state.idNumber, true)
     } else if (this.state.tries <= 10) {
       const nextTry = setTimeout(this.voteAye, 1000)
-      this.setState({ ...this.state, tries: this.state.tries + 1, nextTry: nextTry })
-    } else {
-      this.setState({ ...this.state, referendumInfo: null })
+      this.setState({ ...this.state, voteTries: this.state.tries + 1, nextVoteTry: nextTry })
     }
   }
 
   voteNay = () => {
     if (this.props.apiContext.apiReady) {
       this.setState({ ...this.state, tries: 1 })
-      console.log('ready')
       this.doVote(this.state.idNumber, false)
     } else if (this.state.tries <= 10) {
       const nextTry = setTimeout(this.voteAye, 1000)
-      this.setState({ ...this.state, tries: this.state.tries + 1, nextTry: nextTry })
-    } else {
-      this.setState({ ...this.state, referendumInfo: null })
+      this.setState({ ...this.state, voteTries: this.state.tries + 1, nextVoteTry: nextTry })
     }
   }
 
   doVote = async (id: number, choice: boolean) => {
-    console.log(this.api)
     const currentAddress = this.props.settings.selectedAccount!.address
     const extrinsic = this.api.tx.democracy.vote(id, choice)
-    console.log(extrinsic)
 
     const signOptions: SignerOptions = {
       blockNumber: (await this.api.query.system.number()) as unknown as BN,
@@ -196,8 +183,6 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
       return signedExtrinsic
     }).then(async (signedExtrinsic) => {
       if (!signedExtrinsic || !this.props.settings.selectedAccount) {
-        console.log(signedExtrinsic)
-        console.log(this.props.settings.selectedAccount)
         return
       }
 
@@ -209,7 +194,6 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
       }
 
       const submittable = signedExtrinsic as SubmittableExtrinsic
-      console.log(submittable)
 
       submittable.send().then(() => {
         this.updateVote()
@@ -219,7 +203,7 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
   }
 
   componentDidMount (): void {
-    this.updateVote()
+    setTimeout(this.updateVote, 1000)
   }
 
   componentWillUnmount (): void {
@@ -230,8 +214,9 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
     if (!this.props.settings.selectedAccount) {
       return null
     }
-    return this.state.referendumInfo === undefined ? this.renderPlaceHolder() : this.renderProposal()
-  }
+    console.log('voteData', this.state.ballot)
+    return this.state.referendumInfo !== undefined ? this.renderProposal() : this.renderPlaceHolder()
+  }c
 
   renderPlaceHolder () {
     const { chartColorAye, chartColorNay, backgroundColor } = colorSchemes[this.props.settings.color]

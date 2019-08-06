@@ -25,6 +25,11 @@ interface Options {
 }
 
 class VoteStatus extends React.Component<IVoteStatusProps> {
+
+  shouldComponentUpdate (nextProps: Readonly<IVoteStatusProps>, _nextState: Readonly<{}>, _nextContext: any): boolean {
+    return nextProps.values !== this.props.values
+  }
+
   componentWillMount (): void {
     Chart.pluginService.register({
       beforeDraw: function (chart) {
