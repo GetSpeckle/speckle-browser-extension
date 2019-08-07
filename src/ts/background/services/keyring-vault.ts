@@ -12,7 +12,7 @@ class KeyringVault {
 
   private _keyring?: KeyringInstance
   private _password?: string
-  private _tempPassword: string = ''
+  private _tempPassword?: string
   private _mnemonic?: string
   private simpleAccounts?: SimpleAccounts
 
@@ -24,7 +24,7 @@ class KeyringVault {
   }
 
   getTempPassword (): string {
-    return this._tempPassword
+    return this._tempPassword || ''
   }
 
   setTempPassword (tempPassword: string): void {
@@ -36,7 +36,7 @@ class KeyringVault {
 
   clearTempPassword (): void {
     setTimeout(() => {
-      this._tempPassword = ''
+      this._tempPassword = undefined
     }, 300 * 1000) // 5 minutes
   }
 
@@ -96,8 +96,21 @@ class KeyringVault {
   generateMnemonic (): string {
     if (!this._mnemonic) {
       this._mnemonic = mnemonicGenerate()
+
+      // Clear interval for _mnemonic
+      setTimeout(() => {
+        this.clearMnemonic()
+      }, 300 * 1000) // 5 minutes
     }
     return this._mnemonic
+  }
+
+  isMnemonicGenerated (): boolean {
+    return this._mnemonic !== undefined
+  }
+
+  clearMnemonic (): void {
+    this._mnemonic = undefined
   }
 
   isMnemonicValid (mnemonic: string): boolean {
@@ -126,7 +139,7 @@ class KeyringVault {
     if (this._mnemonic !== mnemonic) return Promise.reject(new Error(t('mnemonicUnmatched')))
     return cryptoWaitReady().then(() => {
       let pair = this.keyring.addFromUri(mnemonic, { name: accountName })
-      this._mnemonic = undefined
+      this.clearMnemonic()
       return this.saveAccount(pair)
     })
   }

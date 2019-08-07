@@ -8,8 +8,12 @@ import GlobalStyle from '../../components/styles/GlobalStyle'
 import { themes } from '../../components/styles/themes'
 import { Routes } from '../../routes'
 import { getSettings } from '../../background/store/settings'
-import { isWalletLocked, walletExists } from '../../services/keyring-vault-proxy'
-import { setLocked, setCreated } from '../../background/store/wallet'
+import {
+  isMnemonicGenerated,
+  isWalletLocked,
+  walletExists
+} from '../../services/keyring-vault-proxy'
+import { setLocked, setCreated, setIsCreatingAccount } from '../../background/store/wallet'
 import { createApi, destroyApi } from '../../background/store/api-context'
 import { networks } from '../../constants/networks'
 import { WsProvider } from '@polkadot/rpc-provider'
@@ -84,9 +88,16 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
         this.props.setCreated(result)
       }
     )
+    const isCreatingAccount = isMnemonicGenerated().then(
+      result => {
+        console.log(`isCreatingAccount ${result}`)
+        this.props.setIsCreatingAccount((result as unknown) as boolean)
+      }
+    )
     Promise.all([
       checkAppState,
       checkAccountCreated,
+      isCreatingAccount,
       subscribeAuthorize(this.setAuthRequests),
       subscribeSigning(this.setSignRequests)
     ]).then(() => {
@@ -147,7 +158,14 @@ const mapStateToProps = (state: IAppState) => {
   }
 }
 
-const mapDispatchToProps = { getSettings, setLocked, setCreated, createApi, destroyApi }
+const mapDispatchToProps = {
+  getSettings,
+  setLocked,
+  setCreated,
+  createApi,
+  destroyApi,
+  setIsCreatingAccount
+}
 
 type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps

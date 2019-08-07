@@ -148,6 +148,12 @@ const handle = (msg, port: Runtime.Port) => {
     case FUNCS.SET_TEMP_PASSWORD:
       keyringVault.setTempPassword(msg.tempPassword)
       break
+    case FUNCS.IS_MNEMONIC_GENERATED:
+      port.postMessage({
+        method: FUNCS.IS_MNEMONIC_GENERATED,
+        result: keyringVault.isMnemonicGenerated()
+      })
+      break
     default:
       break
   }

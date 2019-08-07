@@ -4,6 +4,7 @@ import { ACTION_TYPES, IAccount } from './actions'
 export interface IWallet {
   accounts?: IAccount[],
   created: boolean,
+  isCreatingAccount?: boolean,
   locked: boolean,
   newPassword?: string,
   newPhrase?: string,
@@ -35,6 +36,9 @@ const wallet: Reducer<IWallet, AnyAction> = (state = initialState, action) => {
 
     case ACTION_TYPES.SET_ACCOUNTS:
       return { ...state, accounts: action.payload }
+
+    case ACTION_TYPES.SET_IS_CREATING_ACCOUNT:
+      return { ...state, isCreatingAccount: action.payload }
 
     default:
       return state

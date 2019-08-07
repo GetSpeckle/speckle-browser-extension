@@ -5,7 +5,8 @@ export const ACTION_TYPES = {
   SET_LOCKED: 'SET_LOCKED',
   SET_NEW_PHRASE: 'SET_NEW_PHRASE',
   SET_ACCOUNTS: 'SET_ACCOUNTS',
-  SET_NEW_PASSWORD: 'SET_NEW_PASSWORD'
+  SET_NEW_PASSWORD: 'SET_NEW_PASSWORD',
+  SET_IS_CREATING_ACCOUNT: 'SET_IS_CREATING_ACCOUNT'
 }
 
 export interface IAccount {
@@ -45,5 +46,12 @@ export function setCreated (accountCreated: boolean): AnyAction {
   return {
     type: ACTION_TYPES.SET_CREATED,
     payload: accountCreated
+  }
+}
+
+export function setIsCreatingAccount (isCreatingAccount: boolean): AnyAction {
+  return {
+    type: ACTION_TYPES.SET_IS_CREATING_ACCOUNT,
+    payload: isCreatingAccount
   }
 }
