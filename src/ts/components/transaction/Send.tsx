@@ -15,9 +15,8 @@ import { AccountSection } from '../dashboard/Dashboard'
 import { Dimmer, Form, Loader } from 'semantic-ui-react'
 import Amount from './Amount'
 import ToAddress from './ToAddress'
-import { IExtrinsic } from '@polkadot/types/types'
+import { ExtrinsicPayloadValue, IExtrinsic } from '@polkadot/types/types'
 import { SignerOptions } from '@polkadot/api/types'
-import { Index, EventRecord, Balance as BalanceType } from '@polkadot/types'
 import Fee from './Fee'
 import Confirm from './Confirm'
 import AccountDropdown from '../account/AccountDropdown'
@@ -29,6 +28,7 @@ import {
 import { SubmittableResult } from '@polkadot/api/SubmittableExtrinsic'
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types'
 import { HOME_ROUTE } from '../../constants/routes'
+import { EventRecord, Index, Balance as BalanceType } from '@polkadot/types/interfaces'
 
 interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {}
 
@@ -150,17 +150,22 @@ class Send extends React.Component<ISendProps, ISendState> {
       .transfer(this.state.toAddress, BnAmount)
 
     const signOptions: SignerOptions = {
-      blockNumber: (await this.api.query.system.number()) as unknown as BN,
-      blockHash: await this.api.genesisHash,
-      genesisHash: await this.api.genesisHash,
+      blockNumber: await this.api.query.system.number() as unknown as BN,
+      blockHash: this.api.genesisHash,
+      genesisHash: this.api.genesisHash,
       nonce: await this.api.query.system.accountNonce(currentAddress) as Index
     }
-
+    const payloadValue: ExtrinsicPayloadValue = {
+      era: extrinsic.era,
+      method: extrinsic.method.toHex(),
+      nonce: signOptions.nonce,
+      tip: 0
+    }
     signExtrinsic(extrinsic, currentAddress, signOptions).then(signature => {
       const signedExtrinsic = extrinsic.addSignature(
         currentAddress as any,
         signature,
-        signOptions.nonce
+        payloadValue
       )
       this.setState({ extrinsic: signedExtrinsic, modalOpen: true })
     })

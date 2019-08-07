@@ -1,30 +1,30 @@
-import { SignerOptions } from '@polkadot/api/types'
-import { InjectedSigner } from '@polkadot/extension-dapp/types'
-import { IExtrinsic } from '@polkadot/types/types'
+import { Signer as SignerInterface, SignerPayload, SignerResult } from '@polkadot/api/types'
 import { SendRequest } from './types'
 
 let sendRequest: SendRequest
+let nextId = 0
 
-export default class Signer implements InjectedSigner {
+export default class Signer implements SignerInterface {
   public constructor (_sendRequest: SendRequest) {
     sendRequest = _sendRequest
   }
 
-  public async sign (extrinsic: IExtrinsic, address: string,
-              { blockHash, blockNumber, era, genesisHash, nonce }: SignerOptions): Promise<number> {
-    // Bit of a hack - with this round-about way, we skip any keyring deps
-    const { id, signature } = await sendRequest('extrinsic.sign', JSON.parse(JSON.stringify({
-      address,
-      blockHash,
-      blockNumber: blockNumber.toNumber(),
-      era,
-      genesisHash,
-      method: extrinsic.method.toHex(),
-      nonce
-    })))
+  public async signPayload (payload: SignerPayload): Promise<SignerResult> {
+    const id = ++nextId
+    const result = await sendRequest('extrinsic.sign', payload)
 
-    extrinsic.addSignature(address, signature, nonce)
-
-    return id
+    // we add an internal id (number) - should have a mapping from the
+    // extension id (string) -> internal id (number) if we wish to provide
+    // updated via the update functionality (noop at this point)
+    return {
+      ...result,
+      id
+    }
   }
+
+  // We don't listen to updates at all, if we do we can interpret the result
+  // as provided by the API here
+  // public update (id: number, status: Hash | SubmittableResult): void {
+  //   // ignore
+  // }
 }

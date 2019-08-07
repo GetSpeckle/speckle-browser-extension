@@ -5,8 +5,7 @@ import { LocalStore } from '../../services/local-store'
 import { mnemonicGenerate, cryptoWaitReady, mnemonicValidate } from '@polkadot/util-crypto'
 import t from '../../services/i18n'
 import { SimpleAccounts, MessageExtrinsicSign } from '../types'
-import u8aToHex from '@polkadot/util/u8a/toHex'
-import RawPayload from '../RawPayload'
+import { createType } from '@polkadot/types'
 
 const VAULT_KEY: string = 'speckle-vault'
 
@@ -168,15 +167,15 @@ class KeyringVault {
   }
 
   signExtrinsic = async (messageExtrinsicSign: MessageExtrinsicSign): Promise<string> => {
-    const { address, blockHash, method, nonce } = messageExtrinsicSign
+    const { address } = messageExtrinsicSign
     const pair = this.keyring.getPair(address)
 
     if (!pair) {
       return Promise.reject(new Error('Unable to find pair'))
     }
-    const payload = new RawPayload({ blockHash, method, nonce })
-    const signature = u8aToHex(payload.sign(pair))
-    return Promise.resolve(signature)
+    const payload = createType('ExtrinsicPayload', messageExtrinsicSign)
+    const result = payload.sign(pair)
+    return Promise.resolve(result.signature)
   }
 
   accountExists = (address: string): boolean => {

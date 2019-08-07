@@ -1,3 +1,5 @@
+import { SignerPayload } from '@polkadot/api/types'
+
 export type MessageTypes = 'authorize.approve' | 'authorize.reject'
   | 'authorize.requests' | 'authorize.subscribe' | 'authorize.tab'
   | 'accounts.list' | 'accounts.subscribe' | 'extrinsic.sign'
@@ -36,15 +38,7 @@ export type MessageExtrinsicSignCancel = {
   id: string
 }
 
-export type MessageExtrinsicSign = {
-  address: string,
-  blockHash: string,
-  blockNumber: number,
-  era?: string,
-  genesisHash: string,
-  method: string,
-  nonce: string
-}
+export type MessageExtrinsicSign = SignerPayload
 
 export type MessageExtrinsicSign$Response = {
   id: string,
