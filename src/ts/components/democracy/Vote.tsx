@@ -1,7 +1,14 @@
 import * as React from 'react'
 import ApiPromise from '@polkadot/api/promise'
 import { DerivedReferendumVote } from '@polkadot/api-derive/types'
-import { ReferendumInfo, Method, Option, Index, Balance as BalanceType } from '@polkadot/types'
+import {
+  ReferendumInfo,
+  Method,
+  Option,
+  Index,
+  Balance as BalanceType,
+  EventRecord
+} from '@polkadot/types'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { ContentContainer } from '../basic-components'
 import { IAppState } from '../../background/store/all'
@@ -21,6 +28,7 @@ import { SignerOptions } from '@polkadot/api/types'
 import { IExtrinsic } from '@polkadot/types/types'
 import { setError } from '../../background/store/error'
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types'
+import { SubmittableResult } from '@polkadot/api'
 
 interface IVoteProps extends StateProps, RouteComponentProps, DispatchProps {
 }
@@ -45,6 +53,7 @@ interface IVoteState {
   nextVoteTry?: any
   header: string
   documentation?: string | null
+  loading: boolean
 }
 
 class Vote extends React.Component<IVoteProps, IVoteState> {
@@ -69,7 +78,8 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
     voteTries: 0,
     referendumInfo: undefined,
     header: '',
-    documentation: ''
+    documentation: '',
+    loading: false
   }
 
   componentWillMount (): void {
@@ -82,8 +92,6 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
   }
 
   updateVote = () => {
-    console.log('updateVote')
-    console.log(this.state.idNumber)
     if (this.props.apiContext.apiReady) {
       this.setState({ ...this.state, tries: 1 })
       this.doUpdate(this.state.idNumber)
@@ -96,16 +104,19 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
   }
 
   doUpdate = async (id) => {
-    console.log('doUpdate')
     this.api.query.democracy.referendumInfoOf(id, (referendum: Option<ReferendumInfo>) => {
       const referendumInfo: ReferendumInfo | undefined = referendum.unwrapOr(undefined)
-      if (referendumInfo !== this.state.referendumInfo && referendumInfo !== undefined) {
+      if (referendumInfo !== undefined) {
         // Parse referendum info
         const { meta, method, section } = Method.findFunction(referendumInfo.proposal.callIndex)
         const header = `#${this.state.idNumber}: ${section}.${method}`
         const documentation = (meta && meta.documentation) ? (
             meta.documentation.join(' '))
           : null
+
+        const args = (meta && meta.args) ? meta.args : null
+        console.log(args)
+
         this.api.derive.democracy.referendumVotesFor(id).then((votes: DerivedReferendumVote[]) => {
           const newBallot = votes.reduce((ballot: IBallot, { balance, vote }: DerivedReferendumVote): IBallot => {
             if (vote.isAye) {
@@ -195,15 +206,37 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
 
       const submittable = signedExtrinsic as SubmittableExtrinsic
 
-      submittable.send().then(() => {
-        this.updateVote()
+      this.setState({ loading: true })
+
+      submittable.send(({ events, status }: SubmittableResult) => {
+        console.log('Transaction status:', status.type)
+        if (status.isFinalized) {
+          this.setState({ loading: false })
+          console.log('Completed at block hash', status.value.toHex())
+          console.log('Events:')
+          events.forEach(({ phase, event: { data, method, section } }: EventRecord) => {
+            console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString())
+            // TODO: const the value
+            if (method === 'ExtrinsicSuccess') {
+              console.log(`voted ${choice}`)
+              this.updateVote()
+            } else if (method === 'ExtrinsicFailed') {
+              console.log('extrinsic failed')
+            }
+          })
+        } else if (status.isInvalid || status.isDropped || status.isUsurped) {
+          this.setState({ loading: false })
+          console.log('error')
+        }
+      }).catch((err) => {
+        console.log(err)
       })
     })
 
   }
 
   componentDidMount (): void {
-    setTimeout(this.updateVote, 1000)
+    setInterval(this.updateVote, 3000)
   }
 
   componentWillUnmount (): void {
@@ -214,9 +247,8 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
     if (!this.props.settings.selectedAccount) {
       return null
     }
-    console.log('voteData', this.state.ballot)
     return this.state.referendumInfo !== undefined ? this.renderProposal() : this.renderPlaceHolder()
-  }c
+  }
 
   renderPlaceHolder () {
     const { chartColorAye, chartColorNay, backgroundColor } = colorSchemes[this.props.settings.color]
@@ -258,6 +290,8 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
   }
 
   renderProposal () {
+    const loadAye = this.state.loading ? '...' : 'Aye'
+    const loadNay = this.state.loading ? '...' : 'Nay'
     const { chartColorAye, chartColorNay, backgroundColor } = colorSchemes[this.props.settings.color]
     return (
       <ContentContainer>
@@ -290,9 +324,9 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
               color={this.props.settings.color}
               onClick={this.voteAye}
             >
-              Aye
+              {loadAye}
             </AyeButton>
-            <Button onClick={this.voteNay}>Nay</Button>
+            <Button onClick={this.voteNay}>{loadNay}</Button>
           </ButtonSection>
         </ProposalSection>
       </ContentContainer>
