@@ -7,7 +7,7 @@ import {
   Option,
   Index,
   Balance as BalanceType,
-  EventRecord
+  EventRecord, TypeDef, getTypeDef
 } from '@polkadot/types'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { ContentContainer } from '../basic-components'
@@ -25,7 +25,7 @@ import { INITIALIZE_ROUTE, LOGIN_ROUTE } from '../../constants/routes'
 import { colorSchemes } from '../styles/themes'
 import { isWalletLocked, signExtrinsic } from '../../services/keyring-vault-proxy'
 import { SignerOptions } from '@polkadot/api/types'
-import { IExtrinsic } from '@polkadot/types/types'
+import { Codec, IExtrinsic } from '@polkadot/types/types'
 import { setError } from '../../background/store/error'
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types'
 import { SubmittableResult } from '@polkadot/api'
@@ -116,6 +116,18 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
 
         const args = (meta && meta.args) ? meta.args : null
         console.log(args)
+
+        const params = Method.filterOrigin(meta).map(({ name, type }): { name: string; type: TypeDef } => ({
+          name: name.toString(),
+          type: getTypeDef(type.toString())
+        }))
+        const values = args!.map((value): { isValid: boolean; value: Codec } => ({
+          isValid: true,
+          value
+        }))
+
+        console.log('params', params)
+        console.log('values', values)
 
         this.api.derive.democracy.referendumVotesFor(id).then((votes: DerivedReferendumVote[]) => {
           const newBallot = votes.reduce((ballot: IBallot, { balance, vote }: DerivedReferendumVote): IBallot => {
@@ -276,13 +288,13 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
         </ProposalSection>
         <ProposalSection>
           <ButtonSection>
+            <Button onClick={this.voteNay}>Nay</Button>
             <AyeButton
               color={this.props.settings.color}
               onClick={this.voteAye}
             >
               Aye
             </AyeButton>
-            <Button onClick={this.voteNay}>Nay</Button>
           </ButtonSection>
         </ProposalSection>
       </ContentContainer>
@@ -320,13 +332,13 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
         </ProposalSection>
         <ProposalSection>
           <ButtonSection>
+            <Button onClick={this.voteNay}>{loadNay}</Button>
             <AyeButton
               color={this.props.settings.color}
               onClick={this.voteAye}
             >
               {loadAye}
             </AyeButton>
-            <Button onClick={this.voteNay}>{loadNay}</Button>
           </ButtonSection>
         </ProposalSection>
       </ContentContainer>
