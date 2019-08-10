@@ -241,5 +241,8 @@
   },
   "signing": {
     "message": "Signing Transaction"
+  },
+  "signedBy": {
+    "message": "Signed By"
   }
 }

@@ -83,7 +83,7 @@ const options = [
   { power: 6, value: 'M', text: 'Mega' },
   { power: 9, value: 'G', text: 'Giga' },
   { power: 12, value: 'T', text: 'Tera' },
-  { power: 15, value: 'P', text: 'Peta' },
+  { power: 15, value: 'IdenticonContainerProps', text: 'Peta' },
   { power: 18, value: 'E', text: 'Exa' },
   { power: 21, value: 'Z', text: 'Zeta' },
   { power: 24, value: 'Y', text: 'Yotta' }

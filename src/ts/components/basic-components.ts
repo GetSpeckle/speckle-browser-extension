@@ -68,6 +68,7 @@ export const WhiteTitle = styled(Title)`
 export const StyledPassword = styled(Input).attrs({ fluid: true })`
   height: 42px
 `
+
 export const AccountAddress = styled.span`
   height: 14px
   font-size: 10px
