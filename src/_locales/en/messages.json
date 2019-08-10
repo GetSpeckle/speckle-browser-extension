@@ -240,6 +240,6 @@
     "message": "Authorization Request"
   },
   "signing": {
-    "message": "Signing Transaction"
+    "message": "Your signature is requested!"
   }
 }
