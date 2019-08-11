@@ -1,43 +1,49 @@
 import React from 'react'
 import styled from 'styled-components'
+import t from '../../services/i18n'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 import { networks } from '../../constants/networks'
 import { Grid } from 'semantic-ui-react'
 
-class SignMessage extends React.Component<StateProps> {
+interface ISignMessageState {
+  networkName: string,
+  networkIconUrl: string
+}
 
-  state: ISignByState = {
-    name: undefined
+class SignMessage extends React.Component<StateProps, ISignMessageState> {
+  constructor (props) {
+    super(props)
+
+    const { settings } = this.props
+    const iconUrl = networks[settings.network].chain.iconUrl
+
+    this.state = {
+      networkName: settings.network,
+      networkIconUrl: iconUrl
+    }
   }
 
-  // componentDidMount () {
-  // }
-
   render () {
-    const { settings } = this.props
-    const icon = networks[settings.network].chain.iconUrl
     return (
-      <SignMessageContainer>
-        <Grid centered={true} textAlign='center'>
-          <Grid.Row>
-            <Grid.Column width='10'>
-              <Icon><Caption>Message</Caption></Icon>
-            </Grid.Column>
-            <Grid.Column width='3'>
-              <NetworkIcon src={icon} alt='Chain logo'/>
-            </Grid.Column>
-            <Grid.Column width='3'>
-              <Network>{settings.network}</Network>
-            </Grid.Column>
-          </Grid.Row>
-          <Grid.Row>
+        <SignMessageGrid centered={true} textAlign='center'>
+          <SignMessageGridRow textAlign='left' verticalAlign='top'>
+            <SignMessageGridColumn width='12'>
+              <Icon><Caption>{t('signingMessageIcon')}</Caption></Icon>
+            </SignMessageGridColumn>
+            <SignMessageGridColumn width='1'>
+              <NetworkIcon src={this.state.networkIconUrl} alt='Chain logo'/>
+            </SignMessageGridColumn>
+            <SignMessageGridColumn width='3'>
+              <Network>{this.state.networkName}</Network>
+            </SignMessageGridColumn>
+          </SignMessageGridRow>
+          <SignMessageGridRow>
               <Message>
-                Sign this message to prove ownership of your account!
+                {t('signingContent')}
               </Message>
-          </Grid.Row>
-        </Grid>
-      </SignMessageContainer>
+          </SignMessageGridRow>
+        </SignMessageGrid>
     )
   }
 }
@@ -93,24 +99,32 @@ const Icon = styled.div`
   background-image: linear-gradient(to bottom, #928bf5, #42b8e9);
   border-bottom-left-radius: 50px;
   border-bottom-right-radius: 50px;
-  textAlign：center
+  text-align: center;
 `
 
-const SignMessageContainer = styled.div`
+const SignMessageGrid = styled(Grid)` && {
+  margin-top: 18px;
   height: 133px;
   border-radius: 4px;
   box-shadow: 0 2px 8px 0 rgba(62, 88, 96, 0.1);
   background-color: #ffffff;
+  }
+`
+
+const SignMessageGridRow = styled(Grid.Row)` && {
+  padding: 0 !important;
+}
+`
+
+const SignMessageGridColumn = styled(Grid.Column)` && {
+  padding: 0 !important;
+}
 `
 
 const mapStateToProps = (state: IAppState) => {
   return {
     settings: state.settings
   }
-}
-
-interface ISignByState {
-  name?: string
 }
 
 type StateProps = ReturnType<typeof mapStateToProps>

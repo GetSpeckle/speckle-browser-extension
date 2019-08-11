@@ -241,5 +241,11 @@
   },
   "signing": {
     "message": "Your signature is requested!"
+  },
+  "signingMessageIcon": {
+    "message": "Message"
+  },
+  "signingContent": {
+    "message": "Sign this message to prove ownership of your account!"
   }
 }
