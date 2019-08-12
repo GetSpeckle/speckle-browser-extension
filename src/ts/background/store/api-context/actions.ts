@@ -1,22 +1,23 @@
 import { ProviderInterface } from '@polkadot/rpc-provider/types'
 import { AnyAction } from 'redux'
 import ApiPromise from '@polkadot/api/promise'
+import { ApiOptions } from '@polkadot/api/types'
 
 export const ACTION_TYPES = {
   CREATE: 'CREATE',
   DESTROY: 'DESTROY'
 }
 
-type ApiWithProvider = { api: ApiPromise, provider: ProviderInterface }
+type ApiWithProvider = { api: ApiPromise, provider?: ProviderInterface }
 
-function doCreateApi (provider: ProviderInterface): Promise<ApiWithProvider> {
-  return ApiPromise.create(provider).then(api => ({ api, provider }))
+function doCreateApi (options: ApiOptions): Promise<ApiWithProvider> {
+  return ApiPromise.create(options).then(api => ({ api, provider: options.provider }))
 }
 
-export function createApi (provider: ProviderInterface) {
+export function createApi (options: ApiOptions) {
   return {
     type: ACTION_TYPES.CREATE,
-    payload: doCreateApi(provider)
+    payload: doCreateApi(options)
   }
 }
 

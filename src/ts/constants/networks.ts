@@ -1,4 +1,4 @@
-import { Chain, Polkadot, Substrate } from './chains'
+import { Chain, Polkadot, Substrate, Edgeware } from './chains'
 import { Metadata } from '@polkadot/types'
 
 export type Network = {
@@ -20,22 +20,22 @@ export const Alexander: Network = {
   genesisHash: '0xdcd1346701ca8396496e52aa2785b1748deb6db09551b72159dcb3e08991025b'
 }
 
-export const CharredCherry: Network = {
-  chain: Substrate,
-  name: 'Charred-Cherry',
-  rpcServer: 'wss://substrate-rpc.parity.io/',
-  txExplorer: 'https://polkadot.js.org/apps/#/explorer',
-  genesisHash: '0xxxxxxx' // TODO either fix me or remove CharredCherry
+export const TestNode: Network = {
+  chain: Edgeware,
+  name: 'Edgeware(test)',
+  rpcServer: 'wss://testnode.edgewa.re/',
+  txExplorer: 'https://polkascan.io/pre/edgeware-testnet/system/extrinsic/',
+  genesisHash: '0xxxxxxx' // TODO fix me
 }
 
 export const chains: {[chainType: string]: Array<Network>} = {
   [Polkadot.chainType]: [Alexander],
-  [Substrate.chainType]: [CharredCherry]
+  [Substrate.chainType]: [TestNode]
 }
 
 export const networks: {[name: string]: Network} = {
   [Alexander.name]: Alexander,
-  [CharredCherry.name]: CharredCherry
+  [TestNode.name]: TestNode
 }
 
 export const findNetwork = (genesisHash: string): Network | null => {

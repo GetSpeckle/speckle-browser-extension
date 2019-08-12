@@ -8,8 +8,8 @@ import {
   SigningRequest
 } from '../types'
 
-import { SignaturePayloadRaw } from '@polkadot/types'
-import { assert, u8aToHex } from '@polkadot/util'
+import { createType } from '@polkadot/types'
+import { assert } from '@polkadot/util'
 
 import State from './State'
 import { createSubscription, unsubscribe } from './subscriptions'
@@ -69,18 +69,18 @@ export default class Extension {
   private signingApprove ({ id, password }: MessageExtrinsicSignApprove): boolean {
     const queued = this.state.getSignRequest(id)
     assert(queued, 'Unable to find request')
-    const { request: { address, genesisHash, method, nonce }, resolve, reject } = queued
-    if (!keyringVault.accountExists(address)) {
+    const { request, resolve, reject } = queued
+    if (!keyringVault.accountExists(request.address)) {
       reject(new Error('Unable to find account'))
       return false
     }
-    const payload = new SignaturePayloadRaw({ blockHash: genesisHash, method, nonce })
+    const payload = createType('ExtrinsicPayload', request, { version: request.version })
     keyringVault.unlock(password).then(() => {
-      const pair = keyringVault.getPair(address)
-      const signature = u8aToHex(payload.sign(pair))
+      const pair = keyringVault.getPair(request.address)
+      const signature = payload.sign(pair)
       resolve({
         id,
-        signature
+        ...signature
       })
     })
     return true

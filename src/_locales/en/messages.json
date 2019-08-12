@@ -240,6 +240,15 @@
     "message": "Authorization Request"
   },
   "signing": {
-    "message": "Signing Transaction"
+    "message": "Your signature is requested!"
+  },
+  "signedBy": {
+    "message": "Signed By"
+  },
+  "signingMessageIcon": {
+    "message": "Message"
+  },
+  "signingContent": {
+    "message": "Sign this message to prove ownership of your account!"
   }
 }

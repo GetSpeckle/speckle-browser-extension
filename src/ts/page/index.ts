@@ -1,4 +1,4 @@
-import { InjectedWindow } from '@polkadot/extension-dapp/types'
+import { InjectedWindow } from '@polkadot/extension-inject/types'
 import { MessageTypes } from '../background/types'
 
 import Injected from './Injected'

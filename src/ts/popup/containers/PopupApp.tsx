@@ -18,8 +18,13 @@ import { AuthorizeRequest, SigningRequest } from '../../background/types'
 import { subscribeAuthorize, subscribeSigning } from '../../services/messaging'
 import Authorizing from '../../components/page/Authorizing'
 import Signing from '../../components/page/Signing'
+import { ApiOptions } from '@polkadot/api/types'
+import { Edgeware } from '../../constants/chains'
+import { IdentityTypes } from 'edgeware-node-types/dist/identity'
+import { VotingTypes } from 'edgeware-node-types/dist/voting'
+import { GovernanceTypes } from 'edgeware-node-types/dist/governance'
 
-interface IPopupApp extends StateProps, DispatchProps { }
+interface IPopupProps extends StateProps, DispatchProps { }
 
 interface IPopupState {
   initializing: boolean
@@ -28,7 +33,7 @@ interface IPopupState {
   signRequests: Array<SigningRequest>
 }
 
-class PopupApp extends React.Component<IPopupApp, IPopupState> {
+class PopupApp extends React.Component<IPopupProps, IPopupState> {
 
   state = {
     initializing: true,
@@ -51,7 +56,14 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
       this.setState({ ...this.state, tries: this.state.tries++ })
       const network = networks[settings.network]
       const provider = new WsProvider(network.rpcServer)
-      this.props.createApi(provider)
+      let apiOptions: ApiOptions = { provider }
+      if (network.chain === Edgeware) {
+        apiOptions = {
+          ...apiOptions,
+          types: { ...IdentityTypes, ...VotingTypes, ...GovernanceTypes }
+        }
+      }
+      this.props.createApi(apiOptions)
       if (this.state.tries <= 5) {
         // try to connect in 3 seconds
         setTimeout(this.tryCreateApi, 3000)
@@ -67,10 +79,10 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
         this.props.setLocked(result)
       })
     const checkAccountCreated = walletExists().then(
-        result => {
-          console.log(`isWalletCreated ${result}`)
-          this.props.setCreated(result)
-        }
+      result => {
+        console.log(`isWalletCreated ${result}`)
+        this.props.setCreated(result)
+      }
     )
     Promise.all([
       checkAppState,
@@ -85,7 +97,7 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
     })
   }
 
-  componentDidMount () {
+  componentWillMount () {
     this.initializeApp()
   }
 

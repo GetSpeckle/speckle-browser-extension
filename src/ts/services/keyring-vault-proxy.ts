@@ -78,7 +78,7 @@ export function signExtrinsic (extrinsic: IExtrinsic,
                                address: string,
                                signerOption: SignerOptions) {
   return new Promise<any>((resolve, reject) => {
-    const { blockHash, genesisHash, nonce } = signerOption
+    const { blockHash, genesisHash, nonce, blockNumber } = signerOption
     port.onMessage.addListener(msg => {
       if (msg.method !== FUNCS.SIGN_EXTRINSIC) return
       if (msg.error) {
@@ -92,8 +92,11 @@ export function signExtrinsic (extrinsic: IExtrinsic,
         address,
         blockHash,
         genesisHash,
+        blockNumber,
         method: extrinsic.method.toHex(),
-        nonce
+        era: extrinsic.era,
+        nonce,
+        version: extrinsic.version
       }))
     })
   })

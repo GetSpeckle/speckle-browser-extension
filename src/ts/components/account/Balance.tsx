@@ -3,10 +3,10 @@ import t from '../../services/i18n'
 import { connect } from 'react-redux'
 import { IAppState } from '../../background/store/all'
 import { Title, SecondaryText } from '../basic-components'
-import { ChainProperties } from '@polkadot/types'
 import ApiPromise from '@polkadot/api/promise'
 import { formatBalance } from '@polkadot/util'
 import styled from 'styled-components'
+import { ChainProperties } from '@polkadot/types/interfaces'
 
 class Balance extends React.Component<IBalanceProps, IBalanceState> {
 
@@ -28,8 +28,8 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
       this.api.rpc.system.properties().then(properties => {
         const chainProperties = (properties as ChainProperties)
         formatBalance.setDefaults({
-          decimals: chainProperties.tokenDecimals,
-          unit: chainProperties.tokenSymbol
+          decimals: chainProperties.tokenDecimals.toNumber(),
+          unit: chainProperties.tokenSymbol.toString()
         })
         this.doUpdate()
       })

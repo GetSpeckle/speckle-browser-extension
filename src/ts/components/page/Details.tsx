@@ -1,21 +1,23 @@
 import React from 'react'
 import styled from 'styled-components'
 import fromMetadata from '@polkadot/api-metadata/extrinsics/fromMetadata'
-import { Metadata, Method, ExtrinsicEra } from '@polkadot/types'
+import { GenericCall, Metadata } from '@polkadot/types'
 import { findNetwork } from '../../constants/networks'
 import { formatNumber } from '@polkadot/util'
+import { BlockNumber, ExtrinsicEra } from '@polkadot/types/interfaces'
+import ExtrinsicPayload
+  from '@polkadot/types/primitive/Extrinsic/ExtrinsicPayload'
 
 type MethodJson = {
   args: { [index: string]: any }
 }
 
-type Props = {
-  blockNumber: number,
-  genesisHash: string,
-  isDecoded: boolean,
-  era?: string,
-  method: string,
-  nonce: string,
+interface Props {
+  blockNumber: BlockNumber
+  genesisHash: string
+  isDecoded: boolean
+  method: string
+  payload: ExtrinsicPayload
   url: string
 }
 
@@ -29,9 +31,9 @@ function renderMethod (data: string, meta?: Metadata | null) {
     )
   }
 
-  Method.injectMethods(fromMetadata(meta))
+  GenericCall.injectMethods(fromMetadata(meta))
 
-  const method = new Method(data)
+  const method = new GenericCall(data)
   const json = method.toJSON() as unknown as MethodJson
   const methodData = `${method.sectionName}.${method.methodName}`
   const methodMeta = method.meta && (
@@ -60,7 +62,7 @@ function renderMethod (data: string, meta?: Metadata | null) {
   )
 }
 
-function renderMortality (era: ExtrinsicEra, blockNumber: number): string {
+function renderMortality (era: ExtrinsicEra, blockNumber: BlockNumber): string {
   if (era.isImmortalEra) {
     return 'immortal'
   }
@@ -70,10 +72,15 @@ function renderMortality (era: ExtrinsicEra, blockNumber: number): string {
   return `mortal (birth #${birthBlock}, death #${deathBlock})`
 }
 
-function Details ({ blockNumber, genesisHash, isDecoded, era, method, nonce, url }: Props) {
+function Details ({ blockNumber, genesisHash, isDecoded, method, payload: { era, nonce, tip }, url }
+  : Props) {
   const network = findNetwork(genesisHash)
-  const eera = new ExtrinsicEra(era)
-
+  const tipInfo = !tip.isEmpty && (
+    <tr>
+      <td className='label'>tip</td>
+      <td className='data'>{formatNumber(tip)}</td>
+    </tr>
+  )
   return (
     <table>
       <tbody>
@@ -87,12 +94,13 @@ function Details ({ blockNumber, genesisHash, isDecoded, era, method, nonce, url
         </tr>
         <tr>
           <td className='label'>nonce</td>
-          <td className='data'>{nonce}</td>
+          <td className='data'>{formatNumber(nonce)}</td>
         </tr>
+        {tipInfo}
         {renderMethod(method, (network && isDecoded) ? network.meta : null)}
         <tr>
           <td className='label'>mortality</td>
-          <td className='data'>{renderMortality(eera, blockNumber)}</td>
+          <td className='data'>{renderMortality(era, blockNumber)}</td>
         </tr>
       </tbody>
     </table>

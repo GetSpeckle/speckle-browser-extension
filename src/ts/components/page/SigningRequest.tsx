@@ -4,11 +4,12 @@ import { approveSignRequest, cancelSignRequest } from '../../services/messaging'
 import { Button } from '../basic-components'
 import Details from './Details'
 import Unlock from './Unlock'
+import { createType } from '@polkadot/types'
 
 const SigningRequest = (props) => {
   const {
     isFirst,
-    extrinsic: { address, blockNumber, era, genesisHash, method, nonce },
+    extrinsic,
     signId,
     url
   } = props
@@ -17,17 +18,17 @@ const SigningRequest = (props) => {
       .catch(console.error)
   const onSign = (password: string) =>
     approveSignRequest(signId, password)
-
+  const blockNumber = createType('BlockNumber', extrinsic.blockNumber)
+  const payload = createType('ExtrinsicPayload', extrinsic, { version: extrinsic.version })
   return (
     <div>
-      <div>{address}</div>
+      <div>{extrinsic.address}</div>
       <Details
         blockNumber={blockNumber}
-        era={era}
-        genesisHash={genesisHash}
+        genesisHash={extrinsic.genesisHash}
         isDecoded={isFirst}
-        method={method}
-        nonce={nonce}
+        method={extrinsic.method}
+        payload={payload}
         url={url}
       />
       <Button onClick={onCancel}>Cancel</Button>
