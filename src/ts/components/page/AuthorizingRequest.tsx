@@ -27,8 +27,6 @@ const AuthorizingRequest = (props) => {
       {/* TODO: use the real value */}
       <RequestPanel
         origin={origin}
-        color={'#ffb200'}
-        account={{ address: '5CS2RTKhvoJAPCvctZJUaqC5ywQKGLoYFkK58E6V31VT54ye', name: 'test' }}
       />
 
       <AlertPanel

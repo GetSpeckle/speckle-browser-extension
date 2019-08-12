@@ -1,12 +1,10 @@
 import * as React from 'react'
-import { Icon, Grid } from 'semantic-ui-react'
-import { IAccount } from '../../background/store/wallet';
-import Identicon from 'polkadot-identicon';
+import { Icon, Grid, Image } from 'semantic-ui-react'
+import { connect } from 'react-redux'
+import { IAppState } from '../../background/store/all';
 
-interface IRequestPanelProps {
+interface IRequestPanelProps extends StateProps {
   origin: string
-  color: string
-  account: IAccount
 }
 
 /**
@@ -16,18 +14,18 @@ class RequestPanel extends React.Component<IRequestPanelProps> {
 
   render () {
     const iconStyle = {
-      color: this.props.color,
+      color: this.props.settings.color,
       fontSize: '6em',
       lineHeight: 1,
       verticalAlign: 'middle'
     }
 
     const dotStyle = {
-      color: this.props.color
+      color: this.props.settings.color
     }
 
     const destStyle = {
-      backgroundColor: this.props.color,
+      backgroundColor: this.props.settings.color,
       color: 'white'
     }
 
@@ -46,14 +44,14 @@ class RequestPanel extends React.Component<IRequestPanelProps> {
           <Grid.Column width='7'>
             <div className='request-box' style={destStyle}>
               <div>
-                <Identicon
-                  account={this.props.account.address}
-                  size={80}
-                  className='identicon'
+                <Image
+                  src='/assets/icon-128.png'
+                  style={{ height: '85px', width: 'auto' }}
+                  centered={true}
                 />
               </div>
               <div>
-                {this.props.account.name}
+                Speckle
               </div>
             </div>
 
@@ -64,4 +62,15 @@ class RequestPanel extends React.Component<IRequestPanelProps> {
   }
 }
 
-export default RequestPanel
+const mapStateToProps = (state: IAppState) => {
+  return {
+    settings: state.settings
+  }
+}
+
+type StateProps = ReturnType<typeof mapStateToProps>
+
+const mapDispatchToProps = { }
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(RequestPanel)
