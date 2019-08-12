@@ -318,3 +318,49 @@
     opacity: 0.5;
   }
 }
+
+.ui.icon.message.alert {
+  border-radius: 4px;
+  box-shadow: 0 2px 8px 0 rgba(62, 88, 96, 0.1);
+  background-color: #ffffff;
+  font-family: Nunito;
+  font-size: 12px;
+  font-weight: normal;
+  color: #556267;
+  margin: 10px 0px;
+  padding: 0.5em 1.5em;
+
+}
+
+.ui.icon.message.alert>.icon:not(.close) {
+  width: 1em;
+  font-size: 1.5em;
+}
+
+.ui.fluid.button.narrow {
+  padding: 0.7em 1em;
+}
+
+.ui.fluid.button.minor {
+  background-color: rgb(163, 176, 182);
+  color: white;
+  padding: 0.7em 1em;
+}
+
+.auth-description {
+  text-align: center;
+  color: #556267;
+  font-family: Nunito;
+}
+
+.request-box {
+  width: 120px;
+  height: 110px;
+  padding-top: 4px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px 0 rgba(62, 88, 96, 0.1);
+  background-color: #ffffff;
+  text-align: center;
+  font-family: Nunito;
+  color: #556267;
+}

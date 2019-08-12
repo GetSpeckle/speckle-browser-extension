@@ -4,6 +4,9 @@
 import React from 'react'
 import { approveAuthRequest, rejectAuthRequest } from '../../services/messaging'
 import { Button } from '../basic-components'
+import AlertPanel from './AlertPanel'
+import { Grid, Button as BasicButton } from 'semantic-ui-react'
+import RequestPanel from './RequestPanel'
 
 const AuthorizingRequest = (props) => {
   const [ authId, { origin }, url ] = [...props.request]
@@ -16,19 +19,41 @@ const AuthorizingRequest = (props) => {
 
   return (
     <div>
-      <div>
-        An application, self-identifying as
-        <span>{origin}</span> is requesting access from <span>{url}</span>.
+
+      <div className='auth-description'>
+        {origin} is requesting access to your account
       </div>
-      <Button onClick={onReject}>Reject</Button>
-      <div>
-        Only approve this request if you trust the application.
-        Approving gives the application access to the addresses of your
-        accounts.
-      </div>
-      <Button onClick={onApprove}>
-        Yes, allow this application access
-      </Button>
+
+      {/* TODO: use the real value */}
+      <RequestPanel
+        origin={origin}
+      />
+
+      <AlertPanel
+        color='red'
+        message={'The request is made from ' + url}
+        icon='linkify'
+      />
+
+      <AlertPanel
+        color='red'
+        message='Approving gives access to the address of your accounts'
+        icon='exclamation'
+      />
+
+      <Grid columns='equal'>
+        <Grid.Column>
+          <BasicButton fluid onClick={onReject} className='minor'>
+            Reject
+          </BasicButton>
+        </Grid.Column>
+        <Grid.Column>
+          <Button onClick={onApprove} className='narrow'>
+            Approve Access
+          </Button>
+        </Grid.Column>
+      </Grid>
+
     </div>
   )
 }
