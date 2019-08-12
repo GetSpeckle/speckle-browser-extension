@@ -158,6 +158,8 @@ class Send extends React.Component<ISendProps, ISendState> {
     const payloadValue: ExtrinsicPayloadValue = {
       era: extrinsic.era,
       method: extrinsic.method.toHex(),
+      blockHash: signOptions.blockHash,
+      genesisHash: signOptions.genesisHash,
       nonce: signOptions.nonce,
       tip: 0
     }
