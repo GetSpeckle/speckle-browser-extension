@@ -1,21 +1,25 @@
 import React from 'react'
-
-import SigningRequest from './SigningRequest'
-import { ContentContainer, Section, Title } from '../basic-components'
+// import SigningRequest from './SigningRequest'
+import {
+  ContentContainer,
+  Section,
+  Title
+} from '../basic-components'
 import t from '../../services/i18n'
 import WithLayout from './WithLayout'
+import SignMessage from './SignMessage'
 
-const Signing = (props) => {
-  const { requests } = props
-  const signingRequests = requests.map(([id, extrinsic, url], index) => (
-    <SigningRequest
-      isFirst={index === 0}
-      key={id}
-      extrinsic={extrinsic}
-      signId={id}
-      url={url}
-    />
-  ))
+const Signing = () => {
+  // const { requests } = props
+  // const signingRequests = requests.map(([id, extrinsic, url], index) => (
+  //   <SigningRequest
+  //     isFirst={index === 0}
+  //     key={id}
+  //     extrinsic={extrinsic}
+  //     signId={id}
+  //     url={url}
+  //   />
+  // ))
   return (
       <ContentContainer>
         <Section>
@@ -23,7 +27,9 @@ const Signing = (props) => {
             {t('signing')}
           </Title>
         </Section>
-        {signingRequests}
+        <Section>
+          <SignMessage/>
+        </Section>
       </ContentContainer>
   )
 }
