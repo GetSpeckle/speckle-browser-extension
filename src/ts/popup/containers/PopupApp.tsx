@@ -24,7 +24,7 @@ import { IdentityTypes } from 'edgeware-node-types/dist/identity'
 import { VotingTypes } from 'edgeware-node-types/dist/voting'
 import { GovernanceTypes } from 'edgeware-node-types/dist/governance'
 
-interface IPopupApp extends StateProps, DispatchProps { }
+interface IPopupProps extends StateProps, DispatchProps { }
 
 interface IPopupState {
   initializing: boolean
@@ -33,7 +33,7 @@ interface IPopupState {
   signRequests: Array<SigningRequest>
 }
 
-class PopupApp extends React.Component<IPopupApp, IPopupState> {
+class PopupApp extends React.Component<IPopupProps, IPopupState> {
 
   state = {
     initializing: true,
@@ -97,7 +97,7 @@ class PopupApp extends React.Component<IPopupApp, IPopupState> {
     })
   }
 
-  componentDidMount () {
+  componentWillMount () {
     this.initializeApp()
   }
 

@@ -242,6 +242,9 @@
   "signing": {
     "message": "Your signature is requested!"
   },
+  "signedBy": {
+    "message": "Signed By"
+  },
   "signingMessageIcon": {
     "message": "Message"
   },
