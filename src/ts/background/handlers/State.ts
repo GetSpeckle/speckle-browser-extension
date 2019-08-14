@@ -211,7 +211,7 @@ export default class State {
       }
 
       this.updateIconSign()
-      this.popupOpen(700, 500)
+      this.popupOpen(600, 370)
     })
   }
 }

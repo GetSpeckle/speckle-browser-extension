@@ -11,7 +11,7 @@ interface ISignMessageState {
   networkIconUrl: string
 }
 
-class SignMessage extends React.Component<StateProps, ISignMessageState> {
+class SignMessage extends React.Component<ISignMessageProps, ISignMessageState> {
   constructor (props) {
     super(props)
 
@@ -25,6 +25,7 @@ class SignMessage extends React.Component<StateProps, ISignMessageState> {
   }
 
   render () {
+    const { payload } = this.props
     return (
         <SignMessageGrid centered={true} textAlign='center'>
           <SignMessageGridRow textAlign='left' verticalAlign='top'>
@@ -41,6 +42,9 @@ class SignMessage extends React.Component<StateProps, ISignMessageState> {
           <SignMessageGridRow>
               <Message>
                 {t('signingContent')}
+              </Message>
+              <Message>
+                {payload}
               </Message>
           </SignMessageGridRow>
         </SignMessageGrid>
@@ -128,5 +132,9 @@ const mapStateToProps = (state: IAppState) => {
 }
 
 type StateProps = ReturnType<typeof mapStateToProps>
+
+interface ISignMessageProps extends StateProps {
+  payload?: string
+}
 
 export default connect(mapStateToProps)(SignMessage)
