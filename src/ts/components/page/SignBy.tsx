@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import Identicon from 'polkadot-identicon'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
-import { ColorScheme, colorSchemes } from '../styles/themes'
+import { Color } from '../styles/themes'
 import t from '../../services/i18n'
 import { AccountAddress, Title } from '../basic-components'
 import { getSimpleAccounts } from '../../services/keyring-vault-proxy'
@@ -28,21 +28,25 @@ class SignBy extends React.Component<ISignByProps, ISignByState> {
     })
   }
 
+  static shortenAddress (address) {
+    return address.substr(0, 10) + '...' + address.substr(address.length - 10)
+  }
+
   render () {
     const { settings, address } = this.props
-    const colorScheme = colorSchemes[settings.color]
     return (
       <SignByContainer>
-        <IdenticonContainer colorScheme={colorScheme}>
-          <span>{t('signedBy')}</span>
+        <IdenticonContainer color={settings.color}>
+          <div>{t('signedBy')}</div>
           <Identicon
             account={address}
-            size={80}
+            style={{ marginTop: 10 }}
+            size={50}
           />
         </IdenticonContainer>
         <AccountContainer>
           {this.state.name && <Title>{this.state.name}</Title>}
-          <Address>{address}</Address>
+          <Address>{SignBy.shortenAddress(address)}</Address>
         </AccountContainer>
       </SignByContainer>
     )
@@ -50,46 +54,41 @@ class SignBy extends React.Component<ISignByProps, ISignByState> {
 }
 
 const SignByContainer = styled.div`
-  width: 331px;
   height: 100px;
+  display: flex;
   margin: 0 auto;
   background-color: white;
   border-radius: 4px;
   box-shadow: 0 2px 8px 0 rgba(62, 88, 96, 0.1)
 `
 
-type IdenticonContainerProps = {
-  colorScheme: ColorScheme
+type P = {
+  color: Color
 }
 
 const IdenticonContainer = styled.div`
-  width: 100px;
-  height: 94px;
+  width: 135px;
   font-size: 13px;
   font-weight: bold;
   color: #fbfeff;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
-  object-fit: contain;
-  transform: rotate(-90deg);
   border-radius: 3px;
-  background-image: radial-gradient(
-    circle at 0 0,
-    ${(p: IdenticonContainerProps) => p.colorScheme.stopColorOne},
-    ${(p: IdenticonContainerProps) => p.colorScheme.stopColorTwo}
-  );
+  background-image: ${(p: P) => `url(/assets/background/sign-bg-${p.color}.svg)`};
 `
 
 const AccountContainer = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
 `
 
 const Address = styled(AccountAddress)`
+  margin-top: 10px;
   color: black;
 `
 

@@ -43,7 +43,7 @@ const AuthorizingRequest = (props) => {
 
       <Grid columns='equal'>
         <Grid.Column>
-          <BasicButton fluid onClick={onReject} className='minor'>
+          <BasicButton fluid={true} onClick={onReject} className='minor'>
             Reject
           </BasicButton>
         </Grid.Column>

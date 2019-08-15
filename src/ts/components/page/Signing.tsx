@@ -1,6 +1,5 @@
 import React from 'react'
 import {
-  Button,
   ContentContainer,
   Section,
   Title
@@ -31,14 +30,9 @@ const Signing = (props) => {
             {t('signing')}
           </Title>
         </Section>
-        <Section>
-          <SignMessage/>
-        </Section>
-        <Section>
-          <SignBy address={extrinsic.address} />
-        </Section>
-        <Button onClick={onCancel}>Cancel</Button>
-        <Unlock onSign={onSign} />
+        <SignMessage/>
+        <SignBy address={extrinsic.address} />
+        <Unlock onSign={onSign} onCancel={onCancel} />
       </ContentContainer>
   )
 }
