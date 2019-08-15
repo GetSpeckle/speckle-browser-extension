@@ -5,6 +5,7 @@ import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 import { networks } from '../../constants/networks'
 import { Grid } from 'semantic-ui-react'
+import { formatBalance } from '@polkadot/util'
 
 interface ISignMessageState {
   networkName: string,
@@ -26,6 +27,8 @@ class SignMessage extends React.Component<ISignMessageProps, ISignMessageState> 
 
   render () {
     const { payload } = this.props
+    const data = JSON.parse(payload)
+
     return (
         <SignMessageGrid centered={true} textAlign='center'>
           <SignMessageGridRow textAlign='left' verticalAlign='top'>
@@ -41,10 +44,10 @@ class SignMessage extends React.Component<ISignMessageProps, ISignMessageState> 
           </SignMessageGridRow>
           <SignMessageGridRow>
               <Message>
-                {t('signingContent')}
+                To: {data.dest.substring(0, 8) + '...' + data.dest.substring(data.dest.length - 10)}
               </Message>
               <Message>
-                {payload}
+                Amount: {formatBalance(data.value)}
               </Message>
           </SignMessageGridRow>
         </SignMessageGrid>
@@ -134,7 +137,7 @@ const mapStateToProps = (state: IAppState) => {
 type StateProps = ReturnType<typeof mapStateToProps>
 
 interface ISignMessageProps extends StateProps {
-  payload?: string
+  payload: string
 }
 
 export default connect(mapStateToProps)(SignMessage)
