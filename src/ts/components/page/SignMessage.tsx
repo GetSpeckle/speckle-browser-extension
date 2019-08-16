@@ -10,6 +10,8 @@ import { formatBalance } from '@polkadot/util'
 interface ISignMessageState {
   networkName: string,
   networkIconUrl: string
+  amount: string,
+  address: string
 }
 
 class SignMessage extends React.Component<ISignMessageProps, ISignMessageState> {
@@ -21,13 +23,24 @@ class SignMessage extends React.Component<ISignMessageProps, ISignMessageState> 
 
     this.state = {
       networkName: settings.network,
-      networkIconUrl: iconUrl
+      networkIconUrl: iconUrl,
+      amount: '',
+      address: ''
     }
   }
 
-  render () {
+  componentDidMount () {
     const { payload } = this.props
     const data = JSON.parse(payload)
+    const addr = data.dest.substring(0, 8) + '...' + data.dest.substring(data.dest.length - 10)
+
+    this.setState({ address: addr })
+
+    this.setState({ amount: formatBalance(data.value) })
+
+  }
+
+  render () {
 
     return (
         <SignMessageGrid centered={true} textAlign='center'>
@@ -44,10 +57,10 @@ class SignMessage extends React.Component<ISignMessageProps, ISignMessageState> 
           </SignMessageGridRow>
           <SignMessageGridRow>
               <Message>
-                To: {data.dest.substring(0, 8) + '...' + data.dest.substring(data.dest.length - 10)}
+                To: {this.state.address}
               </Message>
               <Message>
-                Amount: {formatBalance(data.value)}
+                Amount: {this.state.amount}
               </Message>
           </SignMessageGridRow>
         </SignMessageGrid>
@@ -56,9 +69,22 @@ class SignMessage extends React.Component<ISignMessageProps, ISignMessageState> 
 }
 
 const NetworkIcon = styled.img`
-  width: 19px;
+  float: right;
   height: 20px;
   object-fit: contain;
+`
+
+const Network = styled.span`
+  float: right;
+  height: 18px;
+  font-family: Nunito;
+  font-size: 13px;
+  font-weight: 600;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #000000;
 `
 
 const Message = styled.span`
@@ -72,19 +98,6 @@ const Message = styled.span`
   line-height: normal;
   letter-spacing: normal;
   color: #556267;
-`
-
-const Network = styled.span`
-  width: 62px;
-  height: 18px;
-  font-family: Nunito;
-  font-size: 13px;
-  font-weight: 600;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: normal;
-  letter-spacing: normal;
-  color: #000000;
 `
 
 const Caption = styled.span`
@@ -110,8 +123,9 @@ const Icon = styled.div`
 `
 
 const SignMessageGrid = styled(Grid)` && {
-  margin-top: 18px;
-  height: 133px;
+  display: flex;
+  height: 100px;
+  margin: 0 auto;
   border-radius: 4px;
   box-shadow: 0 2px 8px 0 rgba(62, 88, 96, 0.1);
   background-color: #ffffff;

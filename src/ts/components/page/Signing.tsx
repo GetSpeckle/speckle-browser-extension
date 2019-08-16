@@ -47,8 +47,12 @@ const Signing = (props) => {
             {t('signing')}
           </Title>
         </Section>
-        <SignMessage payload={payload}/>
-        <SignBy address={extrinsic.address} />
+        <Section>
+          <SignMessage payload={payload}/>
+        </Section>
+        <Section>
+          <SignBy address={extrinsic.address} />
+        </Section>
         <Unlock onSign={onSign} onCancel={onCancel} />
       </ContentContainer>
   )
