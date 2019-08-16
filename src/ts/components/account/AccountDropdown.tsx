@@ -237,17 +237,28 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
               basic={true}
             />
           </Tooltip>
-          <Icon
-            name='qrcode'
-            size={'small'}
-            style={{ 'marginLeft': '5px', 'color': 'white', 'cursor': 'pointer' }}
-            onClick={this.handleClickQR}
-          />
+          <QrIconContainer>
+            <Icon
+              name='qrcode'
+              style={{ margin: 0 }}
+              onClick={this.handleClickQR}
+            />
+          </QrIconContainer>
         </AccountSection>
       </Float>
     )
   }
 }
+
+const QrIconContainer = styled.div`
+  display: inline
+  border: 1px solid white
+  padding: 0 2px
+  margin-left: 5px
+  color: white
+  cursor: pointer
+  border-radius: 4px
+`
 
 export const AccountSection = styled.div`
   width: 100%
