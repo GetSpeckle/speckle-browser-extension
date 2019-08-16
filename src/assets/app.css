@@ -364,3 +364,8 @@
   font-family: Nunito;
   color: #556267;
 }
+
+.ui.compact.icon.button {
+  padding: 0.2em;
+  margin-left: 5px;
+}

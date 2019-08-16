@@ -76,7 +76,7 @@ export const StyledPassword = styled(Input).attrs({ fluid: true })`
 
 export const AccountAddress = styled.span`
   height: 14px
-  font-size: 10px
+  font-size: 12px
   text-align: center
   color: #fff
 `
