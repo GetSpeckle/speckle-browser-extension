@@ -120,7 +120,7 @@ class Send extends React.Component<ISendProps, ISendState> {
     this.setState({ amount: event.target.value })
   }
 
-  changeFee (fee, creationFee, existentialDeposit, recipientAvailable) {
+  changeFee = (fee, creationFee, existentialDeposit, recipientAvailable) => {
     this.setState({
       fee: fee,
       creationFee: creationFee,
@@ -305,8 +305,7 @@ class Send extends React.Component<ISendProps, ISendState> {
             <Fee
               address={this.props.settings.selectedAccount.address}
               toAddress={this.state.toAddress}
-              /* tslint:disable-next-line:jsx-no-bind */
-              handleFeeChange={this.changeFee.bind(this)}
+              handleFeeChange={this.changeFee}
             />
           </AccountSection>
           <Section>
