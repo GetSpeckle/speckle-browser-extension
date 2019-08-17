@@ -114,3 +114,8 @@ export const FooterLink = connect(mapStateToProps)(StyledLink)
 export const Center = styled.div`
   text-align: center
 `
+
+export const ErrorMessage = styled.div`
+  color: #f55
+  font-size: 12px
+`

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import t from '../../services/i18n'
-import { importAccountFromJson, decodeAddress } from '../../services/keyring-vault-proxy'
+import { importAccountFromJson } from '../../services/keyring-vault-proxy'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import { Form, Message } from 'semantic-ui-react'
@@ -18,6 +18,7 @@ import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 import { HOME_ROUTE } from '../../constants/routes'
 import { saveSettings } from '../../background/store/settings'
+import { decodeAddress } from '@polkadot/util-crypto'
 
 interface IImportJsonProps extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -69,21 +70,22 @@ class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
         this.setState({ ...this.state, errorMessage: e.message })
         return
       }
-      decodeAddress(json.address, true).then(decodeAddress => {
-        if (this.isFileValid(decodeAddress, json)) {
+      try {
+        const decodedAddress = decodeAddress(json.address, true)
+        if (this.isFileValid(decodedAddress, json)) {
           this.setState({ ...this.state, json: json, errorMessage: '' })
         } else {
           this.setState({ ...this.state, errorMessage: t('error.keystore.invalid') })
         }
-      }).catch(err => { // decodeAddress throw error
+      } catch (err) { // decodeAddress throw error
         this.setState({ ...this.state, errorMessage: err.message })
-      })
+      }
     }
     reader.readAsArrayBuffer(file)
   }
 
-  private isFileValid (decodeAddress, json) {
-    return decodeAddress.length === 32
+  private isFileValid (decodedAddress, json) {
+    return decodedAddress.length === 32
       && isHex(json.encoded) && isObject(json.meta)
       && (Array.isArray(json.encoding.content)
         ? json.encoding.content[0] === 'pkcs8'
@@ -103,6 +105,15 @@ class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
     return fileName.substring(0, 5) + '...' + fileName.substring(fileName.length - 10)
   }
 
+  uploadArea = (getRootProps, getInputProps) => {
+    return (
+      <UploadArea {...getRootProps()}>
+        <input {...getInputProps()} />
+        {this.state.file ? this.shortFileName() : t('fileUpload')}
+      </UploadArea>
+    )
+  }
+
   render () {
     return (
       <ContentContainer>
@@ -116,12 +127,7 @@ class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
         <Form>
           <Section>
             <Dropzone onDrop={this.handleFileUpload}>
-              {({ getRootProps, getInputProps }) => (
-                <UploadArea {...getRootProps()}>
-                  <input {...getInputProps()} />
-                  {this.state.file ? this.shortFileName() : t('fileUpload')}
-                </UploadArea>
-              )}
+              {({ getRootProps, getInputProps }) => this.uploadArea(getRootProps, getInputProps)}
             </Dropzone>
           </Section>
           <Form.Input

@@ -250,5 +250,8 @@
   },
   "signingContent": {
     "message": "Sign this message to prove ownership of your account!"
+  },
+  "invalidAddress": {
+    "message": "Invalid address"
   }
 }

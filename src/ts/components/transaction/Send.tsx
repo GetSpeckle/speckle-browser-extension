@@ -4,7 +4,12 @@ import { signExtrinsic } from '../../services/keyring-vault-proxy'
 import { setError } from '../../background/store/error'
 import ApiPromise from '@polkadot/api/promise'
 import { RouteComponentProps, withRouter } from 'react-router'
-import { Button as StyledButton, ContentContainer, Section } from '../basic-components'
+import {
+  Button as StyledButton,
+  ContentContainer,
+  Section,
+  ErrorMessage
+} from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 import 'react-tippy/dist/tippy.css'
@@ -29,6 +34,7 @@ import { SubmittableResult } from '@polkadot/api/SubmittableExtrinsic'
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types'
 import { HOME_ROUTE } from '../../constants/routes'
 import { EventRecord, Index, Balance as BalanceType } from '@polkadot/types/interfaces'
+import { decodeAddress } from '@polkadot/util-crypto'
 
 interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {}
 
@@ -266,8 +272,15 @@ class Send extends React.Component<ISendProps, ISendState> {
   }
 
   readyToSubmit = (): boolean => {
-    return !!this.state.toAddress && this.state.toAddress.length === 48
-      && !!this.state.amount && this.state.hasAvailable
+    return this.isToAddressValid() && !!this.state.amount && this.state.hasAvailable
+  }
+
+  isToAddressValid = (): boolean => {
+    try {
+      return decodeAddress(this.state.toAddress).length === 32
+    } catch (e) {
+      return false
+    }
   }
 
   render () {
@@ -300,6 +313,7 @@ class Send extends React.Component<ISendProps, ISendState> {
           <Amount handleAmountChange={this.changeAmount} handleDigitChange={this.changeSiUnit}/>
           <div style={{ height: 27 }} />
           <ToAddress handleAddressChange={this.changeAddress}/>
+          {this.isToAddressValid() || <ErrorMessage>{t('invalidAddress')}</ErrorMessage>}
           <div style={{ height: 27 }} />
           <AccountSection>
             <Fee

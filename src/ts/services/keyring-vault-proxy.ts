@@ -1,8 +1,6 @@
 import { browser } from 'webextension-polyfill-ts'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import * as FUNCS from '../constants/keyring-vault-funcs'
-import { cryptoWaitReady } from '@polkadot/util-crypto'
-import Keyring from '@polkadot/keyring'
 import { SignerOptions } from '@polkadot/api/types'
 import { IExtrinsic } from '@polkadot/types/types'
 import { PORT_KEYRING } from '../constants/ports'
@@ -231,13 +229,5 @@ export function importAccountFromJson (json: KeyringPair$Json, password?: string
       json: json,
       password: password
     })
-  })
-}
-
-// TODO check if ignoreChecksum is necessary anymore
-export function decodeAddress (key: string | Uint8Array, ignoreChecksum?: boolean):
-  Promise<Uint8Array> {
-  return cryptoWaitReady().then(() => {
-    return new Keyring({ type: 'sr25519' }).decodeAddress(key, ignoreChecksum)
   })
 }
