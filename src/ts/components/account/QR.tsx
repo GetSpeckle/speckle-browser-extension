@@ -12,6 +12,7 @@ import 'react-tippy/dist/tippy.css'
 import styled from 'styled-components'
 import AccountDropdown from '../account/AccountDropdown'
 import t from '../../services/i18n'
+import { HOME_ROUTE } from '../../constants/routes'
 
 interface IQRProps extends StateProps, RouteComponentProps {
 }
@@ -25,7 +26,7 @@ class QR extends React.Component<IQRProps> {
 
     return (
       <ContentContainer>
-        <AccountDropdown />
+        <AccountDropdown qrDestination={HOME_ROUTE}/>
         <AccountSection>
           <Balance address={this.props.settings.selectedAccount.address}/>
         </AccountSection>

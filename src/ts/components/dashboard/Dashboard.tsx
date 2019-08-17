@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { getAccounts, lockWallet } from '../../services/keyring-vault-proxy'
 import {
-  LOGIN_ROUTE
+  LOGIN_ROUTE, QR_ROUTE
 } from '../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router'
 import {
@@ -146,7 +146,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
 
     return (
       <ContentContainer>
-        <AccountDropdown />
+        <AccountDropdown qrDestination={QR_ROUTE} />
         <AccountSection>
           <Identicon
             account={this.props.settings.selectedAccount.address}

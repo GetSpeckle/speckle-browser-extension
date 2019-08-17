@@ -2,8 +2,7 @@ import * as React from 'react'
 import { getAccounts } from '../../services/keyring-vault-proxy'
 import {
   GENERATE_PHRASE_ROUTE,
-  IMPORT_OPTIONS_ROUTE,
-  QR_ROUTE
+  IMPORT_OPTIONS_ROUTE
 } from '../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router'
 import {
@@ -18,12 +17,13 @@ import Identicon from 'polkadot-identicon'
 import { saveSettings } from '../../background/store/settings'
 import 'react-tippy/dist/tippy.css'
 import { Tooltip } from 'react-tippy'
-import { Dropdown, Icon, Popup } from 'semantic-ui-react'
+import { Button, Dropdown, Icon, Popup } from 'semantic-ui-react'
 import { colorSchemes } from '../styles/themes'
 import styled from 'styled-components'
 import { getTransactions } from '../../background/store/transaction'
 
 interface IAccountDropdownProps extends StateProps, RouteComponentProps, DispatchProps {
+  qrDestination?: string
 }
 
 interface IAccountDropdownState {
@@ -153,7 +153,7 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
   }
 
   handleClickQR = () => {
-    this.props.history.push(QR_ROUTE)
+    this.props.qrDestination && this.props.history.push(this.props.qrDestination)
   }
 
   componentWillMount () {
@@ -237,14 +237,23 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
               basic={true}
             />
           </Tooltip>
-          <Icon
-            name='qrcode'
-            size={'small'}
-            style={{ 'marginLeft': '5px', 'color': 'white', 'cursor': 'pointer' }}
-            onClick={this.handleClickQR}
-          />
+          {this.renderQrIcon()}
         </AccountSection>
       </Float>
+    )
+  }
+
+  renderQrIcon () {
+    if (!this.props.qrDestination) return null
+    return (
+      <Button
+        compact={true}
+        inverted={true}
+        basic={true}
+        icon='qrcode'
+        color='vk'
+        onClick={this.handleClickQR}
+      />
     )
   }
 }
