@@ -39,7 +39,7 @@
     "message": "I Accept Terms Of Service"
   },
   "passwordDescription": {
-    "message": "To make a secure entry to your wallet, create a new password"
+    "message": "Enter a password with a minimum of 8 characters, which will be used to sign into your account"
   },
   "mnemonic": {
     "message": "Mnemonic"
