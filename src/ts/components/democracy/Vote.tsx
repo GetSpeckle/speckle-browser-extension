@@ -248,7 +248,7 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
   }
 
   componentDidMount (): void {
-    setInterval(this.updateVote, 3000)
+    setInterval(this.updateVote, 1000)
   }
 
   componentWillUnmount (): void {
