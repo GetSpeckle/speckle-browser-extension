@@ -5,6 +5,7 @@ import { mnemonicGenerate, cryptoWaitReady, mnemonicValidate } from '@polkadot/u
 import t from '../../services/i18n'
 import { SimpleAccounts, MessageExtrinsicSign } from '../types'
 import { createType } from '@polkadot/types'
+import { VALIDITY_INTERVAL } from '../../constants/config'
 
 const VAULT_KEY: string = 'speckle-vault'
 
@@ -37,7 +38,7 @@ class KeyringVault {
   clearTempPassword (): void {
     setTimeout(() => {
       this._tempPassword = undefined
-    }, 300 * 1000) // 5 minutes
+    }, VALIDITY_INTERVAL)
   }
 
   isLocked (): boolean {
@@ -100,7 +101,7 @@ class KeyringVault {
       // Clear interval for _mnemonic
       setTimeout(() => {
         this.clearMnemonic()
-      }, 300 * 1000) // 5 minutes
+      }, VALIDITY_INTERVAL)
     }
     return this._mnemonic
   }
