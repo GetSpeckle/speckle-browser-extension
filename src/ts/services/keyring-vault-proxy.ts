@@ -247,3 +247,14 @@ export function isMnemonicGenerated (): Promise<string> {
     port.postMessage({ method: FUNCS.IS_MNEMONIC_GENERATED })
   })
 }
+
+export function getExpiryTimeLeft (): Promise<number> {
+  return new Promise<number>(resolve => {
+    port.onMessage.addListener(msg => {
+      if (msg.method === FUNCS.GET_EXPIRY_TIME_LEFT) {
+        resolve(msg.result)
+      }
+    })
+    port.postMessage({ method: FUNCS.GET_EXPIRY_TIME_LEFT })
+  })
+}

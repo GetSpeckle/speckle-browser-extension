@@ -12,9 +12,9 @@ import {
   Button as StyledButton,
   ContentContainer,
   TopSection,
-  Center,
   SecondaryText
 } from '../basic-components'
+import { parseTimeLeft } from '../../constants/utils'
 
 interface IGeneratePhraseProps extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -110,6 +110,8 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
   }
 
   render () {
+    const { expiryTimeLeft } = this.props.wallet
+
     return (
       <ContentContainer>
         <TopSection>
@@ -136,7 +138,7 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
             onClick={this.selectAll}
           />
 
-          <Center>
+          <div style={{ textAlign: expiryTimeLeft > 0 ? 'left' : 'center' }}>
             <Popup
               trigger={<Button><Icon name='copy' />{t('copyText')}</Button>}
               content={t('copyTextMessage')}
@@ -145,7 +147,13 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
               onOpen={this.copyText}
               position='top center'
             />
-          </Center>
+            {expiryTimeLeft > 0 && (
+              <div style={{ float: 'right', lineHeight: '36px' }}>
+                <i className='clock outline icon' />
+                {parseTimeLeft(expiryTimeLeft)} left
+              </div>
+            )}
+          </div>
 
           <Divider />
 

@@ -15,16 +15,21 @@ import {
 } from '../basic-components'
 import { setNewPassword } from '../../background/store/wallet'
 import { setError } from '../../background/store/error'
-import { getTempPassword, setTempPassword } from '../../services/keyring-vault-proxy'
+import {
+  getTempPassword,
+  setTempPassword
+} from '../../services/keyring-vault-proxy'
+import { parseTimeLeft } from '../../constants/utils'
+import { IAppState } from '../../background/store/all'
 
-interface ICreatePasswordProps extends DispatchProps, RouteComponentProps {}
+interface ICreatePasswordProps extends StateProps, DispatchProps, RouteComponentProps {}
 
 interface ICreatePasswordState {
   newPassword: string,
   confirmPassword: string,
   errorMessage?: string,
   showNewPassword: boolean,
-  showConfirmNewPassword: boolean,
+  showConfirmNewPassword: boolean
 }
 
 class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswordState> {
@@ -38,6 +43,7 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
 
   async componentDidMount () {
     const tempPassword = await getTempPassword()
+
     if (tempPassword) {
       this.setState({
         newPassword: tempPassword,
@@ -82,6 +88,7 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
 
   render () {
     const { showNewPassword, showConfirmNewPassword } = this.state
+    const { expiryTimeLeft } = this.props.wallet
 
     return (
       <ContentContainer>
@@ -118,6 +125,13 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
           </Message>
         </Section>
 
+        {expiryTimeLeft > 0 && (
+          <Section>
+            <i className='clock outline icon' />
+            {parseTimeLeft(expiryTimeLeft)} left
+          </Section>
+        )}
+
         <Section>
           <Button onClick={this.handleClick}>
             {t('Create Account')}
@@ -127,9 +141,16 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
     )
   }
 }
+const mapStateToProps = (state: IAppState) => {
+  return {
+    wallet: state.wallet
+  }
+}
 
 const mapDispatchToProps = { setNewPassword, setError }
 
+type StateProps = ReturnType<typeof mapStateToProps>
+
 type DispatchProps = typeof mapDispatchToProps
 
-export default withRouter(connect(null, mapDispatchToProps)(CreatePassword))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(CreatePassword))

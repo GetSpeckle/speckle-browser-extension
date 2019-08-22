@@ -1,1 +1,1 @@
-export const VALIDITY_INTERVAL = 300 * 1000 // 5 minutes
+export const VALIDITY_INTERVAL = 300 // 5 minutes/300 seconds

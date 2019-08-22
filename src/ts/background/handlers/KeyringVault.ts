@@ -154,6 +154,12 @@ const handle = (msg, port: Runtime.Port) => {
         result: keyringVault.isMnemonicGenerated()
       })
       break
+    case FUNCS.GET_EXPIRY_TIME_LEFT:
+      port.postMessage({
+        method: FUNCS.GET_EXPIRY_TIME_LEFT,
+        result: keyringVault.getExpiryTimeLeft()
+      })
+      break
     default:
       break
   }
