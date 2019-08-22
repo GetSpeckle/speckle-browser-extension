@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Icon, Grid, Image } from 'semantic-ui-react'
 import { connect } from 'react-redux'
 import { IAppState } from '../../background/store/all';
+import { colorSchemes } from '../styles/themes';
 
 interface IRequestPanelProps extends StateProps {
   origin: string
@@ -14,18 +15,18 @@ class RequestPanel extends React.Component<IRequestPanelProps> {
 
   render () {
     const iconStyle = {
-      color: this.props.settings.color,
+      color: colorSchemes[this.props.settings.color].backgroundColor,
       fontSize: '6em',
       lineHeight: 1,
       verticalAlign: 'middle'
     }
 
     const dotStyle = {
-      color: this.props.settings.color
+      color: colorSchemes[this.props.settings.color].backgroundColor
     }
 
     const destStyle = {
-      backgroundColor: this.props.settings.color,
+      backgroundColor: colorSchemes[this.props.settings.color].backgroundColor,
       color: 'white'
     }
 
@@ -71,6 +72,5 @@ const mapStateToProps = (state: IAppState) => {
 type StateProps = ReturnType<typeof mapStateToProps>
 
 const mapDispatchToProps = { }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(RequestPanel)
