@@ -9,6 +9,7 @@ import { IExtrinsic } from '@polkadot/types/types'
 import { DerivedFees } from '@polkadot/api-derive/types'
 import BN from 'bn.js'
 import { Balance, ChainProperties } from '@polkadot/types/interfaces'
+import U32 from '@polkadot/types/primitive/U32'
 
 const LENGTH_PUBLICKEY = 32 + 1 // publicKey + prefix
 const LENGTH_SIGNATURE = 64
@@ -48,8 +49,8 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
       this.api.rpc.system.properties().then(properties => {
         const chainProperties = (properties as ChainProperties)
         formatBalance.setDefaults({
-          decimals: chainProperties.tokenDecimals.toNumber(),
-          unit: chainProperties.tokenSymbol.toString()
+          decimals: chainProperties.tokenDecimals.unwrapOr(new U32(15)).toNumber(),
+          unit: chainProperties.tokenSymbol.unwrapOr('DEV').toString()
         })
         this.doUpdate()
       })
