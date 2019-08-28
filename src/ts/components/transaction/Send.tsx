@@ -159,7 +159,8 @@ class Send extends React.Component<ISendProps, ISendState> {
       blockNumber: await this.api.query.system.number() as unknown as BN,
       blockHash: this.api.genesisHash,
       genesisHash: this.api.genesisHash,
-      nonce: await this.api.query.system.accountNonce(currentAddress) as Index
+      nonce: await this.api.query.system.accountNonce(currentAddress) as Index,
+      runtimeVersion: this.api.runtimeVersion
     }
     const payloadValue: ExtrinsicPayloadValue = {
       era: extrinsic.era,
@@ -167,7 +168,8 @@ class Send extends React.Component<ISendProps, ISendState> {
       blockHash: signOptions.blockHash,
       genesisHash: signOptions.genesisHash,
       nonce: signOptions.nonce,
-      tip: 0
+      tip: 0,
+      specVersion: this.api.runtimeVersion.specVersion.toNumber()
     }
     signExtrinsic(extrinsic, currentAddress, signOptions).then(signature => {
       const signedExtrinsic = extrinsic.addSignature(
