@@ -22,6 +22,7 @@ import { ApiOptions } from '@polkadot/api/types'
 import { Edgeware } from '../../constants/chains'
 import { IdentityTypes } from 'edgeware-node-types/dist/identity'
 import { VotingTypes } from 'edgeware-node-types/dist/voting'
+import { SignalingTypes } from 'edgeware-node-types/dist/signaling'
 
 interface IPopupProps extends StateProps, DispatchProps { }
 
@@ -59,7 +60,7 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
       if (network.chain === Edgeware) {
         apiOptions = {
           ...apiOptions,
-          types: { ...IdentityTypes, ...VotingTypes }
+          types: { ...IdentityTypes, ...VotingTypes, ...SignalingTypes }
         }
       }
       this.props.createApi(apiOptions)
