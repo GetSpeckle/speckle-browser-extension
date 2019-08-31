@@ -2,7 +2,7 @@ import {
   AuthorizeRequest,
   MessageAuthorize,
   MessageExtrinsicSign,
-  MessageExtrinsicSign$Response,
+  MessageExtrinsicSignResponse,
   SigningRequest
 } from '../types'
 import { Windows } from 'webextension-polyfill-ts'
@@ -32,7 +32,7 @@ type AuthUrls = {
 type SignRequest = {
   id: string,
   request: MessageExtrinsicSign,
-  resolve: (result: MessageExtrinsicSign$Response) => void,
+  resolve: (result: MessageExtrinsicSignResponse) => void,
   reject: (error: Error) => void,
   url: string
 }
@@ -118,7 +118,7 @@ export default class State {
   }
 
   private signComplete = (id: string, fn: Function) => {
-    return (result: MessageExtrinsicSign$Response | Error): void => {
+    return (result: MessageExtrinsicSignResponse | Error): void => {
       delete this._signRequests[id]
       this.updateIconSign(true)
 
@@ -163,7 +163,7 @@ export default class State {
     this.updateIcon(shouldClose)
   }
 
-  async authorizeUrl (url: string, request: MessageAuthorize): Promise<boolean> {
+  public async authorizeUrl (url: string, request: MessageAuthorize): Promise<boolean> {
     const idStr = this.stripUrl(url)
 
     if (this._authUrls[idStr]) {
@@ -190,6 +190,15 @@ export default class State {
     })
   }
 
+  public ensureUrlAuthorized (url: string): boolean {
+    const entry = this._authUrls[this.stripUrl(url)]
+
+    assert(entry, `The source ${url} has not been enabled yet`)
+    assert(entry.isAllowed, `The source ${url} is not allowed to interact with this extension`)
+
+    return true
+  }
+
   getAuthRequest (id: string): AuthRequest {
     return this._authRequests[id]
   }
@@ -198,7 +207,7 @@ export default class State {
     return this._signRequests[id]
   }
 
-  signQueue (url: string, request: MessageExtrinsicSign): Promise<MessageExtrinsicSign$Response> {
+  signQueue (url: string, request: MessageExtrinsicSign): Promise<MessageExtrinsicSignResponse> {
     const id = getId()
 
     return new Promise((resolve, reject) => {

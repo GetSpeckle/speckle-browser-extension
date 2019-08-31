@@ -30,7 +30,7 @@ import {
   getTransactions,
   upsertTransaction
 } from '../../background/store/transaction'
-import { SubmittableResult } from '@polkadot/api/SubmittableExtrinsic'
+import { SubmittableResult } from '@polkadot/api'
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types'
 import { HOME_ROUTE } from '../../constants/routes'
 import { EventRecord, Index, Balance as BalanceType } from '@polkadot/types/interfaces'

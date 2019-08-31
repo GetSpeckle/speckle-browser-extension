@@ -43,7 +43,7 @@
       "matches": [
         "*://*/*"
       ],
-      "run_at": "document_end"
+      "run_at": "document_start"
     }
   ]
 }
