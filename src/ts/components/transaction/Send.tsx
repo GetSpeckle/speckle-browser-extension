@@ -253,8 +253,10 @@ class Send extends React.Component<ISendProps, ISendState> {
           clearTimeout(sendTimer)
         }
       }
-    }).catch(() => {
+    }).catch((err) => {
+      console.log('Error', err)
       txItem.status = 'Failure'
+      this.setState({ isLoading: false })
       txItem.updateTime = new Date().getTime()
       this.props.upsertTransaction(address, txItem, this.props.transactions)
       this.props.setError('Failed to send the transaction')
