@@ -88,7 +88,7 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
 
   render () {
     const { showNewPassword, showConfirmNewPassword } = this.state
-    const { expiryTimeLeft } = this.props.wallet
+    const { accountSetupTimeout } = this.props.wallet
 
     return (
       <ContentContainer>
@@ -125,10 +125,10 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
           </Message>
         </Section>
 
-        {expiryTimeLeft > 0 && (
+        {accountSetupTimeout > 0 && (
           <Section>
             <i className='clock outline icon' />
-            {parseTimeLeft(expiryTimeLeft)} left
+            {parseTimeLeft(accountSetupTimeout)} left
           </Section>
         )}
 

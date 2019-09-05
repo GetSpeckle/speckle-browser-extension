@@ -248,13 +248,13 @@ export function isMnemonicGenerated (): Promise<string> {
   })
 }
 
-export function getExpiryTimeLeft (): Promise<number> {
+export function getAccountSetupTimeout (): Promise<number> {
   return new Promise<number>(resolve => {
     port.onMessage.addListener(msg => {
-      if (msg.method === FUNCS.GET_EXPIRY_TIME_LEFT) {
+      if (msg.method === FUNCS.GET_ACCOUNT_SETUP_TIMEOUT) {
         resolve(msg.result)
       }
     })
-    port.postMessage({ method: FUNCS.GET_EXPIRY_TIME_LEFT })
+    port.postMessage({ method: FUNCS.GET_ACCOUNT_SETUP_TIMEOUT })
   })
 }

@@ -7,7 +7,7 @@ export const ACTION_TYPES = {
   SET_ACCOUNTS: 'SET_ACCOUNTS',
   SET_NEW_PASSWORD: 'SET_NEW_PASSWORD',
   SET_IS_CREATING_ACCOUNT: 'SET_IS_CREATING_ACCOUNT',
-  SET_EXPIRY_TIME_LEFT: 'SET_EXPIRY_TIME_LEFT'
+  SET_ACCOUNT_SETUP_TIMEOUT: 'SET_ACCOUNT_SETUP_TIMEOUT'
 }
 
 export interface IAccount {
@@ -57,9 +57,9 @@ export function setIsCreatingAccount (isCreatingAccount: boolean): AnyAction {
   }
 }
 
-export function setExpiryTimeLeft (expiryTimeLeft: number): AnyAction {
+export function setAccountSetupTimeout (accountSetupTimeout: number): AnyAction {
   return {
-    type: ACTION_TYPES.SET_EXPIRY_TIME_LEFT,
-    payload: expiryTimeLeft
+    type: ACTION_TYPES.SET_ACCOUNT_SETUP_TIMEOUT,
+    payload: accountSetupTimeout
   }
 }

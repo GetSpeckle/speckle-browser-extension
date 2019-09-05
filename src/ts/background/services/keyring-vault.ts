@@ -16,8 +16,8 @@ class KeyringVault {
   private _tempPassword?: string
   private _mnemonic?: string
   private simpleAccounts?: SimpleAccounts
-  private _expiryTimeLeft = 0
-  private _expiryTimeLeftTimerId = 0
+  private _accountSetupTimeout = 0
+  private _accountSetupTimeoutTimerId = 0
 
   private get keyring (): KeyringInstance {
     if (this._keyring) {
@@ -46,26 +46,26 @@ class KeyringVault {
     }, VALIDITY_INTERVAL * 1000)
   }
 
-  getExpiryTimeLeft (): number {
-    if (this._expiryTimeLeft < 0 && this._expiryTimeLeftTimerId > 0) {
+  getAccountSetupTimeout (): number {
+    if (this._accountSetupTimeout < 0 && this._accountSetupTimeoutTimerId > 0) {
       this.clearExpiryTimer()
     }
 
-    return this._expiryTimeLeft
+    return this._accountSetupTimeout
   }
 
   startExpiryTimer (): void {
-    this._expiryTimeLeft = VALIDITY_INTERVAL
+    this._accountSetupTimeout = VALIDITY_INTERVAL
 
-    this._expiryTimeLeftTimerId = window.setInterval(() => {
-      this._expiryTimeLeft = (this._expiryTimeLeft as number) - 1
+    this._accountSetupTimeoutTimerId = window.setInterval(() => {
+      this._accountSetupTimeout = (this._accountSetupTimeout as number) - 1
     }, 1000)
   }
 
   clearExpiryTimer (): void {
-    clearInterval(this._expiryTimeLeftTimerId)
-    this._expiryTimeLeft = 0
-    this._expiryTimeLeftTimerId = 0
+    clearInterval(this._accountSetupTimeoutTimerId)
+    this._accountSetupTimeout = 0
+    this._accountSetupTimeoutTimerId = 0
   }
 
   isLocked (): boolean {
@@ -125,7 +125,7 @@ class KeyringVault {
     if (!this._mnemonic) {
       this._mnemonic = mnemonicGenerate()
 
-      if (this._expiryTimeLeftTimerId === 0) {
+      if (this._accountSetupTimeoutTimerId === 0) {
         // Start timer for mnemonic expiry
         this.startExpiryTimer()
       }

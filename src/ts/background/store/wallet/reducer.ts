@@ -9,13 +9,13 @@ export interface IWallet {
   newPassword?: string,
   newPhrase?: string,
   newAccountName?: string,
-  expiryTimeLeft: number
+  accountSetupTimeout: number
 }
 
 const initialState: IWallet = {
   locked: true,
   created: false,
-  expiryTimeLeft: 0
+  accountSetupTimeout: 0
 }
 
 const wallet: Reducer<IWallet, AnyAction> = (state = initialState, action) => {
@@ -42,8 +42,8 @@ const wallet: Reducer<IWallet, AnyAction> = (state = initialState, action) => {
     case ACTION_TYPES.SET_IS_CREATING_ACCOUNT:
       return { ...state, isCreatingAccount: action.payload }
 
-    case ACTION_TYPES.SET_EXPIRY_TIME_LEFT:
-      return { ...state, expiryTimeLeft: action.payload }
+    case ACTION_TYPES.SET_ACCOUNT_SETUP_TIMEOUT:
+      return { ...state, accountSetupTimeout: action.payload }
 
     default:
       return state

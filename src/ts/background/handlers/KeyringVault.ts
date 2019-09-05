@@ -154,10 +154,10 @@ const handle = (msg, port: Runtime.Port) => {
         result: keyringVault.isMnemonicGenerated()
       })
       break
-    case FUNCS.GET_EXPIRY_TIME_LEFT:
+    case FUNCS.GET_ACCOUNT_SETUP_TIMEOUT:
       port.postMessage({
-        method: FUNCS.GET_EXPIRY_TIME_LEFT,
-        result: keyringVault.getExpiryTimeLeft()
+        method: FUNCS.GET_ACCOUNT_SETUP_TIMEOUT,
+        result: keyringVault.getAccountSetupTimeout()
       })
       break
     default:

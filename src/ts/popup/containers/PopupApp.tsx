@@ -9,7 +9,7 @@ import { themes } from '../../components/styles/themes'
 import { Routes } from '../../routes'
 import { getSettings } from '../../background/store/settings'
 import {
-  getExpiryTimeLeft,
+  getAccountSetupTimeout,
   isMnemonicGenerated,
   isWalletLocked,
   walletExists
@@ -18,7 +18,7 @@ import {
   setLocked,
   setCreated,
   setIsCreatingAccount,
-  setExpiryTimeLeft
+  setAccountSetupTimeout
 } from '../../background/store/wallet'
 import { createApi, destroyApi } from '../../background/store/api-context'
 import { networks } from '../../constants/networks'
@@ -41,7 +41,7 @@ interface IPopupState {
   tries: number
   authRequests: Array<AuthorizeRequest>
   signRequests: Array<SigningRequest>,
-  expiryTimeLeftId: number
+  accountSetupTimeoutId: number
 }
 
 class PopupApp extends React.Component<IPopupProps, IPopupState> {
@@ -51,7 +51,7 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
     tries: 0,
     authRequests: [],
     signRequests: [],
-    expiryTimeLeftId: 0
+    accountSetupTimeoutId: 0
   }
 
   setAuthRequests = (authRequests: Array<AuthorizeRequest>) => {
@@ -102,14 +102,14 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
         this.props.setIsCreatingAccount((result as unknown) as boolean)
       }
     )
-    const expiryTimeLeft = getExpiryTimeLeft().then(
+    const accountSetupTimeout = getAccountSetupTimeout().then(
       result => {
-        console.log(`expiryTimeLeft ${result}`)
-        this.props.setExpiryTimeLeft(result as number)
+        console.log(`accountSetupTimeout ${result}`)
+        this.props.setAccountSetupTimeout(result as number)
 
         if (result > 0) {
-          const expiryTimeLeftId = window.setInterval(this.startExpiryTimer.bind(this), 1000)
-          this.setState({ expiryTimeLeftId })
+          const accountSetupTimeoutId = window.setInterval(this.startExpiryTimer.bind(this), 1000)
+          this.setState({ accountSetupTimeoutId })
         }
       }
     )
@@ -117,7 +117,7 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
       checkAppState,
       checkAccountCreated,
       isCreatingAccount,
-      expiryTimeLeft,
+      accountSetupTimeout,
       subscribeAuthorize(this.setAuthRequests),
       subscribeSigning(this.setSignRequests)
     ]).then(() => {
@@ -129,10 +129,10 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
   }
 
   startExpiryTimer = () => {
-    if (this.props.wallet.expiryTimeLeft > 0) {
-      this.props.setExpiryTimeLeft(this.props.wallet.expiryTimeLeft - 1)
+    if (this.props.wallet.accountSetupTimeout > 0) {
+      this.props.setAccountSetupTimeout(this.props.wallet.accountSetupTimeout - 1)
     } else {
-      clearInterval(this.state.expiryTimeLeftId)
+      clearInterval(this.state.accountSetupTimeoutId)
     }
   }
 
@@ -143,7 +143,7 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
   componentWillUnmount () {
     const provider = this.props.apiContext.provider
     provider && this.props.destroyApi(provider)
-    clearInterval(this.state.expiryTimeLeftId)
+    clearInterval(this.state.accountSetupTimeoutId)
   }
 
   renderExtensionPopup () {
@@ -195,7 +195,7 @@ const mapDispatchToProps = {
   createApi,
   destroyApi,
   setIsCreatingAccount,
-  setExpiryTimeLeft
+  setAccountSetupTimeout
 }
 
 type StateProps = ReturnType<typeof mapStateToProps>

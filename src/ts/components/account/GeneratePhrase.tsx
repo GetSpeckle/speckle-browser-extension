@@ -110,7 +110,7 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
   }
 
   render () {
-    const { expiryTimeLeft } = this.props.wallet
+    const { accountSetupTimeout } = this.props.wallet
 
     return (
       <ContentContainer>
@@ -138,7 +138,7 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
             onClick={this.selectAll}
           />
 
-          <div style={{ textAlign: expiryTimeLeft > 0 ? 'left' : 'center' }}>
+          <div style={{ textAlign: accountSetupTimeout > 0 ? 'left' : 'center' }}>
             <Popup
               trigger={<Button><Icon name='copy' />{t('copyText')}</Button>}
               content={t('copyTextMessage')}
@@ -147,10 +147,10 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
               onOpen={this.copyText}
               position='top center'
             />
-            {expiryTimeLeft > 0 && (
+            {accountSetupTimeout > 0 && (
               <div style={{ float: 'right', lineHeight: '36px' }}>
                 <i className='clock outline icon' />
-                {parseTimeLeft(expiryTimeLeft)} left
+                {parseTimeLeft(accountSetupTimeout)} left
               </div>
             )}
           </div>
