@@ -21,6 +21,8 @@ import 'react-tippy/dist/tippy.css'
 import styled from 'styled-components'
 import TransactionList from './TransactionList'
 import AccountDropdown from '../account/AccountDropdown'
+import recodeAddress, { displayAddress } from '../../services/address-transformer'
+import { networks } from '../../constants/networks'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
 }
@@ -70,10 +72,10 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     }
   }
 
-  getAddress = (address, showFulAddress = false) => {
-    if (showFulAddress) return address
-
-    return address.substring(0, 8) + '...' + address.substring(address.length - 10)
+  getDisplayAddress = (address, showFullAddress = false) => {
+    const { network } = this.props.settings
+    const recodedAddress = recodeAddress(address, networks[network].ss58Format)
+    return displayAddress(recodedAddress, showFullAddress)
   }
 
   generateDropdownItem (account: IAccount) {
@@ -82,7 +84,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
         <Identicon account={account.address} size={20} className='identicon image' />
         <div className='account-item'>
           <div className='item-name'>{account.name ? this.shorten(account.name) : 'N/A'} </div>
-          <div className='item-address'>{this.getAddress(account.address)}</div>
+          <div className='item-address'>{this.getDisplayAddress(account.address)}</div>
         </div>
       </div>
     )

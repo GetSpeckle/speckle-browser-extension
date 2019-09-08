@@ -21,6 +21,8 @@ import { Button, Dropdown, Icon, Popup } from 'semantic-ui-react'
 import { colorSchemes } from '../styles/themes'
 import styled from 'styled-components'
 import { getTransactions } from '../../background/store/transaction'
+import recodeAddress, { displayAddress } from '../../services/address-transformer'
+import { networks } from '../../constants/networks'
 
 interface IAccountDropdownProps extends StateProps, RouteComponentProps, DispatchProps {
   qrDestination?: string
@@ -58,7 +60,7 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
     const dropdownOptions: Option[] = this.state.options.filter(o => o.key === address)
     if (dropdownOptions && dropdownOptions[0]) {
       this.props.saveSettings({ ...this.props.settings, selectedAccount: {
-        address: dropdownOptions[0].value,
+        address: dropdownOptions[0].key,
         name: dropdownOptions[0].text
       } })
 
@@ -67,19 +69,21 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
     }
   }
 
-  getAddress = (address, showFulAddress = false) => {
-    if (showFulAddress) return address
-
-    return address.substring(0, 8) + '...' + address.substring(address.length - 10)
+  getDisplayAddress = (address, showFullAddress = false) => {
+    const { network } = this.props.settings
+    const recodedAddress = recodeAddress(address, networks[network].ss58Format)
+    return displayAddress(recodedAddress, showFullAddress)
   }
 
   generateDropdownItem (account: IAccount) {
+    const { network } = this.props.settings
+    const recodedAddress = recodeAddress(account.address, networks[network].ss58Format)
     return (
       <div className='item' onClick={this.handleSelectChange.bind(this, account.address)}>
-        <Identicon account={account.address} size={20} className='identicon image' />
+        <Identicon account={recodedAddress} size={20} className='identicon image' />
         <div className='account-item'>
           <div className='item-name'>{account.name ? this.shorten(account.name) : 'N/A'} </div>
-          <div className='item-address'>{this.getAddress(account.address)}</div>
+          <div className='item-address'>{this.getDisplayAddress(recodedAddress)}</div>
         </div>
       </div>
     )
@@ -87,7 +91,10 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
 
   copyToClipboard = () => {
     const el = document.createElement('textarea')
-    el.value = this.props.settings.selectedAccount!!.address
+    let address = this.props.settings.selectedAccount!!.address
+    const { network } = this.props.settings
+    const recodedAddress = recodeAddress(address, networks[network].ss58Format)
+    el.value = recodedAddress
     el.setAttribute('readonly', '')
     el.style.position = 'absolute'
     el.style.left = '-9999px'
@@ -175,7 +182,7 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
 
   render () {
     if (this.state.initializing || !this.props.settings.selectedAccount) {
-      return (null)
+      return null
     }
 
     const selectedAccount = this.props.settings.selectedAccount
@@ -197,7 +204,7 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
           >
             <Dropdown.Menu style={backgroundStyle}>
               <Dropdown.Menu scrolling={true} style={backgroundStyle}>
-                {this.state.options.map(option => <Dropdown.Item key={option.value} {...option} />)}
+                {this.state.options.map(option => <Dropdown.Item key={option.key} {...option} />)}
               </Dropdown.Menu>
 
               <Dropdown.Divider />
@@ -228,7 +235,7 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
             arrow={true}
           >
             <AccountAddress onClick={this.copyToClipboard}>
-              {this.getAddress(this.props.settings.selectedAccount.address)}
+              {this.getDisplayAddress(this.props.settings.selectedAccount.address)}
             </AccountAddress>
 
             <Popup

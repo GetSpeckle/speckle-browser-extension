@@ -32,20 +32,7 @@ export function lockWallet (): Promise<boolean> {
   })
 }
 
-export function isWalletUnlocked (): Promise<boolean> {
-  return new Promise<boolean>((resolve, reject) => {
-    port.onMessage.addListener(msg => {
-      if (msg.method !== FUNCS.IS_UNLOCKED) return
-      if (msg.error) {
-        reject(msg.error.message)
-      }
-      resolve(msg.result)
-    })
-    port.postMessage({ method: FUNCS.IS_UNLOCKED })
-  })
-}
-
-export function unlockWallet (password: string, addressPrefix?: string):
+export function unlockWallet (password: string):
   Promise<Array<KeyringPair$Json>> {
   return new Promise<Array<KeyringPair$Json>>((resolve, reject) => {
     port.onMessage.addListener(msg => {
@@ -55,7 +42,7 @@ export function unlockWallet (password: string, addressPrefix?: string):
       }
       resolve(msg.result)
     })
-    port.postMessage({ method: FUNCS.UNLOCK, password: password, addressPrefix: addressPrefix })
+    port.postMessage({ method: FUNCS.UNLOCK, password })
   })
 }
 
