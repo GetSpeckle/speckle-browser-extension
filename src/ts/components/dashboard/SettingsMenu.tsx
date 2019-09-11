@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { TweenLite, TimelineLite } from 'gsap/all'
+import { TweenMax, TimelineLite } from 'gsap/all'
 import styled from 'styled-components'
 import { Image } from 'semantic-ui-react'
 import { LOGIN_ROUTE } from '../../constants/routes'
@@ -41,7 +41,7 @@ export default class SettingsMenu extends React.Component<ISettingsMenuProps, IS
     previousMenuItems: ['']
   }
 
-  private menuOptionsRef: HTMLDivElement | null = null
+  private myMenuElements: Array<HTMLDivElement | null> = []
 
   componentWillMount = () => {
     document.addEventListener('mousedown', this.handleClick)
@@ -52,12 +52,13 @@ export default class SettingsMenu extends React.Component<ISettingsMenuProps, IS
   }
 
   componentDidMount = () => {
-   /* const myTween = TweenLite.set(this.menuOptionsRef, {
-      scale: 1,
-      alpha: 0
-    })
+    this.animateMenuOpen()
+  }
 
-    myTween.staggerTo(this.menuOptionsRef, 1.25, { alpha: 1 }) */
+  // animate menu open
+  animateMenuOpen = () => {
+    TweenMax.set(this.myMenuElements, { alpha: 0 })
+    TweenMax.staggerTo(this.myMenuElements, 1, { scale: 1, alpha: 1 }, 0.09)
   }
   // close menu on outside click
   handleClick = (e) => {
@@ -106,7 +107,7 @@ export default class SettingsMenu extends React.Component<ISettingsMenuProps, IS
       if (currentColor !== menu.color) {
         menuOption = (
           <MenuOption
-            ref={div => this.menuOptionsRef = div}
+            ref={div => this.myMenuElements[index] = div}
             key={index}
             onClick={this.handleMenuClick.bind(this, menu)}
             // the menu item background color
