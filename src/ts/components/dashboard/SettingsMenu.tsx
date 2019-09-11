@@ -18,7 +18,7 @@ interface ISettingsMenuState {
 }
 
 const settingsMenuRef = React.createRef<HTMLDivElement>()
-
+let myMenuElements: Array<HTMLDivElement | null>
 
 // this is the component for displaying the menu items and doing the animations
 export default class SettingsMenu extends React.Component<ISettingsMenuProps, ISettingsMenuState > {
@@ -41,8 +41,6 @@ export default class SettingsMenu extends React.Component<ISettingsMenuProps, IS
     previousMenuItems: ['']
   }
 
-  private myMenuElements: Array<HTMLDivElement | null> = []
-
   componentWillMount = () => {
     document.addEventListener('mousedown', this.handleClick)
   }
@@ -52,13 +50,21 @@ export default class SettingsMenu extends React.Component<ISettingsMenuProps, IS
   }
 
   componentDidMount = () => {
+    console.log(myMenuElements)
     this.animateMenuOpen()
+  }
+
+  componentDidUpdate = (prevState) => {
+    console.log(myMenuElements)
+    if (prevState.currentMenuItem !== this.state.currentMenuItem) {
+      this.animateMenuOpen()
+    }
   }
 
   // animate menu open
   animateMenuOpen = () => {
-    TweenMax.set(this.myMenuElements, { alpha: 0 })
-    TweenMax.staggerTo(this.myMenuElements, 1, { scale: 1, alpha: 1 }, 0.09)
+    TweenMax.set(myMenuElements, { alpha: 0 })
+    TweenMax.staggerTo(myMenuElements, 1, { scale: 1, alpha: 1 }, 0.09)
   }
   // close menu on outside click
   handleClick = (e) => {
@@ -97,17 +103,24 @@ export default class SettingsMenu extends React.Component<ISettingsMenuProps, IS
     closeSettingsMenu()
   }
 
+  setRef = (menuRef: HTMLDivElement | null, index: number) => {
+    if (menuRef !== null) {
+      myMenuElements[index] = menuRef
+    }
+  }
+
   renderMenuItems = (menuName: string) => {
 
     const menuItems = this.state.menuItems[menuName]
+    myMenuElements = []
     return menuItems.map((menu, index) => {
       const currentColor = this.props.topMenuProps.settings.color
       let menuOption = <div/>
-
+      console.log(myMenuElements)
       if (currentColor !== menu.color) {
         menuOption = (
           <MenuOption
-            ref={div => this.myMenuElements[index] = div}
+            ref={div => this.setRef(div, index)}
             key={index}
             onClick={this.handleMenuClick.bind(this, menu)}
             // the menu item background color
