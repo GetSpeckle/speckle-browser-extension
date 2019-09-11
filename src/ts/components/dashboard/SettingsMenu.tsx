@@ -1,22 +1,26 @@
 import * as React from 'react'
-// import { TweenLite, TimelineLite, CSSPlugin } from 'gsap/all'
+import { TweenLite, TimelineLite } from 'gsap/all'
 import styled from 'styled-components'
 import { Image } from 'semantic-ui-react'
-import {
-  LOGIN_ROUTE
-} from '../../constants/routes'
+import { LOGIN_ROUTE } from '../../constants/routes'
 import { lockWallet } from '../../services/keyring-vault-proxy'
+import { colorSchemes } from '../styles/themes'
 
 interface ISettingsMenuProps {
-  parentProps: any
+  topMenuProps: any,
+  closeSettingsMenu: Function
 }
 
 interface ISettingsMenuState {
   menuItems: {},
-  currentMenuItem: string
+  currentMenuItem: string,
+  previousMenuItems: Array<string>
 }
 
-// this is the dump component for displaying the menu items and doing the animations
+const settingsMenuRef = React.createRef<HTMLDivElement>()
+
+
+// this is the component for displaying the menu items and doing the animations
 export default class SettingsMenu extends React.Component<ISettingsMenuProps, ISettingsMenuState > {
   state = {
     menuItems: {
@@ -27,44 +31,148 @@ export default class SettingsMenu extends React.Component<ISettingsMenuProps, IS
                    { item: 'Color', childMenu: 'color' }],
       'color': [
                 { item: 'Color' },
-                { item: '#D396FF', color: 'purple' },
-                { item: '#FF7396', color: 'red' },
-                { item: '#FFC10B', color: 'orange' },
-                { item: '#51DFB0', color: 'green' },
-                { item: '#44C5EE', color: 'blue' }]
+                { color: 'purple' },
+                { color: 'red' },
+                { color: 'orange' },
+                { color: 'green' },
+                { color: 'blue' }]
     },
-    currentMenuItem: 'main' // default menu item
+    currentMenuItem: 'main', // default menu item
+    previousMenuItems: ['']
   }
 
-  renderMenuItems = (menuName: string) => {
-    const menuItems = this.state.menuItems[menuName]
-    let key = 0
-    return menuItems.map((menu) => {
-      return (
-            <MenuOption
-              key={key}
-              onClick={this.handleMenuClick.bind(this, menu)}
-              color={menu.color !== undefined ? menu.item : undefined}
-            >
-              {menu.color !== undefined ? '' : menu.item}
-            </MenuOption>
-      )
-      key++
+  private menuOptionsRef: HTMLDivElement | null = null
+
+  componentWillMount = () => {
+    document.addEventListener('mousedown', this.handleClick)
+  }
+
+  componentWillUnMount = () => {
+    document.removeEventListener('mousedown', this.handleClick)
+  }
+
+  componentDidMount = () => {
+   /* const myTween = TweenLite.set(this.menuOptionsRef, {
+      scale: 1,
+      alpha: 0
     })
-  }
 
-  handleMenuClick = (menu: any) => {
-    if (menu.item === 'Log Out') {
-      this.handleClickLogout()
-    } else {
-      if (menu.childMenu !== undefined) {
-        this.setState({ currentMenuItem: menu.childMenu })
+    myTween.staggerTo(this.menuOptionsRef, 1.25, { alpha: 1 }) */
+  }
+  // close menu on outside click
+  handleClick = (e) => {
+    if (settingsMenuRef.current !== null) {
+      if (settingsMenuRef.current.contains(e.target)) {
+        // inside click
+        return
       }
+      // outside click
+      this.closeMenu()
     }
   }
 
+  getColor = (colorName: string) => colorSchemes[colorName].backgroundColor
+
+  getDefaultColor = () => colorSchemes[this.props.topMenuProps.settings.color].shadowColor
+
+  goBack = () => {
+    let previousMenuItems = Object.assign([], this.state.previousMenuItems)
+    const len = previousMenuItems.length
+
+    if (len > 1) {
+      // get the previous menu item
+      const currentMenuItem = this.state.previousMenuItems[len - 1]
+      // then set it as the current menu item
+      this.setState({ currentMenuItem })
+      // then remove it from the previous menu items
+      previousMenuItems.pop()
+      // finally update the previous menu items array
+      this.setState({ previousMenuItems })
+    }
+  }
+
+  closeMenu = () => {
+    const { closeSettingsMenu } = this.props
+    closeSettingsMenu()
+  }
+
+  renderMenuItems = (menuName: string) => {
+
+    const menuItems = this.state.menuItems[menuName]
+    return menuItems.map((menu, index) => {
+      const currentColor = this.props.topMenuProps.settings.color
+      let menuOption = <div/>
+
+      if (currentColor !== menu.color) {
+        menuOption = (
+          <MenuOption
+            ref={div => this.menuOptionsRef = div}
+            key={index}
+            onClick={this.handleMenuClick.bind(this, menu)}
+            // the menu item background color
+            color={menu.color !== undefined ? this.getColor(menu.color) : this.getDefaultColor()}
+          >
+            {menu.color !== undefined ? '' : menu.item}
+          </MenuOption>
+        )
+      }
+      return menuOption
+    })
+  }
+
+  renderMenuNavs = () => {
+    let menuNavs = <span/>
+    const currentColorHex = this.getColor(this.props.topMenuProps.settings.color)
+    if (this.state.previousMenuItems.length > 1) {
+      menuNavs = (
+        <MenuNavsContainer>
+          <MenuNavs color={currentColorHex} onClick={this.goBack}>
+            <Image src='/assets/left-arrow.svg' centered={true}/>
+          </MenuNavs>
+          <MenuNavs color={currentColorHex} onClick={this.closeMenu}>
+            <Image src='/assets/multiply.svg' centered={true}/>
+          </MenuNavs>
+        </MenuNavsContainer>
+      )
+    }
+    return menuNavs
+  }
+
+  handleMenuClick = (menu: any) => {
+    // handle menu selections
+    if (menu.childMenu !== undefined) {
+      // update the previous menu items
+      let previousMenuItems = Object.assign([], this.state.previousMenuItems)
+      previousMenuItems.push(this.state.currentMenuItem)
+      this.setState({ previousMenuItems })
+      // then set the current item
+      this.setState({ currentMenuItem: menu.childMenu })
+      return
+    }
+
+    // handle color selection
+    if (menu.color !== undefined) {
+      this.handleColorChange(menu.color)
+      return
+    }
+
+    if (typeof menu.item === 'string') {
+      // handle log out
+      if (menu.item === 'Log Out') {
+        this.handleClickLogout()
+        return
+      }
+    }
+  }
+  // save the color selected
+  handleColorChange = (color: string) => {
+    this.props.topMenuProps.saveSettings({ ...this.props.topMenuProps.settings, color: color })
+    // close the menu after selecting a color
+    this.closeMenu()
+  }
+
   handleClickLogout = () => {
-    const { history } = this.props.parentProps
+    const { history } = this.props.topMenuProps
     lockWallet().then(() => {
       history.push(LOGIN_ROUTE)
     })
@@ -72,8 +180,9 @@ export default class SettingsMenu extends React.Component<ISettingsMenuProps, IS
 
   render () {
     return (
-      <MenuOptionsContainer>
+      <MenuOptionsContainer ref={settingsMenuRef}>
         {this.renderMenuItems(this.state.currentMenuItem)}
+        {this.renderMenuNavs()}
       </MenuOptionsContainer>
     )
   }
@@ -104,13 +213,41 @@ const MenuOption = styled.div`
   color: #FFFFFF;
   width: 50px;
   height: 25px;
+  line-height: 21px;
   text-align: center;
-  background-color: ${props => props.color ? props.color : props.theme.shadowColor };
+  vertical-align: middle;
+  background-color: ${props => props.color };
   :nth-child(n+2) {
-    margin-top: 15px;
-    padding-top: 2px;
+    margin-top: 12px;
   }
   &:hover:nth-child(n+2) {
+    -webkit-box-shadow: 1px 1px 8px -1px rgba(0,0,0,0.75);
+    -moz-box-shadow: 1px 1px 8px -1px rgba(0,0,0,0.75);
+    box-shadow: 1px 1px 8px -1px rgba(0,0,0,0.75);
+    cursor: pointer;
+  }
+`
+const MenuNavsContainer = styled.div`
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -moz-flex;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 15px;
+  width: 50px;
+`
+const MenuNavs = styled.span`
+  border: 2px solid #FFFFFF;
+  border-radius: 20px;
+  padding: 3px;
+  width: 20px;
+  background-color: ${props => props.color };
+  &:hover {
     -webkit-box-shadow: 1px 1px 8px -1px rgba(0,0,0,0.75);
     -moz-box-shadow: 1px 1px 8px -1px rgba(0,0,0,0.75);
     box-shadow: 1px 1px 8px -1px rgba(0,0,0,0.75);

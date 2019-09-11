@@ -33,8 +33,27 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
     this.props.saveSettings({ ...this.props.settings, network: data.value })
   }
 
-  handleProfileClick = () => {
+  handleProfileIconClick = () => {
     this.setState({ profileIconClicked: !this.state.profileIconClicked })
+  }
+
+  closeSettingsMenu = () => {
+    this.setState({ profileIconClicked: false })
+  }
+
+  renderSettingsMenu = () => {
+    const profileIconClicked = this.state.profileIconClicked
+    let settingsMenu = <span/>
+
+    if (profileIconClicked) {
+      settingsMenu = (
+        <SettingsMenu
+          topMenuProps={this.props}
+          closeSettingsMenu={this.closeSettingsMenu}
+        />
+      )
+    }
+    return settingsMenu
   }
 
   render () {
@@ -77,12 +96,12 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
                   src='/assets/icon-profile.svg'
                   centered={true}
                   hidden={this.state.profileIconClicked}
-                  onClick={this.handleProfileClick}
+                  onClick={this.handleProfileIconClick}
               />
             </Grid.Column>
           </Grid>
         </div>
-        {this.state.profileIconClicked ? <SettingsMenu parentProps={this.props} /> : null}
+        {this.renderSettingsMenu()}
       </div>
     )
   }
