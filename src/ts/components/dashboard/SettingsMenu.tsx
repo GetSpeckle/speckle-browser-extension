@@ -106,7 +106,6 @@ export default class SettingsMenu extends React.Component<ISettingsMenuProps, IS
     if (menuRef !== null) { // make sure ref is not null
       if (menuRef.className !== 'current-color') {
         myMenuElements[index] = menuRef
-        console.log(myMenuElements)
       }
     }
   }
