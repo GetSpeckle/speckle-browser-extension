@@ -50,21 +50,20 @@ export default class SettingsMenu extends React.Component<ISettingsMenuProps, IS
   }
 
   componentDidMount = () => {
-    console.log(myMenuElements)
     this.animateMenuOpen()
   }
 
   componentDidUpdate = (prevState) => {
-    console.log(myMenuElements)
-    if (prevState.currentMenuItem !== this.state.currentMenuItem) {
+    if (prevState.currentMenuItem !== this.state.currentMenuItem
+      && this.state.currentMenuItem !== 'main') {
       this.animateMenuOpen()
     }
   }
 
   // animate menu open
   animateMenuOpen = () => {
-    TweenMax.set(myMenuElements, { alpha: 0 })
-    TweenMax.staggerTo(myMenuElements, 1, { scale: 1, alpha: 1 }, 0.09)
+    TweenMax.to(myMenuElements, 0, { alpha: 0 })
+    TweenMax.staggerTo(myMenuElements, 1, { alpha: 1 }, 0.09)
   }
   // close menu on outside click
   handleClick = (e) => {
@@ -104,8 +103,11 @@ export default class SettingsMenu extends React.Component<ISettingsMenuProps, IS
   }
 
   setRef = (menuRef: HTMLDivElement | null, index: number) => {
-    if (menuRef !== null) {
-      myMenuElements[index] = menuRef
+    if (menuRef !== null) { // make sure ref is not null
+      if (menuRef.className !== 'current-color') {
+        myMenuElements[index] = menuRef
+        console.log(myMenuElements)
+      }
     }
   }
 
@@ -116,8 +118,7 @@ export default class SettingsMenu extends React.Component<ISettingsMenuProps, IS
     return menuItems.map((menu, index) => {
       const currentColor = this.props.topMenuProps.settings.color
       let menuOption = <div/>
-      console.log(myMenuElements)
-      if (currentColor !== menu.color) {
+      if (currentColor !== '') {
         menuOption = (
           <MenuOption
             ref={div => this.setRef(div, index)}
