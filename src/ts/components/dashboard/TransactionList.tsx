@@ -6,6 +6,7 @@ import { IAppState } from '../../background/store/all'
 import { getTransactions, TransactionType, ITransaction } from '../../background/store/transaction'
 import t from '../../services/i18n'
 import { networks } from '../../constants/networks'
+import { displayAddress } from '../../services/address-transformer'
 
 interface ITransactionListProps extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -106,7 +107,7 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
     const statusBorderColor = tran.status === 'Pending' ? 'grey' :
     tran.status === 'Success' ? '#51d8a7' : '#f3536d'
 
-    const toAddress = tran.to.substring(0, 8) + '...' + tran.to.substring(tran.to.length - 10)
+    const toAddress = displayAddress(tran.to, false)
 
     const createTimeFull = tran.createTime && tran.createTime > 0 ?
       new Date(tran.createTime).toLocaleString() : 'Time N/A'

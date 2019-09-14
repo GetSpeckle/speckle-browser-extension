@@ -3,7 +3,7 @@ import {
   MessageTypes,
   MessageAuthorize,
   MessageExtrinsicSign,
-  MessageExtrinsicSign$Response
+  MessageExtrinsicSignResponse
 } from '../types'
 
 import { assert } from '@polkadot/util'
@@ -40,7 +40,7 @@ export default class Tabs {
   }
 
   private extrinsicSign (url: string, request: MessageExtrinsicSign):
-    Promise<MessageExtrinsicSign$Response> {
+    Promise<MessageExtrinsicSignResponse> {
     const { address } = request
     const accountExists = keyringVault.accountExists(address)
 
@@ -49,8 +49,12 @@ export default class Tabs {
     return this.state.signQueue(url, request)
   }
 
-  async handle (id: string, type: MessageTypes,
+  public async handle (id: string, type: MessageTypes,
                 request: any, url: string, port: Runtime.Port): Promise<any> {
+    if (type !== 'authorize.tab') {
+      this.state.ensureUrlAuthorized(url)
+    }
+
     switch (type) {
       case 'authorize.tab':
         return this.authorize(url, request)

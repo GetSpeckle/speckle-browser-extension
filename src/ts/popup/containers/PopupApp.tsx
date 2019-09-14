@@ -22,7 +22,7 @@ import { ApiOptions } from '@polkadot/api/types'
 import { Edgeware } from '../../constants/chains'
 import { IdentityTypes } from 'edgeware-node-types/dist/identity'
 import { VotingTypes } from 'edgeware-node-types/dist/voting'
-import { GovernanceTypes } from 'edgeware-node-types/dist/governance'
+import { SignalingTypes } from 'edgeware-node-types/dist/signaling'
 
 interface IPopupProps extends StateProps, DispatchProps { }
 
@@ -60,7 +60,7 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
       if (network.chain === Edgeware) {
         apiOptions = {
           ...apiOptions,
-          types: { ...IdentityTypes, ...VotingTypes, ...GovernanceTypes }
+          types: { ...IdentityTypes, ...VotingTypes, ...SignalingTypes }
         }
       }
       this.props.createApi(apiOptions)
@@ -123,8 +123,9 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
 
   renderPagePopup () {
     const { authRequests, signRequests } = this.state
-    return authRequests.length > 0 && <Authorizing settings={this.props.settings} requests={authRequests}/> ||
-      signRequests.length > 0 && <Signing settings={this.props.settings} requests={signRequests}/>
+    const { settings } = this.props
+    return authRequests.length > 0 && <Authorizing settings={settings} requests={authRequests}/>
+      || signRequests.length > 0 && <Signing settings={settings} requests={signRequests}/>
   }
 
   render () {

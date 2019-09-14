@@ -10,18 +10,12 @@ const handle = (msg, port: Runtime.Port) => {
         result: keyringVault.isLocked()
       })
       break
-    case FUNCS.IS_UNLOCKED:
-      port.postMessage({
-        method: FUNCS.IS_UNLOCKED,
-        result: keyringVault.isUnlocked()
-      })
-      break
     case FUNCS.LOCK:
       keyringVault.lock()
       port.postMessage({ method: FUNCS.LOCK, result: true })
       break
     case FUNCS.UNLOCK:
-      keyringVault.unlock(msg.password, msg.addressPrefix).then(keys => {
+      keyringVault.unlock(msg.password).then(keys => {
         port.postMessage({ method: FUNCS.UNLOCK, result: keys })
       }).catch(err => {
         port.postMessage({ method: FUNCS.UNLOCK, error: { message: err.message } })

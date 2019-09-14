@@ -1,8 +1,14 @@
-import { InjectedWindow } from '@polkadot/extension-inject/types'
+// Copyright 2019 @polkadot/extension authors & contributors
+// This software may be modified and distributed under the terms
+// of the Apache-2.0 license. See the LICENSE file for details.
+
 import { MessageTypes } from '../background/types'
 
+import { injectExtension } from '@polkadot/extension-inject'
+
 import Injected from './Injected'
-import { ORIGIN_CONTENT, ORIGIN_PAGE } from '../constants/origins'
+
+import { ORIGIN_PAGE, ORIGIN_CONTENT } from '../constants/origins'
 
 // when sending a message from the injector to the extension, we
 //  - create an event - this we send to the loader
@@ -11,26 +17,25 @@ import { ORIGIN_CONTENT, ORIGIN_PAGE } from '../constants/origins'
 //  - this injector, listens on the events, maps it to the original
 //  - resolves/rejects the promise with the result (or sub data)
 
-type Handler = {
-  resolve: (data: any) => void,
-  reject: (error: Error) => void,
+interface Handler {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  resolve: (data: any) => void
+  reject: (error: Error) => void
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   subscriber?: (data: any) => void
 }
 
-type Handlers = {
-  [index: string]: Handler
-}
+type Handlers = Record<string, Handler>
 
-// small helper with the typescript types, just cast window
-const windowInject = window as InjectedWindow
 const handlers: Handlers = {}
 let idCounter = 0
 
 // a generic message sender that creates an event, returning a promise that will
 // resolve once the event is resolved (by the response listener just below this)
-function sendMessage (message: MessageTypes, request: any = null,
-                      subscriber?: (data: any) => void): Promise<any> {
-  return new Promise((resolve, reject) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function sendMessage (message: MessageTypes, request: any = null, subscriber?: (data: any) => void):
+  Promise<any> {
+  return new Promise((resolve, reject): void => {
     const id = `${Date.now()}.${++idCounter}`
 
     handlers[id] = { resolve, reject, subscriber }
@@ -47,7 +52,7 @@ async function enable (origin: string): Promise<Injected> {
 }
 
 // setup a response listener (events created by the loader for extension responses)
-window.addEventListener('message', ({ data, source }) => {
+window.addEventListener('message', ({ data, source }): void => {
   // only allow messages from our window, by the loader
   if (source !== window || data.origin !== ORIGIN_CONTENT) {
     return
@@ -73,11 +78,7 @@ window.addEventListener('message', ({ data, source }) => {
   }
 })
 
-// don't clobber the existing object, we will add it it (or create as needed)
-windowInject.injectedWeb3 = windowInject.injectedWeb3 || {}
-
-// add our enable function
-windowInject.injectedWeb3['speckle'] = {
-  enable,
+injectExtension(enable, {
+  name: 'speckle',
   version: process.env.PKG_VERSION as string
-}
+})

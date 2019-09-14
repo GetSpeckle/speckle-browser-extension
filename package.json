@@ -12,22 +12,22 @@
 		"test:coverage": "jest --collect-coverage"
 	},
 	"resolutions": {
-    "@polkadot/api": "^0.90.0-beta.37",
-    "@polkadot/api-contract": "^0.90.0-beta.37",
-    "@polkadot/keyring": "^1.1.1",
-    "@polkadot/types": "^0.90.0-beta.37",
-    "@polkadot/util": "^1.1.1",
-    "@polkadot/util-crypto": "^1.1.1",
+    "@polkadot/api": "^0.91.0-beta.22",
+    "@polkadot/api-contract": "^0.91.0-beta.22",
+    "@polkadot/types": "^0.91.0-beta.22",
+    "@polkadot/keyring": "^1.2.0-beta.7",
+    "@polkadot/util": "^1.2.0-beta.7",
+    "@polkadot/util-crypto": "^1.2.0-beta.7",
     "babel-core": "^7.0.0-bridge.0",
-    "typescript": "^3.5.3"
+    "typescript": "^3.6.2"
 	},
 	"dependencies": {
-    "@polkadot/api": "^0.90.0-beta.37",
-    "@polkadot/api-contract": "^0.90.0-beta.37",
-    "@polkadot/keyring": "^1.1.1",
-    "@polkadot/types": "^0.90.0-beta.37",
-    "@polkadot/util": "^1.1.1",
-    "@polkadot/util-crypto": "^1.1.1",
+    "@polkadot/api": "^0.91.0-beta.22",
+    "@polkadot/api-contract": "^0.91.0-beta.22",
+    "@polkadot/types": "^0.91.0-beta.22",
+    "@polkadot/keyring": "^1.2.0-beta.7",
+    "@polkadot/util": "^1.2.0-beta.7",
+    "@polkadot/util-crypto": "^1.2.0-beta.7",
     "@types/styled-components": "4.1.8",
 		"@types/react-dropzone": "^4.2.2",
 		"bn.js": "^4.11.8",
@@ -48,8 +48,8 @@
 		"semantic-ui-react": "^0.86.0",
 		"styled-components": "^4.3.1",
 		"webextension-polyfill-ts": "^0.8.9",
-    "edgeware-node-types": "^1.0.5",
-    "@polkadot/extension-dapp": "^0.5.0-beta.5"
+    "edgeware-node-types": "^1.0.9",
+    "@polkadot/extension-dapp": "^0.9.0-beta.2"
   },
 	"devDependencies": {
 		"@babel/runtime": "^7.5.5",
@@ -78,7 +78,7 @@
 		"tslint": "^5.14.0",
 		"tslint-config-standard": "^8.0.1",
 		"tslint-react": "^4.0.0",
-		"typescript": "^3.5.3",
+		"typescript": "^3.6.2",
 		"url-loader": "^1.1.2",
 		"webpack": "^4.29.6",
 		"webpack-chrome-extension-reloader": "^1.3.0",

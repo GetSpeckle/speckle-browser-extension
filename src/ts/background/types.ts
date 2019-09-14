@@ -1,4 +1,8 @@
-import { SignerPayload } from '@polkadot/api/types'
+// Copyright 2019 @polkadot/extension authors & contributors
+// This software may be modified and distributed under the terms
+// of the Apache-2.0 license. See the LICENSE file for details.
+
+import { SignerPayloadJSON } from '@polkadot/types/types'
 
 export type MessageTypes = 'authorize.approve' | 'authorize.reject'
   | 'authorize.requests' | 'authorize.subscribe' | 'authorize.tab'
@@ -11,36 +15,43 @@ export type AuthorizeRequest = [string, MessageAuthorize, string]
 
 export type SigningRequest = [string, MessageExtrinsicSign, string]
 
-export type MessageAuthorize = {
+export interface MessageAuthorize {
   origin: string
 }
 
-export type MessageAuthorizeApprove = {
+export interface MessageAuthorizeApprove {
   id: string
 }
 
-export type MessageAuthorizeReject = {
+export interface MessageAuthorizeReject {
   id: string
 }
 
-export type MessageRequest = {
-  id: string,
-  message: MessageTypes,
+export interface MessageRequest {
+  id: string
+  message: MessageTypes
   request: any
 }
 
-export type MessageExtrinsicSignApprove = {
-  id: string,
+export interface MessageResponse {
+  error?: string
+  id: string
+  response?: any
+  subscription?: any
+}
+
+export interface MessageExtrinsicSignApprove {
+  id: string
   password: string
 }
 
-export type MessageExtrinsicSignCancel = {
+export interface MessageExtrinsicSignCancel {
   id: string
 }
 
-export type MessageExtrinsicSign = SignerPayload
+export type MessageExtrinsicSign = SignerPayloadJSON
 
-export type MessageExtrinsicSign$Response = {
-  id: string,
+export interface MessageExtrinsicSignResponse {
+  id: string
   signature: string
 }

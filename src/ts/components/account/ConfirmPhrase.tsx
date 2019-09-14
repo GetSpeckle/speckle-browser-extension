@@ -139,19 +139,23 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
   }
 
   renderConfirmScreen () {
+    const confirmListItems = this.state.confirmList.map((item, index) =>
+      this.renderItem('confirmList', item, index))
+    const candidateListItems = this.state.candidateList.map((item, index) =>
+      this.renderItem('candidateList', item, index))
     return(
       <ContentContainer>
         <Form>
           <BasicSection>
             <div className='custom-label'>{t('phraseConfirmTitle')}</div>
             <List horizontal={true} className='confirm-list'>
-              {this.state.confirmList.map((item, index) => this.renderItem('confirmList', item, index))}
+              {confirmListItems}
             </List>
           </BasicSection>
 
           <BasicSection>
             <List horizontal={true} className='candidate-list'>
-              {this.state.candidateList.map((item, index) => this.renderItem('candidateList', item, index))}
+              {candidateListItems}
             </List>
           </BasicSection>
 
@@ -192,7 +196,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
     if (type === 'candidateList') {
       this.setState({ candidateList: newFromList, confirmList: newToList })
     } else {
-      this.setState({ confirmList: newFromList, candidateList: newToList})
+      this.setState({ confirmList: newFromList, candidateList: newToList })
     }
   }
 

@@ -1,5 +1,4 @@
 export const IS_LOCKED = 'isLocked'
-export const IS_UNLOCKED = 'isUnlocked'
 export const LOCK = 'lock'
 export const UNLOCK = 'unlock'
 export const WALLET_EXISTS = 'walletExists'

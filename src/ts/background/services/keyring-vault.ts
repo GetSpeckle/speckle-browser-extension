@@ -1,6 +1,5 @@
 import { KeyringInstance, KeyringPair, KeyringPair$Json } from '@polkadot/keyring/types'
 import Keyring from '@polkadot/keyring'
-import { Prefix } from '@polkadot/util-crypto/address/types'
 import { LocalStore } from '../../services/local-store'
 import { mnemonicGenerate, cryptoWaitReady, mnemonicValidate } from '@polkadot/util-crypto'
 import t from '../../services/i18n'
@@ -37,7 +36,7 @@ class KeyringVault {
     this._keyring = undefined
   }
 
-  unlock (password: string, addressPrefix?: Prefix): Promise<Array<KeyringPair$Json>> {
+  unlock (password: string): Promise<Array<KeyringPair$Json>> {
     if (this.isUnlocked()) {
       return new Promise<Array<KeyringPair$Json>>(
         resolve => {
@@ -48,7 +47,7 @@ class KeyringVault {
     if (!password.length) return Promise.reject(new Error(t('passwordError')))
     // this will be redundant if we have polkadot js api initialisation
     return cryptoWaitReady().then(async () => {
-      this._keyring = new Keyring({ addressPrefix, type: 'sr25519' })
+      this._keyring = new Keyring({ type: 'sr25519' })
       let vault = await LocalStore.getValue(VAULT_KEY)
       if (vault) {
         let accounts = Object.values(vault)
