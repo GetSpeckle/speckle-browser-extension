@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { Icon, Grid, Image } from 'semantic-ui-react'
 import { connect } from 'react-redux'
-import { IAppState } from '../../background/store/all';
-import { colorSchemes } from '../styles/themes';
+import { IAppState } from '../../background/store/all'
+import { colorSchemes } from '../styles/themes'
 
 interface IRequestPanelProps extends StateProps {
   origin: string
