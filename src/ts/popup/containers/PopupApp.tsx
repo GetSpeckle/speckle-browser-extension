@@ -85,6 +85,7 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
 
   initializeApp = () => {
     this.props.getSettings()
+
     const checkAppState = isWalletLocked().then(
       result => {
         console.log(`isLocked ${result}`)
@@ -102,38 +103,36 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
         this.props.setIsCreatingAccount((result as unknown) as boolean)
       }
     )
-    const accountSetupTimeout = getAccountSetupTimeout().then(
-      result => {
-        console.log(`accountSetupTimeout ${result}`)
-        this.props.setAccountSetupTimeout(result as number)
 
-        if (result > 0) {
-          const accountSetupTimeoutId = window.setInterval(this.startExpiryTimer.bind(this), 1000)
-          this.setState({ accountSetupTimeoutId })
-        }
-      }
+    // Poll timer from the background service to update on the UI
+    const accountSetupTimeoutId = window.setInterval(
+      this.updateAccountSetupTimeout.bind(this),
+      1000
     )
+
     Promise.all([
       checkAppState,
       checkAccountCreated,
       isCreatingAccount,
-      accountSetupTimeout,
       subscribeAuthorize(this.setAuthRequests),
       subscribeSigning(this.setSignRequests)
     ]).then(() => {
       this.tryCreateApi()
       this.setState({
+        accountSetupTimeoutId,
         initializing: false
       })
     })
   }
 
-  startExpiryTimer = () => {
-    if (this.props.wallet.accountSetupTimeout > 0) {
-      this.props.setAccountSetupTimeout(this.props.wallet.accountSetupTimeout - 1)
-    } else {
-      clearInterval(this.state.accountSetupTimeoutId)
-    }
+  updateAccountSetupTimeout = () => {
+    getAccountSetupTimeout().then(
+      result => {
+        if (result !== this.props.wallet.accountSetupTimeout) {
+          this.props.setAccountSetupTimeout(result as number)
+        }
+      }
+    )
   }
 
   componentWillMount () {

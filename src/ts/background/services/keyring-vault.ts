@@ -31,26 +31,30 @@ class KeyringVault {
   }
 
   setTempPassword (tempPassword: string): void {
-    this._tempPassword = tempPassword
+    // Update the password and start the timer only if user has changed the password
+    if (this._tempPassword !== tempPassword) {
+      this._tempPassword = tempPassword
 
-    // Start timer for password expiry
-    this.startExpiryTimer()
+      // Start timer for password expiry
+      this.startExpiryTimer()
 
-    // Trigger clear interval for tempPassword
-    this.clearTempPassword()
+      // Trigger clear interval for tempPassword
+      this.clearTempPassword()
+    }
   }
 
   clearTempPassword (): void {
     setTimeout(() => {
       this._tempPassword = undefined
+
+      if (this._accountSetupTimeoutTimerId !== 0 || this._accountSetupTimeout < 0) {
+        // Clear expiry timer to start afresh
+        this.clearExpiryTimer()
+      }
     }, VALIDITY_INTERVAL * 1000)
   }
 
   getAccountSetupTimeout (): number {
-    if (this._accountSetupTimeout < 0 && this._accountSetupTimeoutTimerId > 0) {
-      this.clearExpiryTimer()
-    }
-
     return this._accountSetupTimeout
   }
 
@@ -132,7 +136,7 @@ class KeyringVault {
 
       setTimeout(() => {
         this.clearMnemonic()
-      }, VALIDITY_INTERVAL * 1000)
+      }, this._accountSetupTimeout * 1000)
     }
     return this._mnemonic
   }
@@ -143,6 +147,11 @@ class KeyringVault {
 
   clearMnemonic (): void {
     this._mnemonic = undefined
+
+    if (this._accountSetupTimeoutTimerId !== 0 || this._accountSetupTimeout < 0) {
+      // Clear expiry timer to start afresh
+      this.clearExpiryTimer()
+    }
   }
 
   isMnemonicValid (mnemonic: string): boolean {

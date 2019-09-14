@@ -12,9 +12,9 @@ import {
   Section,
   BasicSection
 } from '../basic-components'
-import { SELECT_NETWORK_ROUTE } from '../../constants/routes'
+import { CREATE_PASSWORD_ROUTE, HOME_ROUTE, SELECT_NETWORK_ROUTE } from '../../constants/routes'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
-import { setLocked, setCreated, setNewPhrase } from '../../background/store/wallet'
+import { setLocked, setCreated, setNewPhrase, setIsCreatingAccount } from '../../background/store/wallet'
 import { setError } from '../../background/store/error'
 import { saveSettings } from '../../background/store/settings'
 import { colorSchemes } from '../styles/themes'
@@ -44,6 +44,22 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
     }
   }
 
+  componentWillReceiveProps (nextProps) {
+    // Check for timer expiry
+    if (nextProps.wallet.accountSetupTimeout === 0 && this.props.wallet.accountSetupTimeout !== 0) {
+      // If wallet is created, redirect to Dashboard. If not, Create Password page
+      if (nextProps.wallet.created) {
+        this.props.setIsCreatingAccount(false)
+        this.props.history.push(HOME_ROUTE)
+      } else {
+        this.props.history.push({
+          pathname: CREATE_PASSWORD_ROUTE,
+          state: { error: 'Account creation timer has elapsed' }
+        })
+      }
+    }
+  }
+
   /**
    * Shuffles array in place.
    * @param {Array} a items An array containing the items.
@@ -65,7 +81,8 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
   }
 
   createAccount = (phrase: string, name?: string) => {
-    const { wallet, saveSettings, settings, setNewPhrase, setCreated, setError } = this.props
+    // tslint:disable-next-line:max-line-length
+    const { wallet, saveSettings, settings, setNewPhrase, setCreated, setError, setIsCreatingAccount } = this.props
     createAccount(phrase, name).then(keyringPair => {
       this.setState({ keyringPair })
       // use new created account as the selected account
@@ -77,6 +94,9 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
       setNewPhrase('', '')
       if (!wallet.created) {
         setCreated(true)
+      }
+      if (wallet.isCreatingAccount) {
+        setIsCreatingAccount(false)
       }
     }).catch(err => {
       setError(err)
@@ -179,7 +199,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
     }
 
     return(
-      <List.Item>
+      <List.Item key={index}>
         <Button onClick={this.handleClickItem.bind(this, type, index)} style={itemStyle}>
           {item}
         </Button>
@@ -234,7 +254,8 @@ const mapStateToProps = (state: IAppState) => {
   }
 }
 
-const mapDispatchToProps = { saveSettings, setLocked, setCreated, setError, setNewPhrase }
+// tslint:disable-next-line:max-line-length
+const mapDispatchToProps = { saveSettings, setLocked, setCreated, setError, setNewPhrase, setIsCreatingAccount }
 
 type StateProps = ReturnType<typeof mapStateToProps>
 

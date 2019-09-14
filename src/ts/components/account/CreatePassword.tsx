@@ -42,12 +42,26 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
   }
 
   async componentDidMount () {
+    if (this.props.location.state && this.props.location.state.error) {
+      this.props.setError(this.props.location.state.error)
+    }
+
     const tempPassword = await getTempPassword()
 
     if (tempPassword) {
       this.setState({
         newPassword: tempPassword,
         confirmPassword: tempPassword
+      })
+    }
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.wallet.accountSetupTimeout === 0 && this.props.wallet.accountSetupTimeout !== 0) {
+      this.props.setError('Account creation timer has elapsed')
+      this.setState({
+        newPassword: '',
+        confirmPassword: ''
       })
     }
   }
@@ -75,6 +89,8 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
     // set the new password to the store for later use
     this.props.setNewPassword(this.state.newPassword)
     setTempPassword(this.state.newPassword)
+
+    // Move to step 2
     this.props.history.push(GENERATE_PHRASE_ROUTE)
   }
 

@@ -6,8 +6,8 @@ import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
 import { Button, Icon, Form, Divider, Popup } from 'semantic-ui-react'
 import { getSimpleAccounts, generateMnemonic } from '../../services/keyring-vault-proxy'
-import { setNewPhrase } from '../../background/store/wallet'
-import { CONFIRM_PHRASE_ROUTE } from '../../constants/routes'
+import { setNewPhrase, setIsCreatingAccount } from '../../background/store/wallet'
+import { CONFIRM_PHRASE_ROUTE, CREATE_PASSWORD_ROUTE, HOME_ROUTE } from '../../constants/routes'
 import {
   Button as StyledButton,
   ContentContainer,
@@ -60,6 +60,22 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
   componentWillUnmount () {
     if (this.state.msgTimeout) {
       clearTimeout(this.state.msgTimeout)
+    }
+  }
+
+  componentWillReceiveProps (nextProps) {
+    // Check for timer expiry
+    if (nextProps.wallet.accountSetupTimeout === 0 && this.props.wallet.accountSetupTimeout !== 0) {
+      // If wallet is created, redirect to Dashboard. If not, Create Password page
+      if (nextProps.wallet.created) {
+        this.props.setIsCreatingAccount(false)
+        this.props.history.push(HOME_ROUTE)
+      } else {
+        this.props.history.push({
+          pathname: CREATE_PASSWORD_ROUTE,
+          state: { error: 'Account creation timer has elapsed' }
+        })
+      }
     }
   }
 
@@ -173,7 +189,7 @@ const mapStateToProps = (state: IAppState) => {
   }
 }
 
-const mapDispatchToProps = { setNewPhrase }
+const mapDispatchToProps = { setNewPhrase, setIsCreatingAccount }
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
