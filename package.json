@@ -13,22 +13,22 @@
 	},
 	"resolutions": {
 		"@polkadot/api": "^0.91.0-beta.22",
-		"@polkadot/api-contract": "^0.91.0-beta.22",
-		"@polkadot/types": "^0.91.0-beta.22",
-		"@polkadot/keyring": "^1.2.0-beta.7",
-		"@polkadot/util": "^1.2.0-beta.7",
-		"@polkadot/util-crypto": "^1.2.0-beta.7",
-		"babel-core": "^7.0.0-bridge.0",
-		"typescript": "^3.6.2"
+    "@polkadot/api-contract": "^0.91.0-beta.22",
+    "@polkadot/types": "^0.91.0-beta.22",
+    "@polkadot/keyring": "^1.2.0-beta.7",
+    "@polkadot/util": "^1.2.0-beta.7",
+    "@polkadot/util-crypto": "^1.2.0-beta.7",
+    "babel-core": "^7.0.0-bridge.0",
+    "typescript": "^3.6.2"
 	},
 	"dependencies": {
-		"@polkadot/api": "^0.91.0-beta.22",
-		"@polkadot/api-contract": "^0.91.0-beta.22",
-		"@polkadot/types": "^0.91.0-beta.22",
-		"@polkadot/keyring": "^1.2.0-beta.7",
-		"@polkadot/util": "^1.2.0-beta.7",
-		"@polkadot/util-crypto": "^1.2.0-beta.7",
-		"@types/styled-components": "4.1.8",
+    "@polkadot/api": "^0.91.0-beta.22",
+    "@polkadot/api-contract": "^0.91.0-beta.22",
+    "@polkadot/types": "^0.91.0-beta.22",
+    "@polkadot/keyring": "^1.2.0-beta.7",
+    "@polkadot/util": "^1.2.0-beta.7",
+    "@polkadot/util-crypto": "^1.2.0-beta.7",
+    "@types/styled-components": "4.1.8",
 		"@types/react-dropzone": "^4.2.2",
 		"bn.js": "^4.11.8",
 		"extensionizer": "^1.0.1",
@@ -49,8 +49,8 @@
 		"semantic-ui-react": "^0.86.0",
 		"styled-components": "^4.3.1",
 		"webextension-polyfill-ts": "^0.8.9",
-        "edgeware-node-types": "^1.0.9",
-        "@polkadot/extension-dapp": "^0.9.0-beta.2"
+    "edgeware-node-types": "^1.0.9",
+    "@polkadot/extension-dapp": "^0.9.0-beta.2"
   },
 	"devDependencies": {
 		"@babel/runtime": "^7.5.5",
