@@ -10,15 +10,19 @@ import { Routes } from '../../routes'
 import { getSettings } from '../../background/store/settings'
 import {
   getAccountSetupTimeout,
-  isMnemonicGenerated,
+  getMnemonic,
+  getTempAccountName,
+  getTempPassword,
   isWalletLocked,
   walletExists
 } from '../../services/keyring-vault-proxy'
 import {
   setLocked,
   setCreated,
-  setIsCreatingAccount,
-  setAccountSetupTimeout
+  setAccountName,
+  setAccountSetupTimeout,
+  setNewPassword,
+  setNewPhrase
 } from '../../background/store/wallet'
 import { createApi, destroyApi } from '../../background/store/api-context'
 import { networks } from '../../constants/networks'
@@ -97,10 +101,22 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
         this.props.setCreated(result)
       }
     )
-    const isCreatingAccount = isMnemonicGenerated().then(
+    const newPassword = getTempPassword().then(
       result => {
-        console.log(`isCreatingAccount ${result}`)
-        this.props.setIsCreatingAccount((result as unknown) as boolean)
+        console.log(`newPassword ${result}`)
+        this.props.setNewPassword(result)
+      }
+    )
+    const newPhrase = getMnemonic().then(
+      result => {
+        console.log(`newPhrase ${result}`)
+        this.props.setNewPhrase(result)
+      }
+    )
+    const newAccountName = getTempAccountName().then(
+      result => {
+        console.log(`newAccountName ${result}`)
+        this.props.setAccountName(result)
       }
     )
 
@@ -113,7 +129,9 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
     Promise.all([
       checkAppState,
       checkAccountCreated,
-      isCreatingAccount,
+      newPassword,
+      newPhrase,
+      newAccountName,
       subscribeAuthorize(this.setAuthRequests),
       subscribeSigning(this.setSignRequests)
     ]).then(() => {
@@ -193,8 +211,10 @@ const mapDispatchToProps = {
   setCreated,
   createApi,
   destroyApi,
-  setIsCreatingAccount,
-  setAccountSetupTimeout
+  setAccountSetupTimeout,
+  setAccountName,
+  setNewPassword,
+  setNewPhrase
 }
 
 type StateProps = ReturnType<typeof mapStateToProps>

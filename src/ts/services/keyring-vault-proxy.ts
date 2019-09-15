@@ -233,18 +233,18 @@ export function getTempPassword (): Promise<string> {
 export function setTempPassword (tempPassword: string): void {
   port.postMessage({
     method: FUNCS.SET_TEMP_PASSWORD,
-    tempPassword: tempPassword
+    tempPassword
   })
 }
 
-export function isMnemonicGenerated (): Promise<string> {
+export function getMnemonic (): Promise<string> {
   return new Promise<string>(resolve => {
     port.onMessage.addListener(msg => {
-      if (msg.method === FUNCS.IS_MNEMONIC_GENERATED) {
+      if (msg.method === FUNCS.GET_MNEMONIC) {
         resolve(msg.result)
       }
     })
-    port.postMessage({ method: FUNCS.IS_MNEMONIC_GENERATED })
+    port.postMessage({ method: FUNCS.GET_MNEMONIC })
   })
 }
 
@@ -256,5 +256,23 @@ export function getAccountSetupTimeout (): Promise<number> {
       }
     })
     port.postMessage({ method: FUNCS.GET_ACCOUNT_SETUP_TIMEOUT })
+  })
+}
+
+export function getTempAccountName (): Promise<string> {
+  return new Promise<string>(resolve => {
+    port.onMessage.addListener(msg => {
+      if (msg.method === FUNCS.GET_TEMP_ACCOUNT_NAME) {
+        resolve(msg.result)
+      }
+    })
+    port.postMessage({ method: FUNCS.GET_TEMP_ACCOUNT_NAME })
+  })
+}
+
+export function setTempAccountName (tempAccountName: string): void {
+  port.postMessage({
+    method: FUNCS.SET_TEMP_ACCOUNT_NAME,
+    tempAccountName
   })
 }

@@ -14,7 +14,7 @@ import {
 } from '../basic-components'
 import { CREATE_PASSWORD_ROUTE, HOME_ROUTE, SELECT_NETWORK_ROUTE } from '../../constants/routes'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
-import { setLocked, setCreated, setNewPhrase, setIsCreatingAccount } from '../../background/store/wallet'
+import { setLocked, setCreated, setNewPhrase, setAccountName, setNewPassword } from '../../background/store/wallet'
 import { setError } from '../../background/store/error'
 import { saveSettings } from '../../background/store/settings'
 import { colorSchemes } from '../styles/themes'
@@ -47,9 +47,13 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
   componentWillReceiveProps (nextProps) {
     // Check for timer expiry
     if (nextProps.wallet.accountSetupTimeout === 0 && this.props.wallet.accountSetupTimeout !== 0) {
+      // Clear wallet state defaults
+      this.props.setNewPassword('')
+      this.props.setNewPhrase('')
+      this.props.setAccountName('')
+
       // If wallet is created, redirect to Dashboard. If not, Create Password page
       if (nextProps.wallet.created) {
-        this.props.setIsCreatingAccount(false)
         this.props.history.push(HOME_ROUTE)
       } else {
         this.props.history.push({
@@ -82,7 +86,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
 
   createAccount = (phrase: string, name?: string) => {
     // tslint:disable-next-line:max-line-length
-    const { wallet, saveSettings, settings, setNewPhrase, setCreated, setError, setIsCreatingAccount } = this.props
+    const { wallet, saveSettings, settings, setNewPhrase, setCreated, setError, setAccountName } = this.props
     createAccount(phrase, name).then(keyringPair => {
       this.setState({ keyringPair })
       // use new created account as the selected account
@@ -91,12 +95,10 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
             { name: keyringPair.meta.name, address: keyringPair.address }
         }
       )
-      setNewPhrase('', '')
+      setNewPhrase('')
+      setAccountName('')
       if (!wallet.created) {
         setCreated(true)
-      }
-      if (wallet.isCreatingAccount) {
-        setIsCreatingAccount(false)
       }
     }).catch(err => {
       setError(err)
@@ -255,7 +257,7 @@ const mapStateToProps = (state: IAppState) => {
 }
 
 // tslint:disable-next-line:max-line-length
-const mapDispatchToProps = { saveSettings, setLocked, setCreated, setError, setNewPhrase, setIsCreatingAccount }
+const mapDispatchToProps = { saveSettings, setLocked, setCreated, setError, setNewPhrase, setAccountName, setNewPassword }
 
 type StateProps = ReturnType<typeof mapStateToProps>
 

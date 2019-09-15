@@ -14,6 +14,7 @@ class KeyringVault {
   private _keyring?: KeyringInstance
   private _password?: string
   private _tempPassword?: string
+  private _tempAccountName?: string
   private _mnemonic?: string
   private simpleAccounts?: SimpleAccounts
   private _accountSetupTimeout = 0
@@ -52,6 +53,17 @@ class KeyringVault {
         this.clearExpiryTimer()
       }
     }, VALIDITY_INTERVAL * 1000)
+  }
+
+  getTempAccountName (): string {
+    return this._tempAccountName || ''
+  }
+
+  setTempAccountName (tempAccountName: string): void {
+    // Update the account name
+    if (this._tempAccountName !== tempAccountName) {
+      this._tempAccountName = tempAccountName
+    }
   }
 
   getAccountSetupTimeout (): number {
@@ -141,12 +153,13 @@ class KeyringVault {
     return this._mnemonic
   }
 
-  isMnemonicGenerated (): boolean {
-    return this._mnemonic !== undefined
+  getMnemonic (): string {
+    return this._mnemonic || ''
   }
 
   clearMnemonic (): void {
     this._mnemonic = undefined
+    this._tempAccountName = undefined
 
     if (this._accountSetupTimeoutTimerId !== 0 || this._accountSetupTimeout < 0) {
       // Clear expiry timer to start afresh

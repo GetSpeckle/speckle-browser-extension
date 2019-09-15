@@ -15,10 +15,7 @@ import {
 } from '../basic-components'
 import { setNewPassword } from '../../background/store/wallet'
 import { setError } from '../../background/store/error'
-import {
-  getTempPassword,
-  setTempPassword
-} from '../../services/keyring-vault-proxy'
+import { setTempPassword } from '../../services/keyring-vault-proxy'
 import { parseTimeLeft } from '../../constants/utils'
 import { IAppState } from '../../background/store/all'
 
@@ -35,24 +32,15 @@ interface ICreatePasswordState {
 class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswordState> {
 
   state: ICreatePasswordState = {
-    newPassword: '',
-    confirmPassword: '',
+    newPassword: this.props.wallet.newPassword || '',
+    confirmPassword: this.props.wallet.newPassword || '',
     showNewPassword: false,
     showConfirmNewPassword: false
   }
 
-  async componentDidMount () {
+  componentDidMount () {
     if (this.props.location.state && this.props.location.state.error) {
       this.props.setError(this.props.location.state.error)
-    }
-
-    const tempPassword = await getTempPassword()
-
-    if (tempPassword) {
-      this.setState({
-        newPassword: tempPassword,
-        confirmPassword: tempPassword
-      })
     }
   }
 

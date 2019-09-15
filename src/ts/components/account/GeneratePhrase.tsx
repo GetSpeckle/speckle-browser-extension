@@ -5,8 +5,8 @@ import { IAppState } from '../../background/store/all'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
 import { Button, Icon, Form, Divider, Popup } from 'semantic-ui-react'
-import { getSimpleAccounts, generateMnemonic } from '../../services/keyring-vault-proxy'
-import { setNewPhrase, setIsCreatingAccount } from '../../background/store/wallet'
+import { getSimpleAccounts, generateMnemonic, setTempAccountName } from '../../services/keyring-vault-proxy'
+import { setNewPhrase, setAccountName, setNewPassword } from '../../background/store/wallet'
 import { CONFIRM_PHRASE_ROUTE, CREATE_PASSWORD_ROUTE, HOME_ROUTE } from '../../constants/routes'
 import {
   Button as StyledButton,
@@ -39,10 +39,6 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
   }
 
   componentDidMount () {
-    getSimpleAccounts().then(result => {
-      this.setState({ accountName: 'Account ' + (result.length + 1) })
-    })
-
     // generate the mnemonic or restore it from the store if exists
     if (this.props.wallet.newPhrase) {
       this.setState({ mnemonic: this.props.wallet.newPhrase })
@@ -51,9 +47,13 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
         this.setState({ mnemonic: phrase })
       })
     }
-
+    
     if (this.props.wallet.newAccountName) {
       this.setState({ accountName: this.props.wallet.newAccountName })
+    } else {
+      getSimpleAccounts().then(result => {
+        this.setState({ accountName: 'Account ' + (result.length + 1) })
+      })
     }
   }
 
@@ -66,9 +66,13 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
   componentWillReceiveProps (nextProps) {
     // Check for timer expiry
     if (nextProps.wallet.accountSetupTimeout === 0 && this.props.wallet.accountSetupTimeout !== 0) {
+      // Clear wallet state defaults
+      this.props.setNewPassword('')
+      this.props.setNewPhrase('')
+      this.props.setAccountName('')
+
       // If wallet is created, redirect to Dashboard. If not, Create Password page
       if (nextProps.wallet.created) {
-        this.props.setIsCreatingAccount(false)
         this.props.history.push(HOME_ROUTE)
       } else {
         this.props.history.push({
@@ -85,7 +89,9 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
 
   handleClick = () => {
     this.setState({ message: '' })
-    this.props.setNewPhrase(this.state.mnemonic, this.state.accountName)
+    this.props.setNewPhrase(this.state.mnemonic)
+    this.props.setAccountName(this.state.accountName)
+    setTempAccountName(this.state.accountName)
     this.props.history.push(CONFIRM_PHRASE_ROUTE)
   }
 
@@ -189,7 +195,7 @@ const mapStateToProps = (state: IAppState) => {
   }
 }
 
-const mapDispatchToProps = { setNewPhrase, setIsCreatingAccount }
+const mapDispatchToProps = { setNewPhrase, setAccountName, setNewPassword }
 
 type StateProps = ReturnType<typeof mapStateToProps>
 

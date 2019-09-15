@@ -148,10 +148,10 @@ const handle = (msg, port: Runtime.Port) => {
     case FUNCS.SET_TEMP_PASSWORD:
       keyringVault.setTempPassword(msg.tempPassword)
       break
-    case FUNCS.IS_MNEMONIC_GENERATED:
+    case FUNCS.GET_MNEMONIC:
       port.postMessage({
-        method: FUNCS.IS_MNEMONIC_GENERATED,
-        result: keyringVault.isMnemonicGenerated()
+        method: FUNCS.GET_MNEMONIC,
+        result: keyringVault.getMnemonic()
       })
       break
     case FUNCS.GET_ACCOUNT_SETUP_TIMEOUT:
@@ -159,6 +159,15 @@ const handle = (msg, port: Runtime.Port) => {
         method: FUNCS.GET_ACCOUNT_SETUP_TIMEOUT,
         result: keyringVault.getAccountSetupTimeout()
       })
+      break
+    case FUNCS.GET_TEMP_ACCOUNT_NAME:
+      port.postMessage({
+        method: FUNCS.GET_TEMP_ACCOUNT_NAME,
+        result: keyringVault.getTempAccountName()
+      })
+      break
+    case FUNCS.SET_TEMP_ACCOUNT_NAME:
+      keyringVault.setTempAccountName(msg.tempAccountName)
       break
     default:
       break

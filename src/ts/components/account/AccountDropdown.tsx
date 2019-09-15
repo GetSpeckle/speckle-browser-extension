@@ -10,7 +10,7 @@ import {
 } from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
-import { IAccount, setAccounts, setIsCreatingAccount } from '../../background/store/wallet'
+import { IAccount, setAccounts } from '../../background/store/wallet'
 import t from '../../services/i18n'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import Identicon from 'polkadot-identicon'
@@ -152,7 +152,6 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
   }
 
   handleClickCreateAccount = () => {
-    this.props.setIsCreatingAccount(true)
     this.props.history.push(GENERATE_PHRASE_ROUTE)
   }
 
@@ -282,7 +281,7 @@ const mapStateToProps = (state: IAppState) => {
   }
 }
 
-const mapDispatchToProps = { saveSettings, setAccounts, getTransactions, setIsCreatingAccount }
+const mapDispatchToProps = { saveSettings, setAccounts, getTransactions }
 type DispatchProps = typeof mapDispatchToProps
 
 type StateProps = ReturnType<typeof mapStateToProps>

@@ -6,7 +6,7 @@ export const ACTION_TYPES = {
   SET_NEW_PHRASE: 'SET_NEW_PHRASE',
   SET_ACCOUNTS: 'SET_ACCOUNTS',
   SET_NEW_PASSWORD: 'SET_NEW_PASSWORD',
-  SET_IS_CREATING_ACCOUNT: 'SET_IS_CREATING_ACCOUNT',
+  SET_ACCOUNT_NAME: 'SET_ACCOUNT_NAME',
   SET_ACCOUNT_SETUP_TIMEOUT: 'SET_ACCOUNT_SETUP_TIMEOUT'
 }
 
@@ -22,10 +22,10 @@ export function setLocked (locked: boolean): AnyAction {
   }
 }
 
-export function setNewPhrase (phrase: string, accountName?: string): AnyAction {
+export function setNewPhrase (phrase: string): AnyAction {
   return {
     type: ACTION_TYPES.SET_NEW_PHRASE,
-    payload: { phrase: phrase, accountName: accountName }
+    payload: phrase
   }
 }
 
@@ -50,10 +50,10 @@ export function setCreated (accountCreated: boolean): AnyAction {
   }
 }
 
-export function setIsCreatingAccount (isCreatingAccount: boolean): AnyAction {
+export function setAccountName (accountName: string): AnyAction {
   return {
-    type: ACTION_TYPES.SET_IS_CREATING_ACCOUNT,
-    payload: isCreatingAccount
+    type: ACTION_TYPES.SET_ACCOUNT_NAME,
+    payload: accountName
   }
 }
 
