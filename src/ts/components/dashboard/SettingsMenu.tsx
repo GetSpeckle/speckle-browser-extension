@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { TweenMax, TimelineLite } from 'gsap/all'
+import { TweenMax } from 'gsap/all'
 import styled from 'styled-components'
 import { Image } from 'semantic-ui-react'
 import { LOGIN_ROUTE } from '../../constants/routes'
