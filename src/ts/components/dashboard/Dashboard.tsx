@@ -1,18 +1,15 @@
 import * as React from 'react'
-import { getAccounts, lockWallet } from '../../services/keyring-vault-proxy'
+import { getAccounts } from '../../services/keyring-vault-proxy'
 import {
-  LOGIN_ROUTE, QR_ROUTE
+   QR_ROUTE
 } from '../../constants/routes'
 import { RouteComponentProps, withRouter } from 'react-router'
 import {
-  Button as StyledButton,
-  ContentContainer,
-  Section
+  ContentContainer
 } from '../basic-components'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 import { IAccount, setAccounts } from '../../background/store/wallet'
-import t from '../../services/i18n'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import Balance from '../account/Balance'
 import Identicon from 'polkadot-identicon'
@@ -53,13 +50,6 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
       options: [],
       initializing: true
     }
-  }
-
-  handleClickLogout = () => {
-    const { history } = this.props
-    lockWallet().then(() => {
-      history.push(LOGIN_ROUTE)
-    })
   }
 
   handleSelectChange = (address: string) => {
@@ -162,11 +152,6 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
         <AccountSection>
           <TransactionList />
         </AccountSection>
-        <Section>
-          <StyledButton onClick={this.handleClickLogout}>
-            {t('logout')}
-          </StyledButton>
-        </Section>
       </ContentContainer>
     )
   }

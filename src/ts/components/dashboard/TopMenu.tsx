@@ -6,29 +6,54 @@ import { networks } from '../../constants/networks'
 import { IAppState } from '../../background/store/all'
 import { saveSettings } from '../../background/store/settings'
 import { ChainDropdown } from '../basic-components'
-
+import SettingsMenu from './SettingsMenu'
 
 interface ITopMenuProps extends StateProps, DispatchProps, RouteComponentProps {}
 
 interface ITopMenuState {
   network: string,
-  chainIconUrl: string
+  chainIconUrl: string,
+  profileIconClicked: boolean
 }
 
 class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
 
   state = {
     network: this.props.settings.network,
-    chainIconUrl: networks[this.props.settings.network].chain.iconUrl
+    chainIconUrl: networks[this.props.settings.network].chain.iconUrl,
+    profileIconClicked: false
   }
 
-  changeNetwork = (e, data) => {
-    console.log(e.target)
+  changeNetwork = (_e: any, data: { value: string; }) => {
+    console.log(_e)
     this.setState({
       network: data.value,
       chainIconUrl: networks[data.value].chain.iconUrl
     })
     this.props.saveSettings({ ...this.props.settings, network: data.value })
+  }
+
+  handleProfileIconClick = () => {
+    this.setState({ profileIconClicked: !this.state.profileIconClicked })
+  }
+
+  closeSettingsMenu = () => {
+    this.setState({ profileIconClicked: false })
+  }
+
+  renderSettingsMenu = () => {
+    const profileIconClicked = this.state.profileIconClicked
+    let settingsMenu = <span/>
+
+    if (profileIconClicked) {
+      settingsMenu = (
+        <SettingsMenu
+          topMenuProps={this.props}
+          closeSettingsMenu={this.closeSettingsMenu}
+        />
+      )
+    }
+    return settingsMenu
   }
 
   render () {
@@ -44,9 +69,10 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
     })
 
     return (
-      <div className='top-menu'>
-        <Grid centered={true} textAlign='center'>
-            <Grid.Column width={4} verticalAlign='middle'>
+      <div>
+        <div className='top-menu'>
+          <Grid centered={true} textAlign='center'>
+            <Grid.Column width={3} verticalAlign='middle'>
               <Image src='/assets/logo-s.svg' centered={true} />
             </Grid.Column>
 
@@ -66,9 +92,16 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
             </Grid.Column>
 
             <Grid.Column width={2} verticalAlign='middle'>
-              <Image src='/assets/icon-profile.svg' centered={true} />
+              <Image
+                  src='/assets/icon-profile.svg'
+                  centered={true}
+                  hidden={this.state.profileIconClicked}
+                  onClick={this.handleProfileIconClick}
+              />
             </Grid.Column>
-        </Grid>
+          </Grid>
+        </div>
+        {this.renderSettingsMenu()}
       </div>
     )
   }

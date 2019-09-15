@@ -32,6 +32,7 @@
 		"@types/react-dropzone": "^4.2.2",
 		"bn.js": "^4.11.8",
 		"extensionizer": "^1.0.1",
+		"gsap": "^2.1.3",
 		"polkadot-identicon": "^1.1.45",
 		"qrcode.react": "^0.9.3",
 		"react": "^16.8.6",
@@ -54,6 +55,7 @@
 	"devDependencies": {
 		"@babel/runtime": "^7.5.5",
 		"@types/chrome": "^0.0.81",
+		"@types/gsap": "^1.20.2",
 		"@types/jest": "^24.0.11",
 		"@types/node": "^11.11.3",
 		"@types/react": "^16.8.8",
