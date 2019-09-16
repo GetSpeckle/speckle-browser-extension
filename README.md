@@ -4,7 +4,7 @@ Universal browser extension for Web 3 and the Polkadot ecosystem.
 Development is still work in progress. Stay Tuned!
 
 
-## Good to know before using:
+## Good to know before developing:
 * [Typescript](https://www.typescriptlang.org/)
 * [React](https://reactjs.org/)
 * [redux](https://redux.js.org/)
@@ -14,7 +14,7 @@ Development is still work in progress. Stay Tuned!
 
 ## Requirements:
 * [NodeJS](https://nodejs.org/en/) - Javascript runtime
-* [VSCode](https://code.visualstudio.com/) - Recomended editor
+* [VSCode](https://code.visualstudio.com/) - Recommended editor
 * [Brave](https://brave.com/) or [Chrome](https://www.google.com/chrome/) or [Firefox](https://www.mozilla.org/en-US/firefox/) - Web browser
 
 ## How to run:
