@@ -214,7 +214,7 @@ const MenuOptionsContainer = styled.div`
   z-index: 999999;
   align-items: center;
   position: absolute;
-  top: 15px;
+  top: 13px;
   left: 320px;
 `
 const MenuOption = styled.div`
@@ -232,7 +232,7 @@ const MenuOption = styled.div`
   vertical-align: middle;
   background-color: ${props => props.color };
   :nth-child(n+2) {
-    margin-top: 12px;
+    margin-top: 14px;
   }
   &:hover:nth-child(n+2) {
     -webkit-box-shadow: 1px 1px 8px -1px rgba(0,0,0,0.75);

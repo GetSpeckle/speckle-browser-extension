@@ -6,6 +6,7 @@ import { networks } from '../../constants/networks'
 import { IAppState } from '../../background/store/all'
 import { saveSettings } from '../../background/store/settings'
 import { ChainDropdown } from '../basic-components'
+import styled from 'styled-components'
 import SettingsMenu from './SettingsMenu'
 
 interface ITopMenuProps extends StateProps, DispatchProps, RouteComponentProps {}
@@ -72,7 +73,7 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
       <div>
         <div className='top-menu'>
           <Grid centered={true} textAlign='center'>
-            <Grid.Column width={3} verticalAlign='middle'>
+            <Grid.Column width={4} verticalAlign='middle'>
               <Image src='/assets/logo-s.svg' centered={true} />
             </Grid.Column>
 
@@ -87,17 +88,21 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
               />
             </Grid.Column>
 
-            <Grid.Column width={2} verticalAlign='middle'>
+            <Grid.Column width={1} verticalAlign='middle'>
               <Image src='/assets/icon-dots-s.svg' centered={true} />
             </Grid.Column>
 
             <Grid.Column width={2} verticalAlign='middle'>
-              <Image
-                  src='/assets/icon-profile.svg'
-                  centered={true}
-                  hidden={this.state.profileIconClicked}
-                  onClick={this.handleProfileIconClick}
-              />
+              <MenuOption
+                onClick={this.handleProfileIconClick}
+                data-click={this.state.profileIconClicked}
+              >
+                <Image
+                    src='/assets/icon-profile.svg'
+                    centered={true}
+                    hidden={this.state.profileIconClicked}
+                />
+              </MenuOption>
             </Grid.Column>
           </Grid>
         </div>
@@ -112,6 +117,16 @@ const mapStateToProps = (state: IAppState) => {
     settings: state.settings
   }
 }
+
+const MenuOption = styled.div`
+  border:  ${props => props['data-click'] ? '0px' : '2px solid #FFFFFF'};
+  border-radius: 7px;
+  width: 50px;
+  height: 25px;
+  line-height: 21px;
+  margin-left: 2px;
+  cursor: pointer;
+`
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
