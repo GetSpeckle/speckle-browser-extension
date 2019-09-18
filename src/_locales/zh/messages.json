@@ -44,9 +44,6 @@
   "mnemonic": {
     "message": "助记词"
   },
-  "importedAccount": {
-    "message": "导入的帐户"
-  },
   "accountName": {
     "message": "帐户名称（最多32个字符，包括空格）"
   },
