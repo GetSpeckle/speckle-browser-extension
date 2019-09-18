@@ -1,0 +1,257 @@
+{
+  "address": {
+    "message": "地址"
+  },
+  "appName": {
+    "message": "斑点"
+  },
+  "appShortName": {
+    "message": "斑点"
+  },
+  "appDescription": {
+    "message": "Web 3和Polkadot生态系统的通用浏览器扩展"
+  },
+  "browserActionTitle": {
+    "message": "斑点"
+  },
+  "welcome": {
+    "message": "欢迎来到斑点"
+  },
+  "continue": {
+    "message": "继续"
+  },
+  "pickColorTitle": {
+    "message": "选择你喜欢的颜色"
+  },
+  "pickColorDescription": {
+    "message": "这可以在设置中更改"
+  },
+  "speckleIntroduction": {
+    "message": "Speckle是为Polkadot打造的Web 3钱包和浏览器。您可以与多个链进行交互并管理其帐户"
+  },
+  "termTitle": {
+    "message": "确认服务条款"
+  },
+  "termDescription": {
+    "message": "自动收集的信息。我们可能会自动记录有关您如何使用我们网站的某些信息（我们将此信息称为“日志数据”）。日志数据可能包括用户的互联网协议（IP）地址，设备和浏览器类型，操作系统，用户浏览的网站的页面或功能以及在这些页面或功能上花费的时间，频率等信息。本网站由用户使用，搜索条款，用户点击或使用的网站链接以及其他统计信息。我们使用此信息来管理服务，我们分析（并可能让第三方参与分析）这些信息，通过扩展其特性和功能并根据用户的需求和偏好进行定制来改进和增强服务。我们可能会使用Cookie或类似技术来分析趋势，管理网站，跟踪用户在网站周围的移动，以及收集有关我们整个用户群的人口统计信息。用户可以在单个浏览器级别控制cookie的使用。有关详细信息，请参阅下面标题为“Cookie政策”的部分。"
+  },
+  "termAcceptButton": {
+    "message": "我接受服务条款"
+  },
+  "passwordDescription": {
+    "message": "输入最少8个字符的密码，该密码将用于登录您的帐户"
+  },
+  "mnemonic": {
+    "message": "助记词"
+  },
+  "importedAccount": {
+    "message": "导入的帐户"
+  },
+  "accountName": {
+    "message": "帐户名称（最多32个字符，包括空格）"
+  },
+  "password": {
+    "message": "密码"
+  },
+  "fileUpload": {
+    "message": "拖放密钥库文件，或单击此处选择一个"
+  },
+  "phraseDescription": {
+    "message": "将您的秘密短语存储在安全的位置。需要它恢复您的帐户。"
+  },
+  "phraseTitle": {
+    "message": "秘密备份短语"
+  },
+  "qrDesc": {
+    "message": "使用QR扫描仪或相机访问此公钥。"
+  },
+  "accountNameTitle": {
+    "message": "输入帐户名称"
+  },
+  "copyText": {
+    "message": "复制文字"
+  },
+  "copyToClipboard": {
+    "message": "复制到剪贴板"
+  },
+  "copiedExclam": {
+    "message": "已复制！"
+  },
+  "copyTextMessage": {
+    "message": "短语复制到剪贴板。确保粘贴并将其保存到安全的地方。"
+  },
+  "copyAddressMessage": {
+    "message": "帐户地址被复制到剪贴板。"
+  },
+  "downloadFile": {
+    "message": "下载"
+  },
+  "createAccount": {
+    "message": "创建帐号"
+  },
+  "phraseConfirmTitle": {
+    "message": "输入您的备份短语"
+  },
+  "phraseMismatch": {
+    "message": "按正确顺序单击上面的单词以确认您的种子短语。"
+  },
+  "confirmPhraseButton": {
+    "message": "确认备份短语"
+  },
+  "selectNetwork": {
+    "message": "选择并开始"
+  },
+  "popular": {
+    "message": "流行"
+  },
+  "recommended": {
+    "message": "推荐的"
+  },
+  "games": {
+    "message": "游戏"
+  },
+  "trade": {
+    "message": "交易"
+  },
+  "backupKeypairMessage": {
+    "message": "好极了！您的第一个帐户已创建。在继续之前，强烈建议您下载受密码保护的密钥对文件并备份到安全的位置。"
+  },
+  "downloadKeyPairButton": {
+    "message": "下载密钥对文件"
+  },
+  "proceedButton": {
+    "message": "继续"
+  },
+  "passwordError": {
+    "message": "空密码或错误密码"
+  },
+  "walletLocked": {
+    "message": "钱包被锁了"
+  },
+  "accountNotFound": {
+    "message": "找不到帐户"
+  },
+  "mnemonicUnmatched": {
+    "message": "助记词与生成的助记词不匹配"
+  },
+  "mnemonicInvalid": {
+    "message": "助记词无效"
+  },
+  "keystoreInvalid": {
+    "message": "密钥库文件无效"
+  },
+  "loginHere": {
+    "message": "这里登录"
+  },
+  "login": {
+    "message": "登录"
+  },
+  "logout": {
+    "message": "登出"
+  },
+  "help": {
+    "message": "得到帮助"
+  },
+  "rpcError": {
+    "message": "RPC服务错误"
+  },
+  "getBalance": {
+    "message": "获取账户余额..."
+  },
+  "balanceNA": {
+    "message": "无法获取余额"
+  },
+  "apiError": {
+    "message": "找不到API"
+  },
+  "myAccountDropdownTitle": {
+    "message": "我的Polkadot钱包"
+  },
+  "createNewAccount": {
+    "message": "建立新帐户"
+  },
+  "importExistingAccount": {
+    "message": "导入现有帐户"
+  },
+  "menuHome": {
+    "message": "家"
+  },
+  "menuStake": {
+    "message": "抵押"
+  },
+  "menuDemocracy": {
+    "message": "公投"
+  },
+  "menuSend": {
+    "message": "发送"
+  },
+  "keyringNotInit": {
+    "message": "密钥环尚未初始化"
+  },
+  "howToImport": {
+    "message": "你想怎么导入?"
+  },
+  "phraseOption": {
+    "message": "12字种子短语"
+  },
+  "phraseOptionDesc": {
+    "message": "通过输入12字种子短语恢复现有帐户"
+  },
+  "keystoreOption": {
+    "message": "密钥库文件"
+  },
+  "keystoreOptionDesc": {
+    "message": "通过上载加密的密钥库文件来还原现有帐户"
+  },
+  "importAccount": {
+    "message": "导入现有帐户"
+  },
+  "keystoreOptionGuide": {
+    "message": "上传密钥库文件并输入解密密码所需的密码"
+  },
+  "importKeystoreError": {
+    "message": "无法使用提供的密码导入密钥库文件"
+  },
+  "errorMissingPage": {
+    "message": "目前看来页面丢失了。它可能仍在开发中。"
+  },
+  "goBack": {
+    "message": "回去"
+  },
+  "tabAll": {
+    "message": "所有"
+  },
+  "tabSent": {
+    "message": "发送"
+  },
+  "tabStaked": {
+    "message": "所抵押"
+  },
+  "amount": {
+    "message": "数量"
+  },
+  "toAddress": {
+    "message": "发给"
+  },
+  "transferFee": {
+    "message": "传送费："
+  },
+  "authorization": {
+    "message": "授权请求"
+  },
+  "signing": {
+    "message": "请求您的签名！"
+  },
+  "signedBy": {
+    "message": "签名者"
+  },
+  "signingMessageIcon": {
+    "message": "消息"
+  },
+  "signingContent": {
+    "message": "签署此消息以证明您帐户的所有权！"
+  },
+  "invalidAddress": {
+    "message": "无效地址"
+  }
+}
