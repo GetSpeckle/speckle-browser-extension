@@ -1,4 +1,6 @@
 # Speckle browser extension
+
+[中文](README.zh-CN.md)
 ### Introduction
 Universal browser extension for Web 3 and the Polkadot ecosystem. 
 Development is still work in progress. Stay Tuned!
