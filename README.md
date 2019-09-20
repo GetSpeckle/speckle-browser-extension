@@ -1,5 +1,9 @@
 # Speckle browser extension
 
+[![license](https://img.shields.io/github/license/GetSpeckle/speckle-browser-extension)](https://github.com/GetSpeckle/speckle-browser-extension/blob/master/LICENSE)
+[![issues](https://img.shields.io/github/issues/GetSpeckle/speckle-browser-extension)](https://github.com/GetSpeckle/speckle-browser-extension/issues)
+[![LoC](https://tokei.rs/b1/github/GetSpeckle/speckle-browser-extension)](https://github.com/GetSpeckle/speckle-browser-extension)
+
 [中文](README.zh-CN.md)
 ### Introduction
 Universal browser extension for Web 3 and the Polkadot ecosystem. 

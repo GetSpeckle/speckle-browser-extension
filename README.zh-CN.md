@@ -1,5 +1,9 @@
 # Speckle 浏览器插件
 
+[![license](https://img.shields.io/github/license/GetSpeckle/speckle-browser-extension)](https://github.com/GetSpeckle/speckle-browser-extension/blob/master/LICENSE)
+[![issues](https://img.shields.io/github/issues/GetSpeckle/speckle-browser-extension)](https://github.com/GetSpeckle/speckle-browser-extension/issues)
+[![LoC](https://tokei.rs/b1/github/GetSpeckle/speckle-browser-extension)](https://github.com/GetSpeckle/speckle-browser-extension)
+
 [English](README.md)
 ### 介绍
 Web 3和波卡生态的统一浏览器插件 
