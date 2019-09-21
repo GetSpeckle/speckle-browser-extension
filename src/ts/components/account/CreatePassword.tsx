@@ -11,7 +11,8 @@ import {
   Section,
   TopSection,
   SecondaryText,
-  StyledPassword
+  StyledPassword,
+  TimerText
 } from '../basic-components'
 import { setNewPassword } from '../../background/store/wallet'
 import { setError } from '../../background/store/error'
@@ -129,18 +130,13 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
           </Message>
         </Section>
 
-        {accountSetupTimeout > 0 && (
-          <Section>
-            <i className='clock outline icon' />
-            {parseTimeLeft(accountSetupTimeout)} left
-          </Section>
-        )}
-
         <Section>
           <Button onClick={this.handleClick}>
             {t('Create Account')}
           </Button>
         </Section>
+
+        {accountSetupTimeout > 0 && <TimerText>{parseTimeLeft(accountSetupTimeout)} left</TimerText>}
       </ContentContainer>
     )
   }

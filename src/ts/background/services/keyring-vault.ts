@@ -70,6 +70,12 @@ class KeyringVault {
     return this._accountSetupTimeout
   }
 
+  cancelAccountSetup (): void {
+    this.clearExpiryTimer()
+    this.clearTempPassword()
+    this.clearMnemonic()
+  }
+
   startExpiryTimer (): void {
     this._accountSetupTimeout = VALIDITY_INTERVAL
 

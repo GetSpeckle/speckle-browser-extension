@@ -84,7 +84,7 @@
     "message": "Download"
   },
   "createAccount": {
-    "message": "Create Account"
+    "message": "Create"
   },
   "phraseConfirmTitle": {
     "message": "Enter your backup phrase"
@@ -93,7 +93,7 @@
     "message": "Click the words above in the correct order to confirm your seed phrase."
   },
   "confirmPhraseButton": {
-    "message": "Confirm Backup Phrase"
+    "message": "Confirm"
   },
   "selectNetwork": {
     "message": "Select And Start"

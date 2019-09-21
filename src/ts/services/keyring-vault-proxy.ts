@@ -126,7 +126,10 @@ export function generateMnemonic (): Promise<string> {
   })
 }
 
-export function createAccount (mnemonic: string, accountName?: string): Promise<KeyringPair$Json> {
+export function createAccount (
+  mnemonic: string,
+  accountName?: string | undefined
+): Promise<KeyringPair$Json> {
   return new Promise<KeyringPair$Json>((resolve, reject) => {
     port.onMessage.addListener(msg => {
       if (msg.method !== FUNCS.CREATE_ACCOUNT) return
@@ -275,4 +278,8 @@ export function setTempAccountName (tempAccountName: string): void {
     method: FUNCS.SET_TEMP_ACCOUNT_NAME,
     tempAccountName
   })
+}
+
+export function cancelAccountSetup (): void {
+  port.postMessage({ method: FUNCS.CANCEL_ACCOUNT_SETUP })
 }

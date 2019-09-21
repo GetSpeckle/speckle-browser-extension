@@ -4,26 +4,28 @@ import Progress from './Progress'
 import { IAppState } from '../../background/store/all'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
-import { Button, Icon, Form, Divider, Popup } from 'semantic-ui-react'
-import { getSimpleAccounts, generateMnemonic, setTempAccountName } from '../../services/keyring-vault-proxy'
+import { Button, Icon, Form, Divider, Popup, Grid } from 'semantic-ui-react'
+import { cancelAccountSetup, getSimpleAccounts, generateMnemonic, setTempAccountName } from '../../services/keyring-vault-proxy'
 import { setNewPhrase, setAccountName, setNewPassword } from '../../background/store/wallet'
 import { CONFIRM_PHRASE_ROUTE, CREATE_PASSWORD_ROUTE, HOME_ROUTE } from '../../constants/routes'
 import {
   Button as StyledButton,
   ContentContainer,
   TopSection,
-  SecondaryText
+  SecondaryText,
+  TimerText
 } from '../basic-components'
 import { parseTimeLeft } from '../../constants/utils'
 
 interface IGeneratePhraseProps extends StateProps, DispatchProps, RouteComponentProps {}
 
 interface IGeneratePhraseState {
-  accountName: string,
-  mnemonic: string,
-  message?: string,
-  color: 'blue' | 'red',
+  accountName: string
+  mnemonic: string
+  message?: string
+  color: 'blue' | 'red'
   msgTimeout?: any
+  isCancelled: boolean
 }
 
 class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhraseState> {
@@ -31,7 +33,8 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
   state: IGeneratePhraseState = {
     accountName: '',
     mnemonic: '',
-    color: 'blue'
+    color: 'blue',
+    isCancelled: false
   }
 
   constructor (props) {
@@ -47,7 +50,7 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
         this.setState({ mnemonic: phrase })
       })
     }
-    
+
     if (this.props.wallet.newAccountName) {
       this.setState({ accountName: this.props.wallet.newAccountName })
     } else {
@@ -77,7 +80,7 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
       } else {
         this.props.history.push({
           pathname: CREATE_PASSWORD_ROUTE,
-          state: { error: 'Account creation timer has elapsed' }
+          state: { error: this.state.isCancelled ? null : 'Account creation timer has elapsed' }
         })
       }
     }
@@ -93,6 +96,10 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
     this.props.setAccountName(this.state.accountName)
     setTempAccountName(this.state.accountName)
     this.props.history.push(CONFIRM_PHRASE_ROUTE)
+  }
+
+  handleCancel = () => {
+    this.setState({ isCancelled: true }, () => cancelAccountSetup())
   }
 
   selectAll = (event) => {
@@ -160,7 +167,7 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
             onClick={this.selectAll}
           />
 
-          <div style={{ textAlign: accountSetupTimeout > 0 ? 'left' : 'center' }}>
+          <div style={{ textAlign: 'center' }}>
             <Popup
               trigger={<Button><Icon name='copy' />{t('copyText')}</Button>}
               content={t('copyTextMessage')}
@@ -169,22 +176,25 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
               onOpen={this.copyText}
               position='top center'
             />
-            {accountSetupTimeout > 0 && (
-              <div style={{ float: 'right', lineHeight: '36px' }}>
-                <i className='clock outline icon' />
-                {parseTimeLeft(accountSetupTimeout)} left
-              </div>
-            )}
           </div>
 
           <Divider />
 
-          <StyledButton type='button' onClick={this.handleClick}>
-            {t('createAccount')}
-          </StyledButton>
+          <Grid columns='equal'>
+            <Grid.Column>
+              <Button fluid={true} onClick={this.handleCancel}>Cancel</Button>
+            </Grid.Column>
+            <Grid.Column>
+              <StyledButton type='button' onClick={this.handleClick}>
+                {t('createAccount')}
+              </StyledButton>
+            </Grid.Column>
+          </Grid>
 
-          </Form>
-        </ContentContainer>
+          {/* tslint:disable-next-line:max-line-length */}
+          {accountSetupTimeout > 0 && <TimerText>{parseTimeLeft(accountSetupTimeout)} left</TimerText>}
+        </Form>
+      </ContentContainer>
     )
   }
 }

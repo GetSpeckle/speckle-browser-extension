@@ -169,6 +169,9 @@ const handle = (msg, port: Runtime.Port) => {
     case FUNCS.SET_TEMP_ACCOUNT_NAME:
       keyringVault.setTempAccountName(msg.tempAccountName)
       break
+    case FUNCS.CANCEL_ACCOUNT_SETUP:
+      keyringVault.cancelAccountSetup()
+      break
     default:
       break
   }
