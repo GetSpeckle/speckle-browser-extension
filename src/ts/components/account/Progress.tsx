@@ -30,13 +30,14 @@ class Progress extends React.Component<IProgressProps> {
   }
 
   render () {
+    const { settings, step } = this.props
+
+    const colorScheme = colorSchemes[settings.color]
     const grayColorScheme = {
       stopColorOne: '#BBBBBB',
       stopColorTwo: '#CCCCCC'
     }
 
-    const { settings, step } = this.props
-    const colorScheme = colorSchemes[settings.color]
     const one = step === 1 ? colorScheme : grayColorScheme
     const two = step === 2 ? colorScheme : grayColorScheme
     const three = step === 3 ? colorScheme : grayColorScheme
@@ -74,8 +75,7 @@ class Progress extends React.Component<IProgressProps> {
               <feGaussianBlur in='shadowOffsetOuter1' result='shadowBlurOuter1' stdDeviation='2'/>
               <feColorMatrix
                 in='shadowBlurOuter1'
-                values='0 0 0 0 0.223431156 0 0 0 0 0.734036715
-                        0 0 0 0 0.974888393 0 0 0 0.601704031 0'
+                values={colorScheme.headerShadow}
               />
             </filter>
             <radialGradient id='f' cy='27.105%' r='72.895%' fx='50%' fy='27.105%'>
@@ -169,8 +169,7 @@ class Progress extends React.Component<IProgressProps> {
               <feGaussianBlur in='shadowOffsetOuter1' result='shadowBlurOuter1' stdDeviation='2'/>
               <feColorMatrix
                 in='shadowBlurOuter1'
-                values='0 0 0 0 0.223431156 0 0 0 0 0.734036715
-                        0 0 0 0 0.974888393 0 0 0 0.601704031 0'
+                values={colorScheme.headerShadow}
               />
             </filter>
           </defs>
@@ -242,8 +241,7 @@ class Progress extends React.Component<IProgressProps> {
               <feGaussianBlur in='shadowOffsetOuter1' result='shadowBlurOuter1' stdDeviation='2'/>
               <feColorMatrix
                 in='shadowBlurOuter1'
-                values='0 0 0 0 0.223431156 0 0 0 0 0.734036715
-                        0 0 0 0 0.974888393 0 0 0 0.601704031 0'
+                values={colorScheme.headerShadow}
               />
             </filter>
             <radialGradient id='i' cy='27.105%' r='72.895%' fx='50%' fy='27.105%'>
