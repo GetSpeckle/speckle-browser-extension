@@ -19,6 +19,8 @@ class KeyringVault {
   private simpleAccounts?: SimpleAccounts
   private _accountSetupTimeout = 0
   private _accountSetupTimeoutTimerId = 0
+  private _tempPasswordTimeoutId = 0
+  private _mnemonicTimeoutId = 0
 
   private get keyring (): KeyringInstance {
     if (this._keyring) {
@@ -40,18 +42,23 @@ class KeyringVault {
       this.startExpiryTimer()
 
       // Trigger clear interval for tempPassword
-      this.clearTempPassword()
+      this.clearTempPassword(false)
     }
   }
 
-  clearTempPassword (): void {
-    setTimeout(() => {
+  clearTempPassword (isCancelled: boolean): void {
+    // On cancelling account setup, remove `setTimeout` timer
+    if (isCancelled) {
+      window.clearTimeout(this._tempPasswordTimeoutId)
       this._tempPassword = undefined
+      this._tempPasswordTimeoutId = 0
+      return
+    }
 
-      if (this._accountSetupTimeoutTimerId !== 0 || this._accountSetupTimeout < 0) {
-        // Clear expiry timer to start afresh
-        this.clearExpiryTimer()
-      }
+    this._tempPasswordTimeoutId = window.setTimeout(() => {
+      this._tempPassword = undefined
+      this._tempPasswordTimeoutId = 0
+      this.clearExpiryTimer()
     }, VALIDITY_INTERVAL * 1000)
   }
 
@@ -72,8 +79,8 @@ class KeyringVault {
 
   cancelAccountSetup (): void {
     this.clearExpiryTimer()
-    this.clearTempPassword()
-    this.clearMnemonic()
+    this.clearTempPassword(true)
+    this.clearMnemonic(true)
   }
 
   startExpiryTimer (): void {
@@ -152,8 +159,10 @@ class KeyringVault {
         this.startExpiryTimer()
       }
 
-      setTimeout(() => {
-        this.clearMnemonic()
+      this._mnemonicTimeoutId = window.setTimeout(() => {
+        this.clearMnemonic(false)
+        this.clearExpiryTimer()
+        this._mnemonicTimeoutId = 0
       }, this._accountSetupTimeout * 1000)
     }
     return this._mnemonic
@@ -163,13 +172,14 @@ class KeyringVault {
     return this._mnemonic || ''
   }
 
-  clearMnemonic (): void {
+  clearMnemonic (isCancelled: boolean): void {
     this._mnemonic = undefined
     this._tempAccountName = undefined
 
-    if (this._accountSetupTimeoutTimerId !== 0 || this._accountSetupTimeout < 0) {
-      // Clear expiry timer to start afresh
-      this.clearExpiryTimer()
+    // On cancelling account setup, remove `setTimeout` timer
+    if (isCancelled) {
+      window.clearTimeout(this._mnemonicTimeoutId)
+      this._mnemonicTimeoutId = 0
     }
   }
 
@@ -199,7 +209,7 @@ class KeyringVault {
     if (this._mnemonic !== mnemonic) return Promise.reject(new Error(t('mnemonicUnmatched')))
     return cryptoWaitReady().then(() => {
       let pair = this.keyring.addFromUri(mnemonic, { name: accountName })
-      this.clearMnemonic()
+      this.clearMnemonic(false)
       this.clearExpiryTimer()
       return this.saveAccount(pair)
     })

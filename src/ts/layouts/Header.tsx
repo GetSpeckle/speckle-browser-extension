@@ -1,17 +1,19 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
-import { ColorScheme } from '../components/styles/themes'
+import { colorSchemes } from '../components/styles/themes'
+import { IAppState } from '../background/store/all'
 
-interface IHeaderProps {
-  colorScheme: ColorScheme
+interface IHeaderProps extends StateProps, DispatchProps {
 }
 
 class Header extends Component<IHeaderProps> {
   render () {
-    const { colorScheme } = this.props
+    const { color } = this.props.settings
+    const colorScheme = colorSchemes[color]
 
     return (
-      <svg width='375' height='174' viewBox='0 0 375 174'>
+      <svg width='375' height='174' viewBox='0 0 375 174' key={color}>
         <defs>
           <path id='aa' d='M0 0h375v174H0z'/>
           <radialGradient
@@ -67,4 +69,14 @@ class Header extends Component<IHeaderProps> {
   }
 }
 
-export default Header
+const mapStateToProps = (state: IAppState) => {
+  return {
+    settings: state.settings
+  }
+}
+
+const mapDispatchToProps = {}
+type StateProps = ReturnType<typeof mapStateToProps>
+type DispatchProps = typeof mapDispatchToProps
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header)
