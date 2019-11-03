@@ -250,5 +250,8 @@
   },
   "invalidAddress": {
     "message": "无效地址"
+  },
+  "clickToQRCode": {
+    "message": "显示QR Code格式"
   }
 }

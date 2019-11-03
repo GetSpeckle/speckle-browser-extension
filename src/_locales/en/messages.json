@@ -250,5 +250,8 @@
   },
   "invalidAddress": {
     "message": "Invalid address"
+  },
+  "clickToQRCode": {
+    "message": "Click to show in QR Code"
   }
 }

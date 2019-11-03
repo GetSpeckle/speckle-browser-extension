@@ -17,7 +17,7 @@ import Identicon from 'polkadot-identicon'
 import { saveSettings } from '../../background/store/settings'
 import 'react-tippy/dist/tippy.css'
 import { Tooltip } from 'react-tippy'
-import { Button, Dropdown, Icon, Popup } from 'semantic-ui-react'
+import { Dropdown, Icon, Popup } from 'semantic-ui-react'
 import { colorSchemes } from '../styles/themes'
 import styled from 'styled-components'
 import { getTransactions } from '../../background/store/transaction'
@@ -244,7 +244,14 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
               basic={true}
             />
           </Tooltip>
+          <Tooltip
+            title={t('clickToQRCode')}
+            position='bottom'
+            trigger='mouseenter'
+            arrow={true}
+          >
           {this.renderQrIcon()}
+          </Tooltip>
         </AccountSection>
       </Float>
     )
@@ -253,17 +260,22 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
   renderQrIcon () {
     if (!this.props.qrDestination) return null
     return (
-      <Button
+      <QrIcon
         compact={true}
         inverted={true}
         basic={true}
-        icon='qrcode'
-        color='vk'
+        name='qrcode'
         onClick={this.handleClickQR}
       />
     )
   }
 }
+
+export const QrIcon = styled(Icon)`
+  color: white
+  padding: 2px
+  text-decoration: none
+`
 
 export const AccountSection = styled.div`
   width: 100%

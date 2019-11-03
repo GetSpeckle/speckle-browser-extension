@@ -32,7 +32,7 @@ import {
 } from '../../background/store/transaction'
 import { SubmittableResult } from '@polkadot/api'
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types'
-import { HOME_ROUTE } from '../../constants/routes'
+import { HOME_ROUTE, QR_ROUTE } from '../../constants/routes'
 import { EventRecord, Index, Balance as BalanceType } from '@polkadot/types/interfaces'
 import { decodeAddress } from '@polkadot/util-crypto'
 
@@ -307,7 +307,7 @@ class Send extends React.Component<ISendProps, ISendState> {
         <Dimmer active={this.state.isLoading}>
           <Loader indeterminate={true}> Processing transaction, please wait ...</Loader>
         </Dimmer>
-        <AccountDropdown/>
+        <AccountDropdown qrDestination={QR_ROUTE} />
         <AccountSection>
           <Balance address={this.props.settings.selectedAccount.address} />
         </AccountSection>
