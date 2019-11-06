@@ -87,14 +87,20 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
   }
 
   handleChange = event => {
-    this.setState({ accountName: event.target.value })
+    this.setState({ accountName: event.target.value }, () => {
+      const { accountName } = this.state
+
+      // Save the temporary account name in the background
+      if (accountName) {
+        this.props.setAccountName(accountName)
+        setTempAccountName(accountName)
+      }
+    })
   }
 
   handleClick = () => {
     this.setState({ message: '' })
     this.props.setNewPhrase(this.state.mnemonic)
-    this.props.setAccountName(this.state.accountName)
-    setTempAccountName(this.state.accountName)
     this.props.history.push(CONFIRM_PHRASE_ROUTE)
   }
 
