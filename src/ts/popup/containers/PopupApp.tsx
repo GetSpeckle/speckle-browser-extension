@@ -19,10 +19,6 @@ import { subscribeAuthorize, subscribeSigning } from '../../services/messaging'
 import Authorizing from '../../components/page/Authorizing'
 import Signing from '../../components/page/Signing'
 import { ApiOptions } from '@polkadot/api/types'
-import { Edgeware } from '../../constants/chains'
-import { IdentityTypes } from 'edgeware-node-types/dist/identity'
-import { VotingTypes } from 'edgeware-node-types/dist/voting'
-import { SignalingTypes } from 'edgeware-node-types/dist/signaling'
 
 interface IPopupProps extends StateProps, DispatchProps { }
 
@@ -56,13 +52,7 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
       this.setState({ ...this.state, tries: this.state.tries++ })
       const network = networks[settings.network]
       const provider = new WsProvider(network.rpcServer)
-      let apiOptions: ApiOptions = { provider }
-      if (network.chain === Edgeware) {
-        apiOptions = {
-          ...apiOptions,
-          types: { ...IdentityTypes, ...VotingTypes, ...SignalingTypes }
-        }
-      }
+      let apiOptions: ApiOptions = { provider, types: network.types }
       this.props.createApi(apiOptions)
       if (this.state.tries <= 5) {
         // try to connect in 3 seconds

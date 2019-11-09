@@ -97,7 +97,11 @@ class KeyringVault {
       let accounts = Object.values(vault)
       this.simpleAccounts = accounts.map(account => {
         const keyringPairJson = (account as KeyringPair$Json)
-        return { address: keyringPairJson.address, name: keyringPairJson.meta.name }
+        return {
+          address: keyringPairJson.address,
+          genesisHash: keyringPairJson.meta.genesisHash,
+          name: keyringPairJson.meta.name
+        }
       })
       return this.simpleAccounts
     })

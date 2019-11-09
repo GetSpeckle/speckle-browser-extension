@@ -1,8 +1,11 @@
-// Copyright 2019 @polkadot/extension authors & contributors
-// This software may be modified and distributed under the terms
-// of the Apache-2.0 license. See the LICENSE file for details.
-
-import { MessageTypes } from '../background/types'
+import {
+  MessageTypes,
+  MessageTypesWithNoSubscriptions,
+  MessageTypesWithNullRequest,
+  MessageTypesWithSubscriptions,
+  RequestTypes,
+  ResponseTypes, SubscriptionMessageTypes
+} from '../background/types'
 
 import { injectExtension } from '@polkadot/extension-inject'
 
@@ -32,9 +35,22 @@ let idCounter = 0
 
 // a generic message sender that creates an event, returning a promise that will
 // resolve once the event is resolved (by the response listener just below this)
+function sendMessage<TMessageType extends MessageTypesWithNullRequest> (message: TMessageType)
+  : Promise<ResponseTypes[TMessageType]>
+function sendMessage<TMessageType extends MessageTypesWithNoSubscriptions> (
+  message: TMessageType,
+  request: RequestTypes[TMessageType]): Promise<ResponseTypes[TMessageType]>
+function sendMessage<TMessageType extends MessageTypesWithSubscriptions> (
+  message: TMessageType,
+  request: RequestTypes[TMessageType],
+  subscriber: (data: SubscriptionMessageTypes[TMessageType]) => void)
+  : Promise<ResponseTypes[TMessageType]>
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function sendMessage (message: MessageTypes, request: any = null, subscriber?: (data: any) => void):
-  Promise<any> {
+function sendMessage<TMessageType extends MessageTypes> (
+  message: TMessageType,
+  request?: RequestTypes[TMessageType],
+  subscriber?: (data: any) => void): Promise<ResponseTypes[TMessageType]> {
   return new Promise((resolve, reject): void => {
     const id = `${Date.now()}.${++idCounter}`
 
@@ -46,7 +62,7 @@ function sendMessage (message: MessageTypes, request: any = null, subscriber?: (
 
 // the enable function, called by the dapp to allow access
 async function enable (origin: string): Promise<Injected> {
-  await sendMessage('authorize.tab', { origin })
+  await sendMessage('pub(authorize.tab)', { origin })
 
   return new Injected(sendMessage)
 }

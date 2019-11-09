@@ -1,31 +1,112 @@
-// Copyright 2019 @polkadot/extension authors & contributors
-// This software may be modified and distributed under the terms
-// of the Apache-2.0 license. See the LICENSE file for details.
-
+import { InjectedAccount } from '@polkadot/extension-inject/types'
 import { SignerPayloadJSON } from '@polkadot/types/types'
 
-export type MessageTypes = 'authorize.approve' | 'authorize.reject'
-  | 'authorize.requests' | 'authorize.subscribe' | 'authorize.tab'
-  | 'accounts.list' | 'accounts.subscribe' | 'extrinsic.sign'
-  | 'signing.approve' | 'signing.cancel' | 'signing.requests' | 'signing.subscribe'
+type KeysWithDefinedValues<T> = {
+  [K in keyof T]: T[K] extends undefined ? never : K
+}[keyof T]
 
-export type SimpleAccounts = Array<{ address: string, name?: string }>
+type NoUndefinedValues<T> = {
+  [K in KeysWithDefinedValues<T>]: T[K]
+}
 
-export type AuthorizeRequest = [string, MessageAuthorize, string]
+export interface RequestSignatures {
+  // private/internal requests, i.e. from a popup
+  'pri(accounts.subscribe)': [RequestAccountSubscribe, boolean, AccountJson[]]
+  'pri(authorize.approve)': [RequestAuthorizeApprove, boolean]
+  'pri(authorize.reject)': [RequestAuthorizeReject, boolean]
+  'pri(authorize.subscribe)': [RequestAuthorizeSubscribe, boolean, AuthorizeRequest[]]
+  'pri(signing.approve.password)': [RequestSigningApprovePassword, boolean]
+  'pri(signing.approve.signature)': [RequestSigningApproveSignature, boolean]
+  'pri(signing.cancel)': [RequestSigningCancel, boolean]
+  'pri(signing.subscribe)': [RequestSigningSubscribe, boolean, SigningRequest[]]
+  'pri(window.open)': [null, boolean]
+  // public/external requests, i.e. from a page
+  'pub(accounts.list)': [RequestAccountList, InjectedAccount[]]
+  'pub(accounts.subscribe)': [RequestAccountSubscribe, boolean, InjectedAccount[]]
+  'pub(authorize.tab)': [RequestAuthorizeTab, null]
+  'pub(extrinsic.sign)': [RequestExtrinsicSign, ResponseExtrinsicSign]
+}
 
-export type SigningRequest = [string, MessageExtrinsicSign, string]
+export type MessageTypes = keyof RequestSignatures
 
-export interface MessageAuthorize {
+export type SimpleAccounts = InjectedAccount[]
+
+export interface AccountJson {
+  address: string
+  genesisHash?: string | null
+  isExternal?: boolean
+  name?: string
+}
+
+export interface AuthorizeRequest {
+  id: string
+  request: RequestAuthorizeTab
+  url: string
+}
+
+export interface SigningRequest {
+  account: AccountJson
+  id: string
+  request: RequestExtrinsicSign
+  url: string
+}
+
+export type RequestAccountList = null
+
+export type RequestAccountSubscribe = null
+
+export type RequestExtrinsicSign = SignerPayloadJSON
+
+export interface RequestSigningApprovePassword {
+  id: string
+  password: string
+}
+
+export interface RequestSigningApproveSignature {
+  id: string
+  signature: string
+}
+
+export interface RequestSigningCancel {
+  id: string
+}
+
+export type RequestSigningSubscribe = null
+
+export interface RequestAuthorizeTab {
   origin: string
 }
 
-export interface MessageAuthorizeApprove {
+export interface RequestAuthorizeApprove {
   id: string
 }
 
-export interface MessageAuthorizeReject {
+export interface RequestAuthorizeReject {
   id: string
 }
+
+export type RequestAuthorizeSubscribe = null
+
+export type RequestTypes = {
+  [MessageType in keyof RequestSignatures]: RequestSignatures[MessageType][0]
+}
+
+export type ResponseTypes = {
+  [MessageType in keyof RequestSignatures]: RequestSignatures[MessageType][1]
+}
+
+export interface ResponseExtrinsicSign {
+  id: string
+  signature: string
+}
+
+export type SubscriptionMessageTypes = NoUndefinedValues<{
+  [MessageType in keyof RequestSignatures]: RequestSignatures[MessageType][2]
+}>
+
+export type MessageTypesWithSubscriptions = keyof SubscriptionMessageTypes
+
+export type MessageTypesWithNoSubscriptions = Exclude<MessageTypes, keyof SubscriptionMessageTypes>
 
 export interface MessageRequest {
   id: string
@@ -33,21 +114,12 @@ export interface MessageRequest {
   request: any
 }
 
-export interface MessageResponse {
-  error?: string
-  id: string
-  response?: any
-  subscription?: any
-}
+type IsNull<T, K extends keyof T> =
+    { [K1 in Exclude<keyof T, K>]: T[K1] } & T[K] extends null ? K : never
 
-export interface MessageExtrinsicSignApprove {
-  id: string
-  password: string
-}
+type NullKeys<T> = { [K in keyof T]: IsNull<T, K> }[keyof T]
 
-export interface MessageExtrinsicSignCancel {
-  id: string
-}
+export type MessageTypesWithNullRequest = NullKeys<RequestTypes>
 
 export type MessageExtrinsicSign = SignerPayloadJSON
 

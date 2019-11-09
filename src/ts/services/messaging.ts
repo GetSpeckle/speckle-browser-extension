@@ -1,4 +1,10 @@
-import { AuthorizeRequest, MessageTypes, SigningRequest } from '../background/types'
+import {
+  AuthorizeRequest,
+  MessageTypes, MessageTypesWithNoSubscriptions, MessageTypesWithSubscriptions,
+  RequestTypes, ResponseTypes,
+  SigningRequest,
+  SubscriptionMessageTypes
+} from '../background/types'
 
 import extension from 'extensionizer'
 import { PORT_POPUP } from '../constants/ports'
@@ -9,9 +15,7 @@ type Handler = {
   subscriber?: (data: any) => void
 }
 
-type Handlers = {
-  [index: string]: Handler
-}
+type Handlers = Record<string, Handler>
 
 const port = extension.runtime.connect({ name: PORT_POPUP })
 const handlers: Handlers = {}
@@ -39,8 +43,18 @@ port.onMessage.addListener((data) => {
   }
 })
 
-function sendMessage (message: MessageTypes, request: any = {}, subscriber?: (data: any) => void)
-  : Promise<any> {
+function sendMessage<TMessageType extends MessageTypesWithNoSubscriptions> (
+  message: TMessageType, request: RequestTypes[TMessageType]): Promise<ResponseTypes[TMessageType]>
+function sendMessage<TMessageType extends MessageTypesWithSubscriptions> (
+  message: TMessageType,
+  request: RequestTypes[TMessageType],
+  subscriber: (data: SubscriptionMessageTypes[TMessageType]) => void):
+  Promise<ResponseTypes[TMessageType]>
+function sendMessage<TMessageType extends MessageTypes> (
+  message: TMessageType,
+  request?: RequestTypes[TMessageType],
+  subscriber?: (data: any) => void)
+  : Promise<ResponseTypes[TMessageType]> {
   return new Promise((resolve, reject) => {
     const id = `${Date.now()}.${++idCounter}`
 
@@ -51,27 +65,31 @@ function sendMessage (message: MessageTypes, request: any = {}, subscriber?: (da
 }
 
 export async function rejectAuthRequest (id: string): Promise<boolean> {
-  return sendMessage('authorize.reject', { id })
+  return sendMessage('pri(authorize.reject)', { id })
 }
 
 export async function approveAuthRequest (id: string): Promise<boolean> {
-  return sendMessage('authorize.approve', { id })
+  return sendMessage('pri(authorize.approve)', { id })
 }
 
 export async function cancelSignRequest (id: string): Promise<boolean> {
-  return sendMessage('signing.cancel', { id })
+  return sendMessage('pri(signing.cancel)', { id })
 }
 
-export async function approveSignRequest (id: string, password: string): Promise<boolean> {
-  return sendMessage('signing.approve', { id, password })
+export async function approveSignPassword (id: string, password: string): Promise<boolean> {
+  return sendMessage('pri(signing.approve.password)', { id, password })
 }
 
-export async function subscribeAuthorize (cb: (accounts: Array<AuthorizeRequest>) => void)
+export async function approveSignSignature (id: string, signature: string): Promise<boolean> {
+  return sendMessage('pri(signing.approve.signature)', { id, signature })
+}
+
+export async function subscribeAuthorize (cb: (accounts: AuthorizeRequest[]) => void)
   : Promise<boolean> {
-  return sendMessage('authorize.subscribe', {}, cb)
+  return sendMessage('pri(authorize.subscribe)', null, cb)
 }
 
-export async function subscribeSigning (cb: (accounts: Array<SigningRequest>) => void)
+export async function subscribeSigning (cb: (accounts: SigningRequest[]) => void)
   : Promise<boolean> {
-  return sendMessage('signing.subscribe', {}, cb)
+  return sendMessage('pri(signing.subscribe)', null, cb)
 }

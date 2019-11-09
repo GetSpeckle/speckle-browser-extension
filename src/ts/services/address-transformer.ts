@@ -1,7 +1,7 @@
 import { decodeAddress, encodeAddress } from '@polkadot/util-crypto'
 import { Prefix } from '@polkadot/util-crypto/address/types'
 
-export default function (address: string, ss58Format: number): string {
+export default function (address: string, ss58Format: number | undefined): string {
   const publicKey = decodeAddress(address)
   return encodeAddress(publicKey, ss58Format as Prefix)
 }

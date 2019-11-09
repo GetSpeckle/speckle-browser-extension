@@ -9,10 +9,9 @@ import WithLayout from './WithLayout'
 import SignMessage from './SignMessage'
 import SignBy from './SignBy'
 import { SigningRequest } from '../../background/types'
-import { approveSignRequest, cancelSignRequest } from '../../services/messaging'
+import { approveSignPassword, cancelSignRequest } from '../../services/messaging'
 import Unlock from './Unlock'
 import { GenericCall } from '@polkadot/types'
-import fromMetadata from '@polkadot/api-metadata/extrinsics/fromMetadata'
 import { findNetwork } from '../../constants/networks'
 
 type MethodJson = {
@@ -28,7 +27,7 @@ const Signing = (props) => {
 
   const network = findNetwork(extrinsic.genesisHash)
   if (network && network.meta) {
-    GenericCall.injectMethods(fromMetadata(network.meta))
+    GenericCall.injectMetadata(network.meta)
   }
   const method = new GenericCall(extrinsic.method)
   const methodData = method.toJSON() as MethodJson
@@ -38,7 +37,7 @@ const Signing = (props) => {
     cancelSignRequest(signId)
       .catch(console.error)
   const onSign = (password: string) =>
-    approveSignRequest(signId, password)
+    approveSignPassword(signId, password)
 
   return (
       <ContentContainer>

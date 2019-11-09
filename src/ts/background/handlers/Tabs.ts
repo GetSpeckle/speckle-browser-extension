@@ -1,9 +1,11 @@
 import {
   SimpleAccounts,
-  MessageTypes,
-  MessageAuthorize,
-  MessageExtrinsicSign,
-  MessageExtrinsicSignResponse
+  RequestAuthorizeTab,
+  RequestExtrinsicSign,
+  ResponseExtrinsicSign,
+  RequestTypes,
+  ResponseTypes,
+  MessageTypes
 } from '../types'
 
 import { assert } from '@polkadot/util'
@@ -13,60 +15,62 @@ import keyringVault from '../services/keyring-vault'
 import { Runtime } from 'webextension-polyfill-ts'
 
 export default class Tabs {
-  state: State
 
-  constructor (state: State) {
+  private state: State
+
+  public constructor (state: State) {
     this.state = state
   }
 
-  private authorize (url: string, request: MessageAuthorize) {
+  private authorize (url: string, request: RequestAuthorizeTab): Promise<boolean> {
     console.log(url, request)
     return this.state.authorizeUrl(url, request)
   }
 
+  // @ts-ignore
   private accountsList (url: string): Promise<SimpleAccounts> {
-    console.log(url)
     return keyringVault.getSimpleAccounts()
   }
 
   private accountsSubscribe (url: string, id: string, port: Runtime.Port): boolean {
     console.log(url)
-    const cb = createSubscription(id, port)
+    const cb = createSubscription<'pub(accounts.subscribe)'>(id, port)
     keyringVault.getSimpleAccounts().then(accounts => cb(accounts))
-    port.onDisconnect.addListener(() => {
+    port.onDisconnect.addListener((): void => {
       unsubscribe(id)
     })
     return true
   }
 
-  private extrinsicSign (url: string, request: MessageExtrinsicSign):
-    Promise<MessageExtrinsicSignResponse> {
+  private extrinsicSign (url: string, request: RequestExtrinsicSign):
+    Promise<ResponseExtrinsicSign> {
     const { address } = request
     const accountExists = keyringVault.accountExists(address)
-
     assert(accountExists, 'Unable to find account')
-
-    return this.state.signQueue(url, request)
+    const pair = keyringVault.getPair(address)
+    return this.state.signQueue(url, request, { address, ...pair.meta })
   }
 
-  public async handle (id: string, type: MessageTypes,
-                request: any, url: string, port: Runtime.Port): Promise<any> {
-    if (type !== 'authorize.tab') {
+  public async handle<TMessageType extends MessageTypes> (id: string, type: TMessageType,
+                                                          request: RequestTypes[TMessageType],
+                                                          url: string, port: Runtime.Port):
+    Promise<ResponseTypes[keyof ResponseTypes]> {
+    if (type !== 'pub(authorize.tab)') {
       this.state.ensureUrlAuthorized(url)
     }
 
     switch (type) {
-      case 'authorize.tab':
-        return this.authorize(url, request)
+      case 'pub(authorize.tab)':
+        return this.authorize(url, request as RequestAuthorizeTab)
 
-      case 'accounts.list':
+      case 'pub(accounts.list)':
         return this.accountsList(url)
 
-      case 'accounts.subscribe':
+      case 'pub(accounts.subscribe)':
         return this.accountsSubscribe(url, id, port)
 
-      case 'extrinsic.sign':
-        return this.extrinsicSign(url, request)
+      case 'pub(extrinsic.sign)':
+        return this.extrinsicSign(url, request as RequestExtrinsicSign)
 
       default:
         throw new Error(`Unable to handle message of type ${type}`)
