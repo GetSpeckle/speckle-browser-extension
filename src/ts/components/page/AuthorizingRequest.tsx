@@ -9,12 +9,12 @@ import { Grid, Button as BasicButton } from 'semantic-ui-react'
 import RequestPanel from './RequestPanel'
 
 const AuthorizingRequest = (props) => {
-  const [ authId, { origin }, url ] = [...props.request]
+  const { id, request: { origin }, url } = props.request
   const onApprove = () =>
-    approveAuthRequest(authId)
+    approveAuthRequest(id)
       .catch(console.error)
   const onReject = () =>
-    rejectAuthRequest(authId)
+    rejectAuthRequest(id)
       .catch(console.error)
 
   return (
