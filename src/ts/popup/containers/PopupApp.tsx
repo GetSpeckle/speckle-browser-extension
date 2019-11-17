@@ -87,7 +87,7 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
     })
   }
 
-  componentWillMount () {
+  componentDidMount () {
     this.initializeApp()
   }
 

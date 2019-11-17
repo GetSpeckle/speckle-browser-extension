@@ -12,6 +12,7 @@ import U32 from '@polkadot/types/primitive/U32'
 class Balance extends React.Component<IBalanceProps, IBalanceState> {
 
   state: IBalanceState = {
+    address: undefined,
     balance: undefined,
     bonded: undefined,
     tries: 1
@@ -43,9 +44,7 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
   }
 
   private doUpdate = () => {
-    console.log(this.props.address)
     this.api.derive.balances.all(this.props.address, derivedBalances => {
-      console.log('derivedBalances', derivedBalances)
       const availableBalance = formatBalance(derivedBalances.availableBalance)
       const bondedBalance = formatBalance(derivedBalances.lockedBalance)
       if (availableBalance !== this.state.balance || bondedBalance !== this.state.bonded) {
@@ -60,11 +59,18 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
     this.updateBalance()
   }
 
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.address !== this.props.address) {
-      this.state.unsub && this.state.unsub()
+  componentDidUpdate (_prevProps, prevState, _snapshot?) {
+    if (this.state.address !== prevState.address) {
+      prevState.unsub && prevState.unsub()
       this.updateBalance()
     }
+  }
+
+  static getDerivedStateFromProps (nextProps, prevState) {
+    if (nextProps.address !== prevState.address) {
+      return { address: nextProps.address }
+    }
+    return {}
   }
 
   componentWillUnmount (): void {
@@ -130,6 +136,7 @@ interface IBalanceProps extends StateProps {
 }
 
 interface IBalanceState {
+  address?: string
   balance?: string
   bonded?: string
   tries: number

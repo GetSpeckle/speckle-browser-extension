@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import Identicon from 'polkadot-identicon'
+import Identicon from '@polkadot/react-identicon'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 import { Color } from '../styles/themes'
@@ -39,7 +39,7 @@ class SignBy extends React.Component<ISignByProps, ISignByState> {
         <IdenticonContainer color={settings.color}>
           <div>{t('signedBy')}</div>
           <Identicon
-            account={address}
+            value={address}
             style={{ marginTop: 10 }}
             size={50}
           />

@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { Overlay } from './Overlay'
 import { Button, Icon, Modal } from 'semantic-ui-react'
 import * as React from 'react'
-import Identicon from 'polkadot-identicon'
+import Identicon from '@polkadot/react-identicon'
 import 'react-tippy/dist/tippy.css'
 import { Tooltip } from 'react-tippy'
 import t from '../../services/i18n'
@@ -115,7 +115,7 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
         <UpperSection>
           <Offset>
             <Status>
-              <Identicon account={this.props.fromAddress} size={48}/>
+              <Identicon value={this.props.fromAddress} size={48}/>
             </Status>
           </Offset>
           <Tooltip
@@ -140,7 +140,7 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
           <FromTo color={colorSchemes[this.props.color].backgroundColor}>
             <Icon name='arrow circle right' size={'big'} style={{ 'marginLeft': '10px' }}/>
             <Identicon
-              account={this.props.toAddress}
+              value={this.props.toAddress}
               size={28}
               style={{ 'marginRight': '5px' }}
             />

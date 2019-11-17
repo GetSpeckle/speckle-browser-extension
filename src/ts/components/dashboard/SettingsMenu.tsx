@@ -41,15 +41,12 @@ export default class SettingsMenu extends React.Component<ISettingsMenuProps, IS
     previousMenuItems: ['']
   }
 
-  componentWillMount = () => {
-    document.addEventListener('mousedown', this.handleClick)
-  }
-
   componentWillUnMount = () => {
     document.removeEventListener('mousedown', this.handleClick)
   }
 
   componentDidMount = () => {
+    document.addEventListener('mousedown', this.handleClick)
     this.animateMenuOpen()
   }
 
