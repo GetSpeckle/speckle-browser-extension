@@ -62,7 +62,10 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
         const accountName = 'Account ' + (result.length + 1)
         this.setState(
           { accountName },
-          () => setTempAccountName(accountName)
+          () => {
+            this.props.setAccountName(accountName)
+            setTempAccountName(accountName)
+          }
           )
       })
     }
