@@ -1,8 +1,7 @@
 import { browser } from 'webextension-polyfill-ts'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import * as FUNCS from '../constants/keyring-vault-funcs'
-import { SignerOptions } from '@polkadot/api/types'
-import { IExtrinsic } from '@polkadot/types/types'
+import { SignerPayloadJSON } from '@polkadot/types/types'
 import { PORT_KEYRING } from '../constants/ports'
 import { SimpleAccounts } from '../background/types'
 
@@ -70,11 +69,8 @@ export function walletExists (): Promise<boolean> {
   })
 }
 
-export function signExtrinsic (extrinsic: IExtrinsic,
-                               address: string,
-                               signerOption: SignerOptions) {
+export function signExtrinsic (signerPayload: SignerPayloadJSON) {
   return new Promise<any>((resolve, reject) => {
-    const { blockHash, genesisHash, nonce, blockNumber } = signerOption
     port.onMessage.addListener(msg => {
       if (msg.method !== FUNCS.SIGN_EXTRINSIC) return
       if (msg.error) {
@@ -84,16 +80,7 @@ export function signExtrinsic (extrinsic: IExtrinsic,
     })
     port.postMessage({
       method: FUNCS.SIGN_EXTRINSIC,
-      messageExtrinsicSign: JSON.parse(JSON.stringify({
-        address,
-        blockHash,
-        genesisHash,
-        blockNumber,
-        method: extrinsic.method.toHex(),
-        era: extrinsic.era,
-        nonce,
-        version: extrinsic.version
-      }))
+      signerPayload: signerPayload
     })
   })
 }

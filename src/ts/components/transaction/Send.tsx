@@ -20,8 +20,7 @@ import { AccountSection } from '../dashboard/Dashboard'
 import { Dimmer, Form, Loader } from 'semantic-ui-react'
 import Amount from './Amount'
 import ToAddress from './ToAddress'
-import { ExtrinsicPayloadValue, IExtrinsic } from '@polkadot/types/types'
-import { SignerOptions } from '@polkadot/api/types'
+import { ExtrinsicPayloadValue, IExtrinsic, SignerPayloadJSON } from '@polkadot/types/types'
 import Fee from './Fee'
 import Confirm from './Confirm'
 import AccountDropdown from '../account/AccountDropdown'
@@ -155,25 +154,34 @@ class Send extends React.Component<ISendProps, ISendState> {
     const extrinsic: IExtrinsic = await this.api.tx.balances
       .transfer(this.state.toAddress, BnAmount)
 
-    const signOptions: SignerOptions = {
-      blockNumber: await this.api.query.system.number() as unknown as BN,
-      blockHash: this.api.genesisHash,
-      genesisHash: this.api.genesisHash,
-      nonce: await this.api.query.system.accountNonce(currentAddress) as Index,
-      runtimeVersion: this.api.runtimeVersion
+    const currentBlockNumber = await this.api.query.system.number() as unknown as BN
+    const currentBlockHash = await this.api.rpc.chain.getBlockHash(currentBlockNumber.toNumber())
+    const currentNonce = await this.api.query.system.accountNonce(currentAddress) as Index
+    const tip: number = 0
+    let signerPayload: SignerPayloadJSON = {
+      address: currentAddress,
+      blockHash: currentBlockHash.toHex(),
+      blockNumber: currentBlockNumber.toString('hex'),
+      era: extrinsic.era.toHex(),
+      genesisHash: this.api.genesisHash.toHex(),
+      method: extrinsic.method.toHex(),
+      nonce: currentNonce.toHex(),
+      specVersion: this.api.runtimeVersion.specVersion.toHex(),
+      tip: tip.toString(16),
+      version: extrinsic.version
     }
     const payloadValue: ExtrinsicPayloadValue = {
       era: extrinsic.era,
-      method: extrinsic.method.toHex(),
-      blockHash: signOptions.blockHash,
-      genesisHash: signOptions.genesisHash,
-      nonce: signOptions.nonce,
-      tip: 0,
+      method: extrinsic.method,
+      blockHash: currentBlockHash,
+      genesisHash: this.api.genesisHash,
+      nonce: currentNonce,
+      tip: tip,
       specVersion: this.api.runtimeVersion.specVersion.toNumber()
     }
-    signExtrinsic(extrinsic, currentAddress, signOptions).then(signature => {
+    signExtrinsic(signerPayload).then(signature => {
       const signedExtrinsic = extrinsic.addSignature(
-        currentAddress as any,
+        currentAddress,
         signature,
         payloadValue
       )

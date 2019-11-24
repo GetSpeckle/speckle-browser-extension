@@ -3,8 +3,9 @@ import Keyring from '@polkadot/keyring'
 import { LocalStore } from '../../services/local-store'
 import { mnemonicGenerate, cryptoWaitReady, mnemonicValidate } from '@polkadot/util-crypto'
 import t from '../../services/i18n'
-import { SimpleAccounts, MessageExtrinsicSign } from '../types'
+import { SimpleAccounts } from '../types'
 import { createType } from '@polkadot/types'
+import { SignerPayloadJSON } from '@polkadot/types/types'
 
 const VAULT_KEY: string = 'speckle-vault'
 
@@ -50,17 +51,17 @@ class KeyringVault {
     return !this._password
   }
 
-  isUnlocked(): boolean {
+  isUnlocked (): boolean {
     return !this.isLocked()
   }
 
-  lock() {
+  lock () {
     this._password = undefined
     this._mnemonic = undefined
     this._keyring = undefined
   }
 
-  unlock(password: string): Promise < Array < KeyringPair$Json >> {
+  unlock (password: string): Promise < Array < KeyringPair$Json >> {
     if (this .isUnlocked()) {
       return new Promise<Array<KeyringPair$Json>>(
         resolve => {
@@ -190,14 +191,14 @@ class KeyringVault {
     }
   }
 
-  signExtrinsic = async (messageExtrinsicSign: MessageExtrinsicSign): Promise<string> => {
-    const { address } = messageExtrinsicSign
+  signExtrinsic = async (signerPayload: SignerPayloadJSON): Promise<string> => {
+    const { address } = signerPayload
     const pair = this.keyring.getPair(address)
 
     if (!pair) {
       return Promise.reject(new Error('Unable to find pair'))
     }
-    const payload = createType('ExtrinsicPayload', messageExtrinsicSign)
+    const payload = createType('ExtrinsicPayload', signerPayload)
     const result = payload.sign(pair)
     return Promise.resolve(result.signature)
   }
@@ -212,7 +213,7 @@ class KeyringVault {
   }
 
   private saveAccount (pair: KeyringPair): Promise<KeyringPair$Json> {
-    this.addTimestamp(pair)
+    KeyringVault.addTimestamp(pair)
     const keyringPair$Json: KeyringPair$Json = pair.toJson(this._password)
     return LocalStore.getValue(VAULT_KEY).then(vault => {
       if (!vault) {
@@ -226,7 +227,7 @@ class KeyringVault {
     })
   }
 
-  private addTimestamp (pair: KeyringPair): void {
+  private static addTimestamp (pair: KeyringPair): void {
     if (!pair.meta.whenCreated) {
       pair.setMeta({ ...pair.meta, whenCreated: Date.now() })
     }
