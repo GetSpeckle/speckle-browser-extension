@@ -8,6 +8,7 @@ import { formatBalance } from '@polkadot/util'
 import styled from 'styled-components'
 import { ChainProperties } from '@polkadot/types/interfaces'
 import U32 from '@polkadot/types/primitive/U32'
+import {networks} from '../../constants/networks'
 
 class Balance extends React.Component<IBalanceProps, IBalanceState> {
 
@@ -27,14 +28,23 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
   updateBalance = () => {
     if (this.props.apiContext.apiReady) {
       this.setState({ ...this.state, tries: 1 })
-      this.api.rpc.system.properties().then(properties => {
-        const chainProperties = (properties as ChainProperties)
+      const { tokenDecimals, tokenSymbol } = this.props.network
+      if (tokenDecimals !== undefined && tokenSymbol !== undefined) {
         formatBalance.setDefaults({
-          decimals: chainProperties.tokenDecimals.unwrapOr(new U32(15)).toNumber(),
-          unit: chainProperties.tokenSymbol.unwrapOr('DEV').toString()
+          decimals: tokenDecimals,
+          unit: tokenSymbol
         })
         this.doUpdate()
-      })
+      } else {
+        this.api.rpc.system.properties().then(properties => {
+          const chainProperties = (properties as ChainProperties)
+          formatBalance.setDefaults({
+            decimals: chainProperties.tokenDecimals.unwrapOr(new U32(15)).toNumber(),
+            unit: chainProperties.tokenSymbol.unwrapOr('DEV').toString()
+          })
+          this.doUpdate()
+        })
+      }
     } else if (this.state.tries <= 10) {
       const nextTry = setTimeout(this.updateBalance, 1000)
       this.setState({ ...this.state, tries: this.state.tries + 1, nextTry: nextTry })
@@ -125,7 +135,8 @@ const BalanceBox = styled.div`
 
 const mapStateToProps = (state: IAppState) => {
   return {
-    apiContext: state.apiContext
+    apiContext: state.apiContext,
+    network: networks[state.settings.network]
   }
 }
 
