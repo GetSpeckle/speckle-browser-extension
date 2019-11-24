@@ -8,7 +8,7 @@ import { formatBalance } from '@polkadot/util'
 import styled from 'styled-components'
 import { ChainProperties } from '@polkadot/types/interfaces'
 import U32 from '@polkadot/types/primitive/U32'
-import {networks} from '../../constants/networks'
+import { networks } from '../../constants/networks'
 
 class Balance extends React.Component<IBalanceProps, IBalanceState> {
 
