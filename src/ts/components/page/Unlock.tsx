@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Button as BasicButton, Form, Grid } from 'semantic-ui-react'
 import { Button } from '../basic-components'
+import t from '../../services/i18n'
 
 type Props = {
   onSign: (password: string) => Promise<any>,
@@ -32,18 +33,18 @@ export default function Unlock ({ onSign, onCancel }: Props) {
         isError={!password || !!error}
         focus={true}
         onChange={changePassword}
-        placeholder='password for this account'
+        placeholder={t('password')}
         type='password'
       />
       <Grid columns='equal'>
         <Grid.Column>
           <BasicButton fluid={true} onClick={cancel} className='minor'>
-            Cancel
+            {t('cancel')}
           </BasicButton>
         </Grid.Column>
         <Grid.Column>
           <Button onClick={sign} className='narrow'>
-            Sign
+            {t('sign')}
           </Button>
         </Grid.Column>
       </Grid>

@@ -42,13 +42,6 @@ const Signing = (props) => {
     approveSignSignature(id, signature)
       .catch(console.error)
 
-  const signBody = (
-  <div>
-    <Section><SignMessage request={request} isDecoded={true}/></Section>
-    <Section><SignBy address={request.address} /></Section>
-  </div>
-  )
-
   return (
       <ContentContainer>
         <Section>
@@ -56,7 +49,8 @@ const Signing = (props) => {
             {t('signing')}
           </Title>
         </Section>
-        {!isExternal && signBody}
+        {!isExternal && <Section><SignMessage request={request} isDecoded={true}/></Section>}
+        {!isExternal && <Section><SignBy address={request.address} /></Section>}
         {!isExternal && <Unlock onSign={onSign} onCancel={onCancel} />}
         {isExternal && <Qr payload={payload} request={request} onSignature={onSignature}/>}
         {isExternal && <Button onclick={onCancel}>{t('cancel')}</Button>}

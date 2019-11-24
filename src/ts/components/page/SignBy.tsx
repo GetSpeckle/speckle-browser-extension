@@ -54,7 +54,7 @@ class SignBy extends React.Component<ISignByProps, ISignByState> {
 }
 
 const SignByContainer = styled.div`
-  height: 100px;
+  height: 90px;
   display: flex;
   margin: 0 auto;
   background-color: white;
@@ -67,8 +67,8 @@ type P = {
 }
 
 const IdenticonContainer = styled.div`
-  width: 135px;
-  font-size: 13px;
+  width: 117px;
+  font-size: 12px;
   font-weight: bold;
   color: #fbfeff;
   display: flex;

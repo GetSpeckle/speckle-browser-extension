@@ -256,5 +256,17 @@
   },
   "cancel": {
     "message": "Cancel"
+  },
+  "scan": {
+    "message": "Scan signature via camera"
+  },
+  "action": {
+    "message": "Action"
+  },
+  "dest": {
+    "message": "Destination"
+  },
+  "value": {
+    "message": "Value"
   }
 }

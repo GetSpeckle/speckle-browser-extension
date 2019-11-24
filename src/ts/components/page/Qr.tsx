@@ -9,10 +9,10 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { QrDisplayPayload, QrScanSignature } from '@polkadot/react-qr'
 import { Button } from '../basic-components'
+import t from '../../services/i18n'
 
 interface Props {
   children?: React.ReactNode
-  className?: string
   onSignature: ({ signature }: { signature: string }) => void
   payload: ExtrinsicPayload
   request: SignerPayloadJSON
@@ -20,7 +20,7 @@ interface Props {
 
 const CMD_MORTAL = 2
 
-function Qr ({ className, onSignature, payload, request }: Props): React.ReactElement<Props> {
+function Qr ({ onSignature, payload, request }: Props): React.ReactElement<Props> {
   const [isScanning, setIsScanning] = useState(false)
   const [payloadU8a, setPayloadU8a] = useState(new Uint8Array())
 
@@ -29,16 +29,11 @@ function Qr ({ className, onSignature, payload, request }: Props): React.ReactEl
   const _onShowQr = (): void => setIsScanning(true)
 
   return (
-    <div className={className}>
-      {isScanning
-        ? <QrScanSignature onScan={onSignature} />
-        : <QrDisplayPayload
-          address={request.address}
-          cmd={CMD_MORTAL}
-          payload={payloadU8a}
-        />
-      }
-      {!isScanning && (<Button onClick={_onShowQr}>Scan signature via camera</Button>)}
+    <div>
+      {isScanning && <QrScanSignature onScan={onSignature} />}
+      {/* tslint:disable-next-line:max-line-length */}
+      {!isScanning && <QrDisplayPayload address={request.address} cmd={CMD_MORTAL} payload={payloadU8a}/>}
+      {!isScanning && (<Button onClick={_onShowQr}>{t('scan')}</Button>)}
     </div>
   )
 }

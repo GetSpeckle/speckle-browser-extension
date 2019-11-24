@@ -256,5 +256,17 @@
   },
   "cancel": {
     "message": "取消"
+  },
+  "scan": {
+    "message": "请用相机扫描"
+  },
+  "action": {
+    "message": "行动"
+  },
+  "dest": {
+    "message": "目标"
+  },
+  "value": {
+    "message": "数额"
   }
 }
