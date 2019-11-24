@@ -250,5 +250,11 @@
   },
   "invalidAddress": {
     "message": "Invalid address"
+  },
+  "sign": {
+    "message": "Sign"
+  },
+  "cancel": {
+    "message": "Cancel"
   }
 }

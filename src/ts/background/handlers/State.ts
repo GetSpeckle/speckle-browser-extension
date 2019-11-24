@@ -50,7 +50,7 @@ export default class State {
   private _authRequests: Record<string, AuthRequest> = {}
   private _signRequests: Record<string, SignRequest> = {}
   private _windows: number[] = []
-  public readonly authSubject: BehaviorSubject<Array<AuthorizeRequest>> =
+  public readonly authSubject: BehaviorSubject<AuthorizeRequest[]> =
     new BehaviorSubject([] as AuthorizeRequest[])
   public readonly signSubject: BehaviorSubject<SigningRequest[]> =
     new BehaviorSubject([] as SigningRequest[])

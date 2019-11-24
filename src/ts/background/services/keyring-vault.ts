@@ -22,22 +22,46 @@ class KeyringVault {
     throw new Error(t('keyringNotInit'))
   }
 
+  init (): Promise<boolean> {
+    return cryptoWaitReady().then(() => {
+      this._keyring = new Keyring({ type: 'sr25519' })
+      return LocalStore.getValue(VAULT_KEY).then(vault => {
+        if (vault) {
+          let accounts = Object.values(vault)
+          try {
+            accounts.forEach(account => {
+              let pair = this.keyring.addFromJson(account as KeyringPair$Json)
+              this.keyring.addPair(pair)
+            })
+            return true
+          } catch (e) {
+            this.keyring.getPairs().forEach(pair => {
+              this.keyring.removePair(pair.address)
+            })
+            return Promise.reject(new Error(t('passwordError')))
+          }
+        }
+        return true
+      })
+    })
+  }
+
   isLocked (): boolean {
     return !this._password
   }
 
-  isUnlocked (): boolean {
+  isUnlocked(): boolean {
     return !this.isLocked()
   }
 
-  lock () {
+  lock() {
     this._password = undefined
     this._mnemonic = undefined
     this._keyring = undefined
   }
 
-  unlock (password: string): Promise<Array<KeyringPair$Json>> {
-    if (this.isUnlocked()) {
+  unlock(password: string): Promise < Array < KeyringPair$Json >> {
+    if (this .isUnlocked()) {
       return new Promise<Array<KeyringPair$Json>>(
         resolve => {
           resolve(this.keyring.getPairs().map(pair => pair.toJson(this._password)))
@@ -45,10 +69,7 @@ class KeyringVault {
       )
     }
     if (!password.length) return Promise.reject(new Error(t('passwordError')))
-    // this will be redundant if we have polkadot js api initialisation
-    return cryptoWaitReady().then(async () => {
-      this._keyring = new Keyring({ type: 'sr25519' })
-      let vault = await LocalStore.getValue(VAULT_KEY)
+    return LocalStore.getValue(VAULT_KEY).then(vault => {
       if (vault) {
         let accounts = Object.values(vault)
         try {

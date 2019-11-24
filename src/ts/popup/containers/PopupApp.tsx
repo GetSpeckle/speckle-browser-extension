@@ -8,7 +8,7 @@ import GlobalStyle from '../../components/styles/GlobalStyle'
 import { themes } from '../../components/styles/themes'
 import { Routes } from '../../routes'
 import { getSettings } from '../../background/store/settings'
-import { isWalletLocked, walletExists } from '../../services/keyring-vault-proxy'
+import {init, isWalletLocked, walletExists} from '../../services/keyring-vault-proxy'
 import { setLocked, setCreated } from '../../background/store/wallet'
 import { createApi, destroyApi } from '../../background/store/api-context'
 import { networks } from '../../constants/networks'
@@ -75,6 +75,7 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
       }
     )
     Promise.all([
+      init(),
       checkAppState,
       checkAccountCreated,
       subscribeAuthorize(this.setAuthRequests),

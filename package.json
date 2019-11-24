@@ -29,6 +29,7 @@
     "@polkadot/util": "^1.7.0-beta.7",
     "@polkadot/util-crypto": "^1.7.0-beta.7",
     "@polkadot/react-identicon": "^0.47.0-beta.6",
+    "@polkadot/react-qr": "^0.47.0-beta.6",
     "@types/styled-components": "4.1.8",
 		"@types/react-dropzone": "^4.2.2",
 		"bn.js": "^4.11.8",

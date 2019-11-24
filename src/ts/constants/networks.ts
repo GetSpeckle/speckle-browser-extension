@@ -9,7 +9,7 @@ export type Network = {
   name: string,
   chain: Chain,
   genesisHash: string,
-  specVersion?: number,
+  specVersion: number,
   ss58Format?: number,
   tokenDecimals?: number,
   tokenSymbol?: string,
@@ -82,9 +82,9 @@ export const networks: {[name: string]: Network} = {
   [Testnet.name]: Testnet
 }
 
-export const findNetwork = (genesisHash: string): Network | null => {
+export const findNetwork = (genesisHash: string): Network => {
   const matchedNetworks = Object.values(networks).filter(
     network => network.genesisHash === genesisHash)
   if (matchedNetworks.length === 1) return matchedNetworks[0]
-  return null
+  throw new Error('network cannot be found!')
 }

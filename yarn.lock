@@ -419,6 +419,16 @@
     react-copy-to-clipboard "^5.0.2"
     styled-components "^4.4.1"
 
+"@polkadot/react-qr@^0.47.0-beta.6":
+  version "0.47.0-beta.9"
+  resolved "https://registry.yarnpkg.com/@polkadot/react-qr/-/react-qr-0.47.0-beta.9.tgz#4d310fad92fbc122bf963a4c431fc15af28dfb7e"
+  integrity sha512-koO5b8sknzqiMGijHaUJ0L7bwiHPv92QSraH43U+KcT+/WVD64JeBYwjiOGRJwLAYNynFLuPBRbHvgthxbTeOA==
+  dependencies:
+    "@babel/runtime" "^7.7.2"
+    "@types/react-qr-reader" "^2.1.1"
+    qrcode-generator "^1.4.4"
+    react-qr-reader "^2.2.1"
+
 "@polkadot/rpc-core@^0.97.0-beta.9":
   version "0.97.0-beta.9"
   resolved "https://registry.yarnpkg.com/@polkadot/rpc-core/-/rpc-core-0.97.0-beta.9.tgz#05d96733697c8842d4cffb3d8c99896458e58a4d"
@@ -739,6 +749,13 @@
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/@types/react-dropzone/-/react-dropzone-4.2.2.tgz#af0a2595169700c8ab1114e9096285499beaff40"
   integrity sha512-okO6HY+w7V0uHoy6JpLY6BwY/s/oObtXZmUQdX0ycjPeLhK8Af/xf79CFkLA1fM6oVp16n1d962ejdkEXk375Q==
+  dependencies:
+    "@types/react" "*"
+
+"@types/react-qr-reader@^2.1.1":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@types/react-qr-reader/-/react-qr-reader-2.1.2.tgz#da7a674cf9e3ceb1c026e89d5aa41fb1587fc66b"
+  integrity sha512-tDLqqiQMZlTKBKtWedcf7QZ3L9fyz8nPHNq/j+1mcJoEvrdM3Y89i3/FKwdmZ4H7G6uUk4JqShpWXLCuYpZK+w==
   dependencies:
     "@types/react" "*"
 
@@ -4153,6 +4170,11 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
+jsqr@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/jsqr/-/jsqr-1.2.0.tgz#f93fc65fa7d1ded78b1bcb020fa044352b04261a"
+  integrity sha512-wKcQS9QC2VHGk7aphWCp1RrFyC0CM6fMgC5prZZ2KV/Lk6OKNoCod9IR6bao+yx3KPY0gZFC5dc+h+KFzCI0Wg==
+
 keyboard-key@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/keyboard-key/-/keyboard-key-1.0.4.tgz#52d8fa07b7e17757072aa22a67fb4ae85e4c46b0"
@@ -5322,6 +5344,11 @@ qr.js@0.0.0:
   resolved "https://registry.yarnpkg.com/qr.js/-/qr.js-0.0.0.tgz#cace86386f59a0db8050fa90d9b6b0e88a1e364f"
   integrity sha1-ys6GOG9ZoNuAUPqQ2baw6IoeNk8=
 
+qrcode-generator@^1.4.4:
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/qrcode-generator/-/qrcode-generator-1.4.4.tgz#63f771224854759329a99048806a53ed278740e7"
+  integrity sha512-HM7yY8O2ilqhmULxGMpcHSF1EhJJ9yBj8gvDEuZ6M+KGJ0YY2hKpnXvRD+hZPLrDVck3ExIGhmPtSdcjC+guuw==
+
 qrcode.react@^0.9.3:
   version "0.9.3"
   resolved "https://registry.yarnpkg.com/qrcode.react/-/qrcode.react-0.9.3.tgz#91de1287912bdc5ccfb3b091737b828d6ced60c5"
@@ -5416,6 +5443,15 @@ react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.4, react-is
   version "16.9.0"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.9.0.tgz#21ca9561399aad0ff1a7701c01683e8ca981edcb"
   integrity sha512-tJBzzzIgnnRfEm046qRcURvwQnZVXmuCbscxUO5RWrGTXpon2d4c8mI0D8WE6ydVIm29JiLB6+RslkIvym9Rjw==
+
+react-qr-reader@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/react-qr-reader/-/react-qr-reader-2.2.1.tgz#dc89046d1c1a1da837a683dd970de5926817d55b"
+  integrity sha512-EL5JEj53u2yAOgtpAKAVBzD/SiKWn0Bl7AZy6ZrSf1lub7xHwtaXe6XSx36Wbhl1VMGmvmrwYMRwO1aSCT2fwA==
+  dependencies:
+    jsqr "^1.2.0"
+    prop-types "^15.7.2"
+    webrtc-adapter "^7.2.1"
 
 react-redux@^7.1.0:
   version "7.1.1"
@@ -5754,6 +5790,13 @@ rsvp@^4.8.4:
   resolved "https://registry.yarnpkg.com/rsvp/-/rsvp-4.8.5.tgz#c8f155311d167f68f21e168df71ec5b083113734"
   integrity sha512-nfMOlASu9OnRJo1mbEk2cz0D56a1MBNrJ7orjRZQG10XDyuvwksKbuXNp6qa+kbn839HwjwhBzhFmdsaEAfauA==
 
+rtcpeerconnection-shim@^1.2.15:
+  version "1.2.15"
+  resolved "https://registry.yarnpkg.com/rtcpeerconnection-shim/-/rtcpeerconnection-shim-1.2.15.tgz#e7cc189a81b435324c4949aa3dfb51888684b243"
+  integrity sha512-C6DxhXt7bssQ1nHb154lqeL0SXz5Dx4RczXZu2Aa/L1NJFnEVDxFwCBo3fqtuljhHIGceg5JKBV4XJ0gW5JKyw==
+  dependencies:
+    sdp "^2.6.0"
+
 run-queue@^1.0.0, run-queue@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/run-queue/-/run-queue-1.0.3.tgz#e848396f057d223f24386924618e25694161ec47"
@@ -5826,6 +5869,11 @@ schema-utils@^1.0.0:
     ajv "^6.1.0"
     ajv-errors "^1.0.0"
     ajv-keywords "^3.1.0"
+
+sdp@^2.10.0, sdp@^2.6.0:
+  version "2.10.0"
+  resolved "https://registry.yarnpkg.com/sdp/-/sdp-2.10.0.tgz#643fff1a43cdba54a739c7b202f56bd854474af2"
+  integrity sha512-H+VjfyQpRz9GezhshJmkXTtCAT9/2g9az3GFDPYfGOz0eAOQU1fCrL3S9Dq/eUT9FtOyLi/czdR9PzK3fKUYOQ==
 
 secp256k1@^3.7.0:
   version "3.7.1"
@@ -6919,6 +6967,14 @@ webpack@^4.29.6:
     terser-webpack-plugin "^1.4.1"
     watchpack "^1.6.0"
     webpack-sources "^1.4.1"
+
+webrtc-adapter@^7.2.1:
+  version "7.3.0"
+  resolved "https://registry.yarnpkg.com/webrtc-adapter/-/webrtc-adapter-7.3.0.tgz#a65e18aad42759bab6ced7f8cfff11b051321e2a"
+  integrity sha512-pKcwt6IR6RLCD6jlcdOOi88iVwdzppHlkOhtgTSuZHtYTxdD09t5fA1Di7GJU7je8oHcCBlNfb7zwBsetERnmQ==
+  dependencies:
+    rtcpeerconnection-shim "^1.2.15"
+    sdp "^2.10.0"
 
 websocket@^1.0.30:
   version "1.0.30"

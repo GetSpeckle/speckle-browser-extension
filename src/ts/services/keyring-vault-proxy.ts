@@ -8,6 +8,17 @@ import { SimpleAccounts } from '../background/types'
 
 const port = browser.runtime.connect(undefined, { name: PORT_KEYRING })
 
+export function init (): Promise<boolean> {
+  return new Promise<boolean>(resolve => {
+    port.onMessage.addListener(msg => {
+      if (msg.method === FUNCS.INIT) {
+        resolve(msg.result)
+      }
+    })
+    port.postMessage({ method: FUNCS.INIT })
+  })
+}
+
 export function isWalletLocked (): Promise<boolean> {
   return new Promise<boolean>(resolve => {
     port.onMessage.addListener(msg => {
