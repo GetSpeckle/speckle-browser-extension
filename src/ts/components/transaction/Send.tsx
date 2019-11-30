@@ -34,6 +34,7 @@ import { SubmittableExtrinsic } from '@polkadot/api/promise/types'
 import { HOME_ROUTE } from '../../constants/routes'
 import { EventRecord, Index, Balance as BalanceType } from '@polkadot/types/interfaces'
 import { decodeAddress } from '@polkadot/util-crypto'
+import { SiDef } from '@polkadot/util/types'
 
 interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {}
 
@@ -43,6 +44,7 @@ interface ISendState {
   hasAvailable: boolean
   isSi: boolean
   isLoading: boolean
+  si: SiDef
   siUnit: string
   fee: BN
   extrinsic?: IExtrinsic | null
@@ -55,7 +57,7 @@ interface ISendState {
 
 const TEN = new BN(10)
 
-const si = formatBalance.findSi('-')
+const si: SiDef = formatBalance.findSi('-')
 
 class Send extends React.Component<ISendProps, ISendState> {
   get api (): ApiPromise {
@@ -73,6 +75,7 @@ class Send extends React.Component<ISendProps, ISendState> {
       hasAvailable: true,
       isSi: true,
       isLoading: false,
+      si: si,
       siUnit: si.value,
       fee: new BN(0),
       extrinsic: undefined,
@@ -88,32 +91,19 @@ class Send extends React.Component<ISendProps, ISendState> {
     this.props.setError(null)
   }
 
-  getSiPowers = (siUnit = this.state.siUnit): [BN, number, number] => {
-    const { isSi } = this.state
-
-    const basePower = isSi ? formatBalance.getDefaults().decimals : 0
-    const siUnitPower = isSi ? formatBalance.findSi(siUnit).power : 0
-
-    return [new BN(basePower + siUnitPower), basePower, siUnitPower]
-  }
-
-  inputValueToBn = (value: string, siUnit?: string): BN => {
-    const [siPower, basePower, siUnitPower] = this.getSiPowers(siUnit)
-
-    const isDecimalValue = value.match(/^(\d+)\.(\d+)$/)
-
-    if (isDecimalValue) {
-      if (siUnitPower - isDecimalValue[2].length < -basePower) {
-        return new BN(-1)
-      }
-
-      const div = new BN(value.replace(/\.\d*$/, ''))
-      const mod = new BN(value.replace(/^\d+\./, ''))
-
-      // tslint:disable-next-line:max-line-length
-      return div.mul(TEN.pow(siPower)).add(mod.mul(TEN.pow(new BN(basePower + siUnitPower - mod.toString().length))))
-    } else {
-      return new BN(value.replace(/[^\d]/g, '')).mul(TEN.pow(siPower))
+  inputValueToBn = (value: string): BN => {
+    const parts: string[] = value.split('.')
+    const selectedSi: SiDef = this.state.si
+    const decimals = formatBalance.getDefaults().decimals
+    const bigPart = new BN(parts[0]).mul(TEN.pow(new BN(decimals + selectedSi.power)))
+    if (parts.length === 1) {
+      return bigPart
+    } else if (parts.length === 2) {
+      const bn = new BN(decimals + selectedSi.power - parts[1].length)
+      const smallPart = new BN(parts[1]).mul(TEN.pow(bn))
+      return bigPart.add(smallPart)
+    } else { // invalid number
+      return new BN(0)
     }
   }
 
@@ -134,9 +124,9 @@ class Send extends React.Component<ISendProps, ISendState> {
     })
   }
 
-  changeSiUnit = (_event, data) => {
-    const val = formatBalance.findSi(data.value).value
-    this.setState({ siUnit: val })
+  changeSi = (_event, data) => {
+    const siDef = formatBalance.findSi(data.value)
+    this.setState({ si: siDef, siUnit: siDef.value })
   }
 
   changeModal = (open) => {
@@ -148,7 +138,7 @@ class Send extends React.Component<ISendProps, ISendState> {
       return
     }
 
-    const BnAmount = this.inputValueToBn(this.state.amount, this.state.siUnit)
+    const BnAmount = this.inputValueToBn(this.state.amount)
     const currentAddress = this.props.settings.selectedAccount.address
 
     const extrinsic: IExtrinsic = await this.api.tx.balances
@@ -322,7 +312,7 @@ class Send extends React.Component<ISendProps, ISendState> {
         <div style={{ height: 27 }} />
         <AccountSection />
         <Form>
-          <Amount handleAmountChange={this.changeAmount} handleDigitChange={this.changeSiUnit}/>
+          <Amount handleAmountChange={this.changeAmount} handleDigitChange={this.changeSi}/>
           <div style={{ height: 27 }} />
           <ToAddress handleAddressChange={this.changeAddress}/>
           {this.isToAddressValid() || <ErrorMessage>{t('invalidAddress')}</ErrorMessage>}
@@ -341,7 +331,7 @@ class Send extends React.Component<ISendProps, ISendState> {
               extrinsic={this.state.extrinsic}
               trigger={submitButton}
               fromAddress={this.props.settings.selectedAccount.address}
-              amount={this.inputValueToBn(this.state.amount, this.state.siUnit)}
+              amount={this.inputValueToBn(this.state.amount)}
               toAddress={this.state.toAddress}
               fee={this.state.fee!}
               creationFee={this.state.creationFee}
