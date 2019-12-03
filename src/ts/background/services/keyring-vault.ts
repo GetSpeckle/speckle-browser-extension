@@ -19,7 +19,6 @@ class KeyringVault {
   private simpleAccounts?: SimpleAccounts
   private _accountSetupTimeout = 0
   private _accountSetupTimeoutTimerId = 0
-  private _tempPasswordTimeoutId = 0
   private _mnemonicTimeoutId = 0
 
   private get keyring (): KeyringInstance {
@@ -40,26 +39,11 @@ class KeyringVault {
 
       // Start timer for password expiry
       this.startExpiryTimer()
-
-      // Trigger clear interval for tempPassword
-      this.clearTempPassword(false)
     }
   }
 
-  clearTempPassword (isCancelled: boolean): void {
-    // On cancelling account setup, remove `setTimeout` timer
-    if (isCancelled) {
-      window.clearTimeout(this._tempPasswordTimeoutId)
-      this._tempPassword = undefined
-      this._tempPasswordTimeoutId = 0
-      return
-    }
-
-    this._tempPasswordTimeoutId = window.setTimeout(() => {
-      this._tempPassword = undefined
-      this._tempPasswordTimeoutId = 0
-      this.clearExpiryTimer()
-    }, VALIDITY_INTERVAL * 1000)
+  clearTempPassword (): void {
+    this._tempPassword = undefined
   }
 
   getTempAccountName (): string {
@@ -79,7 +63,7 @@ class KeyringVault {
 
   cancelAccountSetup (): void {
     this.clearExpiryTimer()
-    this.clearTempPassword(true)
+    this.clearTempPassword()
     this.clearMnemonic(true)
   }
 
@@ -159,11 +143,16 @@ class KeyringVault {
         this.startExpiryTimer()
       }
 
+      // Work-around to avoid timer elapsing before time left on the UI.
+      // Root cause: Upon re-opening the Popup, background service is paused for a moment.
+      const timeout = (this._accountSetupTimeout + 1) * 1000
+
       this._mnemonicTimeoutId = window.setTimeout(() => {
+        this.clearTempPassword()
         this.clearMnemonic(false)
         this.clearExpiryTimer()
         this._mnemonicTimeoutId = 0
-      }, this._accountSetupTimeout * 1000)
+      }, timeout)
     }
     return this._mnemonic
   }
@@ -209,6 +198,7 @@ class KeyringVault {
     if (this._mnemonic !== mnemonic) return Promise.reject(new Error(t('mnemonicUnmatched')))
     return cryptoWaitReady().then(() => {
       let pair = this.keyring.addFromUri(mnemonic, { name: accountName })
+      this.clearTempPassword()
       this.clearMnemonic(false)
       this.clearExpiryTimer()
       return this.saveAccount(pair)

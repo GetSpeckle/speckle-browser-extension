@@ -45,8 +45,8 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
     }
   }
 
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.wallet.accountSetupTimeout === 0 && this.props.wallet.accountSetupTimeout !== 0) {
+  componentDidUpdate (prevProps) {
+    if (prevProps.wallet.accountSetupTimeout !== 0 && this.props.wallet.accountSetupTimeout === 0) {
       this.props.setError('Account creation timer has elapsed')
       this.setState({
         newPassword: '',

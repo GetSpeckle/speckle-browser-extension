@@ -77,16 +77,16 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentDidUpdate (prevProps) {
     // Check for timer expiry
-    if (nextProps.wallet.accountSetupTimeout === 0 && this.props.wallet.accountSetupTimeout !== 0) {
+    if (prevProps.wallet.accountSetupTimeout !== 0 && this.props.wallet.accountSetupTimeout === 0) {
       // Clear wallet state defaults
       this.props.setNewPassword('')
       this.props.setNewPhrase('')
       this.props.setAccountName('')
 
       // If wallet is created, redirect to Dashboard. If not, Create Password page
-      if (nextProps.wallet.created) {
+      if (this.props.wallet.created) {
         this.props.history.push(HOME_ROUTE)
       } else {
         this.props.history.push({

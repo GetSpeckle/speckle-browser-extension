@@ -50,12 +50,12 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentDidUpdate (prevProps) {
     // Check for timer expiry and skip if the user is trying to create account
     if (
       !this.state.isConfirming &&
-      nextProps.wallet.accountSetupTimeout === 0 &&
-      this.props.wallet.accountSetupTimeout !== 0
+      this.props.wallet.accountSetupTimeout === 0 &&
+      prevProps.wallet.accountSetupTimeout !== 0
     ) {
       // Clear wallet state defaults
       this.props.setNewPassword('')
@@ -63,7 +63,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
       this.props.setAccountName('')
 
       // If wallet is created, redirect to Dashboard. If not, Create Password page
-      if (nextProps.wallet.created) {
+      if (this.props.wallet.created) {
         this.props.history.push(HOME_ROUTE)
       } else {
         this.props.history.push({
