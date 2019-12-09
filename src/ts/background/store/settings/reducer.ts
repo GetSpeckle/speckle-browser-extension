@@ -5,7 +5,6 @@ import {
   Color,
   ThemeTypes
 } from '../../../components/styles/themes'
-import { Alexander } from '../../../constants/networks'
 import { IAccount } from '../wallet'
 
 export interface IAppSettings {
@@ -23,7 +22,7 @@ const initialState: IAppSettings = {
   theme: 'light',
   color: 'blue',
   welcome: true,
-  network: Alexander.name
+  network: 'Kusama'
 }
 
 const settings: Reducer<IAppSettings, AnyAction> = (state = initialState, action) => {
@@ -33,11 +32,9 @@ const settings: Reducer<IAppSettings, AnyAction> = (state = initialState, action
       return { ...state, updating: true }
 
     case SUCCESS(ACTION_TYPES.GET_SETTINGS):
-      console.log('got the setting', action.payload)
       return { ...state, ...action.payload.settings }
 
     case SUCCESS(ACTION_TYPES.SAVE_SETTINGS):
-      console.log('got the saved settings', action.payload)
       return { ...state, ...action.payload }
 
     default:

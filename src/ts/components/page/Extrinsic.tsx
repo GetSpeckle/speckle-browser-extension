@@ -8,9 +8,10 @@ import { Grid } from 'semantic-ui-react'
 import { bnToBn, formatBalance } from '@polkadot/util'
 import { SignerPayloadJSON } from '@polkadot/types/types'
 import BN from 'bn.js'
-import { GenericCall, getTypeRegistry } from '@polkadot/types'
+import { GenericCall } from '@polkadot/types'
 import { displayAddress } from '../../services/address-transformer'
 import { Color, colorSchemes } from '../styles/themes'
+import { ExtrinsicPayload } from '@polkadot/types/interfaces'
 
 type P = {
   color: Color
@@ -34,8 +35,9 @@ const mapStateToProps = (state: IAppState) => {
 type StateProps = ReturnType<typeof mapStateToProps>
 
 interface ISignMessageProps extends StateProps {
-  isDecoded: boolean
-  request: SignerPayloadJSON
+  isDecoded: boolean,
+  extrinsicPayload: ExtrinsicPayload
+  signerPayload: SignerPayloadJSON
 }
 
 const decodeMethod = (data: string, isDecoded: boolean, network: Network, specVersion: BN)
@@ -48,11 +50,8 @@ const decodeMethod = (data: string, isDecoded: boolean, network: Network, specVe
     unit: network.tokenSymbol
   })
   try {
-    if (isDecoded && network.meta && specVersion.eqn(network.specVersion)) {
-      getTypeRegistry().register(network.types)
-      GenericCall.injectMetadata(network.meta)
-
-      method = new GenericCall(data)
+    if (isDecoded && network.hasMetadata && specVersion.eqn(network.specVersion)) {
+      method = new GenericCall(network.registry, data)
       json = method.toJSON() as unknown as MethodJson
     }
   } catch (error) {
@@ -103,8 +102,8 @@ const renderMethod = (data: string, { json, method }: Decoded): React.ReactNode 
   )
 }
 
-const SignMessage = ({ settings, isDecoded, request }: ISignMessageProps) => {
-  const { genesisHash, method, specVersion: hexSpec } = request
+const Extrinsic = ({ settings, isDecoded, signerPayload }: ISignMessageProps) => {
+  const { genesisHash, method, specVersion: hexSpec } = signerPayload
   const network = useRef(findNetwork(genesisHash)).current
   const specVersion = useRef(bnToBn(hexSpec)).current
   const [decoded, setDecoded] = useState<Decoded>({ json: null, method: null })
@@ -204,4 +203,4 @@ const SignMessageGridColumn = styled(Grid.Column)` && {
 }
 `
 
-export default connect(mapStateToProps)(SignMessage)
+export default connect(mapStateToProps)(Extrinsic)

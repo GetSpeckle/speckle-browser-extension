@@ -1,11 +1,9 @@
 import {
   SimpleAccounts,
   RequestAuthorizeTab,
-  RequestExtrinsicSign,
-  ResponseExtrinsicSign,
   RequestTypes,
   ResponseTypes,
-  MessageTypes
+  MessageTypes, ResponseSigning
 } from '../types'
 
 import { assert } from '@polkadot/util'
@@ -13,6 +11,10 @@ import State from './State'
 import { createSubscription, unsubscribe } from './subscriptions'
 import keyringVault from '../services/keyring-vault'
 import { Runtime } from 'webextension-polyfill-ts'
+import { SignerPayloadJSON, SignerPayloadRaw } from '@polkadot/types/types'
+import RequestBytesSign from '../RequestBytesSign'
+import { KeyringPair } from '@polkadot/keyring/types'
+import RequestExtrinsicSign from '../RequestExtrinsicSign'
 
 export default class Tabs {
 
@@ -42,13 +44,22 @@ export default class Tabs {
     return true
   }
 
-  private extrinsicSign (url: string, request: RequestExtrinsicSign):
-    Promise<ResponseExtrinsicSign> {
-    const { address } = request
+  private getSigningPair (address: string): KeyringPair {
     const accountExists = keyringVault.accountExists(address)
     assert(accountExists, 'Unable to find account')
-    const pair = keyringVault.getPair(address)
-    return this.state.signQueue(url, request, { address, ...pair.meta })
+    return keyringVault.getPair(address)
+  }
+
+  private bytesSign (url: string, request: SignerPayloadRaw): Promise<ResponseSigning> {
+    const address = request.address
+    const pair = this.getSigningPair(address)
+    return this.state.sign(url, new RequestBytesSign(request), { address, ...pair.meta })
+  }
+
+  private extrinsicSign (url: string, request: SignerPayloadJSON): Promise<ResponseSigning> {
+    const address = request.address
+    const pair = this.getSigningPair(address)
+    return this.state.sign(url, new RequestExtrinsicSign(request), { address, ...pair.meta })
   }
 
   public async handle<TMessageType extends MessageTypes> (id: string, type: TMessageType,
@@ -69,8 +80,11 @@ export default class Tabs {
       case 'pub(accounts.subscribe)':
         return this.accountsSubscribe(url, id, port)
 
+      case 'pub(bytes.sign)':
+        return this.bytesSign(url, request as SignerPayloadRaw)
+
       case 'pub(extrinsic.sign)':
-        return this.extrinsicSign(url, request as RequestExtrinsicSign)
+        return this.extrinsicSign(url, request as SignerPayloadJSON)
 
       default:
         throw new Error(`Unable to handle message of type ${type}`)

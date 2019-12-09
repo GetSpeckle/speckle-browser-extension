@@ -1,5 +1,7 @@
 import { InjectedAccount } from '@polkadot/extension-inject/types'
-import { SignerPayloadJSON } from '@polkadot/types/types'
+import { SignerPayloadJSON, SignerPayloadRaw } from '@polkadot/types/types'
+import { TypeRegistry } from '@polkadot/types'
+import { KeyringPair } from '@polkadot/keyring/types'
 
 type KeysWithDefinedValues<T> = {
   [K in keyof T]: T[K] extends undefined ? never : K
@@ -24,7 +26,8 @@ export interface RequestSignatures {
   'pub(accounts.list)': [RequestAccountList, InjectedAccount[]]
   'pub(accounts.subscribe)': [RequestAccountSubscribe, boolean, InjectedAccount[]]
   'pub(authorize.tab)': [RequestAuthorizeTab, null]
-  'pub(extrinsic.sign)': [RequestExtrinsicSign, ResponseExtrinsicSign]
+  'pub(bytes.sign)': [SignerPayloadRaw, ResponseSigning]
+  'pub(extrinsic.sign)': [SignerPayloadJSON, ResponseSigning]
 }
 
 export type MessageTypes = keyof RequestSignatures
@@ -47,15 +50,13 @@ export interface AuthorizeRequest {
 export interface SigningRequest {
   account: AccountJson
   id: string
-  request: RequestExtrinsicSign
+  request: RequestSign
   url: string
 }
 
 export type RequestAccountList = null
 
 export type RequestAccountSubscribe = null
-
-export type RequestExtrinsicSign = SignerPayloadJSON
 
 export interface RequestSigningApprovePassword {
   id: string
@@ -95,11 +96,6 @@ export type ResponseTypes = {
   [MessageType in keyof RequestSignatures]: RequestSignatures[MessageType][1]
 }
 
-export interface ResponseExtrinsicSign {
-  id: string
-  signature: string
-}
-
 export type SubscriptionMessageTypes = NoUndefinedValues<{
   [MessageType in keyof RequestSignatures]: RequestSignatures[MessageType][2]
 }>
@@ -121,7 +117,12 @@ type NullKeys<T> = { [K in keyof T]: IsNull<T, K> }[keyof T]
 
 export type MessageTypesWithNullRequest = NullKeys<RequestTypes>
 
-export interface MessageExtrinsicSignResponse {
+export interface ResponseSigning {
   id: string
   signature: string
+}
+
+export interface RequestSign {
+  inner: SignerPayloadJSON | SignerPayloadRaw
+  sign (registry: TypeRegistry, pair: KeyringPair): { signature: string }
 }

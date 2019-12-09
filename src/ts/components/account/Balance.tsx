@@ -28,7 +28,7 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
   updateBalance = () => {
     if (this.props.apiContext.apiReady) {
       this.setState({ ...this.state, tries: 1 })
-      const { tokenDecimals, tokenSymbol } = this.props.network
+      const { tokenDecimals, tokenSymbol, registry } = this.props.network
       if (tokenDecimals !== undefined && tokenSymbol !== undefined) {
         formatBalance.setDefaults({
           decimals: tokenDecimals,
@@ -39,7 +39,7 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
         this.api.rpc.system.properties().then(properties => {
           const chainProperties = (properties as ChainProperties)
           formatBalance.setDefaults({
-            decimals: chainProperties.tokenDecimals.unwrapOr(new U32(15)).toNumber(),
+            decimals: chainProperties.tokenDecimals.unwrapOr(new U32(registry, 15)).toNumber(),
             unit: chainProperties.tokenSymbol.unwrapOr('DEV').toString()
           })
           this.doUpdate()

@@ -1,11 +1,10 @@
 import {
   AccountJson,
   AuthorizeRequest,
-  MessageExtrinsicSignResponse,
+  ResponseSigning,
   RequestAuthorizeTab,
-  RequestExtrinsicSign,
-  ResponseExtrinsicSign,
-  SigningRequest
+  SigningRequest,
+  RequestSign
 } from '../types'
 import { Windows } from 'webextension-polyfill-ts'
 import extension from 'extensionizer'
@@ -32,8 +31,8 @@ type AuthUrls = Record<string, {
 interface SignRequest {
   account: AccountJson
   id: string
-  request: RequestExtrinsicSign
-  resolve: (result: ResponseExtrinsicSign) => void
+  request: RequestSign
+  resolve: (result: ResponseSigning) => void
   reject: (error: Error) => void
   url: string
 }
@@ -127,8 +126,8 @@ export default class State {
   }
 
   private signComplete = (id: string, fn: Function):
-    (result: ResponseExtrinsicSign | Error) => void => {
-    return (result: MessageExtrinsicSignResponse | Error): void => {
+    (result: ResponseSigning | Error) => void => {
+    return (result: ResponseSigning | Error): void => {
       delete this._signRequests[id]
       this.updateIconSign(true)
 
@@ -215,8 +214,8 @@ export default class State {
     return this._signRequests[id]
   }
 
-  signQueue (url: string, request: RequestExtrinsicSign, account: AccountJson):
-    Promise<ResponseExtrinsicSign> {
+  sign (url: string, request: RequestSign, account: AccountJson):
+    Promise<ResponseSigning> {
     const id = getId()
 
     return new Promise((resolve, reject) => {

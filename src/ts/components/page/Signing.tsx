@@ -7,14 +7,16 @@ import {
 } from '../basic-components'
 import t from '../../services/i18n'
 import WithLayout from './WithLayout'
-import SignMessage from './SignMessage'
+import Extrinsic from './Extrinsic'
 import SignBy from './SignBy'
 import { SigningRequest } from '../../background/types'
 import { approveSignPassword, approveSignSignature, cancelSignRequest } from '../../services/messaging'
 import Unlock from './Unlock'
-import { createType } from '@polkadot/types'
+import { createType, TypeRegistry } from '@polkadot/types'
 import { ExtrinsicPayload } from '@polkadot/types/interfaces'
 import Qr from './Qr'
+import { SignerPayloadJSON, SignerPayloadRaw } from '@polkadot/types/types'
+import { findNetwork } from '../../constants/networks'
 
 const Signing = (props) => {
   const { requests } = props
@@ -22,15 +24,21 @@ const Signing = (props) => {
   const signingRequest: SigningRequest = requests[0]
   const { account, id, request } = signingRequest
   const { isExternal } = account
-  const [payload, setPayload] = useState<ExtrinsicPayload | null>(null)
+  const [hexBytes, setHexBytes] = useState<string | null>(null)
+  const [extrinsic, setExtrinsic] = useState<ExtrinsicPayload | null>(null)
 
   useEffect((): void => {
-    setPayload(createType('ExtrinsicPayload', request, { version: request.version }))
+    const inner = request.inner
+    if ((inner as SignerPayloadRaw).data) {
+      setHexBytes((inner as SignerPayloadRaw).data)
+    } else {
+      const signerPayload = (inner as SignerPayloadJSON)
+      const network = findNetwork(signerPayload.genesisHash)
+      let registry = network ? network.registry : new TypeRegistry()
+      const params = { version: signerPayload.version }
+      setExtrinsic(createType(registry, 'ExtrinsicPayload', inner, params))
+    }
   }, [request])
-
-  if (!payload) {
-    return null
-  }
 
   const onCancel = () =>
     cancelSignRequest(id)
@@ -42,20 +50,40 @@ const Signing = (props) => {
     approveSignSignature(id, signature)
       .catch(console.error)
 
-  return (
+  if (extrinsic != null) {
+    const signerPayload = request.inner as SignerPayloadJSON
+    return (
       <ContentContainer>
         <Section>
           <Title>
             {t('signing')}
           </Title>
         </Section>
-        {!isExternal && <Section><SignMessage request={request} isDecoded={true}/></Section>}
-        {!isExternal && <Section><SignBy address={request.address} /></Section>}
+        {/* tslint:disable-next-line:max-line-length */}
+        {!isExternal && <Section><Extrinsic signerPayload={signerPayload} extrinsicPayload={extrinsic} isDecoded={true}/></Section>}
+        {!isExternal && <Section><SignBy address={request.inner.address} /></Section>}
         {!isExternal && <Unlock onSign={onSign} onCancel={onCancel} />}
-        {isExternal && <Qr payload={payload} request={request} onSignature={onSignature}/>}
+        {isExternal && <Qr payload={extrinsic} request={signerPayload} onSignature={onSignature}/>}
         {isExternal && <Button onclick={onCancel}>{t('cancel')}</Button>}
       </ContentContainer>
-  )
+    )
+  } else if (hexBytes != null) {
+    const payload = request.inner as SignerPayloadRaw
+    return (
+      <ContentContainer>
+        <Section>
+          <Title>
+            {t('signing')}
+          </Title>
+        </Section>
+        {!isExternal && <Section>{payload.data}</Section>}
+        {!isExternal && <Section><SignBy address={request.inner.address} /></Section>}
+        {!isExternal && <Unlock onSign={onSign} onCancel={onCancel} />}
+        {isExternal && <Button onclick={onCancel}>{t('cancel')}</Button>}
+      </ContentContainer>
+    )
+  }
+  return null
 }
 
 export default WithLayout(Signing)

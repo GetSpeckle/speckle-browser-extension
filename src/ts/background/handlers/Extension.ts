@@ -11,13 +11,15 @@ import {
   SigningRequest
 } from '../types'
 
-import { createType } from '@polkadot/types'
 import { assert } from '@polkadot/util'
 
 import State from './State'
 import { createSubscription, unsubscribe } from './subscriptions'
 import keyringVault from '../services/keyring-vault'
 import { Runtime } from 'webextension-polyfill-ts'
+import { TypeRegistry } from '@polkadot/types'
+import { SignerPayloadJSON, SignerPayloadRaw } from '@polkadot/types/types'
+import { findNetwork } from '../../constants/networks'
 
 export default class Extension {
 
@@ -74,17 +76,25 @@ export default class Extension {
     const queued = this.state.getSignRequest(id)
     assert(queued, 'Unable to find request')
     const { request, resolve, reject } = queued
-    if (!keyringVault.accountExists(request.address)) {
+    if (!keyringVault.accountExists(request.inner.address)) {
       reject(new Error('Unable to find account'))
       return false
     }
-    const payload = createType('ExtrinsicPayload', request, { version: request.version })
     keyringVault.unlock(password).then(() => {
-      const pair = keyringVault.getPair(request.address)
-      const signature = payload.sign(pair)
+      const inner = request.inner
+      const pair = keyringVault.getPair(inner.address)
+      let registry
+      if ((inner as SignerPayloadRaw).data) {
+        registry = new TypeRegistry()
+      } else {
+        const signerPayload = (inner as SignerPayloadJSON)
+        const network = findNetwork(signerPayload.genesisHash)
+        registry = network.registry
+      }
+      const result = request.sign(registry, pair)
       resolve({
         id,
-        ...signature
+        ...result
       })
     })
     return true
