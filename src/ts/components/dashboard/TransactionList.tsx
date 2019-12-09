@@ -45,7 +45,7 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
 
   private loadTransactions = () => {
     // load the transaction list
-    if (this.state.currentAddress && this.state.currentAddress) {
+    if (this.state.currentAddress && this.state.currentNetwork) {
       console.log('Getting transactions for ' + this.state.currentAddress)
       this.props.getTransactions(this.state.currentAddress, this.state.currentNetwork)
     }
