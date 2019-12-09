@@ -312,7 +312,11 @@ class Send extends React.Component<ISendProps, ISendState> {
         <div style={{ height: 27 }} />
         <AccountSection />
         <Form>
-          <Amount handleAmountChange={this.changeAmount} handleDigitChange={this.changeSi}/>
+          <Amount
+            handleAmountChange={this.changeAmount}
+            handleDigitChange={this.changeSi}
+            options={formatBalance.getOptions()}
+          />
           <div style={{ height: 27 }} />
           <ToAddress handleAddressChange={this.changeAddress}/>
           {this.isToAddressValid() || <ErrorMessage>{t('invalidAddress')}</ErrorMessage>}

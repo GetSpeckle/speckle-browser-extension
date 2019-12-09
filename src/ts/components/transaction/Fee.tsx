@@ -76,7 +76,7 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
     const address = this.props.address
     const toAddress = this.props.toAddress
     Promise.all([
-      this.api.derive.balances.fees() as unknown as DerivedFees,
+      this.api.derive.balances.fees as unknown as DerivedFees,
       this.api.query.system.accountNonce(address) as unknown as BN,
       this.api.tx.balances.transfer(address, 1) as unknown as IExtrinsic,
       this.api.query.balances.freeBalance(toAddress) as unknown as Balance,
