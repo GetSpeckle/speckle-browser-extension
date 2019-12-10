@@ -1,5 +1,5 @@
 import { KeyringInstance, KeyringPair, KeyringPair$Json } from '@polkadot/keyring/types'
-import Keyring from '@polkadot/keyring'
+import Keyring, { decodeAddress } from '@polkadot/keyring'
 import { LocalStore } from '../../services/local-store'
 import { mnemonicGenerate, cryptoWaitReady, mnemonicValidate } from '@polkadot/util-crypto'
 import t from '../../services/i18n'
@@ -209,7 +209,9 @@ class KeyringVault {
 
   accountExists = (address: string): boolean => {
     return !!this.simpleAccounts &&
-      this.simpleAccounts!!.filter(account => account.address === address).length > 0
+      this.simpleAccounts!!.filter(
+        account => decodeAddress(account.address).toString() === decodeAddress(address).toString()
+      ).length > 0
   }
 
   getPair = (address: string): KeyringPair => {
