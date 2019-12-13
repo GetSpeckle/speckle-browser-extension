@@ -65,7 +65,7 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
       } })
 
       // load transactions for the selected account
-      this.props.getTransactions(dropdownOptions[0].value)
+      this.props.getTransactions(dropdownOptions[0].value, this.props.settings.network)
     }
   }
 
@@ -176,7 +176,7 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
   componentDidMount () {
     if (this.props.settings.selectedAccount) {
       const account = this.props.settings.selectedAccount
-      this.props.getTransactions(account.address)
+      this.props.getTransactions(account.address, this.props.settings.network)
     }
   }
 
