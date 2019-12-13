@@ -213,6 +213,7 @@ class Send extends React.Component<ISendProps, ISendState> {
 
     this.props.upsertTransaction(
       address,
+      this.props.settings.network,
       txItem,
       this.props.transactions
     )
@@ -232,10 +233,12 @@ class Send extends React.Component<ISendProps, ISendState> {
           // TODO: const the value
           if (method === 'ExtrinsicSuccess') {
             txItem.status = 'Success'
-            this.props.upsertTransaction(address, txItem, this.props.transactions)
+            this.props.upsertTransaction(address, this.props.settings.network,
+              txItem, this.props.transactions)
           } else if (method === 'ExtrinsicFailed') {
             txItem.status = 'Failure'
-            this.props.upsertTransaction(address, txItem, this.props.transactions)
+            this.props.upsertTransaction(address, this.props.settings.network,
+              txItem, this.props.transactions)
           }
         })
         done && done()
@@ -247,7 +250,8 @@ class Send extends React.Component<ISendProps, ISendState> {
         this.setState({ isLoading: false })
         txItem.status = 'Failure'
         txItem.updateTime = new Date().getTime()
-        this.props.upsertTransaction(address, txItem, this.props.transactions)
+        this.props.upsertTransaction(address, this.props.settings.network,
+          txItem, this.props.transactions)
         this.props.setError('Failed to send the transaction')
         if (!this.state.isTimeout) {
           clearTimeout(sendTimer)
@@ -258,7 +262,8 @@ class Send extends React.Component<ISendProps, ISendState> {
       txItem.status = 'Failure'
       this.setState({ isLoading: false })
       txItem.updateTime = new Date().getTime()
-      this.props.upsertTransaction(address, txItem, this.props.transactions)
+      this.props.upsertTransaction(address, this.props.settings.network,
+        txItem, this.props.transactions)
       this.props.setError('Failed to send the transaction')
       if (!this.state.isTimeout) {
         clearTimeout(sendTimer)
