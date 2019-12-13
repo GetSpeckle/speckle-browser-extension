@@ -26,7 +26,7 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
     if (nextProps.account && nextProps.account.address !== prevState.currentAddress) {
       return { currentAddress: nextProps.account.address }
     } else if (nextProps.network !== prevState.currentNetwork) {
-      return { currentAddress: nextProps.network }
+      return { currentNetwork: nextProps.network }
     } else {
       return null
     }
