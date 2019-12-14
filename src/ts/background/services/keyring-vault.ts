@@ -6,9 +6,10 @@ import t from '../../services/i18n'
 import { SimpleAccounts } from '../types'
 import { createType, TypeRegistry } from '@polkadot/types'
 import { SignerPayloadJSON } from '@polkadot/types/types'
-import { findNetwork } from '../../constants/networks'
 
 const VAULT_KEY: string = 'speckle-vault'
+
+const registry = new TypeRegistry()
 
 class KeyringVault {
 
@@ -200,8 +201,6 @@ class KeyringVault {
     if (!pair) {
       return Promise.reject(new Error('Unable to find pair'))
     }
-    const network = findNetwork(signerPayload.genesisHash)
-    let registry = network ? network.registry : new TypeRegistry()
     let params = { version: signerPayload.version }
     const payload = createType(registry, 'ExtrinsicPayload', signerPayload, params)
     const result = payload.sign(pair)

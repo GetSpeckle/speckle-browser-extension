@@ -16,7 +16,8 @@ import { createType, TypeRegistry } from '@polkadot/types'
 import { ExtrinsicPayload } from '@polkadot/types/interfaces'
 import Qr from './Qr'
 import { SignerPayloadJSON, SignerPayloadRaw } from '@polkadot/types/types'
-import { findNetwork } from '../../constants/networks'
+
+const registry = new TypeRegistry()
 
 const Signing = (props) => {
   const { requests } = props
@@ -33,8 +34,6 @@ const Signing = (props) => {
       setHexBytes((inner as SignerPayloadRaw).data)
     } else {
       const signerPayload = (inner as SignerPayloadJSON)
-      const network = findNetwork(signerPayload.genesisHash)
-      let registry = network ? network.registry : new TypeRegistry()
       const params = { version: signerPayload.version }
       setExtrinsic(createType(registry, 'ExtrinsicPayload', inner, params))
     }
