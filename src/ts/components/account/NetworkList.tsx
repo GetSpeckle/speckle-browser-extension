@@ -7,6 +7,7 @@ import styled from 'styled-components'
 import NetworkCard from './NetworkCard'
 import { ScrollButton } from './ScrollButton'
 import { colorSchemes } from '../styles/themes'
+import { networks } from '../../constants/networks'
 
 interface INetworkListProps extends StateProps {
   search: string
@@ -51,9 +52,17 @@ class NetworkList extends React.Component<INetworkListProps> {
     return (
       <CardTabPane>
         <Networks id={'scroll-menu'}>
-          <NetworkCard imgPath={'assets/chain-logo/polkadot.png'} name={'Alexander'} supported={true} colorScheme={colorSchemes[this.props.color]}/>
-          <NetworkCard imgPath={'assets/chain-logo/kusama.png'} name={'Kusama'} supported={false} colorScheme={colorSchemes[this.props.color]}/>
-          <NetworkCard imgPath={'assets/chain-logo/edgeware.png'} name={'Edgeware'} supported={false} colorScheme={colorSchemes[this.props.color]}/>
+          {/* tslint:disable-next-line:jsx-no-multiline-js */}
+          {Object.keys(networks).map((key, index) => (
+              <NetworkCard
+                key={index}
+                imgPath={networks[key].chain.iconUrl}
+                colorScheme={colorSchemes[this.props.color]}
+                supported={true}
+                name={key}
+              />
+            )
+          )}
          </Networks>
         <PrevButton onMouseDown={this.prev} colorScheme={colorSchemes[this.props.color]}/>
         <NextButton onMouseDown={this.next} colorScheme={colorSchemes[this.props.color]}/>

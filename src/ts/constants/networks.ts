@@ -1,4 +1,4 @@
-import {Chain, Polkadot, Edgeware, Kusama} from './chains'
+import { Chain, Polkadot, Edgeware, Kusama } from './chains'
 import { IdentityTypes } from 'edgeware-node-types/dist/identity'
 import { SignalingTypes } from 'edgeware-node-types/dist/signaling'
 import { TreasuryRewardTypes } from 'edgeware-node-types/dist/treasuryReward'
@@ -76,7 +76,7 @@ const edgeware = {
 
 export const networksMap: Map<string, Network> = new Map(
   // tslint:disable-next-line:max-line-length
-  [alexander, edgeware, kusama].map(({ name, chain, genesisHash, metaCalls, specVersion, ss58Format, tokenDecimals, tokenSymbol, types, rpcServer, txExplorer }): [string, Network] => {
+  [kusama, edgeware, alexander].map(({ name, chain, genesisHash, metaCalls, specVersion, ss58Format, tokenDecimals, tokenSymbol, types, rpcServer, txExplorer }): [string, Network] => {
     let metadata: Metadata | undefined
     const registry = new TypeRegistry()
     registry.register(types || {})
