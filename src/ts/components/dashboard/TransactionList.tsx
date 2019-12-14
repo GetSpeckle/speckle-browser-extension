@@ -128,6 +128,7 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
     }
 
     const txBaseUrl = networks[this.props.network].txExplorer
+    const symbol = networks[this.props.network].tokenSymbol
 
     return (
       <List.Item key={index} style={borderStyle}>
@@ -135,7 +136,7 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
           <Grid.Row>
           <Grid.Column width={5} verticalAlign='middle'>
             <div className='tran-amount' title={'Fee: ' + tran.fee}>
-              {(tran.type === 'Sent' ? '-' : '') + tran.amount + tran.unit + ' DOTS'}
+              {(tran.type === 'Sent' ? '-' : '') + tran.amount + tran.unit + ' ' + symbol}
             </div>
             <div className='tran-time' title={createTimeFull}>
               {createTime}
