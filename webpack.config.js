@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const {CheckerPlugin} = require('awesome-typescript-loader');
 const ChromeExtensionReloader = require('webpack-chrome-extension-reloader');
 
@@ -94,5 +94,5 @@ if (nodeEnv === 'watch') {
 }
 
 if (nodeEnv === 'production') {
-  module.exports.plugins.push(new CleanWebpackPlugin({outputPath: distRootPath, verbose: true, dry: false}));
+  module.exports.plugins.push(new CleanWebpackPlugin({verbose: true, dry: false}));
 }
