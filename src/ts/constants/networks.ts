@@ -1,4 +1,4 @@
-import { Chain, Polkadot, Edgeware } from './chains'
+import {Chain, Polkadot, Edgeware, Kusama} from './chains'
 import { IdentityTypes } from 'edgeware-node-types/dist/identity'
 import { SignalingTypes } from 'edgeware-node-types/dist/signaling'
 import { TreasuryRewardTypes } from 'edgeware-node-types/dist/treasuryReward'
@@ -38,7 +38,7 @@ const alexander = {
 
 const kusama = {
   name: 'Kusama',
-  chain: Polkadot,
+  chain: Kusama,
   genesisHash: '0xb0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe',
   specVersion: 1030,
   ss58Format: 2,
