@@ -1,34 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
-    <defs>
-        <radialGradient id="a" cy="22.572%" r="84.639%" fx="50%" fy="22.572%">
-            <stop offset="0%" stop-color="#44C5EE"/>
-            <stop offset="100%" stop-color="#4AABE0"/>
-        </radialGradient>
-        <radialGradient id="b" cy="27.105%" r="72.895%" fx="50%" fy="27.105%">
-            <stop offset="0%" stop-color="#FF7396"/>
-            <stop offset="100%" stop-color="#F3536D"/>
-        </radialGradient>
-        <radialGradient id="c" cy="27.517%" r="72.483%" fx="50%" fy="27.517%">
-            <stop offset="0%" stop-color="#D396FF"/>
-            <stop offset="100%" stop-color="#B279F9"/>
-        </radialGradient>
-        <radialGradient id="d" r="49.823%" fx="50%" fy="50%">
-            <stop offset="0%" stop-color="#FFC10B"/>
-            <stop offset="100%" stop-color="#FFB200"/>
-        </radialGradient>
-        <radialGradient id="e" cy="19.249%" r="80.751%" fx="50%" fy="19.249%">
-            <stop offset="0%" stop-color="#51DFB0"/>
-            <stop offset="100%" stop-color="#52C48D"/>
-        </radialGradient>
-    </defs>
-    <g fill="none" fill-rule="evenodd" transform="translate(-4 -4)">
-        <rect width="26" height="26" x="5" y="5" fill="#FFF" stroke="#F8F8F8" stroke-width=".5" rx="5"/>
-        <g fill-rule="nonzero" transform="rotate(-45 21.851 8.627)">
-            <circle cx="12.516" cy="12.516" r="3.5" fill="url(#a)"/>
-            <circle cx="12.515" cy="2.515" r="2" fill="url(#b)"/>
-            <circle cx="22.516" cy="12.516" r="2" fill="url(#c)"/>
-            <circle cx="12.516" cy="22.516" r="2" fill="url(#d)"/>
-            <circle cx="2.515" cy="12.515" r="2" fill="url(#e)"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>Icon</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icon" fill-rule="nonzero">
+            <circle id="Oval" fill="#4AABE0" cx="24" cy="24" r="6.54545455"></circle>
+            <circle id="Oval-Copy-2" fill="#B5B4C0" opacity="0.648856027" cx="42.5454545" cy="24" r="5.45454545"></circle>
+            <circle id="Oval-Copy-4" fill="#B5B4C0" opacity="0.65" cx="5.45454545" cy="24" r="5.45454545"></circle>
+            <circle id="Oval-Copy" fill="#B5B4C0" opacity="0.652134487" cx="24" cy="5.45454545" r="5.45454545"></circle>
+            <circle id="Oval-Copy-3" fill="#CFCED6" opacity="0.65" cx="24" cy="42.5454545" r="5.45454545"></circle>
+            <circle id="Oval" fill="#F3536D" cx="5.45454545" cy="5.45454545" r="5.45454545"></circle>
+            <circle id="Oval-Copy-5" fill="#FEC300" cx="42.5454545" cy="5.45454545" r="5.45454545"></circle>
+            <circle id="Oval-Copy-6" fill="#B279F9" cx="42.5454545" cy="42.5454545" r="5.45454545"></circle>
+            <circle id="Oval-Copy-7" fill="#52C48D" cx="5.45454545" cy="42.5454545" r="5.45454545"></circle>
         </g>
     </g>
 </svg>

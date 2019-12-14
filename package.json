@@ -1,6 +1,6 @@
 {
 	"name": "speckle-browser-extension",
-	"version": "1.0.0",
+	"version": "0.9.0",
 	"description": "Universal browser extension for Web 3 and the Polkadot ecosystem.",
 	"main": "index.js",
 	"scripts": {
