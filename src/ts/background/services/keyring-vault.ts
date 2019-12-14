@@ -62,7 +62,7 @@ class KeyringVault {
     this._keyring = undefined
   }
 
-  unlock (password: string): Promise < Array < KeyringPair$Json >> {
+  async unlock (password: string): Promise < Array < KeyringPair$Json >> {
     if (this .isUnlocked()) {
       return new Promise<Array<KeyringPair$Json>>(
         resolve => {
@@ -71,6 +71,7 @@ class KeyringVault {
       )
     }
     if (!password.length) return Promise.reject(new Error(t('passwordError')))
+    if (!this._keyring) await this.init()
     return LocalStore.getValue(VAULT_KEY).then(vault => {
       if (vault) {
         let accounts = Object.values(vault)
