@@ -16,13 +16,13 @@ interface INetworkListProps extends StateProps {
 class NetworkList extends React.Component<INetworkListProps> {
 
   next () {
-    let networkConttainer = document.getElementById('scroll-menu')
-    networkConttainer!.scrollLeft += 100
+    let networkContainer = document.getElementById('scroll-menu')
+    networkContainer!.scrollLeft += 100
   }
 
   prev () {
-    let networkConttainer = document.getElementById('scroll-menu')
-    networkConttainer!.scrollLeft -= 100
+    let networkContainer = document.getElementById('scroll-menu')
+    networkContainer!.scrollLeft -= 100
   }
 
   render () {
