@@ -48,7 +48,7 @@ export const orangeColorScheme: ColorScheme = {
   stopColorTwo: '#FFB200',
   headerShadow: '0 0 0 0 1 0 0 0 0 0.698039216 0 0 0 0 0 0 0 0 0.6 0',
   backgroundColor: '#ffb200',
-  shadowColor: 'rgba(243, 83, 109, 0.1)'
+  shadowColor: 'rgba(255, 178, 0, 0.1)'
 }
 
 export const purpleColorScheme: ColorScheme = {
