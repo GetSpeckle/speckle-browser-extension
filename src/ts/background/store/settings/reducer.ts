@@ -6,6 +6,7 @@ import {
   ThemeTypes
 } from '../../../components/styles/themes'
 import { IAccount } from '../wallet'
+import { DEFUALT_NETWORK } from '../../../constants/networks'
 
 export interface IAppSettings {
   updating: boolean,
@@ -22,7 +23,7 @@ const initialState: IAppSettings = {
   theme: 'light',
   color: 'blue',
   welcome: true,
-  network: 'Kusama'
+  network: DEFUALT_NETWORK
 }
 
 const settings: Reducer<IAppSettings, AnyAction> = (state = initialState, action) => {
