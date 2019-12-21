@@ -35,11 +35,14 @@ import { HOME_ROUTE, QR_ROUTE } from '../../constants/routes'
 import { EventRecord, Index, Balance as BalanceType } from '@polkadot/types/interfaces'
 import { decodeAddress } from '@polkadot/util-crypto'
 import { SiDef } from '@polkadot/util/types'
+import recodeAddress from '../../services/address-transformer'
+import { networks } from '../../constants/networks'
 
 interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {}
 
 interface ISendState {
   amount: string
+  fromAddress: string
   toAddress: string
   hasAvailable: boolean
   isSi: boolean
@@ -71,6 +74,10 @@ class Send extends React.Component<ISendProps, ISendState> {
 
     this.state = {
       amount: '',
+      fromAddress: recodeAddress(
+        this.props.settings.selectedAccount!.address,
+        networks[this.props.settings.network].ss58Format
+      ),
       toAddress: '',
       hasAvailable: true,
       isSi: true,
@@ -139,7 +146,7 @@ class Send extends React.Component<ISendProps, ISendState> {
     }
 
     const BnAmount = this.inputValueToBn(this.state.amount)
-    const currentAddress = this.props.settings.selectedAccount.address
+    const currentAddress = this.state.fromAddress
 
     const extrinsic: IExtrinsic = await this.api.tx.balances
       .transfer(this.state.toAddress, BnAmount)
@@ -186,7 +193,7 @@ class Send extends React.Component<ISendProps, ISendState> {
       return
     }
 
-    const address = this.props.settings.selectedAccount.address
+    const address = this.state.fromAddress
 
     const available = await this.api.query.balances.freeBalance(address) as BalanceType
 
@@ -228,7 +235,6 @@ class Send extends React.Component<ISendProps, ISendState> {
         console.log('Events:')
         events.forEach(({ phase, event: { data, method, section } }: EventRecord) => {
           console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString())
-          // TODO: const the value
           if (method === 'ExtrinsicSuccess') {
             txItem.status = 'Success'
             this.props.upsertTransaction(address, this.props.settings.network,
@@ -291,7 +297,7 @@ class Send extends React.Component<ISendProps, ISendState> {
   }
 
   render () {
-    if (!this.props.settings.selectedAccount) {
+    if (!this.state.fromAddress) {
       return null
     }
 
@@ -312,7 +318,7 @@ class Send extends React.Component<ISendProps, ISendState> {
         </Dimmer>
         <AccountDropdown qrDestination={QR_ROUTE} />
         <AccountSection>
-          <Balance address={this.props.settings.selectedAccount.address} />
+          <Balance address={this.state.fromAddress} />
         </AccountSection>
         <div style={{ height: 27 }} />
         <AccountSection />
@@ -328,7 +334,7 @@ class Send extends React.Component<ISendProps, ISendState> {
           <div style={{ height: 27 }} />
           <AccountSection>
             <Fee
-              address={this.props.settings.selectedAccount.address}
+              address={this.state.fromAddress}
               toAddress={this.state.toAddress}
               handleFeeChange={this.changeFee}
             />
@@ -339,7 +345,7 @@ class Send extends React.Component<ISendProps, ISendState> {
               color={this.props.settings.color}
               extrinsic={this.state.extrinsic}
               trigger={submitButton}
-              fromAddress={this.props.settings.selectedAccount.address}
+              fromAddress={this.state.fromAddress}
               amount={this.inputValueToBn(this.state.amount)}
               toAddress={this.state.toAddress}
               fee={this.state.fee!}

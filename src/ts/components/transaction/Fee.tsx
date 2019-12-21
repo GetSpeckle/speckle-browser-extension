@@ -83,14 +83,16 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
       this.api.query.balances.reservedBalance(toAddress) as unknown as Balance
     ]).then(([fees, nonce, ext, freeBalance, rsvdBalance]) => {
       const extLength = calcSignatureLength(ext, nonce)
+      console.log(extLength)
       const baseFee = new BN(fees.transactionBaseFee)
+      console.log(baseFee)
       const byteFee = new BN(fees.transactionByteFee).muln(extLength)
       const transferFee = new BN(fees.transferFee)
       const available = freeBalance.add(rsvdBalance)
       const totalFee = available.isZero() ?
         baseFee.add(byteFee).add(transferFee).add(fees.creationFee) :
         baseFee.add(byteFee).add(transferFee)
-      const formattedFee = formatBalance(totalFee)
+      const formattedFee = totalFee === new BN(0) || totalFee === null ? 'free' : formatBalance(totalFee)
       if (formattedFee !== this.state.fee) {
         this.setState({ ...this.state, fee: formattedFee })
         this.props.handleFeeChange(totalFee, fees.creationFee, fees.existentialDeposit, available)
