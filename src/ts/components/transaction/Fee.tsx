@@ -90,7 +90,8 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
       const totalFee = available.isZero() ?
         baseFee.add(byteFee).add(transferFee).add(fees.creationFee) :
         baseFee.add(byteFee).add(transferFee)
-      const formattedFee = formatBalance(totalFee)
+      const formattedFee = (totalFee === new BN(0) || totalFee === null) ?
+        'free' : formatBalance(totalFee)
       if (formattedFee !== this.state.fee) {
         this.setState({ ...this.state, fee: formattedFee })
         this.props.handleFeeChange(totalFee, fees.creationFee, fees.existentialDeposit, available)
