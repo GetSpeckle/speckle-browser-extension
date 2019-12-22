@@ -1,19 +1,24 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { withRouter, RouteComponentProps } from 'react-router'
-import { Image, Grid } from 'semantic-ui-react'
+import { Image, Grid, Dimmer, Loader } from 'semantic-ui-react'
 import { networks } from '../../constants/networks'
+import { WsProvider } from '@polkadot/rpc-provider'
 import { IAppState } from '../../background/store/all'
 import { saveSettings } from '../../background/store/settings'
 import { getTransactions } from '../../background/store/transaction'
-import { ChainDropdown } from '../basic-components'
+import {ChainDropdown} from '../basic-components'
 import styled from 'styled-components'
 import SettingsMenu from './SettingsMenu'
+import { ApiOptions } from "@polkadot/api/types";
+import { createApi, destroyApi } from "../../background/store/api-context";
 
 interface ITopMenuProps extends StateProps, DispatchProps, RouteComponentProps {}
 
 interface ITopMenuState {
+  isLoading: boolean,
   network: string,
+  tries: number,
   chainIconUrl: string,
   profileIconClicked: boolean
 }
@@ -21,13 +26,22 @@ interface ITopMenuState {
 class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
 
   state = {
+    isLoading: false,
     network: this.props.settings.network,
     chainIconUrl: networks[this.props.settings.network].chain.iconUrl,
-    profileIconClicked: false
+    profileIconClicked: false,
+    tries: 0
+  }
+
+  componentDidUpdate (prevProps, _prevState) {
+    if(!this.props.apiContext.apiReady
+        && prevProps.settings.network !== this.props.settings.network){
+      this.recreateApi()
+
+    }
   }
 
   changeNetwork = (_e: any, data: { value: string; }) => {
-    console.log(_e)
     this.setState({
       network: data.value,
       chainIconUrl: networks[data.value].chain.iconUrl
@@ -38,7 +52,28 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
     if (this.props.settings.selectedAccount) {
       this.props.getTransactions(this.props.settings.selectedAccount.address, data.value)
     }
+    const { apiContext } = this.props
+    this.setState({ isLoading: true })
+    apiContext.provider && this.props.destroyApi(apiContext.provider)
+  }
 
+  recreateApi = () => {
+    const { apiContext, settings } = this.props
+    if (!apiContext.apiReady && settings) {
+      this.setState({ ...this.state, tries: this.state.tries++ })
+      const network = networks[settings.network]
+      const provider = new WsProvider(network.rpcServer)
+      let apiOptions: ApiOptions = { provider, types: network.types }
+      this.props.createApi(apiOptions)
+      if (this.state.tries <= 5) {
+        // try to connect in 3 seconds
+        setTimeout(this.recreateApi, 3000)
+      }
+    }
+
+    if (apiContext.apiReady){
+      this.setState({ isLoading: false })
+    }
   }
 
   handleProfileIconClick = () => {
@@ -78,6 +113,9 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
 
     return (
       <div>
+        <Dimmer active={this.state.isLoading}>
+          <Loader indeterminate={true}> Switching network, please wait ...</Loader>
+        </Dimmer>
         <div className='top-menu'>
           <Grid centered={true} textAlign='center'>
             <Grid.Column width={4} verticalAlign='middle'>
@@ -88,7 +126,7 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
               <ChainDropdown
                 className='chain'
                 fluid={true}
-                value={this.state.network}
+                value={this.props.settings.network}
                 onChange={this.changeNetwork}
                 icon={<img src={this.state.chainIconUrl} alt='Chain logo'/>}
                 options={networkOptions}
@@ -121,7 +159,8 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
 
 const mapStateToProps = (state: IAppState) => {
   return {
-    settings: state.settings
+    settings: state.settings,
+    apiContext: state.apiContext
   }
 }
 
@@ -137,7 +176,7 @@ const MenuOption = styled.div`
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
-const mapDispatchToProps = { saveSettings, getTransactions }
+const mapDispatchToProps = { saveSettings, getTransactions, createApi, destroyApi }
 
 type DispatchProps = typeof mapDispatchToProps
 
