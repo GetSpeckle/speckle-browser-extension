@@ -7,7 +7,7 @@ import { WsProvider } from '@polkadot/rpc-provider'
 import { IAppState } from '../../background/store/all'
 import { saveSettings } from '../../background/store/settings'
 import { getTransactions } from '../../background/store/transaction'
-import {ChainDropdown} from '../basic-components'
+import { ChainDropdown } from '../basic-components'
 import styled from 'styled-components'
 import SettingsMenu from './SettingsMenu'
 import { ApiOptions } from "@polkadot/api/types";
