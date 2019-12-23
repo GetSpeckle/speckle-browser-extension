@@ -1,6 +1,10 @@
 import React from 'react'
+import { colorSchemes } from '../components/styles/themes'
 
 export const Header = (props) => {
+
+  const colorScheme = colorSchemes[props.color]
+
   return (
     <svg width='375' height='174' viewBox='0 0 375 174'>
       <defs>
@@ -13,8 +17,8 @@ export const Header = (props) => {
           fy='22.572%'
           gradientTransform='matrix(0 1 -.671 0 .651 -.274)'
         >
-          <stop offset='0%' stopColor={props.colorScheme.stopColorOne}/>
-          <stop offset='100%' stopColor={props.colorScheme.stopColorTwo}/>
+          <stop offset='0%' key={'stop0-' + props.color} stopColor={colorScheme.stopColorOne}/>
+          <stop offset='100%' key={'stop100-' + props.color} stopColor={colorScheme.stopColorTwo}/>
         </radialGradient>
         <path
           id='dd'
@@ -34,7 +38,7 @@ export const Header = (props) => {
         >
           <feOffset in='SourceAlpha' result='shadowOffsetOuter1'/>
           <feGaussianBlur in='shadowOffsetOuter1' result='shadowBlurOuter1' stdDeviation='12.5'/>
-          <feColorMatrix in='shadowBlurOuter1' values={props.colorScheme.headerShadow}/>
+          <feColorMatrix in='shadowBlurOuter1' key={props.color} values={colorScheme.headerShadow}/>
         </filter>
       </defs>
       <g fill='none' fillRule='evenodd'>
