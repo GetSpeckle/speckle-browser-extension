@@ -69,8 +69,9 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
     this.updateBalance()
   }
 
-  componentDidUpdate (_prevProps, prevState, _snapshot?) {
-    if (this.state.address !== prevState.address) {
+  componentDidUpdate (prevProps, prevState, _snapshot?) {
+    if (this.state.address !== prevState.address
+        || (!prevProps.apiContext.apiReady && this.props.apiContext.apiReady)){
       prevState.unsub && prevState.unsub()
       this.updateBalance()
     }
