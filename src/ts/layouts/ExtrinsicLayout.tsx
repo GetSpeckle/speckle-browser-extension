@@ -12,7 +12,6 @@ interface IExtrinsicProps extends StateProps {}
 class ExtrinsicLayout extends Component<IExtrinsicProps> {
 
   render () {
-
     const layoutStyle = {
       backgroundImage: `url(/assets/background/color-bg-ext-${this.props.settings.color}.svg)`,
       backgroundRepeat: 'no-repeat',

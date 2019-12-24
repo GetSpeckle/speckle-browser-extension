@@ -271,5 +271,8 @@
   },
   "clickToQRCode": {
     "message": "显示QR Code格式"
+  },
+  "networkError": {
+    "message": "网络连接异常"
   }
 }

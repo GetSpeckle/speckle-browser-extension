@@ -271,5 +271,8 @@
   },
   "clickToQRCode": {
     "message": "Click to show in QR Code"
+  },
+  "networkError": {
+    "message": "There is a network error occurred"
   }
 }
