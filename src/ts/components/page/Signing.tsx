@@ -6,7 +6,7 @@ import {
   Title
 } from '../basic-components'
 import t from '../../services/i18n'
-import WithLayout from './WithLayout'
+import withLayout from './withLayout'
 import Extrinsic from './Extrinsic'
 import SignBy from './SignBy'
 import { SigningRequest } from '../../background/types'
@@ -85,4 +85,4 @@ const Signing = (props) => {
   return null
 }
 
-export default WithLayout(Signing)
+export default withLayout(Signing)

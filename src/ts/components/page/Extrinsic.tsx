@@ -5,9 +5,8 @@ import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 import { findNetwork, Network } from '../../constants/networks'
 import { Grid } from 'semantic-ui-react'
-import { bnToBn, formatBalance } from '@polkadot/util'
+import { formatBalance } from '@polkadot/util'
 import { SignerPayloadJSON } from '@polkadot/types/types'
-import BN from 'bn.js'
 import { GenericCall } from '@polkadot/types'
 import { displayAddress } from '../../services/address-transformer'
 import { Color, colorSchemes } from '../styles/themes'
@@ -40,7 +39,7 @@ interface ISignMessageProps extends StateProps {
   signerPayload: SignerPayloadJSON
 }
 
-const decodeMethod = (data: string, isDecoded: boolean, network: Network, specVersion: BN)
+const decodeMethod = (data: string, isDecoded: boolean, network: Network)
   : Decoded => {
   let json: MethodJson | null = null
   let method: GenericCall | null = null
@@ -50,7 +49,7 @@ const decodeMethod = (data: string, isDecoded: boolean, network: Network, specVe
     unit: network.tokenSymbol
   })
   try {
-    if (isDecoded && network.hasMetadata && specVersion.eqn(network.specVersion)) {
+    if (isDecoded && network.hasMetadata) {
       method = new GenericCall(network.registry, data)
       json = method.toJSON() as unknown as MethodJson
     }
@@ -103,12 +102,11 @@ const renderMethod = (data: string, { json, method }: Decoded): React.ReactNode 
 }
 
 const Extrinsic = ({ settings, isDecoded, signerPayload }: ISignMessageProps) => {
-  const { genesisHash, method, specVersion: hexSpec } = signerPayload
+  const { genesisHash, method } = signerPayload
   const network = useRef(findNetwork(genesisHash)).current
-  const specVersion = useRef(bnToBn(hexSpec)).current
   const [decoded, setDecoded] = useState<Decoded>({ json: null, method: null })
   useEffect((): void => {
-    setDecoded(decodeMethod(method, isDecoded, network, specVersion))
+    setDecoded(decodeMethod(method, isDecoded, network))
   }, [isDecoded])
 
   return (
