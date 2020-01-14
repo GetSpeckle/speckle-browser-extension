@@ -7,6 +7,7 @@ import { SiDef } from '@polkadot/util/types'
 interface IAmountProps {
   handleAmountChange: any,
   handleDigitChange: any,
+  handleTipChange: any,
   options: SiDef[]
 }
 
@@ -20,6 +21,21 @@ export default class Amount extends React.Component<IAmountProps> {
         <div style={{ display: 'flex', width: '311px' }}>
           <Input>
             <TruncatedInput type='text' onChange={this.props.handleAmountChange} size={20}/>
+          </Input>
+          <Digit
+            selection={true}
+            options={this.props.options}
+            defaultValue={defaultValue}
+            scrolling={true}
+            style={{ minWidth: '100px' }}
+            onChange={this.props.handleDigitChange}
+          />
+        </div>
+        <br/>
+        <Label>{t('tip')}</Label>
+        <div style={{ display: 'flex', width: '311px' }}>
+          <Input>
+            <TruncatedInput type='text' onChange={this.props.handleTipChange} size={20}/>
           </Input>
           <Digit
             selection={true}

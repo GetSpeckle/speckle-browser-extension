@@ -163,6 +163,8 @@ export const AccountSection = styled.div`
   text-align: center
 `
 
+
+
 const mapStateToProps = (state: IAppState) => {
   return {
     settings: state.settings
