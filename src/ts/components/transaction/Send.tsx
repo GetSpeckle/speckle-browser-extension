@@ -159,6 +159,7 @@ class Send extends React.Component<ISendProps, ISendState> {
     }
 
     const BnAmount = this.inputValueToBn(this.state.amount)
+    const BnTip = this.inputValueToBn(this.state.tip)
     const currentAddress = this.state.fromAddress
 
     const extrinsic: IExtrinsic = await this.api.tx.balances
@@ -173,7 +174,6 @@ class Send extends React.Component<ISendProps, ISendState> {
     } else {
       this.setState({ nonce: currentNonce })
     }
-    const tip: number = 0
     let signerPayload: SignerPayloadJSON = {
       address: currentAddress,
       blockHash: currentBlockHash.toHex(),
@@ -183,7 +183,7 @@ class Send extends React.Component<ISendProps, ISendState> {
       method: extrinsic.method.toHex(),
       nonce: (this.state.nonce! as Index).toHex(),
       specVersion: this.api.runtimeVersion.specVersion.toHex(),
-      tip: tip.toString(16),
+      tip: BnTip.toString(),
       version: extrinsic.version
     }
     const payloadValue: ExtrinsicPayloadValue = {
@@ -192,7 +192,7 @@ class Send extends React.Component<ISendProps, ISendState> {
       blockHash: currentBlockHash,
       genesisHash: this.api.genesisHash,
       nonce: this.state.nonce!.toNumber(),
-      tip: tip,
+      tip: BnTip.toNumber(),
       specVersion: this.api.runtimeVersion.specVersion.toNumber()
     }
     signExtrinsic(signerPayload).then(signature => {

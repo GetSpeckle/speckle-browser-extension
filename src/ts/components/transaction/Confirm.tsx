@@ -177,7 +177,7 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
         <Section style={{ 'marginTop': '8px', 'marginBottom': '16px' }}>
           <Info>
             <Key>Total</Key>
-            <Value>{formatBalance(this.props.amount.add(this.props.fee))}</Value>
+            <Value>{formatBalance(this.props.amount.add(this.props.fee).add(this.props.tip))}</Value>
           </Info>
         </Section>
         {warning}
