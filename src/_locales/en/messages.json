@@ -227,6 +227,9 @@
   "amount": {
     "message": "Amount"
   },
+  "tip": {
+    "message": "Tip(optional)"
+  },
   "toAddress": {
     "message": "Send to"
   },

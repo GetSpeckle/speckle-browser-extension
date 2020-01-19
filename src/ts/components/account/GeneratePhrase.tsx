@@ -66,7 +66,7 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
             this.props.setAccountName(accountName)
             setTempAccountName(accountName)
           }
-          )
+        )
       })
     }
   }
@@ -144,7 +144,7 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
   downloadFile = () => {
     let element = document.createElement('a')
     element.setAttribute('href',
-        'data:text/plain;charset=utf-8,' + encodeURIComponent(this.state.mnemonic))
+      'data:text/plain;charset=utf-8,' + encodeURIComponent(this.state.mnemonic))
     element.setAttribute('download', 'secret-phrase.txt')
 
     element.style.display = 'none'

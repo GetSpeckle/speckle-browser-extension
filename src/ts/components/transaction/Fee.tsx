@@ -44,7 +44,7 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
   }
 
   updateFee = () => {
-    if (this.props.toAddress.length >= ADDRESS_LENGTH) return
+    if (this.props.toAddress.length < ADDRESS_LENGTH) return
     if (this.props.apiContext.apiReady) {
       this.setState({ ...this.state, tries: 1 })
       const { tokenDecimals, tokenSymbol, registry } = this.props.network
@@ -75,6 +75,7 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
   private doUpdate = () => {
     const address = this.props.address
     const toAddress = this.props.toAddress
+    console.log(toAddress)
     Promise.all([
       this.api.derive.balances.fees() as unknown as DerivedFees,
       this.api.query.system.accountNonce(address) as unknown as BN,
