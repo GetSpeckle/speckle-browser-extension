@@ -44,7 +44,10 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
   }
 
   updateFee = () => {
-    if (this.props.toAddress.length < ADDRESS_LENGTH) return
+    if (this.props.toAddress.length < ADDRESS_LENGTH) {
+      this.setState({ fee: undefined })
+      return
+    }
     if (this.props.apiContext.apiReady) {
       this.setState({ ...this.state, tries: 1 })
       const { tokenDecimals, tokenSymbol, registry } = this.props.network

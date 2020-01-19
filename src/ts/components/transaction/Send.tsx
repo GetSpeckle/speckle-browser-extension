@@ -305,7 +305,11 @@ class Send extends React.Component<ISendProps, ISendState> {
   }
 
   readyToSubmit = (): boolean => {
-    return this.isToAddressValid() && !!this.state.amount && this.state.hasAvailable
+    return this.isToAddressValid()
+      && !!this.state.amount
+      && this.state.hasAvailable
+      && this.isAmountValid() === ''
+      && this.isTipValid() === ''
   }
 
   isToAddressValid = (): boolean => {
@@ -316,31 +320,24 @@ class Send extends React.Component<ISendProps, ISendState> {
     }
   }
 
-  isLetter (str: String): boolean {
-    let result = false
+  validateAmount (str: String): string {
+    let result = ''
     str.split('').map((ch) => {
-      if ('a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_') {
-        result = true
-        console.log('string detected')
+      if ('a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch === '_') {
+        result = 'Letters not allowed'
+      } else if (ch === '-') {
+        result = 'Negatives or hyphens not allowed'
       }
     })
     return result
   }
 
-  isAmountValid = (): string => {
-    console.log('amount valid', this.isLetter(this.state.amount))
-    if (this.isLetter(this.state.amount)) {
-      return 'Letters not allowed'
-    }
-    return ''
+  isAmountValid = (): string =>  {
+    return this.validateAmount(this.state.amount)
   }
 
   isTipValid = (): string => {
-    console.log('tip valid', this.isLetter(this.state.amount))
-    if (this.isLetter(this.state.tip)) {
-      return 'Letters not allowed'
-    }
-    return ''
+    return this.validateAmount(this.state.tip)
   }
 
   render () {
@@ -378,7 +375,6 @@ class Send extends React.Component<ISendProps, ISendState> {
             amountValid={this.isAmountValid()}
             tipValid={this.isTipValid()}
           />
-          <div style={{ height: 17 }} />
           <ToAddress handleAddressChange={this.changeAddress}/>
           {this.isToAddressValid() || <ErrorMessage>{t('invalidAddress')}</ErrorMessage>}
           <div style={{ height: 17 }} />
