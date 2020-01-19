@@ -397,6 +397,7 @@ class Send extends React.Component<ISendProps, ISendState> {
               trigger={submitButton}
               fromAddress={this.state.fromAddress}
               amount={this.inputValueToBn(this.state.amount)}
+              tip={this.inputValueToBn(this.state.tip)}
               toAddress={this.state.toAddress}
               fee={this.state.fee!}
               creationFee={this.state.creationFee}
