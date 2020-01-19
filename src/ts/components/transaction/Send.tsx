@@ -316,6 +316,33 @@ class Send extends React.Component<ISendProps, ISendState> {
     }
   }
 
+  isLetter (str: String): boolean {
+    let result = false
+    str.split('').map((ch) => {
+      if ('a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_') {
+        result = true
+        console.log('string detected')
+      }
+    })
+    return result
+  }
+
+  isAmountValid = (): string => {
+    console.log('amount valid', this.isLetter(this.state.amount))
+    if (this.isLetter(this.state.amount)) {
+      return 'Letters not allowed'
+    }
+    return ''
+  }
+
+  isTipValid = (): string => {
+    console.log('tip valid', this.isLetter(this.state.amount))
+    if (this.isLetter(this.state.tip)) {
+      return 'Letters not allowed'
+    }
+    return ''
+  }
+
   render () {
     if (!this.state.fromAddress) {
       return null
@@ -348,11 +375,13 @@ class Send extends React.Component<ISendProps, ISendState> {
             handleTipChange={this.changeTip}
             handleDigitChange={this.changeSi}
             options={formatBalance.getOptions()}
+            amountValid={this.isAmountValid()}
+            tipValid={this.isTipValid()}
           />
-          <div style={{ height: 27 }} />
+          <div style={{ height: 17 }} />
           <ToAddress handleAddressChange={this.changeAddress}/>
           {this.isToAddressValid() || <ErrorMessage>{t('invalidAddress')}</ErrorMessage>}
-          <div style={{ height: 27 }} />
+          <div style={{ height: 17 }} />
           <FeeSection>
             <Fee
               address={this.state.fromAddress}

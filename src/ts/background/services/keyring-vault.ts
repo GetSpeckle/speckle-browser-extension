@@ -6,6 +6,7 @@ import t from '../../services/i18n'
 import { SimpleAccounts } from '../types'
 import { createType, TypeRegistry } from '@polkadot/types'
 import { SignerPayloadJSON } from '@polkadot/types/types'
+import { VALIDITY_INTERVAL } from '../../constants/config'
 
 const VAULT_KEY: string = 'speckle-vault'
 
@@ -15,8 +16,13 @@ class KeyringVault {
 
   private _keyring?: KeyringInstance
   private _password?: string
+  private _tempPassword?: string
+  private _tempAccountName?: string
   private _mnemonic?: string
   private simpleAccounts?: SimpleAccounts
+  private _accountSetupTimeout = 0
+  private _accountSetupTimeoutTimerId = 0
+  private _mnemonicTimeoutId = 0
 
   private get keyring (): KeyringInstance {
     if (this._keyring) {
@@ -47,6 +53,59 @@ class KeyringVault {
         return true
       })
     })
+  }
+
+  getTempPassword (): string {
+    return this._tempPassword || ''
+  }
+
+  setTempPassword (tempPassword: string): void {
+    // Update the password and start the timer only if user has changed the password
+    if (this._tempPassword !== tempPassword) {
+      this._tempPassword = tempPassword
+
+      // Start timer for password expiry
+      this.startExpiryTimer()
+    }
+  }
+
+  clearTempPassword (): void {
+    this._tempPassword = undefined
+  }
+
+  getTempAccountName (): string {
+    return this._tempAccountName || ''
+  }
+
+  setTempAccountName (tempAccountName: string): void {
+    // Update the account name
+    if (this._tempAccountName !== tempAccountName) {
+      this._tempAccountName = tempAccountName
+    }
+  }
+
+  getAccountSetupTimeout (): number {
+    return this._accountSetupTimeout
+  }
+
+  cancelAccountSetup (): void {
+    this.clearExpiryTimer()
+    this.clearTempPassword()
+    this.clearMnemonic(true)
+  }
+
+  startExpiryTimer (): void {
+    this._accountSetupTimeout = VALIDITY_INTERVAL
+
+    this._accountSetupTimeoutTimerId = window.setInterval(() => {
+      this._accountSetupTimeout = (this._accountSetupTimeout as number) - 1
+    }, 1000)
+  }
+
+  clearExpiryTimer (): void {
+    clearInterval(this._accountSetupTimeoutTimerId)
+    this._accountSetupTimeout = 0
+    this._accountSetupTimeoutTimerId = 0
   }
 
   isLocked (): boolean {
@@ -103,8 +162,39 @@ class KeyringVault {
   generateMnemonic (): string {
     if (!this._mnemonic) {
       this._mnemonic = mnemonicGenerate()
+
+      if (this._accountSetupTimeoutTimerId === 0) {
+        // Start timer for mnemonic expiry
+        this.startExpiryTimer()
+      }
+
+      // Work-around to avoid timer elapsing before time left on the UI.
+      // Root cause: Upon re-opening the Popup, background service is paused for a moment.
+      const timeout = (this._accountSetupTimeout + 1) * 1000
+
+      this._mnemonicTimeoutId = window.setTimeout(() => {
+        this.clearTempPassword()
+        this.clearMnemonic(false)
+        this.clearExpiryTimer()
+        this._mnemonicTimeoutId = 0
+      }, timeout)
     }
     return this._mnemonic
+  }
+
+  getMnemonic (): string {
+    return this._mnemonic || ''
+  }
+
+  clearMnemonic (isCancelled: boolean): void {
+    this._mnemonic = undefined
+    this._tempAccountName = undefined
+
+    // On cancelling account setup, remove `setTimeout` timer
+    if (isCancelled) {
+      window.clearTimeout(this._mnemonicTimeoutId)
+      this._mnemonicTimeoutId = 0
+    }
   }
 
   isMnemonicValid (mnemonic: string): boolean {
@@ -138,6 +228,9 @@ class KeyringVault {
     return cryptoWaitReady().then(() => {
       let pair = this.keyring.addFromUri(mnemonic, { name: accountName })
       this._mnemonic = undefined
+      this.clearTempPassword()
+      this.clearMnemonic(false)
+      this.clearExpiryTimer()
       return this.saveAccount(pair)
     })
   }

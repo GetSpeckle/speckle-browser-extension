@@ -8,8 +8,22 @@ import GlobalStyle from '../../components/styles/GlobalStyle'
 import { themes } from '../../components/styles/themes'
 import { Routes } from '../../routes'
 import { getSettings } from '../../background/store/settings'
-import { init, isWalletLocked, walletExists } from '../../services/keyring-vault-proxy'
-import { setLocked, setCreated } from '../../background/store/wallet'
+import {
+  getAccountSetupTimeout,
+  getMnemonic,
+  getTempAccountName,
+  getTempPassword,
+  isWalletLocked,
+  walletExists
+} from '../../services/keyring-vault-proxy'
+import {
+  setLocked,
+  setCreated,
+  setAccountName,
+  setAccountSetupTimeout,
+  setNewPassword,
+  setNewPhrase
+} from '../../background/store/wallet'
 import { createApi, destroyApi } from '../../background/store/api-context'
 import { networks } from '../../constants/networks'
 import { WsProvider } from '@polkadot/rpc-provider'
@@ -19,6 +33,10 @@ import { subscribeAuthorize, subscribeSigning } from '../../services/messaging'
 import Authorizing from '../../components/page/Authorizing'
 import Signing from '../../components/page/Signing'
 import { ApiOptions } from '@polkadot/api/types'
+import { Edgeware } from '../../constants/chains'
+import { IdentityTypes } from 'edgeware-node-types/dist/identity'
+import { VotingTypes } from 'edgeware-node-types/dist/voting'
+import { SignalingTypes } from 'edgeware-node-types/dist/signaling'
 
 interface IPopupProps extends StateProps, DispatchProps { }
 
@@ -26,7 +44,8 @@ interface IPopupState {
   initializing: boolean
   tries: number
   authRequests: Array<AuthorizeRequest>
-  signRequests: Array<SigningRequest>
+  signRequests: Array<SigningRequest>,
+  accountSetupTimeoutId: number
 }
 
 class PopupApp extends React.Component<IPopupProps, IPopupState> {
@@ -35,7 +54,8 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
     initializing: true,
     tries: 0,
     authRequests: [],
-    signRequests: []
+    signRequests: [],
+    accountSetupTimeoutId: 0
   }
 
   setAuthRequests = (authRequests: Array<AuthorizeRequest>) => {
@@ -52,7 +72,13 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
       this.setState({ ...this.state, tries: this.state.tries++ })
       const network = networks[settings.network]
       const provider = new WsProvider(network.rpcServer)
-      let apiOptions: ApiOptions = { provider, types: network.types }
+      let apiOptions: ApiOptions = { provider }
+      if (network.chain === Edgeware) {
+        apiOptions = {
+          ...apiOptions,
+          types: { ...IdentityTypes, ...VotingTypes, ...SignalingTypes }
+        }
+      }
       this.props.createApi(apiOptions)
       if (this.state.tries <= 5) {
         // try to connect in 3 seconds
@@ -63,36 +89,78 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
 
   initializeApp = () => {
     this.props.getSettings()
+
     const checkAppState = isWalletLocked().then(
       result => {
+        console.log(`isLocked ${result}`)
         this.props.setLocked(result)
       })
     const checkAccountCreated = walletExists().then(
       result => {
+        console.log(`isWalletCreated ${result}`)
         this.props.setCreated(result)
       }
     )
+    const newPassword = getTempPassword().then(
+      result => {
+        console.log(`newPassword ${result}`)
+        this.props.setNewPassword(result)
+      }
+    )
+    const newPhrase = getMnemonic().then(
+      result => {
+        console.log(`newPhrase ${result}`)
+        this.props.setNewPhrase(result)
+      }
+    )
+    const newAccountName = getTempAccountName().then(
+      result => {
+        console.log(`newAccountName ${result}`)
+        this.props.setAccountName(result)
+      }
+    )
+
+    // Poll timer from the background service to update on the UI
+    const accountSetupTimeoutId = window.setInterval(
+      this.updateAccountSetupTimeout.bind(this),
+      1000
+    )
+
     Promise.all([
-      init(),
       checkAppState,
       checkAccountCreated,
+      newPassword,
+      newPhrase,
+      newAccountName,
       subscribeAuthorize(this.setAuthRequests),
       subscribeSigning(this.setSignRequests)
     ]).then(() => {
       this.tryCreateApi()
       this.setState({
+        accountSetupTimeoutId,
         initializing: false
       })
     })
   }
 
-  componentDidMount () {
+  updateAccountSetupTimeout = () => {
+    getAccountSetupTimeout().then(
+      result => {
+        if (result !== this.props.wallet.accountSetupTimeout) {
+          this.props.setAccountSetupTimeout(result as number)
+        }
+      }
+    )
+  }
+
+  componentWillMount () {
     this.initializeApp()
   }
 
   componentWillUnmount () {
     const provider = this.props.apiContext.provider
     provider && this.props.destroyApi(provider)
+    clearInterval(this.state.accountSetupTimeoutId)
   }
 
   renderExtensionPopup () {
@@ -132,11 +200,22 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
 const mapStateToProps = (state: IAppState) => {
   return {
     settings: state.settings,
-    apiContext: state.apiContext
+    apiContext: state.apiContext,
+    wallet: state.wallet
   }
 }
 
-const mapDispatchToProps = { getSettings, setLocked, setCreated, createApi, destroyApi }
+const mapDispatchToProps = {
+  getSettings,
+  setLocked,
+  setCreated,
+  createApi,
+  destroyApi,
+  setAccountSetupTimeout,
+  setAccountName,
+  setNewPassword,
+  setNewPhrase
+}
 
 type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps

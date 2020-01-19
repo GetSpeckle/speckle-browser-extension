@@ -4,26 +4,28 @@ import Progress from './Progress'
 import { IAppState } from '../../background/store/all'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { connect } from 'react-redux'
-import { Button, Icon, Form, Divider, Popup } from 'semantic-ui-react'
-import { getSimpleAccounts, generateMnemonic } from '../../services/keyring-vault-proxy'
-import { setNewPhrase } from '../../background/store/wallet'
-import { CONFIRM_PHRASE_ROUTE } from '../../constants/routes'
+import { Button, Icon, Form, Divider, Popup, Grid } from 'semantic-ui-react'
+import { cancelAccountSetup, getSimpleAccounts, generateMnemonic, setTempAccountName } from '../../services/keyring-vault-proxy'
+import { setNewPhrase, setAccountName, setNewPassword } from '../../background/store/wallet'
+import { CONFIRM_PHRASE_ROUTE, CREATE_PASSWORD_ROUTE, HOME_ROUTE } from '../../constants/routes'
 import {
   Button as StyledButton,
   ContentContainer,
   TopSection,
-  Center,
-  SecondaryText
+  SecondaryText,
+  TimerText
 } from '../basic-components'
+import { parseTimeLeft } from '../../constants/utils'
 
 interface IGeneratePhraseProps extends StateProps, DispatchProps, RouteComponentProps {}
 
 interface IGeneratePhraseState {
-  accountName: string,
-  mnemonic: string,
-  message?: string,
-  color: 'blue' | 'red',
+  accountName: string
+  mnemonic: string
+  message?: string
+  color: 'blue' | 'red'
   msgTimeout?: any
+  isCancelled: boolean
 }
 
 class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhraseState> {
@@ -31,7 +33,8 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
   state: IGeneratePhraseState = {
     accountName: '',
     mnemonic: '',
-    color: 'blue'
+    color: 'blue',
+    isCancelled: false
   }
 
   constructor (props) {
@@ -39,20 +42,32 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
   }
 
   componentDidMount () {
-    getSimpleAccounts().then(result => {
-      this.setState({ accountName: 'Account ' + (result.length + 1) })
-    })
+    const { newAccountName, newPhrase } = this.props.wallet
     // generate the mnemonic or restore it from the store if exists
-    if (this.props.wallet.newPhrase) {
-      this.setState({ mnemonic: this.props.wallet.newPhrase })
+    if (newPhrase) {
+      this.setState({ mnemonic: newPhrase })
     } else {
       generateMnemonic().then(phrase => {
         this.setState({ mnemonic: phrase })
       })
     }
 
-    if (this.props.wallet.newAccountName) {
-      this.setState({ accountName: this.props.wallet.newAccountName })
+    if (newAccountName) {
+      this.setState(
+        { accountName: newAccountName },
+        () => setTempAccountName(newAccountName)
+      )
+    } else {
+      getSimpleAccounts().then(result => {
+        const accountName = 'Account ' + (result.length + 1)
+        this.setState(
+          { accountName },
+          () => {
+            this.props.setAccountName(accountName)
+            setTempAccountName(accountName)
+          }
+        )
+      })
     }
   }
 
@@ -62,14 +77,46 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
     }
   }
 
+  componentDidUpdate (prevProps) {
+    // Check for timer expiry
+    if (prevProps.wallet.accountSetupTimeout !== 0 && this.props.wallet.accountSetupTimeout === 0) {
+      // Clear wallet state defaults
+      this.props.setNewPassword('')
+      this.props.setNewPhrase('')
+      this.props.setAccountName('')
+
+      // If wallet is created, redirect to Dashboard. If not, Create Password page
+      if (this.props.wallet.created) {
+        this.props.history.push(HOME_ROUTE)
+      } else {
+        this.props.history.push({
+          pathname: CREATE_PASSWORD_ROUTE,
+          state: { error: this.state.isCancelled ? null : 'Account creation timer has elapsed' }
+        })
+      }
+    }
+  }
+
   handleChange = event => {
-    this.setState({ accountName: event.target.value })
+    this.setState({ accountName: event.target.value }, () => {
+      const { accountName } = this.state
+
+      // Save the temporary account name in the background
+      if (accountName) {
+        this.props.setAccountName(accountName)
+        setTempAccountName(accountName)
+      }
+    })
   }
 
   handleClick = () => {
     this.setState({ message: '' })
-    this.props.setNewPhrase(this.state.mnemonic, this.state.accountName)
+    this.props.setNewPhrase(this.state.mnemonic)
     this.props.history.push(CONFIRM_PHRASE_ROUTE)
+  }
+
+  handleCancel = () => {
+    this.setState({ isCancelled: true }, () => cancelAccountSetup())
   }
 
   selectAll = (event) => {
@@ -97,7 +144,7 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
   downloadFile = () => {
     let element = document.createElement('a')
     element.setAttribute('href',
-        'data:text/plain;charset=utf-8,' + encodeURIComponent(this.state.mnemonic))
+      'data:text/plain;charset=utf-8,' + encodeURIComponent(this.state.mnemonic))
     element.setAttribute('download', 'secret-phrase.txt')
 
     element.style.display = 'none'
@@ -109,6 +156,8 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
   }
 
   render () {
+    const { accountSetupTimeout } = this.props.wallet
+
     return (
       <ContentContainer>
         <TopSection>
@@ -135,7 +184,7 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
             onClick={this.selectAll}
           />
 
-          <Center>
+          <div style={{ textAlign: 'center' }}>
             <Popup
               trigger={<Button><Icon name='copy' />{t('copyText')}</Button>}
               content={t('copyTextMessage')}
@@ -144,16 +193,25 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
               onOpen={this.copyText}
               position='top center'
             />
-          </Center>
+          </div>
 
           <Divider />
 
-          <StyledButton type='button' onClick={this.handleClick}>
-            {t('createAccount')}
-          </StyledButton>
+          <Grid columns='equal'>
+            <Grid.Column>
+              <Button fluid={true} onClick={this.handleCancel}>Cancel</Button>
+            </Grid.Column>
+            <Grid.Column>
+              <StyledButton type='button' onClick={this.handleClick}>
+                {t('createAccount')}
+              </StyledButton>
+            </Grid.Column>
+          </Grid>
 
-          </Form>
-        </ContentContainer>
+          {/* tslint:disable-next-line:max-line-length */}
+          {accountSetupTimeout > 0 && <TimerText>{parseTimeLeft(accountSetupTimeout)} left</TimerText>}
+        </Form>
+      </ContentContainer>
     )
   }
 }
@@ -164,7 +222,7 @@ const mapStateToProps = (state: IAppState) => {
   }
 }
 
-const mapDispatchToProps = { setNewPhrase }
+const mapDispatchToProps = { setNewPhrase, setAccountName, setNewPassword }
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
