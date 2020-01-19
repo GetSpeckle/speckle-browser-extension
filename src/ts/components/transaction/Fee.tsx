@@ -6,9 +6,9 @@ import ApiPromise from '@polkadot/api/promise'
 import { compactToU8a, formatBalance } from '@polkadot/util'
 import styled from 'styled-components'
 import { IExtrinsic } from '@polkadot/types/types'
-import { DerivedFees } from '@polkadot/api-derive/types'
+import { DerivedFees, DerivedBalances } from '@polkadot/api-derive/types'
 import BN from 'bn.js'
-import { Balance, ChainProperties } from '@polkadot/types/interfaces'
+import { ChainProperties } from '@polkadot/types/interfaces'
 import U32 from '@polkadot/types/primitive/U32'
 import { networks } from '../../constants/networks'
 
@@ -16,7 +16,7 @@ const LENGTH_PUBLICKEY = 32 + 1 // publicKey + prefix
 const LENGTH_SIGNATURE = 64
 const LENGTH_ERA = 1
 const SIGNATURE_SIZE = LENGTH_PUBLICKEY + LENGTH_SIGNATURE + LENGTH_ERA
-const ADDRESS_LENGTH = 48
+const ADDRESS_LENGTH = 47
 
 const calcSignatureLength = (extrinsic?: IExtrinsic | null, accountNonce?: BN): number => {
   return SIGNATURE_SIZE +
@@ -44,7 +44,7 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
   }
 
   updateFee = () => {
-    if (this.props.toAddress.length !== ADDRESS_LENGTH) return
+    if (this.props.toAddress.length >= ADDRESS_LENGTH) return
     if (this.props.apiContext.apiReady) {
       this.setState({ ...this.state, tries: 1 })
       const { tokenDecimals, tokenSymbol, registry } = this.props.network
@@ -79,23 +79,29 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
       this.api.derive.balances.fees() as unknown as DerivedFees,
       this.api.query.system.accountNonce(address) as unknown as BN,
       this.api.tx.balances.transfer(address, 1) as unknown as IExtrinsic,
-      this.api.query.balances.freeBalance(toAddress) as unknown as Balance,
-      this.api.query.balances.reservedBalance(toAddress) as unknown as Balance
-    ]).then(([fees, nonce, ext, freeBalance, rsvdBalance]) => {
+      this.api.derive.balances.votingBalances([toAddress]) as unknown as DerivedBalances
+    ]).then(([fees, nonce, ext, balancesAll]) => {
+      console.log('fee infos', fees, nonce, ext, balancesAll)
       const extLength = calcSignatureLength(ext, nonce)
-      console.log(extLength)
       const baseFee = new BN(fees.transactionBaseFee)
-      console.log(baseFee)
       const byteFee = new BN(fees.transactionByteFee).muln(extLength)
       const transferFee = new BN(fees.transferFee)
-      const available = freeBalance.add(rsvdBalance)
-      const totalFee = available.isZero() ?
-        baseFee.add(byteFee).add(transferFee).add(fees.creationFee) :
-        baseFee.add(byteFee).add(transferFee)
-      const formattedFee = totalFee === new BN(0) || totalFee === null ? 'free' : formatBalance(totalFee)
+      const hasAvailable = balancesAll[0].availableBalance.gtn(0)
+      const totalFee = hasAvailable ?
+        baseFee.add(byteFee).add(transferFee) :
+        baseFee.add(byteFee).add(transferFee).add(fees.creationFee)
+      const formattedFee = formatBalance(totalFee, {
+        forceUnit: '-',
+        withSi: true
+      })
       if (formattedFee !== this.state.fee) {
         this.setState({ ...this.state, fee: formattedFee })
-        this.props.handleFeeChange(totalFee, fees.creationFee, fees.existentialDeposit, available)
+        this.props.handleFeeChange(
+          totalFee,
+          fees.creationFee,
+          fees.existentialDeposit,
+          balancesAll[0].availableBalance
+        )
       }
     })
   }
@@ -118,7 +124,7 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
         <span/>
       </TxFee>
     )
-  }
+  }ƒ
 
   renderFee () {
     return (

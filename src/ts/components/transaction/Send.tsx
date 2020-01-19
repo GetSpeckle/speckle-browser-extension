@@ -136,12 +136,11 @@ class Send extends React.Component<ISendProps, ISendState> {
     this.setState({ tip: event.target.value })
   }
 
-  changeFee = (fee, creationFee, existentialDeposit, recipientAvailable) => {
+  changeFee = (fee, creationFee, existentialDeposit) => {
     this.setState({
       fee: fee,
       creationFee: creationFee,
-      existentialDeposit: existentialDeposit,
-      recipientAvailable: recipientAvailable
+      existentialDeposit: existentialDeposit
     })
   }
 
