@@ -108,6 +108,17 @@ class Send extends React.Component<ISendProps, ISendState> {
     this.props.setError(null)
   }
 
+  componentDidUpdate (prevProps) {
+    if (
+      this.props.settings.selectedAccount!.address !== prevProps.settings.selectedAccount!.address
+    ) {
+      this.setState({fromAddress: recodeAddress(
+          this.props.settings.selectedAccount!.address,
+          networks[this.props.settings.network].ss58Format
+        )})
+    }
+  }
+
   inputValueToBn = (value: string): BN => {
     const parts: string[] = value.split('.')
     const selectedSi: SiDef = this.state.si
@@ -341,6 +352,7 @@ class Send extends React.Component<ISendProps, ISendState> {
   }
 
   render () {
+    console.log(this.props.settings.selectedAccount!.address)
     if (!this.state.fromAddress) {
       return null
     }

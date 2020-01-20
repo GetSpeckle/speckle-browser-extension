@@ -11,6 +11,7 @@ import BN from 'bn.js'
 import { ChainProperties } from '@polkadot/types/interfaces'
 import U32 from '@polkadot/types/primitive/U32'
 import { networks } from '../../constants/networks'
+import { decodeAddress } from '@polkadot/util-crypto'
 
 const LENGTH_PUBLICKEY = 32 + 1 // publicKey + prefix
 const LENGTH_SIGNATURE = 64
@@ -44,7 +45,14 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
   }
 
   updateFee = () => {
-    if (this.props.toAddress.length < ADDRESS_LENGTH) {
+    const isToAddressValid = (addr: string): boolean => {
+      try {
+        return decodeAddress(addr).length === 32
+      } catch (e) {
+        return false
+      }
+    }
+    if (this.props.toAddress.length < ADDRESS_LENGTH || !isToAddressValid(this.props.toAddress)) {
       this.setState({ fee: undefined })
       return
     }
