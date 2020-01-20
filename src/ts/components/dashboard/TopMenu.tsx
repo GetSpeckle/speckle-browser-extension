@@ -45,14 +45,15 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
       network: data.value,
       chainIconUrl: networks[data.value].chain.iconUrl
     })
-    this.props.saveSettings({ ...this.props.settings, network: data.value })
 
+    const { apiContext } = this.props
+    apiContext.provider && this.props.destroyApi(apiContext.provider)
+
+    this.props.saveSettings({ ...this.props.settings, network: data.value })
     // load transactions for the selected network
     if (this.props.settings.selectedAccount) {
       this.props.getTransactions(this.props.settings.selectedAccount.address, data.value)
     }
-    const { apiContext } = this.props
-    apiContext.provider && this.props.destroyApi(apiContext.provider)
   }
 
   recreateApi = () => {
@@ -117,7 +118,7 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
 
     return (
       <div>
-        <Dimmer active={!this.props.apiContext.apiReady}>
+        <Dimmer active={!this.props.apiContext.apiReady && (this.state.tries > 0 && this.state.tries <= 5) }>
           <Loader indeterminate={true}> Connecting to network, please wait ...</Loader>
         </Dimmer>
         <div className='top-menu'>
