@@ -136,7 +136,7 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
         <span/>
       </TxFee>
     )
-  }ƒ
+  }
 
   renderFee () {
     return (
