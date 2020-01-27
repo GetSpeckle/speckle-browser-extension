@@ -124,7 +124,10 @@ export function generateMnemonic (): Promise<string> {
   })
 }
 
-export function createAccount (mnemonic: string, accountName?: string): Promise<KeyringPair$Json> {
+export function createAccount (
+  mnemonic: string,
+  accountName?: string | undefined
+): Promise<KeyringPair$Json> {
   return new Promise<KeyringPair$Json>((resolve, reject) => {
     port.onMessage.addListener(msg => {
       if (msg.method !== FUNCS.CREATE_ACCOUNT) return
@@ -215,4 +218,66 @@ export function importAccountFromJson (json: KeyringPair$Json, password?: string
       password: password
     })
   })
+}
+
+export function getTempPassword (): Promise<string> {
+  return new Promise<string>(resolve => {
+    port.onMessage.addListener(msg => {
+      if (msg.method === FUNCS.GET_TEMP_PASSWORD) {
+        resolve(msg.result)
+      }
+    })
+    port.postMessage({ method: FUNCS.GET_TEMP_PASSWORD })
+  })
+}
+
+export function setTempPassword (tempPassword: string): void {
+  port.postMessage({
+    method: FUNCS.SET_TEMP_PASSWORD,
+    tempPassword
+  })
+}
+
+export function getMnemonic (): Promise<string> {
+  return new Promise<string>(resolve => {
+    port.onMessage.addListener(msg => {
+      if (msg.method === FUNCS.GET_MNEMONIC) {
+        resolve(msg.result)
+      }
+    })
+    port.postMessage({ method: FUNCS.GET_MNEMONIC })
+  })
+}
+
+export function getAccountSetupTimeout (): Promise<number> {
+  return new Promise<number>(resolve => {
+    port.onMessage.addListener(msg => {
+      if (msg.method === FUNCS.GET_ACCOUNT_SETUP_TIMEOUT) {
+        resolve(msg.result)
+      }
+    })
+    port.postMessage({ method: FUNCS.GET_ACCOUNT_SETUP_TIMEOUT })
+  })
+}
+
+export function getTempAccountName (): Promise<string> {
+  return new Promise<string>(resolve => {
+    port.onMessage.addListener(msg => {
+      if (msg.method === FUNCS.GET_TEMP_ACCOUNT_NAME) {
+        resolve(msg.result)
+      }
+    })
+    port.postMessage({ method: FUNCS.GET_TEMP_ACCOUNT_NAME })
+  })
+}
+
+export function setTempAccountName (tempAccountName: string): void {
+  port.postMessage({
+    method: FUNCS.SET_TEMP_ACCOUNT_NAME,
+    tempAccountName
+  })
+}
+
+export function cancelAccountSetup (): void {
+  port.postMessage({ method: FUNCS.CANCEL_ACCOUNT_SETUP })
 }

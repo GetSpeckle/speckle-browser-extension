@@ -119,3 +119,17 @@ export const ErrorMessage = styled.div`
   color: #f55
   font-size: 12px
 `
+
+const Timer = styled.div`
+  color: ${(p: P) => colorSchemes[p.settings.color].backgroundColor} !important
+  background-color: ${(p: P) => colorSchemes[p.settings.color].shadowColor} !important
+  padding: 8px
+  border-radius: 4px
+  font-weight: bold
+  font-size: 12px
+  position: fixed
+  top: 135px
+  right: 42px
+`
+
+export const TimerText = connect(mapStateToProps)(Timer)
