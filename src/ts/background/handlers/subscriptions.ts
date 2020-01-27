@@ -1,16 +1,17 @@
 import { Runtime } from 'webextension-polyfill-ts'
 
-type Subscriptions = {
-  [index: string]: Runtime.Port
-}
+import { SubscriptionMessageTypes, MessageTypesWithSubscriptions } from '../types'
+
+type Subscriptions = Record<string, Runtime.Port>
 
 const subscriptions: Subscriptions = {}
 
 // return a subscription callback, that will send the data to the caller via the port
-export function createSubscription (id: string, port: Runtime.Port): (data: any) => void {
+export function createSubscription<TMessageType extends MessageTypesWithSubscriptions>
+  (id: string, port: Runtime.Port): (data: SubscriptionMessageTypes[TMessageType]) => void {
   subscriptions[id] = port
 
-  return (subscription: any) => {
+  return (subscription: any): void => {
     if (subscriptions[id]) {
       port.postMessage({ id, subscription })
     }

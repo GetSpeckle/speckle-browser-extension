@@ -8,10 +8,12 @@ import { formatBalance } from '@polkadot/util'
 import styled from 'styled-components'
 import { ChainProperties } from '@polkadot/types/interfaces'
 import U32 from '@polkadot/types/primitive/U32'
+import { networks } from '../../constants/networks'
 
 class Balance extends React.Component<IBalanceProps, IBalanceState> {
 
   state: IBalanceState = {
+    address: undefined,
     balance: undefined,
     bonded: undefined,
     tries: 1
@@ -26,14 +28,23 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
   updateBalance = () => {
     if (this.props.apiContext.apiReady) {
       this.setState({ ...this.state, tries: 1 })
-      this.api.rpc.system.properties().then(properties => {
-        const chainProperties = (properties as ChainProperties)
+      const { tokenDecimals, tokenSymbol, registry } = this.props.network
+      if (tokenDecimals !== undefined && tokenSymbol !== undefined) {
         formatBalance.setDefaults({
-          decimals: chainProperties.tokenDecimals.unwrapOr(new U32(15)).toNumber(),
-          unit: chainProperties.tokenSymbol.unwrapOr('DEV').toString()
+          decimals: tokenDecimals,
+          unit: tokenSymbol
         })
         this.doUpdate()
-      })
+      } else {
+        this.api.rpc.system.properties().then(properties => {
+          const chainProperties = (properties as ChainProperties)
+          formatBalance.setDefaults({
+            decimals: chainProperties.tokenDecimals.unwrapOr(new U32(registry, 15)).toNumber(),
+            unit: chainProperties.tokenSymbol.unwrapOr('DEV').toString()
+          })
+          this.doUpdate()
+        })
+      }
     } else if (this.state.tries <= 10) {
       const nextTry = setTimeout(this.updateBalance, 1000)
       this.setState({ ...this.state, tries: this.state.tries + 1, nextTry: nextTry })
@@ -43,9 +54,7 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
   }
 
   private doUpdate = () => {
-    // console.log(this.props.address)
     this.api.derive.balances.all(this.props.address, derivedBalances => {
-      // console.log('derivedBalances', derivedBalances)
       const availableBalance = formatBalance(derivedBalances.availableBalance)
       const bondedBalance = formatBalance(derivedBalances.lockedBalance)
       if (availableBalance !== this.state.balance || bondedBalance !== this.state.bonded) {
@@ -60,11 +69,19 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
     this.updateBalance()
   }
 
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.address !== this.props.address) {
-      this.state.unsub && this.state.unsub()
+  componentDidUpdate (prevProps, prevState, _snapshot?) {
+    if (this.state.address !== prevState.address
+        || (!prevProps.apiContext.apiReady && this.props.apiContext.apiReady)){
+      prevState.unsub && prevState.unsub()
       this.updateBalance()
     }
+  }
+
+  static getDerivedStateFromProps (nextProps, prevState) {
+    if (nextProps.address !== prevState.address) {
+      return { address: nextProps.address }
+    }
+    return {}
   }
 
   componentWillUnmount (): void {
@@ -119,7 +136,8 @@ const BalanceBox = styled.div`
 
 const mapStateToProps = (state: IAppState) => {
   return {
-    apiContext: state.apiContext
+    apiContext: state.apiContext,
+    network: networks[state.settings.network]
   }
 }
 
@@ -130,6 +148,7 @@ interface IBalanceProps extends StateProps {
 }
 
 interface IBalanceState {
+  address?: string
   balance?: string
   bonded?: string
   tries: number

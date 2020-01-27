@@ -1,14 +1,14 @@
 import * as React from 'react'
-
 import { LayoutContainer } from '../basic-components'
 import Header from '../../layouts/Header'
 
-const WithLayout = (WrappedComponent) => {
+const withLayout = (WrappedComponent) => {
 
   const HOC = (props) => {
+    const { settings } = props
     return (
         <LayoutContainer>
-          <Header/>
+          <Header color={settings.color}/>
           <WrappedComponent
             {...props}
           />
@@ -18,4 +18,4 @@ const WithLayout = (WrappedComponent) => {
   return HOC
 }
 
-export default WithLayout
+export default withLayout

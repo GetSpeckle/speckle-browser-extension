@@ -4,6 +4,16 @@ import { Runtime } from 'webextension-polyfill-ts'
 
 const handle = (msg, port: Runtime.Port) => {
   switch (msg.method) {
+    case FUNCS.INIT:
+      keyringVault.init().then((result) => {
+        port.postMessage({ method: FUNCS.INIT, result: result })
+      }).catch(err => {
+        port.postMessage({
+          method: FUNCS.INIT,
+          error: { message: err.message }
+        })
+      })
+      break
     case FUNCS.IS_LOCKED:
       port.postMessage({
         method: FUNCS.IS_LOCKED,
@@ -109,7 +119,7 @@ const handle = (msg, port: Runtime.Port) => {
       break
     case FUNCS.SIGN_EXTRINSIC:
       try {
-        keyringVault.signExtrinsic(msg.messageExtrinsicSign).then(signature => {
+        keyringVault.signExtrinsic(msg.signerPayload).then(signature => {
           port.postMessage({ method: FUNCS.SIGN_EXTRINSIC, result: signature })
         })
       } catch (err) {

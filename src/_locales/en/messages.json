@@ -251,7 +251,28 @@
   "invalidAddress": {
     "message": "Invalid address"
   },
+  "sign": {
+    "message": "Sign"
+  },
+  "cancel": {
+    "message": "Cancel"
+  },
+  "scan": {
+    "message": "Scan signature via camera"
+  },
+  "action": {
+    "message": "Action"
+  },
+  "dest": {
+    "message": "Destination"
+  },
+  "value": {
+    "message": "Value"
+  },
   "clickToQRCode": {
     "message": "Click to show in QR Code"
+  },
+  "networkError": {
+    "message": "There is a network error occurred"
   }
 }

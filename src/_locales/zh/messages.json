@@ -251,7 +251,28 @@
   "invalidAddress": {
     "message": "无效地址"
   },
+  "sign": {
+    "message": "签名"
+  },
+  "cancel": {
+    "message": "取消"
+  },
+  "scan": {
+    "message": "请用相机扫描"
+  },
+  "action": {
+    "message": "行动"
+  },
+  "dest": {
+    "message": "目标"
+  },
+  "value": {
+    "message": "数额"
+  },
   "clickToQRCode": {
     "message": "显示QR Code格式"
+  },
+  "networkError": {
+    "message": "网络连接异常"
   }
 }

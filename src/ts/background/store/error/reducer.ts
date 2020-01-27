@@ -11,7 +11,6 @@ const initialState: IError = {
 
 const error: Reducer<IError, AnyAction> = (state = initialState, action) => {
   if (action.type === ACTION_TYPES.SET_ERROR) {
-    console.log('set error message: ', action.payload)
     return { ...state, message: action.payload }
   } else {
     return state

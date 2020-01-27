@@ -6,7 +6,7 @@ import {
   Title
 } from '../basic-components'
 import t from '../../services/i18n'
-import WithLayout from './WithLayout'
+import withLayout from './withLayout'
 
 const Authorizing = (props) => {
   const { requests } = props
@@ -22,4 +22,4 @@ const Authorizing = (props) => {
   )
 }
 
-export default WithLayout(Authorizing)
+export default withLayout(Authorizing)

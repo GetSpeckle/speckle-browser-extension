@@ -1,30 +1,36 @@
 import {
   AuthorizeRequest,
   MessageTypes,
-  MessageAuthorizeApprove,
-  MessageAuthorizeReject,
-  MessageExtrinsicSignApprove,
-  MessageExtrinsicSignCancel,
+  RequestAuthorizeApprove,
+  RequestAuthorizeReject,
+  RequestSigningApprovePassword,
+  RequestSigningApproveSignature,
+  RequestSigningCancel,
+  RequestTypes,
+  ResponseTypes,
   SigningRequest
 } from '../types'
 
-import { createType } from '@polkadot/types'
 import { assert } from '@polkadot/util'
 
 import State from './State'
 import { createSubscription, unsubscribe } from './subscriptions'
 import keyringVault from '../services/keyring-vault'
 import { Runtime } from 'webextension-polyfill-ts'
+import { TypeRegistry } from '@polkadot/types'
+import { SignerPayloadJSON, SignerPayloadRaw } from '@polkadot/types/types'
+import { findNetwork } from '../../constants/networks'
 
 export default class Extension {
-  state: State
+
+  private state: State
 
   constructor (state: State) {
     this.state = state
   }
 
   private authorizeSubscribe (id: string, port: Runtime.Port): boolean {
-    const cb = createSubscription(id, port)
+    const cb = createSubscription<'pri(authorize.subscribe)'>(id, port)
     const subscription = this.state.authSubject.subscribe(
       (requests: Array<AuthorizeRequest>) => (cb(requests)))
 
@@ -37,8 +43,8 @@ export default class Extension {
   }
 
   private signingSubscribe (id: string, port: Runtime.Port): boolean {
-    const cb = createSubscription(id, port)
-    const subscription = this.state.signSubject.subscribe((requests: Array<SigningRequest>) =>
+    const cb = createSubscription<'pri(signing.subscribe)'>(id, port)
+    const subscription = this.state.signSubject.subscribe((requests: SigningRequest[]): void =>
       cb(requests)
     )
 
@@ -50,7 +56,7 @@ export default class Extension {
     return true
   }
 
-  private authorizeApprove ({ id }: MessageAuthorizeApprove): boolean {
+  private authorizeApprove ({ id }: RequestAuthorizeApprove): boolean {
     const queued = this.state.getAuthRequest(id)
     assert(queued, 'Unable to find request')
     const { resolve } = queued
@@ -58,7 +64,7 @@ export default class Extension {
     return true
   }
 
-  private authorizeReject ({ id }: MessageAuthorizeReject): boolean {
+  private authorizeReject ({ id }: RequestAuthorizeReject): boolean {
     const queued = this.state.getAuthRequest(id)
     assert(queued, 'Unable to find request')
     const { reject } = queued
@@ -66,27 +72,43 @@ export default class Extension {
     return true
   }
 
-  private signingApprove ({ id, password }: MessageExtrinsicSignApprove): boolean {
+  private signingApprovePassword ({ id, password }: RequestSigningApprovePassword): boolean {
     const queued = this.state.getSignRequest(id)
     assert(queued, 'Unable to find request')
     const { request, resolve, reject } = queued
-    if (!keyringVault.accountExists(request.address)) {
+    if (!keyringVault.accountExists(request.inner.address)) {
       reject(new Error('Unable to find account'))
       return false
     }
-    const payload = createType('ExtrinsicPayload', request, { version: request.version })
     keyringVault.unlock(password).then(() => {
-      const pair = keyringVault.getPair(request.address)
-      const signature = payload.sign(pair)
+      const inner = request.inner
+      const pair = keyringVault.getPair(inner.address)
+      let registry
+      if ((inner as SignerPayloadRaw).data) {
+        registry = new TypeRegistry()
+      } else {
+        const signerPayload = (inner as SignerPayloadJSON)
+        const network = findNetwork(signerPayload.genesisHash)
+        registry = network.registry
+      }
+      const result = request.sign(registry, pair)
       resolve({
         id,
-        ...signature
+        ...result
       })
     })
     return true
   }
 
-  private signingCancel ({ id }: MessageExtrinsicSignCancel): boolean {
+  private signingApproveSignature ({ id, signature }: RequestSigningApproveSignature): boolean {
+    const queued = this.state.getSignRequest(id)
+    assert(queued, 'Unable to find request')
+    const { resolve } = queued
+    resolve({ id, signature })
+    return true
+  }
+
+  private signingCancel ({ id }: RequestSigningCancel): boolean {
     const queued = this.state.getSignRequest(id)
     assert(queued, 'Unable to find request')
     const { reject } = queued
@@ -94,25 +116,29 @@ export default class Extension {
     return true
   }
 
-  async handle (id: string, type: MessageTypes, request: any, port: Runtime.Port)
-    : Promise<any> {
+  async handle<TMessageType extends MessageTypes>
+    (id: string, type: TMessageType, request: RequestTypes[TMessageType], port: Runtime.Port)
+    : Promise<ResponseTypes[keyof ResponseTypes]> {
     switch (type) {
-      case 'authorize.approve':
-        return this.authorizeApprove(request)
+      case 'pri(authorize.approve)':
+        return this.authorizeApprove(request as RequestAuthorizeApprove)
 
-      case 'authorize.reject':
-        return this.authorizeReject(request)
+      case 'pri(authorize.reject)':
+        return this.authorizeReject(request as RequestAuthorizeReject)
 
-      case 'authorize.subscribe':
+      case 'pri(authorize.subscribe)':
         return this.authorizeSubscribe(id, port)
 
-      case 'signing.approve':
-        return this.signingApprove(request)
+      case 'pri(signing.approve.password)':
+        return this.signingApprovePassword(request as RequestSigningApprovePassword)
 
-      case 'signing.cancel':
-        return this.signingCancel(request)
+      case 'pri(signing.approve.signature)':
+        return this.signingApproveSignature(request as RequestSigningApproveSignature)
 
-      case 'signing.subscribe':
+      case 'pri(signing.cancel)':
+        return this.signingCancel(request as RequestSigningCancel)
+
+      case 'pri(signing.subscribe)':
         return this.signingSubscribe(id, port)
 
       default:

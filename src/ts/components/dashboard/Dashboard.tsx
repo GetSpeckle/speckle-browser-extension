@@ -12,7 +12,7 @@ import { connect } from 'react-redux'
 import { IAccount, setAccounts } from '../../background/store/wallet'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import Balance from '../account/Balance'
-import Identicon from 'polkadot-identicon'
+import Identicon from '@polkadot/react-identicon'
 import { saveSettings } from '../../background/store/settings'
 import 'react-tippy/dist/tippy.css'
 import styled from 'styled-components'
@@ -71,7 +71,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
   generateDropdownItem (account: IAccount) {
     return (
       <div className='item' onClick={this.handleSelectChange.bind(this, account.address)}>
-        <Identicon account={account.address} size={20} className='identicon image' />
+        <Identicon value={account.address} size={20} className='identicon image' />
         <div className='account-item'>
           <div className='item-name'>{account.name ? this.shorten(account.name) : 'N/A'} </div>
           <div className='item-address'>{this.getDisplayAddress(account.address)}</div>
@@ -121,7 +121,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
     return s
   }
 
-  componentWillMount () {
+  componentDidMount () {
     this.loadAccounts()
   }
 
@@ -141,7 +141,7 @@ class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
         <AccountDropdown qrDestination={QR_ROUTE} />
         <AccountSection>
           <Identicon
-            account={this.props.settings.selectedAccount.address}
+            value={this.props.settings.selectedAccount.address}
             size={80}
             className='identicon'
           />

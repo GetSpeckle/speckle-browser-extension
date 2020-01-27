@@ -20,8 +20,7 @@ import { AccountSection } from '../dashboard/Dashboard'
 import { Dimmer, Form, Loader } from 'semantic-ui-react'
 import Amount from './Amount'
 import ToAddress from './ToAddress'
-import { ExtrinsicPayloadValue, IExtrinsic } from '@polkadot/types/types'
-import { SignerOptions } from '@polkadot/api/types'
+import { ExtrinsicPayloadValue, IExtrinsic, SignerPayloadJSON } from '@polkadot/types/types'
 import Fee from './Fee'
 import Confirm from './Confirm'
 import AccountDropdown from '../account/AccountDropdown'
@@ -35,15 +34,20 @@ import { SubmittableExtrinsic } from '@polkadot/api/promise/types'
 import { HOME_ROUTE, QR_ROUTE } from '../../constants/routes'
 import { EventRecord, Index, Balance as BalanceType } from '@polkadot/types/interfaces'
 import { decodeAddress } from '@polkadot/util-crypto'
+import { SiDef } from '@polkadot/util/types'
+import recodeAddress from '../../services/address-transformer'
+import { networks } from '../../constants/networks'
 
 interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {}
 
 interface ISendState {
   amount: string
+  fromAddress: string
   toAddress: string
   hasAvailable: boolean
   isSi: boolean
   isLoading: boolean
+  si: SiDef
   siUnit: string
   fee: BN
   extrinsic?: IExtrinsic | null
@@ -56,7 +60,7 @@ interface ISendState {
 
 const TEN = new BN(10)
 
-const si = formatBalance.findSi('-')
+const si: SiDef = formatBalance.findSi('-')
 
 class Send extends React.Component<ISendProps, ISendState> {
   get api (): ApiPromise {
@@ -70,10 +74,15 @@ class Send extends React.Component<ISendProps, ISendState> {
 
     this.state = {
       amount: '',
+      fromAddress: recodeAddress(
+        this.props.settings.selectedAccount!.address,
+        networks[this.props.settings.network].ss58Format
+      ),
       toAddress: '',
       hasAvailable: true,
       isSi: true,
       isLoading: false,
+      si: si,
       siUnit: si.value,
       fee: new BN(0),
       extrinsic: undefined,
@@ -89,32 +98,19 @@ class Send extends React.Component<ISendProps, ISendState> {
     this.props.setError(null)
   }
 
-  getSiPowers = (siUnit = this.state.siUnit): [BN, number, number] => {
-    const { isSi } = this.state
-
-    const basePower = isSi ? formatBalance.getDefaults().decimals : 0
-    const siUnitPower = isSi ? formatBalance.findSi(siUnit).power : 0
-
-    return [new BN(basePower + siUnitPower), basePower, siUnitPower]
-  }
-
-  inputValueToBn = (value: string, siUnit?: string): BN => {
-    const [siPower, basePower, siUnitPower] = this.getSiPowers(siUnit)
-
-    const isDecimalValue = value.match(/^(\d+)\.(\d+)$/)
-
-    if (isDecimalValue) {
-      if (siUnitPower - isDecimalValue[2].length < -basePower) {
-        return new BN(-1)
-      }
-
-      const div = new BN(value.replace(/\.\d*$/, ''))
-      const mod = new BN(value.replace(/^\d+\./, ''))
-
-      // tslint:disable-next-line:max-line-length
-      return div.mul(TEN.pow(siPower)).add(mod.mul(TEN.pow(new BN(basePower + siUnitPower - mod.toString().length))))
-    } else {
-      return new BN(value.replace(/[^\d]/g, '')).mul(TEN.pow(siPower))
+  inputValueToBn = (value: string): BN => {
+    const parts: string[] = value.split('.')
+    const selectedSi: SiDef = this.state.si
+    const decimals = formatBalance.getDefaults().decimals
+    const bigPart = new BN(parts[0]).mul(TEN.pow(new BN(decimals + selectedSi.power)))
+    if (parts.length === 1) {
+      return bigPart
+    } else if (parts.length === 2) {
+      const bn = new BN(decimals + selectedSi.power - parts[1].length)
+      const smallPart = new BN(parts[1]).mul(TEN.pow(bn))
+      return bigPart.add(smallPart)
+    } else { // invalid number
+      return new BN(0)
     }
   }
 
@@ -135,9 +131,9 @@ class Send extends React.Component<ISendProps, ISendState> {
     })
   }
 
-  changeSiUnit = (_event, data) => {
-    const val = formatBalance.findSi(data.value).value
-    this.setState({ siUnit: val })
+  changeSi = (_event, data) => {
+    const siDef = formatBalance.findSi(data.value)
+    this.setState({ si: siDef, siUnit: siDef.value })
   }
 
   changeModal = (open) => {
@@ -149,31 +145,40 @@ class Send extends React.Component<ISendProps, ISendState> {
       return
     }
 
-    const BnAmount = this.inputValueToBn(this.state.amount, this.state.siUnit)
-    const currentAddress = this.props.settings.selectedAccount.address
+    const BnAmount = this.inputValueToBn(this.state.amount)
+    const currentAddress = this.state.fromAddress
 
     const extrinsic: IExtrinsic = await this.api.tx.balances
       .transfer(this.state.toAddress, BnAmount)
 
-    const signOptions: SignerOptions = {
-      blockNumber: await this.api.query.system.number() as unknown as BN,
-      blockHash: this.api.genesisHash,
-      genesisHash: this.api.genesisHash,
-      nonce: await this.api.query.system.accountNonce(currentAddress) as Index,
-      runtimeVersion: this.api.runtimeVersion
+    const currentBlockNumber = await this.api.query.system.number() as unknown as BN
+    const currentBlockHash = await this.api.rpc.chain.getBlockHash(currentBlockNumber.toNumber())
+    const currentNonce = await this.api.query.system.accountNonce(currentAddress) as Index
+    const tip: number = 0
+    let signerPayload: SignerPayloadJSON = {
+      address: currentAddress,
+      blockHash: currentBlockHash.toHex(),
+      blockNumber: currentBlockNumber.toString('hex'),
+      era: extrinsic.era.toHex(),
+      genesisHash: this.api.genesisHash.toHex(),
+      method: extrinsic.method.toHex(),
+      nonce: currentNonce.toHex(),
+      specVersion: this.api.runtimeVersion.specVersion.toHex(),
+      tip: tip.toString(16),
+      version: extrinsic.version
     }
     const payloadValue: ExtrinsicPayloadValue = {
       era: extrinsic.era,
-      method: extrinsic.method.toHex(),
-      blockHash: signOptions.blockHash,
-      genesisHash: signOptions.genesisHash,
-      nonce: signOptions.nonce,
-      tip: 0,
+      method: extrinsic.method,
+      blockHash: currentBlockHash,
+      genesisHash: this.api.genesisHash,
+      nonce: currentNonce,
+      tip: tip,
       specVersion: this.api.runtimeVersion.specVersion.toNumber()
     }
-    signExtrinsic(extrinsic, currentAddress, signOptions).then(signature => {
+    signExtrinsic(signerPayload).then(signature => {
       const signedExtrinsic = extrinsic.addSignature(
-        currentAddress as any,
+        currentAddress,
         signature,
         payloadValue
       )
@@ -188,7 +193,7 @@ class Send extends React.Component<ISendProps, ISendState> {
       return
     }
 
-    const address = this.props.settings.selectedAccount.address
+    const address = this.state.fromAddress
 
     const available = await this.api.query.balances.freeBalance(address) as BalanceType
 
@@ -230,7 +235,6 @@ class Send extends React.Component<ISendProps, ISendState> {
         console.log('Events:')
         events.forEach(({ phase, event: { data, method, section } }: EventRecord) => {
           console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString())
-          // TODO: const the value
           if (method === 'ExtrinsicSuccess') {
             txItem.status = 'Success'
             this.props.upsertTransaction(address, this.props.settings.network,
@@ -293,7 +297,7 @@ class Send extends React.Component<ISendProps, ISendState> {
   }
 
   render () {
-    if (!this.props.settings.selectedAccount) {
+    if (!this.state.fromAddress) {
       return null
     }
 
@@ -314,19 +318,23 @@ class Send extends React.Component<ISendProps, ISendState> {
         </Dimmer>
         <AccountDropdown qrDestination={QR_ROUTE} />
         <AccountSection>
-          <Balance address={this.props.settings.selectedAccount.address} />
+          <Balance address={this.state.fromAddress} />
         </AccountSection>
         <div style={{ height: 27 }} />
         <AccountSection />
         <Form>
-          <Amount handleAmountChange={this.changeAmount} handleDigitChange={this.changeSiUnit}/>
+          <Amount
+            handleAmountChange={this.changeAmount}
+            handleDigitChange={this.changeSi}
+            options={formatBalance.getOptions()}
+          />
           <div style={{ height: 27 }} />
           <ToAddress handleAddressChange={this.changeAddress}/>
           {this.isToAddressValid() || <ErrorMessage>{t('invalidAddress')}</ErrorMessage>}
           <div style={{ height: 27 }} />
           <AccountSection>
             <Fee
-              address={this.props.settings.selectedAccount.address}
+              address={this.state.fromAddress}
               toAddress={this.state.toAddress}
               handleFeeChange={this.changeFee}
             />
@@ -337,8 +345,8 @@ class Send extends React.Component<ISendProps, ISendState> {
               color={this.props.settings.color}
               extrinsic={this.state.extrinsic}
               trigger={submitButton}
-              fromAddress={this.props.settings.selectedAccount.address}
-              amount={this.inputValueToBn(this.state.amount, this.state.siUnit)}
+              fromAddress={this.state.fromAddress}
+              amount={this.inputValueToBn(this.state.amount)}
               toAddress={this.state.toAddress}
               fee={this.state.fee!}
               creationFee={this.state.creationFee}

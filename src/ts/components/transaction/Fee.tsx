@@ -10,6 +10,7 @@ import { DerivedFees } from '@polkadot/api-derive/types'
 import BN from 'bn.js'
 import { Balance, ChainProperties } from '@polkadot/types/interfaces'
 import U32 from '@polkadot/types/primitive/U32'
+import { networks } from '../../constants/networks'
 
 const LENGTH_PUBLICKEY = 32 + 1 // publicKey + prefix
 const LENGTH_SIGNATURE = 64
@@ -46,14 +47,23 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
     if (this.props.toAddress.length !== ADDRESS_LENGTH) return
     if (this.props.apiContext.apiReady) {
       this.setState({ ...this.state, tries: 1 })
-      this.api.rpc.system.properties().then(properties => {
-        const chainProperties = (properties as ChainProperties)
+      const { tokenDecimals, tokenSymbol, registry } = this.props.network
+      if (tokenDecimals !== undefined && tokenSymbol !== undefined) {
         formatBalance.setDefaults({
-          decimals: chainProperties.tokenDecimals.unwrapOr(new U32(15)).toNumber(),
-          unit: chainProperties.tokenSymbol.unwrapOr('DEV').toString()
+          decimals: tokenDecimals,
+          unit: tokenSymbol
         })
         this.doUpdate()
-      })
+      } else {
+        this.api.rpc.system.properties().then(properties => {
+          const chainProperties = (properties as ChainProperties)
+          formatBalance.setDefaults({
+            decimals: chainProperties.tokenDecimals.unwrapOr(new U32(registry, 15)).toNumber(),
+            unit: chainProperties.tokenSymbol.unwrapOr('DEV').toString()
+          })
+          this.doUpdate()
+        })
+      }
     } else if (this.state.tries <= 10) {
       const nextTry = setTimeout(this.updateFee, 1000)
       this.setState({ ...this.state, tries: this.state.tries + 1, nextTry: nextTry })
@@ -80,7 +90,8 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
       const totalFee = available.isZero() ?
         baseFee.add(byteFee).add(transferFee).add(fees.creationFee) :
         baseFee.add(byteFee).add(transferFee)
-      const formattedFee = formatBalance(totalFee)
+      const formattedFee = (totalFee === new BN(0) || totalFee === null) ?
+        'free' : formatBalance(totalFee)
       if (formattedFee !== this.state.fee) {
         this.setState({ ...this.state, fee: formattedFee })
         this.props.handleFeeChange(totalFee, fees.creationFee, fees.existentialDeposit, available)
@@ -138,7 +149,8 @@ const TxFee = styled.p`
 
 const mapStateToProps = (state: IAppState) => {
   return {
-    apiContext: state.apiContext
+    apiContext: state.apiContext,
+    network: networks[state.settings.network]
   }
 }
 

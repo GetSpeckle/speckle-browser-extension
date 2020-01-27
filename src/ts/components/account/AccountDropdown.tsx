@@ -13,7 +13,7 @@ import { connect } from 'react-redux'
 import { IAccount, setAccounts } from '../../background/store/wallet'
 import t from '../../services/i18n'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
-import Identicon from 'polkadot-identicon'
+import Identicon from '@polkadot/react-identicon'
 import { saveSettings } from '../../background/store/settings'
 import 'react-tippy/dist/tippy.css'
 import { Tooltip } from 'react-tippy'
@@ -80,7 +80,7 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
     const recodedAddress = recodeAddress(account.address, networks[network].ss58Format)
     return (
       <div className='item' onClick={this.handleSelectChange.bind(this, account.address)}>
-        <Identicon account={recodedAddress} size={20} className='identicon image' />
+        <Identicon value={recodedAddress} size={20} className='identicon image' />
         <div className='account-item'>
           <div className='item-name'>{account.name ? this.shorten(account.name) : 'N/A'} </div>
           <div className='item-address'>{this.getDisplayAddress(recodedAddress)}</div>
@@ -163,10 +163,6 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
     this.props.qrDestination && this.props.history.push(this.props.qrDestination)
   }
 
-  componentWillMount () {
-    this.loadAccounts()
-  }
-
   componentWillUnmount () {
     if (this.state.msgTimeout) {
       clearTimeout(this.state.msgTimeout)
@@ -174,6 +170,7 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
   }
 
   componentDidMount () {
+    this.loadAccounts()
     if (this.props.settings.selectedAccount) {
       const account = this.props.settings.selectedAccount
       this.props.getTransactions(account.address, this.props.settings.network)

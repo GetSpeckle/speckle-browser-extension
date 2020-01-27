@@ -9,6 +9,7 @@ import { themes } from '../../components/styles/themes'
 import { Routes } from '../../routes'
 import { getSettings } from '../../background/store/settings'
 import {
+  init,
   getAccountSetupTimeout,
   getMnemonic,
   getTempAccountName,
@@ -33,10 +34,6 @@ import { subscribeAuthorize, subscribeSigning } from '../../services/messaging'
 import Authorizing from '../../components/page/Authorizing'
 import Signing from '../../components/page/Signing'
 import { ApiOptions } from '@polkadot/api/types'
-import { Edgeware } from '../../constants/chains'
-import { IdentityTypes } from 'edgeware-node-types/dist/identity'
-import { VotingTypes } from 'edgeware-node-types/dist/voting'
-import { SignalingTypes } from 'edgeware-node-types/dist/signaling'
 
 interface IPopupProps extends StateProps, DispatchProps { }
 
@@ -72,13 +69,7 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
       this.setState({ ...this.state, tries: this.state.tries++ })
       const network = networks[settings.network]
       const provider = new WsProvider(network.rpcServer)
-      let apiOptions: ApiOptions = { provider }
-      if (network.chain === Edgeware) {
-        apiOptions = {
-          ...apiOptions,
-          types: { ...IdentityTypes, ...VotingTypes, ...SignalingTypes }
-        }
-      }
+      let apiOptions: ApiOptions = { provider, types: network.types }
       this.props.createApi(apiOptions)
       if (this.state.tries <= 5) {
         // try to connect in 3 seconds
@@ -89,15 +80,12 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
 
   initializeApp = () => {
     this.props.getSettings()
-
     const checkAppState = isWalletLocked().then(
       result => {
-        console.log(`isLocked ${result}`)
         this.props.setLocked(result)
       })
     const checkAccountCreated = walletExists().then(
       result => {
-        console.log(`isWalletCreated ${result}`)
         this.props.setCreated(result)
       }
     )
@@ -127,6 +115,7 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
     )
 
     Promise.all([
+      init(),
       checkAppState,
       checkAccountCreated,
       newPassword,

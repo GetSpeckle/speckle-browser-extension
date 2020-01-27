@@ -26,8 +26,8 @@ class RequestPanel extends React.Component<IRequestPanelProps> {
     }
 
     const destStyle = {
-      backgroundColor: colorSchemes[this.props.settings.color].backgroundColor,
-      color: 'white'
+      backgroundColor: 'white',
+      color: colorSchemes[this.props.settings.color].backgroundColor
     }
 
     return (

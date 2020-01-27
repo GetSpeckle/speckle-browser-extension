@@ -1,3 +1,4 @@
+export const INIT = 'init'
 export const IS_LOCKED = 'isLocked'
 export const LOCK = 'lock'
 export const UNLOCK = 'unlock'
