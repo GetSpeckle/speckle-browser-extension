@@ -43,9 +43,9 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
   }
 
   private doUpdate = () => {
-    console.log(this.props.address)
+    // console.log(this.props.address)
     this.api.derive.balances.all(this.props.address, derivedBalances => {
-      console.log('derivedBalances', derivedBalances)
+      // console.log('derivedBalances', derivedBalances)
       const availableBalance = formatBalance(derivedBalances.availableBalance)
       const bondedBalance = formatBalance(derivedBalances.lockedBalance)
       if (availableBalance !== this.state.balance || bondedBalance !== this.state.bonded) {
