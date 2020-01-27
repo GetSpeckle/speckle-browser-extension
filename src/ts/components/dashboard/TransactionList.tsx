@@ -6,7 +6,7 @@ import { IAppState } from '../../background/store/all'
 import { getTransactions, TransactionType, ITransaction } from '../../background/store/transaction'
 import t from '../../services/i18n'
 import { networks } from '../../constants/networks'
-import { displayAddress } from '../../services/address-transformer'
+import recodeAddress, { displayAddress } from '../../services/address-transformer'
 
 interface ITransactionListProps extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -34,7 +34,7 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
 
   componentDidUpdate (_prevProps, prevState) {
     if (prevState.currentNetwork !== this.state.currentNetwork
-      || prevState.currentAddress !== this.state.currentAddress) {
+        || prevState.currentAddress !== this.state.currentAddress) {
       this.loadTransactions()
     }
   }
@@ -46,14 +46,21 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
   private loadTransactions = () => {
     // load the transaction list
     if (this.state.currentAddress && this.state.currentNetwork) {
-      console.log('Getting transactions for ' + this.state.currentAddress)
-      this.props.getTransactions(this.state.currentAddress, this.state.currentNetwork)
+      let address = recodeAddress(
+        this.props.account!.address,
+        networks[this.props.network].ss58Format
+      )
+      console.log('Getting transactions for ' + address + ' in ' + this.state.currentNetwork)
+      this.props.getTransactions(address, this.state.currentNetwork)
     }
   }
 
   render () {
 
-    const account = this.props.account
+    const account = recodeAddress(
+      this.props.account!.address,
+      networks[this.props.network].ss58Format
+      )
     if (!account || !(this.props.transactions)) {
       console.log('No transaction found.')
       return (null)
@@ -101,16 +108,16 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
 
   renderTransaction = (tran: ITransaction, index: number) => {
     const iconName = tran.type === 'Sent' ? 'arrow right' :
-      tran.type === 'Received' ? 'arrow left' : 'pin'
+        tran.type === 'Received' ? 'arrow left' : 'pin'
     // use the theme color
     const iconColor = this.props.color
 
     const statusIcon = tran.status === 'Pending' ? 'spinner' :
-      tran.status === 'Success' ? 'check circle' : 'times circle'
+        tran.status === 'Success' ? 'check circle' : 'times circle'
     const statusIconColor = tran.status === 'Pending' ? 'grey' :
-      tran.status === 'Success' ? 'green' : 'red'
+        tran.status === 'Success' ? 'green' : 'red'
     const statusBorderColor = tran.status === 'Pending' ? 'grey' :
-      tran.status === 'Success' ? '#51d8a7' : '#f3536d'
+    tran.status === 'Success' ? '#51d8a7' : '#f3536d'
 
     const toAddress = displayAddress(tran.to, false)
 
@@ -128,34 +135,35 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
     }
 
     const txBaseUrl = networks[this.props.network].txExplorer
+    const symbol = networks[this.props.network].tokenSymbol
 
     return (
       <List.Item key={index} style={borderStyle}>
         <Grid>
           <Grid.Row>
-            <Grid.Column width={5} verticalAlign='middle'>
-              <div className='tran-amount' title={'Fee: ' + tran.fee}>
-                {(tran.type === 'Sent' ? '-' : '') + tran.amount + tran.unit + ' DOTS'}
-              </div>
-              <div className='tran-time' title={createTimeFull}>
-                {createTime}
-              </div>
-            </Grid.Column>
+          <Grid.Column width={5} verticalAlign='middle'>
+            <div className='tran-amount' title={'Fee: ' + tran.fee}>
+              {(tran.type === 'Sent' ? '-' : '') + tran.amount + tran.unit + ' ' + symbol}
+            </div>
+            <div className='tran-time' title={createTimeFull}>
+              {createTime}
+            </div>
+          </Grid.Column>
 
-            <Grid.Column width={2} verticalAlign='middle'>
-              <Icon name={iconName} color={iconColor}/>
-              <Icon name={statusIcon} color={statusIconColor}/>
-            </Grid.Column>
+          <Grid.Column width={2} verticalAlign='middle'>
+            <Icon name={iconName} color={iconColor}/>
+            <Icon name={statusIcon} color={statusIconColor}/>
+          </Grid.Column>
 
-            <Grid.Column width={7} verticalAlign='middle' className='tran-address'>
-              {toAddress}
-            </Grid.Column>
+          <Grid.Column width={7} verticalAlign='middle' className='tran-address'>
+            {toAddress}
+          </Grid.Column>
 
-            <Grid.Column width={2} verticalAlign='middle'>
-              <a href={txBaseUrl + tran.txHash} target='_blank'>
-                <Icon name='linkify'/>
-              </a>
-            </Grid.Column>
+          <Grid.Column width={2} verticalAlign='middle'>
+            <a href={txBaseUrl + tran.txHash} target='_blank'>
+              <Icon name='linkify'/>
+            </a>
+          </Grid.Column>
           </Grid.Row>
         </Grid>
       </List.Item>
