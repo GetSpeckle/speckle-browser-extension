@@ -163,12 +163,12 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
     document.body.removeChild(element)
   }
 
-  handleClick = () => {
-    this.props.history.push(SELECT_NETWORK_ROUTE)
-  }
-
   handleCancel = () => {
     this.setState({ isCancelled: true }, () => cancelAccountSetup())
+  }
+
+  handleClick = () => {
+    this.props.history.push(SELECT_NETWORK_ROUTE)
   }
 
   render () {
@@ -220,7 +220,6 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
             </Grid.Column>
           </Grid>
         </Form>
-
         {/* tslint:disable-next-line:max-line-length */}
         {accountSetupTimeout > 0 && <TimerText>{parseTimeLeft(accountSetupTimeout)} left</TimerText>}
       </ContentContainer>
@@ -289,8 +288,15 @@ const mapStateToProps = (state: IAppState) => {
   }
 }
 
-// tslint:disable-next-line:max-line-length
-const mapDispatchToProps = { saveSettings, setLocked, setCreated, setError, setNewPhrase, setAccountName, setNewPassword }
+const mapDispatchToProps = {
+  saveSettings,
+  setLocked,
+  setCreated,
+  setError,
+  setNewPhrase,
+  setAccountName,
+  setNewPassword
+}
 
 type StateProps = ReturnType<typeof mapStateToProps>
 

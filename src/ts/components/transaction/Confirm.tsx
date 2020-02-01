@@ -16,6 +16,7 @@ interface IConfirmProps {
   trigger: any,
   fromAddress: string,
   amount: BN,
+  tip: BN,
   toAddress: string,
   fee: BN,
   creationFee: BN,
@@ -84,13 +85,6 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
         <Section style={{ 'marginTop': '-10px' }}>
           <Info>
             <Warning>
-              <div>
-                <Icon name='warning sign' size={'small'}/>
-                The final recipient balance is less or equal
-                to {formatBalance(this.props.existentialDeposit)} (the
-                existential amount) and will
-                not be reflected
-              </div>
               <div>
                 <Icon name='warning sign' size={'small'}/>
                 A fee of {formatBalance(this.props.creationFee)} will be
@@ -174,10 +168,16 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
             <Value>{formatBalance(this.props.amount)}</Value>
           </Info>
         </Section>
+        <Section style={{ 'marginTop': '8px' }}>
+          <Info>
+            <Key>Tip</Key>
+            <Value>{formatBalance(this.props.tip)}</Value>
+          </Info>
+        </Section>
         <Section style={{ 'marginTop': '8px', 'marginBottom': '16px' }}>
           <Info>
             <Key>Total</Key>
-            <Value>{formatBalance(this.props.amount.add(this.props.fee))}</Value>
+            <Value>{formatBalance(this.props.amount.add(this.props.fee).add(this.props.tip))}</Value>
           </Info>
         </Section>
         {warning}
