@@ -1,10 +1,7 @@
 import { Chain, Polkadot, Edgeware, Kusama } from './chains'
-import { IdentityTypes } from 'edgeware-node-types/dist/identity'
-import { SignalingTypes } from 'edgeware-node-types/dist/signaling'
-import { TreasuryRewardTypes } from 'edgeware-node-types/dist/treasuryReward'
-import { VotingTypes } from 'edgeware-node-types/dist/voting'
 import { Metadata, TypeRegistry } from '@polkadot/types'
 import { Registry } from '@polkadot/types/types'
+import { EdgewareTypes } from 'edgeware-node-types/dist'
 
 export type Network = {
   name: string,
@@ -62,12 +59,8 @@ const edgeware = {
   tokenDecimals: 18,
   tokenSymbol: 'EDG',
   types: {
-    Keys: 'SessionKeys3',
-    ValidatorPrefs: 'ValidatorPrefsTo196',
-    ...IdentityTypes,
-    ...SignalingTypes,
-    ...TreasuryRewardTypes,
-    ...VotingTypes
+    ...EdgewareTypes,
+    Keys: 'SessionKeys4'
   },
   rpcServer: 'wss://testnet4.edgewa.re/',
   txExplorer: 'https://polkascan.io/pre/edgeware-testnet/transaction/',
