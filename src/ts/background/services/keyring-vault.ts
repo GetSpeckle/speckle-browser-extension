@@ -103,6 +103,7 @@ class KeyringVault {
   }
 
   clearExpiryTimer (): void {
+    console.log('clear timer', this._accountSetupTimeoutTimerId)
     clearInterval(this._accountSetupTimeoutTimerId)
     this._accountSetupTimeout = 0
     this._accountSetupTimeoutTimerId = 0
@@ -163,6 +164,7 @@ class KeyringVault {
     if (!this._mnemonic) {
       this._mnemonic = mnemonicGenerate()
 
+      console.log('start timer', this._accountSetupTimeoutTimerId)
       if (this._accountSetupTimeoutTimerId === 0) {
         // Start timer for mnemonic expiry
         this.startExpiryTimer()

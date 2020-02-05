@@ -27,43 +27,22 @@ class NetworkList extends React.Component<INetworkListProps> {
 
   render () {
 
+    /*
+    TODO: add pane when more networks are supported
     const panes = [
       { menuItem: t('recommended'), render: () => this.renderWithFilter('Recommended') },
       { menuItem: t('popular'), render: () => this.renderWithFilter('Popular') }
-    ]
+    ]*/
 
     const color = this.props.color
 
     return (
-      <div>
-        <Tab
-          menu={{ color: color, secondary: true, pointing: true }}
-          panes={panes}
-        />
-      </div>
-    )
-  }
-
-  renderWithFilter = (/*type: NetworkType | ''*/ type) => {
-
-    // TODO: filter network with the network type and search from SelectNetwork
-    console.log('preparing to render Networks ... ', type)
-
-    return (
       <CardTabPane>
         <Networks id={'scroll-menu'}>
-          {/* tslint:disable-next-line:jsx-no-multiline-js */}
-          {Object.keys(networks).map((key, index) => (
-              <NetworkCard
-                key={index}
-                imgPath={networks[key].chain.iconUrl}
-                colorScheme={colorSchemes[this.props.color]}
-                supported={true}
-                name={key}
-              />
-            )
-          )}
-         </Networks>
+          <NetworkCard imgPath={'assets/chain-logo/polkadot.png'} name={'Alexander'} supported={true} selected={true} colorScheme={colorSchemes[color]}/>
+          <NetworkCard imgPath={'assets/chain-logo/kusama.png'} name={'Kusama'} supported={true} selected={true} colorScheme={colorSchemes[color]}/>
+          <NetworkCard imgPath={'assets/chain-logo/edgeware.png'} name={'Edgeware'} supported={false} selected={false} colorScheme={colorSchemes[color]}/>
+        </Networks>
         <PrevButton onMouseDown={this.prev} colorScheme={colorSchemes[this.props.color]}/>
         <NextButton onMouseDown={this.next} colorScheme={colorSchemes[this.props.color]}/>
       </CardTabPane>
