@@ -93,6 +93,6 @@ align-items: center
 display: none
 }
 >* {
-margin: 0 3px
+margin: 0 1px
 }
 `
