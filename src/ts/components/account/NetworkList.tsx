@@ -2,12 +2,9 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { Tab } from 'semantic-ui-react'
 import { IAppState } from '../../background/store/all'
-import t from '../../services/i18n'
 import styled from 'styled-components'
 import NetworkCard from './NetworkCard'
-import { ScrollButton } from './ScrollButton'
 import { colorSchemes } from '../styles/themes'
-import { networks } from '../../constants/networks'
 
 interface INetworkListProps extends StateProps {
   search: string
@@ -41,10 +38,8 @@ class NetworkList extends React.Component<INetworkListProps> {
         <Networks id={'scroll-menu'}>
           <NetworkCard imgPath={'assets/chain-logo/polkadot.png'} name={'Alexander'} supported={true} selected={true} colorScheme={colorSchemes[color]}/>
           <NetworkCard imgPath={'assets/chain-logo/kusama.png'} name={'Kusama'} supported={true} selected={true} colorScheme={colorSchemes[color]}/>
-          <NetworkCard imgPath={'assets/chain-logo/edgeware.png'} name={'Edgeware'} supported={false} selected={false} colorScheme={colorSchemes[color]}/>
+          <NetworkCard imgPath={'assets/chain-logo/edgeware.png'} name={'Edgeware'} supported={true} selected={true} colorScheme={colorSchemes[color]}/>
         </Networks>
-        <PrevButton onMouseDown={this.prev} colorScheme={colorSchemes[this.props.color]}/>
-        <NextButton onMouseDown={this.next} colorScheme={colorSchemes[this.props.color]}/>
       </CardTabPane>
     )
   }
@@ -70,6 +65,7 @@ overflow-x: hidden
 }
 `
 
+/*
 const PrevButton = styled(ScrollButton)`
   position: absolute
   top: 40%
@@ -82,6 +78,8 @@ const NextButton = styled(ScrollButton)`
   top: 40%
   right: 3%
 `
+*/
+
 const Networks = styled.div`
 {
 min-width: 320px !important
@@ -95,6 +93,6 @@ align-items: center
 display: none
 }
 >* {
-margin: 0 6px
+margin: 0 3px
 }
 `
