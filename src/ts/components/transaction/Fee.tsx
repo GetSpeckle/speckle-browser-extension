@@ -6,7 +6,7 @@ import ApiPromise from '@polkadot/api/promise'
 import { compactToU8a, formatBalance } from '@polkadot/util'
 import styled from 'styled-components'
 import { IExtrinsic } from '@polkadot/types/types'
-import { DerivedFees, DerivedBalances } from '@polkadot/api-derive/types'
+import { DerivedFees, DerivedBalancesAll } from '@polkadot/api-derive/types'
 import BN from 'bn.js'
 import { ChainProperties } from '@polkadot/types/interfaces'
 import U32 from '@polkadot/types/primitive/U32'
@@ -91,14 +91,14 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
       this.api.derive.balances.fees() as unknown as DerivedFees,
       this.api.query.system.accountNonce(address) as unknown as BN,
       this.api.tx.balances.transfer(address, 1) as unknown as IExtrinsic,
-      this.api.derive.balances.votingBalances([toAddress]) as unknown as DerivedBalances
+      this.api.derive.balances.all(toAddress) as unknown as DerivedBalancesAll
     ]).then(([fees, nonce, ext, balancesAll]) => {
       console.log('fee infos', fees, nonce, ext, balancesAll)
       const extLength = calcSignatureLength(ext, nonce)
       const baseFee = new BN(fees.transactionBaseFee)
       const byteFee = new BN(fees.transactionByteFee).muln(extLength)
       const transferFee = new BN(fees.transferFee)
-      const hasAvailable = balancesAll[0].availableBalance.gtn(0)
+      const hasAvailable = balancesAll.availableBalance.gtn(0)
       const totalFee = hasAvailable ?
         baseFee.add(byteFee).add(transferFee) :
         baseFee.add(byteFee).add(transferFee).add(fees.creationFee)
@@ -112,7 +112,7 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
           totalFee,
           fees.creationFee,
           fees.existentialDeposit,
-          balancesAll[0].availableBalance
+          balancesAll.availableBalance
         )
       }
     })
