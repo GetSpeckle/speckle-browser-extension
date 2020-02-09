@@ -34,48 +34,43 @@ import { subscribeAuthorize, subscribeSigning } from '../../services/messaging'
 import Authorizing from '../../components/page/Authorizing'
 import Signing from '../../components/page/Signing'
 import { ApiOptions } from '@polkadot/api/types'
+import { Dimmer, Loader } from 'semantic-ui-react'
 
 interface IPopupProps extends StateProps, DispatchProps { }
 
 interface IPopupState {
   initializing: boolean
-  tries: number
   authRequests: Array<AuthorizeRequest>
   signRequests: Array<SigningRequest>,
   accountSetupTimeoutId: number
+  network: string | undefined
 }
 
 class PopupApp extends React.Component<IPopupProps, IPopupState> {
 
   state = {
     initializing: true,
-    tries: 0,
     authRequests: [],
     signRequests: [],
-    accountSetupTimeoutId: 0
+    accountSetupTimeoutId: 0,
+    network: undefined
   }
 
   setAuthRequests = (authRequests: Array<AuthorizeRequest>) => {
-    this.setState({ ...this.state, authRequests: authRequests })
+    this.setState({ authRequests: authRequests })
   }
 
   setSignRequests = (signRequests: Array<SigningRequest>) => {
-    this.setState({ ...this.state, signRequests: signRequests })
+    this.setState({ signRequests: signRequests })
   }
 
   tryCreateApi = () => {
-    const { apiContext, settings } = this.props
-    if (!apiContext.apiReady && settings) {
-      this.setState({ ...this.state, tries: this.state.tries++ })
-      const network = networks[settings.network]
-      const provider = new WsProvider(network.rpcServer)
-      let apiOptions: ApiOptions = { provider, types: network.types }
-      this.props.createApi(apiOptions)
-      if (this.state.tries <= 5) {
-        // try to connect in 3 seconds
-        setTimeout(this.tryCreateApi, 3000)
-      }
-    }
+    console.log('try create api')
+    const { settings } = this.props
+    const network = networks[settings.network]
+    const provider = new WsProvider(network.rpcServer)
+    let apiOptions: ApiOptions = { provider, types: network.types }
+    this.props.createApi(apiOptions)
   }
 
   initializeApp = () => {
@@ -142,22 +137,40 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
     )
   }
 
-  componentWillMount () {
+  componentDidMount () {
     this.initializeApp()
   }
 
+  componentDidUpdate (_prevProps, prevState) {
+    if (this.props.settings.network !== prevState.network) {
+      this.tryCreateApi()
+    }
+  }
+
+  static getDerivedStateFromProps (nextProps, prevState) {
+    if (nextProps.settings.network !== prevState.network) {
+      return { network: nextProps.settings.network }
+    }
+    return {}
+  }
+
   componentWillUnmount () {
-    const provider = this.props.apiContext.provider
-    provider && this.props.destroyApi(provider)
+    const { provider } = this.props.apiContext
+    provider && provider.isConnected() && provider.disconnect()
+    this.props.destroyApi()
     clearInterval(this.state.accountSetupTimeoutId)
   }
 
   renderExtensionPopup () {
+    const { apiContext, wallet } = this.props
     return (
       <ThemeProvider theme={themes[this.props.settings.theme]}>
         <React.Fragment>
           <GlobalStyle/>
           <PopupAppContainer>
+            <Dimmer active={!wallet.locked && !apiContext.apiReady && !apiContext.failed}>
+              <Loader indeterminate={true}> Connecting to network, please wait ...</Loader>
+            </Dimmer>
             <Router>
               <Routes/>
             </Router>

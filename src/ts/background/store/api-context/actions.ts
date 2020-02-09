@@ -21,8 +21,7 @@ export function createApi (options: ApiOptions) {
   }
 }
 
-export function destroyApi (provider: ProviderInterface): AnyAction {
-  provider && provider.isConnected() && provider.disconnect()
+export function destroyApi (): AnyAction {
   return {
     type: ACTION_TYPES.DESTROY
   }

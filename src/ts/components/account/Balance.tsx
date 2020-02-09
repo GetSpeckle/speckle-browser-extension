@@ -15,8 +15,7 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
   state: IBalanceState = {
     address: undefined,
     balance: undefined,
-    bonded: undefined,
-    tries: 1
+    bonded: undefined
   }
 
   get api (): ApiPromise {
@@ -27,7 +26,6 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
 
   updateBalance = () => {
     if (this.props.apiContext.apiReady) {
-      this.setState({ ...this.state, tries: 1 })
       const { tokenDecimals, tokenSymbol, registry } = this.props.network
       if (tokenDecimals !== undefined && tokenSymbol !== undefined) {
         formatBalance.setDefaults({
@@ -45,11 +43,8 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
           this.doUpdate()
         })
       }
-    } else if (this.state.tries <= 10) {
-      const nextTry = setTimeout(this.updateBalance, 1000)
-      this.setState({ ...this.state, tries: this.state.tries + 1, nextTry: nextTry })
     } else {
-      this.setState({ ...this.state, balance: t('balanceNA') })
+      this.setState({ ...this.state, balance: undefined, bonded: undefined })
     }
   }
 
@@ -69,9 +64,10 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
     this.updateBalance()
   }
 
-  componentDidUpdate (prevProps, prevState, _snapshot?) {
+  componentDidUpdate (prevProps, prevState) {
     if (this.state.address !== prevState.address
-        || (!prevProps.apiContext.apiReady && this.props.apiContext.apiReady)){
+        || prevProps.apiContext.apiReady !== this.props.apiContext.apiReady
+        || prevProps.apiContext.failed !== this.props.apiContext.failed) {
       prevState.unsub && prevState.unsub()
       this.updateBalance()
     }
@@ -79,17 +75,19 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
 
   static getDerivedStateFromProps (nextProps, prevState) {
     if (nextProps.address !== prevState.address) {
-      return { address: nextProps.address }
+      return { address: nextProps.address, balance: undefined, bonded: undefined }
     }
     return {}
   }
 
-  componentWillUnmount (): void {
-    this.state.nextTry && clearTimeout(this.state.nextTry)
-  }
-
   render () {
-    return this.state.balance !== undefined ? this.renderBalance() : Balance.renderPlaceHolder()
+    if (this.props.apiContext.failed) {
+      return Balance.renderNotAvailable()
+    }
+    if (this.state.balance) {
+      return this.renderBalance()
+    }
+    return Balance.renderPlaceHolder()
   }
 
   static renderPlaceHolder () {
@@ -106,17 +104,25 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
     return (
       <BalanceBox>
         {this.state.bonded === '0' && <Title>{this.state.balance}</Title>}
-        {this.state.bonded !== '0' && this.availableAndBonded()}
+        {this.state.bonded !== undefined && this.state.bonded !== '0' && this.availableAndBonded()}
+      </BalanceBox>
+    )
+  }
+
+  static renderNotAvailable () {
+    return (
+      <BalanceBox>
+        {t('balanceNA')}
       </BalanceBox>
     )
   }
 
   availableAndBonded () {
     return (
-      <div>
-        <div>{this.state.balance} (available)</div>
-        <label>{this.state.bonded} (bonded)</label>
-      </div>
+        <div>
+          <div>{this.state.balance} (available)</div>
+          <label>{this.state.bonded} (bonded)</label>
+        </div>
     )
   }
 }
@@ -151,8 +157,6 @@ interface IBalanceState {
   address?: string
   balance?: string
   bonded?: string
-  tries: number
-  nextTry?: any
   unsub?: Function
 }
 
