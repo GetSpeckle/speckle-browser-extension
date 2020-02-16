@@ -10,10 +10,6 @@ export interface IRouteProps {
 export class RouteWithLayout extends React.Component<IRouteProps & RouteProps, {}> {
 
   static propTypes = {
-    layout: PropTypes.oneOfType([
-      PropTypes.func,
-      PropTypes.node
-    ]),
     component: PropTypes.oneOfType([
       PropTypes.func,
       PropTypes.node
