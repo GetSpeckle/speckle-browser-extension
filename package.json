@@ -4,6 +4,7 @@
 	"description": "Universal browser extension for Web 3 and the Polkadot ecosystem.",
 	"main": "index.js",
 	"scripts": {
+    "clean": "rm -rf node_modules dist",
 		"dev": "cross-env NODE_ENV=development webpack -d",
 		"prod": "cross-env NODE_ENV=production webpack -p",
 		"watch": "cross-env NODE_ENV=watch webpack -d",
@@ -13,22 +14,22 @@
 		"test:coverage": "jest --collect-coverage"
 	},
 	"resolutions": {
-    "@polkadot/api": "1.2.0-beta.1",
-    "@polkadot/api-contract": "1.2.0-beta.1",
-    "@polkadot/types": "1.2.0-beta.1",
-    "@polkadot/keyring": "^2.2.1",
-    "@polkadot/util": "^2.2.1",
-    "@polkadot/util-crypto": "^2.2.1",
+    "@polkadot/api": "^1.3.0-beta.8",
+    "@polkadot/api-contract": "^1.3.0-beta.8",
+    "@polkadot/types": "^1.3.0-beta.8",
+    "@polkadot/keyring": "^2.4.0-beta.0",
+    "@polkadot/util": "^2.4.0-beta.0",
+    "@polkadot/util-crypto": "^2.4.0-beta.0",
     "babel-core": "^7.0.0-bridge.0",
     "typescript": "^3.7.5"
 	},
 	"dependencies": {
-    "@polkadot/api": "1.2.0-beta.1",
-    "@polkadot/api-contract": "1.2.0-beta.1",
-    "@polkadot/types": "1.2.0-beta.1",
-    "@polkadot/keyring": "^2.2.1",
-    "@polkadot/util": "^2.2.1",
-    "@polkadot/util-crypto": "^2.2.1",
+    "@polkadot/api": "^1.3.0-beta.8",
+    "@polkadot/api-contract": "^1.3.0-beta.8",
+    "@polkadot/types": "^1.3.0-beta.8",
+    "@polkadot/keyring": "^2.4.0-beta.0",
+    "@polkadot/util": "^2.4.0-beta.0",
+    "@polkadot/util-crypto": "^2.4.0-beta.0",
     "@polkadot/react-identicon": "^0.48.0-beta.1",
     "@polkadot/react-qr": "^0.48.0-beta.1",
     "@types/styled-components": "4.1.8",
@@ -52,10 +53,11 @@
 		"styled-components": "^4.4.1",
 		"webextension-polyfill-ts": "^0.8.9",
     "edgeware-node-types": "^1.1.0",
-    "@polkadot/extension-dapp": "^0.14.1"
+    "@polkadot/extension-dapp": "^0.22.0-beta.4"
   },
 	"devDependencies": {
-		"@babel/runtime": "^7.5.5",
+    "@babel/core": "^7.8.4",
+    "@babel/runtime": "^7.8.4",
 		"@types/chrome": "^0.0.81",
 		"@types/gsap": "^1.20.2",
 		"@types/jest": "^24.0.11",
