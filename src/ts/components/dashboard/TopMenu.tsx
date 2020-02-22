@@ -5,7 +5,6 @@ import { Image, Grid } from 'semantic-ui-react'
 import { networks } from '../../constants/networks'
 import { IAppState } from '../../background/store/all'
 import { saveSettings } from '../../background/store/settings'
-import { getTransactions } from '../../background/store/transaction'
 import { ChainDropdown } from '../basic-components'
 import styled from 'styled-components'
 import SettingsMenu from './SettingsMenu'
@@ -33,12 +32,7 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
     const { provider } = this.props.apiContext
     provider && provider.isConnected() && provider.disconnect()
     this.props.destroyApi()
-
     this.props.saveSettings({ ...this.props.settings, network: data.value })
-    // load transactions for the selected network
-    if (this.props.settings.selectedAccount) {
-      this.props.getTransactions(this.props.settings.selectedAccount.address, data.value)
-    }
   }
 
   handleProfileIconClick = () => {
@@ -137,7 +131,7 @@ const MenuOption = styled.div`
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
-const mapDispatchToProps = { saveSettings, getTransactions, destroyApi }
+const mapDispatchToProps = { saveSettings, destroyApi }
 
 type DispatchProps = typeof mapDispatchToProps
 

@@ -31,8 +31,8 @@ interface IAccountDropdownProps extends StateProps, RouteComponentProps, Dispatc
 interface IAccountDropdownState {
   options: Array<Option>,
   message?: string,
-  initializing: boolean,
-  msgTimeout?: any
+  msgTimeout?: any,
+  network: string
 }
 
 interface Option {
@@ -52,49 +52,40 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
 
     this.state = {
       options: [],
-      initializing: true
+      network: props.settings.network
     }
   }
 
   handleSelectChange = (address: string) => {
     const dropdownOptions: Option[] = this.state.options.filter(o => o.key === address)
     if (dropdownOptions && dropdownOptions[0]) {
-      this.props.saveSettings({ ...this.props.settings, selectedAccount: {
-        address: dropdownOptions[0].key,
-        name: dropdownOptions[0].text
-      } })
-
-      // load transactions for the selected account
-      this.props.getTransactions(dropdownOptions[0].value, this.props.settings.network)
+      this.props.saveSettings({
+        ...this.props.settings, selectedAccount: {
+          address: dropdownOptions[0].key,
+          name: dropdownOptions[0].text
+        }
+      })
     }
   }
 
-  getDisplayAddress = (address, showFullAddress = false) => {
-    const { network } = this.props.settings
-    const recodedAddress = recodeAddress(address, networks[network].ss58Format)
-    return displayAddress(recodedAddress, showFullAddress)
-  }
-
   generateDropdownItem (account: IAccount) {
-    const { network } = this.props.settings
-    const recodedAddress = recodeAddress(account.address, networks[network].ss58Format)
+    const { address } = account
     return (
       <div className='item' onClick={this.handleSelectChange.bind(this, account.address)}>
-        <Identicon value={recodedAddress} size={20} className='identicon image' />
+        <Identicon value={address} size={20} className='identicon image'/>
         <div className='account-item'>
           <div className='item-name'>{account.name ? this.shorten(account.name) : 'N/A'} </div>
-          <div className='item-address'>{this.getDisplayAddress(recodedAddress)}</div>
+          <div className='item-address'>{displayAddress(address, false)}</div>
         </div>
       </div>
     )
   }
 
   copyToClipboard = () => {
+    const { selectedAccount } = this.props.settings
+    if (!selectedAccount) return
     const el = document.createElement('textarea')
-    let address = this.props.settings.selectedAccount!!.address
-    const { network } = this.props.settings
-    const recodedAddress = recodeAddress(address, networks[network].ss58Format)
-    el.value = recodedAddress
+    el.value = selectedAccount.address
     el.setAttribute('readonly', '')
     el.style.position = 'absolute'
     el.style.left = '-9999px'
@@ -116,14 +107,27 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
         if (!Array.isArray(result) || !result.length) {
           return
         }
+        const network = networks[this.props.settings.network]
         const accounts: IAccount[] = result.map(
           (keyring: KeyringPair$Json) => {
-            return { name: keyring.meta.name, address: keyring.address }
+            return {
+              name: keyring.meta.name,
+              address: recodeAddress(keyring.address, network.ss58Format)
+            }
           }
         )
         // set first one to select account if it isn't set
+        let { selectedAccount } = this.props.settings
+        if (selectedAccount) {
+          selectedAccount = {
+            ...selectedAccount,
+            address: recodeAddress(selectedAccount.address, network.ss58Format)
+          }
+        } else {
+          selectedAccount = accounts[0]
+        }
         if (!this.props.settings.selectedAccount) {
-          this.props.saveSettings({ ...this.props.settings, selectedAccount: accounts[0] })
+          this.props.saveSettings({ ...this.props.settings, selectedAccount })
         }
 
         this.props.setAccounts(accounts)
@@ -137,7 +141,6 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
         }))
 
         this.setState({
-          initializing: false,
           options: [...dynamicItems]
         })
       }
@@ -171,14 +174,23 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
 
   componentDidMount () {
     this.loadAccounts()
-    if (this.props.settings.selectedAccount) {
-      const account = this.props.settings.selectedAccount
-      this.props.getTransactions(account.address, this.props.settings.network)
+  }
+
+  componentDidUpdate (_prevProps, prevState) {
+    if (this.props.settings.network !== prevState.network) {
+      this.loadAccounts()
     }
   }
 
+  static getDerivedStateFromProps (nextProps, prevState) {
+    if (nextProps.settings.network !== prevState.network) {
+      return { network: nextProps.settings.network }
+    }
+    return {}
+  }
+
   render () {
-    if (this.state.initializing || !this.props.settings.selectedAccount) {
+    if (!this.props.settings.selectedAccount) {
       return null
     }
 
@@ -204,13 +216,13 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
                 {this.state.options.map(option => <Dropdown.Item key={option.key} {...option} />)}
               </Dropdown.Menu>
 
-              <Dropdown.Divider />
+              <Dropdown.Divider/>
 
               <Dropdown.Item
                 style={backgroundStyle}
                 onClick={this.handleClickCreateAccount}
               >
-                <Icon name='plus' />
+                <Icon name='plus'/>
                 {t('createNewAccount')}
               </Dropdown.Item>
 
@@ -218,7 +230,7 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
                 style={backgroundStyle}
                 onClick={this.handleClickImport}
               >
-                <Icon name='redo' />
+                <Icon name='redo'/>
                 {t('importExistingAccount')}
               </Dropdown.Item>
             </Dropdown.Menu>
@@ -232,7 +244,7 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
             arrow={true}
           >
             <AccountAddress onClick={this.copyToClipboard}>
-              {this.getDisplayAddress(this.props.settings.selectedAccount.address)}
+              {displayAddress(this.props.settings.selectedAccount.address, false)}
             </AccountAddress>
 
             <Popup
@@ -247,7 +259,7 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
             trigger='mouseenter'
             arrow={true}
           >
-          {this.renderQrIcon()}
+            {this.renderQrIcon()}
           </Tooltip>
         </AccountSection>
       </Float>
