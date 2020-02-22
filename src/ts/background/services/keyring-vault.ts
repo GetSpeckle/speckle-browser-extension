@@ -7,6 +7,7 @@ import { SimpleAccounts } from '../types'
 import { createType, TypeRegistry } from '@polkadot/types'
 import { SignerPayloadJSON } from '@polkadot/types/types'
 import { VALIDITY_INTERVAL } from '../../constants/config'
+import { getPubkeyHex } from '../../services/address-transformer'
 
 const VAULT_KEY: string = 'speckle-vault'
 
@@ -122,7 +123,7 @@ class KeyringVault {
     this._keyring = undefined
   }
 
-  async unlock (password: string): Promise < Array < KeyringPair$Json >> {
+  async unlock (password: string): Promise<KeyringPair$Json[]> {
     if (this .isUnlocked()) {
       return new Promise<Array<KeyringPair$Json>>(
         resolve => {
@@ -142,7 +143,7 @@ class KeyringVault {
             this.keyring.addPair(pair)
           })
           this._password = password
-          return accounts as Array<KeyringPair$Json>
+          return accounts as KeyringPair$Json[]
         } catch (e) {
           this.keyring.getPairs().forEach(pair => {
             this.keyring.removePair(pair.address)
@@ -247,7 +248,7 @@ class KeyringVault {
     this.keyring.removePair(address)
     LocalStore.getValue(VAULT_KEY).then(async (vault) => {
       if (vault) {
-        delete vault[address]
+        delete vault[getPubkeyHex(address)]
         await LocalStore.set({ VAULT_KEY: vault })
       }
     })
@@ -317,7 +318,7 @@ class KeyringVault {
       if (!vault) {
         vault = {}
       }
-      vault[keyringPair$Json.address] = keyringPair$Json
+      vault[getPubkeyHex(keyringPair$Json.address)] = keyringPair$Json
       return LocalStore.setValue(VAULT_KEY, vault).then(() => {
         this.keyring.addPair(pair)
         return keyringPair$Json
