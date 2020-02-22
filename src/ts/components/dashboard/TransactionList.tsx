@@ -6,7 +6,7 @@ import { IAppState } from '../../background/store/all'
 import { getTransactions, TransactionType, ITransaction } from '../../background/store/transaction'
 import t from '../../services/i18n'
 import { networks } from '../../constants/networks'
-import recodeAddress, { displayAddress } from '../../services/address-transformer'
+import { displayAddress } from '../../services/address-transformer'
 
 interface ITransactionListProps extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -44,29 +44,16 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
   }
 
   private loadTransactions = () => {
-    // load the transaction list
     if (this.state.currentAddress && this.state.currentNetwork) {
-      let address = recodeAddress(
-        this.props.account!.address,
-        networks[this.props.network].ss58Format
-      )
-      console.log('Getting transactions for ' + address + ' in ' + this.state.currentNetwork)
-      this.props.getTransactions(address, this.state.currentNetwork)
+      this.props.getTransactions(this.state.currentAddress, this.state.currentNetwork)
     }
   }
 
   render () {
 
-    const account = recodeAddress(
-      this.props.account!.address,
-      networks[this.props.network].ss58Format
-      )
-    if (!account || !(this.props.transactions)) {
-      console.log('No transaction found.')
-      return (null)
+    if (!this.props.account || !this.props.transactions) {
+      return null
     }
-
-    console.log('Rendering transactions: ', this.props.transactions)
 
     const panes = [
       { menuItem: t('tabAll'), render: () => this.renderWithFilter('') },
@@ -94,8 +81,6 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
     if (type !== '') {
       tranx = tranx.filter(item => item.type === type)
     }
-
-    console.log('prepare to render transactions ... ', tranx)
 
     return (
       <Tab.Pane>
