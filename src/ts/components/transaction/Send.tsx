@@ -34,8 +34,6 @@ import { HOME_ROUTE, QR_ROUTE } from '../../constants/routes'
 import { EventRecord, Index, Balance as BalanceType } from '@polkadot/types/interfaces'
 import { decodeAddress } from '@polkadot/util-crypto'
 import { SiDef } from '@polkadot/util/types'
-import recodeAddress from '../../services/address-transformer'
-import { networks } from '../../constants/networks'
 import styled from 'styled-components'
 
 interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {}
@@ -46,7 +44,6 @@ interface ISendState {
   tipSi: SiDef
   tipUnit: string
   nonce: Index | null
-  fromAddress: string
   toAddress: string
   hasAvailable: boolean
   isSi: boolean
@@ -84,10 +81,6 @@ class Send extends React.Component<ISendProps, ISendState> {
       tipSi,
       tipUnit: '',
       nonce: null,
-      fromAddress: recodeAddress(
-        this.props.settings.selectedAccount!.address,
-        networks[this.props.settings.network].ss58Format
-      ),
       toAddress: '',
       hasAvailable: true,
       isSi: true,
@@ -106,17 +99,6 @@ class Send extends React.Component<ISendProps, ISendState> {
 
   componentWillUnmount () {
     this.props.setError(null)
-  }
-
-  componentDidUpdate (prevProps) {
-    if (
-      this.props.settings.selectedAccount!.address !== prevProps.settings.selectedAccount!.address
-    ) {
-      this.setState({fromAddress: recodeAddress(
-          this.props.settings.selectedAccount!.address,
-          networks[this.props.settings.network].ss58Format
-        )})
-    }
   }
 
   inputValueToBn = (value: string): BN => {
@@ -165,13 +147,13 @@ class Send extends React.Component<ISendProps, ISendState> {
   }
 
   saveExtrinsic = async () => {
-    if (!this.props.settings.selectedAccount) {
+    if (!this.props.account) {
       return
     }
 
     const BnAmount = this.inputValueToBn(this.state.amount)
     const BnTip = this.inputValueToBn(this.state.tip)
-    const currentAddress = this.state.fromAddress
+    const currentAddress = this.props.account.address
 
     const extrinsic: IExtrinsic = await this.api.tx.balances
       .transfer(this.state.toAddress, BnAmount)
@@ -343,7 +325,7 @@ class Send extends React.Component<ISendProps, ISendState> {
     return result
   }
 
-  isAmountValid = (): string =>  {
+  isAmountValid = (): string => {
     return this.validateAmount(this.state.amount)
   }
 
@@ -352,8 +334,10 @@ class Send extends React.Component<ISendProps, ISendState> {
   }
 
   render () {
-    console.log(this.props.settings.selectedAccount!.address)
-    if (!this.state.fromAddress) {
+    if (!this.props.account) {
+      return null
+    }
+    if (!this.props.account.address) {
       return null
     }
 
@@ -374,7 +358,7 @@ class Send extends React.Component<ISendProps, ISendState> {
         </Dimmer>
         <AccountDropdown qrDestination={QR_ROUTE} />
         <DividerSection>
-          <Balance address={this.state.fromAddress} />
+          <Balance address={this.props.account.address} />
         </DividerSection>
         <div style={{ height: 27 }} />
         <DividerSection />
@@ -392,7 +376,7 @@ class Send extends React.Component<ISendProps, ISendState> {
           <div style={{ height: 17 }} />
           <FeeSection>
             <Fee
-              address={this.state.fromAddress}
+              address={this.props.account.address}
               toAddress={this.state.toAddress}
               handleFeeChange={this.changeFee}
             />
@@ -403,7 +387,7 @@ class Send extends React.Component<ISendProps, ISendState> {
               color={this.props.settings.color}
               extrinsic={this.state.extrinsic}
               trigger={submitButton}
-              fromAddress={this.state.fromAddress}
+              fromAddress={this.props.account.address}
               amount={this.inputValueToBn(this.state.amount)}
               tip={this.inputValueToBn(this.state.tip)}
               toAddress={this.state.toAddress}
@@ -439,6 +423,7 @@ const mapStateToProps = (state: IAppState) => {
   return {
     apiContext: state.apiContext,
     settings: state.settings,
+    account: state.settings.selectedAccount,
     transactions: state.transactions
   }
 }
