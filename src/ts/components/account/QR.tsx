@@ -13,25 +13,19 @@ import styled from 'styled-components'
 import AccountDropdown from '../account/AccountDropdown'
 import t from '../../services/i18n'
 import { HOME_ROUTE } from '../../constants/routes'
-import { networks } from '../../constants/networks'
-import recodeAddress from '../../services/address-transformer'
 
 interface IQRProps extends StateProps, RouteComponentProps {
 }
 
 class QR extends React.Component<IQRProps> {
 
-  getNetworkAddress = (address) => {
-    const { network } = this.props.settings
-    return recodeAddress(address, networks[network].ss58Format)
-  }
-
   render () {
-    if (!this.props.settings.selectedAccount) {
+    const { selectedAccount } = this.props.settings
+    if (!selectedAccount) {
       return null
     }
 
-    const address = this.props.settings.selectedAccount.address
+    const { address } = selectedAccount
 
     return (
       <ContentContainer>
@@ -42,12 +36,12 @@ class QR extends React.Component<IQRProps> {
         <QRSection>
           <QRContainer>
             <QRCodeContainer>
-              <QRCode value={this.getNetworkAddress(address)} size={90}/>
+              <QRCode value={address} size={90}/>
             </QRCodeContainer>
           </QRContainer>
           <QRContainer>
             <PublicKey>
-              {this.getNetworkAddress(address)}
+              {address}
             </PublicKey>
           </QRContainer>
           <SecondaryText style={{ textAlign: 'left' }}>
