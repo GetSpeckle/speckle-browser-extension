@@ -19,30 +19,7 @@ import AccountDropdown from '../account/AccountDropdown'
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
 }
 
-interface IDashboardState {
-  options: Array<Option>,
-  message?: string,
-  initializing: boolean,
-  msgTimeout?: any
-}
-
-interface Option {
-  key: string,
-  text: string,
-  value: string,
-  content: object,
-  disable?: boolean,
-  as?: object,
-  to?: string
-}
-
-class Dashboard extends React.Component<IDashboardProps, IDashboardState> {
-
-  componentWillUnmount () {
-    if (this.state.msgTimeout) {
-      clearTimeout(this.state.msgTimeout)
-    }
-  }
+class Dashboard extends React.Component<IDashboardProps> {
 
   render () {
     if (!this.props.settings.selectedAccount) {
