@@ -7,6 +7,7 @@ import { Color } from '../styles/themes'
 import t from '../../services/i18n'
 import { AccountAddress, Title } from '../basic-components'
 import { getSimpleAccounts } from '../../services/keyring-vault-proxy'
+import { networks } from '../../constants/networks'
 
 class SignBy extends React.Component<ISignByProps, ISignByState> {
 
@@ -34,6 +35,8 @@ class SignBy extends React.Component<ISignByProps, ISignByState> {
 
   render () {
     const { settings, address } = this.props
+    const network = networks[settings.network]
+    const identiconTheme = network.identiconTheme
     return (
       <SignByContainer>
         <IdenticonContainer color={settings.color}>
@@ -41,6 +44,7 @@ class SignBy extends React.Component<ISignByProps, ISignByState> {
           <Identicon
             value={address}
             style={{ marginTop: 10 }}
+            theme={identiconTheme}
             size={50}
           />
         </IdenticonContainer>

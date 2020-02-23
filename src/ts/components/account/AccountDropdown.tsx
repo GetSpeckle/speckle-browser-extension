@@ -23,6 +23,7 @@ import styled from 'styled-components'
 import { getTransactions } from '../../background/store/transaction'
 import recodeAddress, { displayAddress } from '../../services/address-transformer'
 import { networks } from '../../constants/networks'
+import { IdenticonTheme } from '../../constants/identicon-theme'
 
 interface IAccountDropdownProps extends StateProps, RouteComponentProps, DispatchProps {
   qrDestination?: string
@@ -68,11 +69,11 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
     }
   }
 
-  generateDropdownItem (account: IAccount) {
+  generateDropdownItem (account: IAccount, identiconTheme: IdenticonTheme) {
     const { address } = account
     return (
       <div className='item' onClick={this.handleSelectChange.bind(this, account.address)}>
-        <Identicon value={address} size={20} className='identicon image'/>
+        <Identicon value={address} size={20} theme={identiconTheme}/>
         <div className='account-item'>
           <div className='item-name'>{account.name ? this.shorten(account.name) : 'N/A'} </div>
           <div className='item-address'>{displayAddress(address, false)}</div>
@@ -108,6 +109,7 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
           return
         }
         const network = networks[this.props.settings.network]
+        const identiconTheme = network.identiconTheme
         const accounts: IAccount[] = result.map(
           (keyring: KeyringPair$Json) => {
             return {
@@ -136,7 +138,7 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
           key: account.address,
           text: account.name,
           value: account.address,
-          content: this.generateDropdownItem(account),
+          content: this.generateDropdownItem(account, identiconTheme),
           disable: false
         }))
 

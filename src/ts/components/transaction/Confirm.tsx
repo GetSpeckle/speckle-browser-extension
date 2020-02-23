@@ -10,6 +10,7 @@ import { colorSchemes } from '../styles/themes'
 import { IExtrinsic } from '@polkadot/types/types'
 import { formatBalance } from '@polkadot/util'
 import BN = require('bn.js')
+import { networks } from '../../constants/networks'
 
 interface IConfirmProps {
   network: string,
@@ -76,7 +77,8 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
   copyToAddressToClipboard = () => this.copyToClipboard(this.props.toAddress)
 
   render () {
-
+    const network = networks[this.props.network]
+    const identiconTheme = network.identiconTheme
     // Conditional Rendering for warning article
     const doesNotExist = this.props.recipientAvailable.cmp(this.props.existentialDeposit) < 0
     let warning
@@ -109,7 +111,7 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
         <UpperSection>
           <Offset>
             <Status>
-              <Identicon value={this.props.fromAddress} size={48}/>
+              <Identicon value={this.props.fromAddress} size={48} theme={identiconTheme}/>
             </Status>
           </Offset>
           <Tooltip
@@ -177,7 +179,9 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
         <Section style={{ 'marginTop': '8px', 'marginBottom': '16px' }}>
           <Info>
             <Key>Total</Key>
-            <Value>{formatBalance(this.props.amount.add(this.props.fee).add(this.props.tip))}</Value>
+            <Value>
+              {formatBalance(this.props.amount.add(this.props.fee).add(this.props.tip))}
+            </Value>
           </Info>
         </Section>
         {warning}

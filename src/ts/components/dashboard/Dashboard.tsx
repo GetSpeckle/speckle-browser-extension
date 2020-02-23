@@ -15,17 +15,18 @@ import 'react-tippy/dist/tippy.css'
 import styled from 'styled-components'
 import TransactionList from './TransactionList'
 import AccountDropdown from '../account/AccountDropdown'
+import { networks } from '../../constants/networks'
 
 interface IDashboardProps extends StateProps, RouteComponentProps, DispatchProps {
 }
 
 class Dashboard extends React.Component<IDashboardProps> {
-
   render () {
     if (!this.props.settings.selectedAccount) {
       return null
     }
-
+    const network = networks[this.props.settings.network]
+    const identiconTheme = network.identiconTheme
     return (
       <ContentContainer>
         <AccountDropdown qrDestination={QR_ROUTE} />
@@ -33,7 +34,8 @@ class Dashboard extends React.Component<IDashboardProps> {
           <Identicon
             value={this.props.settings.selectedAccount.address}
             size={80}
-            className='identicon'
+            theme={identiconTheme}
+            className='image'
           />
         </AccountSection>
         <AccountSection>
