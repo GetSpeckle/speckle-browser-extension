@@ -40,16 +40,15 @@ interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {}
 
 interface ISendState {
   amount: string
+  amountSi: SiDef
+  amountUnit: string
   tip: string
   tipSi: SiDef
   tipUnit: string
   nonce: Index | null
   toAddress: string
   hasAvailable: boolean
-  isSi: boolean
   isLoading: boolean
-  si: SiDef
-  siUnit: string
   fee: BN
   extrinsic?: IExtrinsic | null
   creationFee: BN
@@ -61,7 +60,7 @@ interface ISendState {
 
 const TEN = new BN(10)
 
-const si: SiDef = formatBalance.findSi('-')
+const amountSi: SiDef = formatBalance.findSi('-')
 
 const tipSi: SiDef = formatBalance.findSi('-')
 
@@ -77,16 +76,15 @@ class Send extends React.Component<ISendProps, ISendState> {
 
     this.state = {
       amount: '',
+      amountSi,
+      amountUnit: amountSi.value,
       tip: '',
       tipSi,
-      tipUnit: '',
+      tipUnit: tipSi.value,
       nonce: null,
       toAddress: '',
       hasAvailable: true,
-      isSi: true,
       isLoading: false,
-      si,
-      siUnit: si.value,
       fee: new BN(0),
       extrinsic: undefined,
       creationFee: new BN(0),
@@ -101,9 +99,8 @@ class Send extends React.Component<ISendProps, ISendState> {
     this.props.setError(null)
   }
 
-  inputValueToBn = (value: string): BN => {
+  inputValueToBn = (value: string, selectedSi: SiDef): BN => {
     const parts: string[] = value.split('.')
-    const selectedSi: SiDef = this.state.si
     const decimals = formatBalance.getDefaults().decimals
     const bigPart = new BN(parts[0]).mul(TEN.pow(new BN(decimals + selectedSi.power)))
     if (parts.length === 1) {
@@ -137,9 +134,14 @@ class Send extends React.Component<ISendProps, ISendState> {
     })
   }
 
-  changeSi = (_event, data) => {
+  changeAmountSi = (_event, data) => {
     const siDef = formatBalance.findSi(data.value)
-    this.setState({ si: siDef, siUnit: siDef.value })
+    this.setState({ amountSi: siDef, amountUnit: siDef.value })
+  }
+
+  changeTipSi = (_event, data) => {
+    const siDef = formatBalance.findSi(data.value)
+    this.setState({ tipSi: siDef, tipUnit: siDef.value })
   }
 
   changeModal = (open) => {
@@ -151,22 +153,17 @@ class Send extends React.Component<ISendProps, ISendState> {
       return
     }
 
-    const BnAmount = this.inputValueToBn(this.state.amount)
-    const BnTip = this.inputValueToBn(this.state.tip)
+    const amountBn = this.inputValueToBn(this.state.amount, this.state.amountSi)
+    const tipBn = this.inputValueToBn(this.state.tip, this.state.tipSi)
     const currentAddress = this.props.account.address
-
     const extrinsic: IExtrinsic = await this.api.tx.balances
-      .transfer(this.state.toAddress, BnAmount)
+      .transfer(this.state.toAddress, amountBn)
 
     const currentBlockNumber = await this.api.query.system.number() as unknown as BN
     const currentBlockHash = await this.api.rpc.chain.getBlockHash(currentBlockNumber.toNumber())
     const currentNonce = await this.api.query.system.accountNonce(currentAddress) as Index
-    console.log('currentNonce: ', currentNonce)
-    if (this.state.nonce != null && currentNonce[0] > this.state.nonce[0]) {
-      this.setState({ nonce: currentNonce })
-    } else {
-      this.setState({ nonce: currentNonce })
-    }
+    this.setState({ nonce: currentNonce })
+    console.log('currentNonce: ', currentNonce.toNumber())
     let signerPayload: SignerPayloadJSON = {
       address: currentAddress,
       blockHash: currentBlockHash.toHex(),
@@ -176,7 +173,7 @@ class Send extends React.Component<ISendProps, ISendState> {
       method: extrinsic.method.toHex(),
       nonce: (this.state.nonce! as Index).toHex(),
       specVersion: this.api.runtimeVersion.specVersion.toHex(),
-      tip: BnTip.toString(),
+      tip: tipBn.toString(),
       version: extrinsic.version
     }
     const payloadValue: ExtrinsicPayloadValue = {
@@ -185,7 +182,7 @@ class Send extends React.Component<ISendProps, ISendState> {
       blockHash: currentBlockHash,
       genesisHash: this.api.genesisHash,
       nonce: this.state.nonce!.toNumber(),
-      tip: BnTip.toNumber(),
+      tip: tipBn.toNumber(),
       specVersion: this.api.runtimeVersion.specVersion.toNumber()
     }
     signExtrinsic(signerPayload).then(signature => {
@@ -205,7 +202,7 @@ class Send extends React.Component<ISendProps, ISendState> {
       return
     }
 
-    const address = this.props.settings.selectedAccount.address
+    const { address } = this.props.settings.selectedAccount
 
     const available = await this.api.query.balances.freeBalance(address) as BalanceType
 
@@ -221,7 +218,7 @@ class Send extends React.Component<ISendProps, ISendState> {
       from: address,
       to: this.state.toAddress,
       amount: this.state.amount,
-      unit: this.state.siUnit === '-' ? '' : this.state.siUnit,
+      unit: this.state.amountUnit === '-' ? '' : this.state.amountUnit,
       type: 'Sent',
       createTime: new Date().getTime(),
       status: 'Pending',
@@ -290,11 +287,10 @@ class Send extends React.Component<ISendProps, ISendState> {
 
   startSendTimer = () => {
     const { history } = this.props
-    const timer = setTimeout(() => {
+    return setTimeout(() => {
       this.setState({ isLoading: false, isTimeout: true })
       history.push(HOME_ROUTE)
     }, 6000)
-    return timer
   }
 
   readyToSubmit = (): boolean => {
@@ -365,9 +361,9 @@ class Send extends React.Component<ISendProps, ISendState> {
         <Form>
           <Amount
             handleAmountChange={this.changeAmount}
+            handleAmountSiChange={this.changeAmountSi}
             handleTipChange={this.changeTip}
-            handleDigitChange={this.changeSi}
-            options={formatBalance.getOptions()}
+            handleTipSiChange={this.changeTipSi}
             amountValid={this.isAmountValid()}
             tipValid={this.isTipValid()}
           />
@@ -388,8 +384,8 @@ class Send extends React.Component<ISendProps, ISendState> {
               extrinsic={this.state.extrinsic}
               trigger={submitButton}
               fromAddress={this.props.account.address}
-              amount={this.inputValueToBn(this.state.amount)}
-              tip={this.inputValueToBn(this.state.tip)}
+              amount={this.inputValueToBn(this.state.amount, this.state.amountSi)}
+              tip={this.inputValueToBn(this.state.tip, this.state.tipSi)}
               toAddress={this.state.toAddress}
               fee={this.state.fee!}
               creationFee={this.state.creationFee}

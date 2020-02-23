@@ -4,17 +4,21 @@ import { Dropdown } from 'semantic-ui-react'
 import t from '../../services/i18n'
 import { SiDef } from '@polkadot/util/types'
 import { ErrorMessage } from '../basic-components'
+import formatBalance from '@polkadot/util/format/formatBalance'
 
 interface IAmountProps {
   handleAmountChange: any,
-  handleDigitChange: any,
+  handleAmountSiChange: any,
   handleTipChange: any,
+  handleTipSiChange: any,
   amountValid: String,
-  tipValid: String,
-  options: SiDef[]
+  tipValid: String
 }
 
+const siOptions: SiDef[] = formatBalance.getOptions()
+
 export default class Amount extends React.Component<IAmountProps> {
+
   componentDidUpdate (prevProps) {
     if (this.props.amountValid !== prevProps.amountValid ||
       this.props.tipValid !== prevProps.tipValid) {
@@ -23,7 +27,7 @@ export default class Amount extends React.Component<IAmountProps> {
   }
 
   render () {
-    const defaultValues = this.props.options.filter(siDef => siDef.power === 0)
+    const defaultValues = siOptions.filter(siDef => siDef.power === 0)
     const defaultValue = defaultValues[0].value
     return (
       <AmountDiv>
@@ -34,13 +38,12 @@ export default class Amount extends React.Component<IAmountProps> {
               <TruncatedInput type='text' onChange={this.props.handleAmountChange} size={20} />
               <ErrorMessage>{this.props.amountValid}</ErrorMessage>
             </Input>
-            <Digit
+            <SiDropdown
               selection={true}
-              options={this.props.options}
+              options={siOptions}
               defaultValue={defaultValue}
               scrolling={true}
-              style={{ minWidth: '100px' }}
-              onChange={this.props.handleDigitChange}
+              onChange={this.props.handleAmountSiChange}
             />
           </div>
         </InputDiv>
@@ -51,13 +54,12 @@ export default class Amount extends React.Component<IAmountProps> {
               <TruncatedInput type='text' onChange={this.props.handleTipChange} size={20}/>
               <ErrorMessage>{this.props.tipValid}</ErrorMessage>
             </Input>
-            <Digit
+            <SiDropdown
               selection={true}
-              options={this.props.options}
+              options={siOptions}
               defaultValue={defaultValue}
               scrolling={true}
-              style={{ minWidth: '100px' }}
-              onChange={this.props.handleDigitChange}
+              onChange={this.props.handleTipSiChange}
             />
           </div>
         </InputDiv>
@@ -97,10 +99,11 @@ const Input = styled.div`
 }
 `
 
-const Digit = styled(Dropdown)`
+const SiDropdown = styled(Dropdown)`
 {
   margin-left: 11px;
   height: 32px;
+  min-width: 100px;
 }
 `
 
