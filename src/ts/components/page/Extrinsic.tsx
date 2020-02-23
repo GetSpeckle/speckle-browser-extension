@@ -8,7 +8,7 @@ import { Grid } from 'semantic-ui-react'
 import { formatBalance } from '@polkadot/util'
 import { SignerPayloadJSON } from '@polkadot/types/types'
 import { GenericCall } from '@polkadot/types'
-import { displayAddress } from '../../services/address-transformer'
+import recodeAddress, { displayAddress } from '../../services/address-transformer'
 import { Color, colorSchemes } from '../styles/themes'
 import { ExtrinsicPayload } from '@polkadot/types/interfaces'
 
@@ -60,7 +60,10 @@ const decodeMethod = (data: string, isDecoded: boolean, network: Network)
   return { json, method }
 }
 
-const renderMethod = (data: string, { json, method }: Decoded): React.ReactNode => {
+const renderMethod = (
+  data: string,
+  { json, method }: Decoded,
+  network: Network): React.ReactNode => {
   if (!json || !method) {
     return (
       <SignMessageGridRow>
@@ -69,6 +72,7 @@ const renderMethod = (data: string, { json, method }: Decoded): React.ReactNode 
     )
   }
 
+  const address = recodeAddress(json.args.dest, network.ss58Format)
   return (
     <table>
       <tbody>
@@ -85,7 +89,7 @@ const renderMethod = (data: string, { json, method }: Decoded): React.ReactNode 
             <Message>{t('dest')}</Message>
           </td>
           <td align={'left'}>
-            <Message>{displayAddress(json.args.dest, false)}</Message>
+            <Message>{displayAddress(address, false)}</Message>
           </td>
         </tr>
         <tr>
@@ -122,7 +126,7 @@ const Extrinsic = ({ settings, isDecoded, signerPayload }: ISignMessageProps) =>
           <NetworkName>{network.name}</NetworkName>
         </SignMessageGridColumn>
       </SignMessageGridRow>
-      {renderMethod(method, decoded)}
+      {renderMethod(method, decoded, network)}
     </SignMessageGrid>
   )
 }
