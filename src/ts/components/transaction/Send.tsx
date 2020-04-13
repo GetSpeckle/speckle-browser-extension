@@ -20,6 +20,7 @@ import { Dimmer, Form, Loader } from 'semantic-ui-react'
 import Amount from './Amount'
 import ToAddress from './ToAddress'
 import { ExtrinsicPayloadValue, IExtrinsic, SignerPayloadJSON } from '@polkadot/types/types'
+import { DeriveBalancesAll } from '@polkadot/api-derive/types'
 import Fee from './Fee'
 import Confirm from './Confirm'
 import AccountDropdown from '../account/AccountDropdown'
@@ -31,7 +32,7 @@ import {
 import { SubmittableResult } from '@polkadot/api'
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types'
 import { HOME_ROUTE, QR_ROUTE } from '../../constants/routes'
-import { EventRecord, Index, Balance as BalanceType } from '@polkadot/types/interfaces'
+import { EventRecord, Index, BlockNumber } from '@polkadot/types/interfaces'
 import { decodeAddress } from '@polkadot/util-crypto'
 import { SiDef } from '@polkadot/util/types'
 import styled from 'styled-components'
@@ -159,15 +160,16 @@ class Send extends React.Component<ISendProps, ISendState> {
     const extrinsic: IExtrinsic = await this.api.tx.balances
       .transfer(this.state.toAddress, amountBn)
 
-    const currentBlockNumber = await this.api.query.system.number() as unknown as BN
-    const currentBlockHash = await this.api.rpc.chain.getBlockHash(currentBlockNumber.toNumber())
-    const currentNonce = await this.api.query.system.accountNonce(currentAddress) as Index
+    const currentBlockNumber = await this.api.query.system.number() as unknown as BlockNumber
+    const currentBlockHash = await this.api.rpc.chain.getBlockHash(currentBlockNumber)
+    const balancesAll = await this.api.derive.balances.all(currentAddress) as DeriveBalancesAll
+    const currentNonce = balancesAll.accountNonce
     this.setState({ nonce: currentNonce })
     console.log('currentNonce: ', currentNonce.toNumber())
     let signerPayload: SignerPayloadJSON = {
       address: currentAddress,
       blockHash: currentBlockHash.toHex(),
-      blockNumber: currentBlockNumber.toString('hex'),
+      blockNumber: currentBlockNumber.toString(),
       era: extrinsic.era.toHex(),
       genesisHash: this.api.genesisHash.toHex(),
       method: extrinsic.method.toHex(),
@@ -204,7 +206,8 @@ class Send extends React.Component<ISendProps, ISendState> {
 
     const { address } = this.props.settings.selectedAccount
 
-    const available = await this.api.query.balances.freeBalance(address) as BalanceType
+    const balancesAll = await this.api.derive.balances.all(address) as DeriveBalancesAll
+    const available = balancesAll.freeBalance
 
     if (available.isZero()) {
       this.props.setError('You account has 0 balance.')

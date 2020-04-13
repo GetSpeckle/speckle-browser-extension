@@ -6,9 +6,9 @@ import ApiPromise from '@polkadot/api/promise'
 import { compactToU8a, formatBalance } from '@polkadot/util'
 import styled from 'styled-components'
 import { IExtrinsic } from '@polkadot/types/types'
-import { DerivedFees, DerivedBalancesAll } from '@polkadot/api-derive/types'
+import { DeriveFees, DeriveBalancesAll } from '@polkadot/api-derive/types'
 import BN from 'bn.js'
-import { ChainProperties } from '@polkadot/types/interfaces'
+import { ChainProperties, Index } from '@polkadot/types/interfaces'
 import U32 from '@polkadot/types/primitive/U32'
 import { networks } from '../../constants/networks'
 import { decodeAddress } from '@polkadot/util-crypto'
@@ -19,7 +19,7 @@ const LENGTH_ERA = 1
 const SIGNATURE_SIZE = LENGTH_PUBLICKEY + LENGTH_SIGNATURE + LENGTH_ERA
 const ADDRESS_LENGTH = 47
 
-const calcSignatureLength = (extrinsic?: IExtrinsic | null, accountNonce?: BN): number => {
+const calcSignatureLength = (extrinsic?: IExtrinsic | null, accountNonce?: Index): number => {
   return SIGNATURE_SIZE +
     (accountNonce ? compactToU8a(accountNonce).length : 0) +
     (extrinsic ? extrinsic.encodedLength : 0)
@@ -88,11 +88,11 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
     const toAddress = this.props.toAddress
     console.log(toAddress)
     Promise.all([
-      this.api.derive.balances.fees() as unknown as DerivedFees,
-      this.api.query.system.accountNonce(address) as unknown as BN,
+      this.api.derive.balances.fees() as unknown as DeriveFees,
       this.api.tx.balances.transfer(address, 1) as unknown as IExtrinsic,
-      this.api.derive.balances.all(toAddress) as unknown as DerivedBalancesAll
-    ]).then(([fees, nonce, ext, balancesAll]) => {
+      this.api.derive.balances.all(toAddress) as unknown as DeriveBalancesAll
+    ]).then(([fees, ext, balancesAll]) => {
+      const nonce = balancesAll.accountNonce
       console.log('fee infos', fees, nonce, ext, balancesAll)
       const extLength = calcSignatureLength(ext, nonce)
       const baseFee = new BN(fees.transactionBaseFee)
