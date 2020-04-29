@@ -290,12 +290,14 @@ class KeyringVault {
   signExtrinsic = async (signerPayload: SignerPayloadJSON): Promise<string> => {
     const { address } = signerPayload
     const pair = this.keyring.getPair(address)
-
     if (!pair) {
       return Promise.reject(new Error('Unable to find pair'))
     }
     let params = { version: signerPayload.version }
     const payload = createType(registry, 'ExtrinsicPayload', signerPayload, params)
+    if (pair.isLocked) {
+      pair.decodePkcs8(this._password)
+    }
     const result = payload.sign(pair)
     return Promise.resolve(result.signature)
   }
