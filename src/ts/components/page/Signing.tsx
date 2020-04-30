@@ -63,7 +63,7 @@ const Signing = (props) => {
         {!isExternal && <Section><SignBy address={request.inner.address} /></Section>}
         {!isExternal && <Unlock onSign={onSign} onCancel={onCancel} />}
         {isExternal && <Qr payload={extrinsic} request={signerPayload} onSignature={onSignature}/>}
-        {isExternal && <Button onclick={onCancel}>{t('cancel')}</Button>}
+        {isExternal && <Button onClick={onCancel}>{t('cancel')}</Button>}
       </ContentContainer>
     )
   } else if (hexBytes != null) {
@@ -78,7 +78,7 @@ const Signing = (props) => {
         {!isExternal && <Section>{payload.data}</Section>}
         {!isExternal && <Section><SignBy address={request.inner.address} /></Section>}
         {!isExternal && <Unlock onSign={onSign} onCancel={onCancel} />}
-        {isExternal && <Button onclick={onCancel}>{t('cancel')}</Button>}
+        {isExternal && <Button onClick={onCancel}>{t('cancel')}</Button>}
       </ContentContainer>
     )
   }
