@@ -39,13 +39,9 @@ export function upsertTransaction (address: string, network: string,
   const idx = list.findIndex(item => item.txHash === tran.txHash)
   let updated = [tran]
   if (idx < 0) {
-    console.log('Insert tran: ', tran)
     updated = updated.concat(list)
-    console.log('Insert Result updated: ', updated)
   } else {
-    console.log('Update tran: ', tran)
     updated = [...list.slice(0, idx), tran, ...list.slice(idx + 1)]
-    console.log('Update Result Updated: ', updated)
   }
   return {
     type: ACTION_TYPES.UPSERT_TRANSACTION,

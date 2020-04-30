@@ -65,7 +65,6 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
   }
 
   tryCreateApi = () => {
-    console.log('try create api')
     const { settings } = this.props
     const network = networks[settings.network]
     const provider = new WsProvider(network.rpcServer)
@@ -86,19 +85,16 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
     )
     const newPassword = getTempPassword().then(
       result => {
-        console.log(`newPassword ${result}`)
         this.props.setNewPassword(result)
       }
     )
     const newPhrase = getMnemonic().then(
       result => {
-        console.log(`newPhrase ${result}`)
         this.props.setNewPhrase(result)
       }
     )
     const newAccountName = getTempAccountName().then(
       result => {
-        console.log(`newAccountName ${result}`)
         this.props.setAccountName(result)
       }
     )
