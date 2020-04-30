@@ -56,7 +56,7 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
         this.setState({ ...this.state, balance: availableBalance, bonded: bondedBalance })
       }
     }).then(unsub => {
-      this.setState({ ...this.state, unsub: unsub })
+      this.setState({ unsub: unsub })
     })
   }
 
@@ -71,6 +71,10 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
       prevState.unsub && prevState.unsub()
       this.updateBalance()
     }
+  }
+
+  componentWillUnmount (): void {
+    this.state.unsub && this.state.unsub()
   }
 
   static getDerivedStateFromProps (nextProps, prevState) {

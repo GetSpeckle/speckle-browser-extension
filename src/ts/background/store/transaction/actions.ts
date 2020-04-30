@@ -34,7 +34,6 @@ export function getTransactions (address: string, network: string): AnyAction {
 
 export function upsertTransaction (address: string, network: string,
                                    tran: ITransaction, list: ITransaction[]): AnyAction {
-  console.log('List before: ', list)
   if (list === null) { list = [] }
   const idx = list.findIndex(item => item.txHash === tran.txHash)
   let updated = [tran]
