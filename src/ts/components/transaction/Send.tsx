@@ -32,7 +32,7 @@ import {
 import { SubmittableResult } from '@polkadot/api'
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types'
 import { HOME_ROUTE, QR_ROUTE } from '../../constants/routes'
-import { EventRecord, Index, BlockNumber } from '@polkadot/types/interfaces'
+import { Index, BlockNumber } from '@polkadot/types/interfaces'
 import { decodeAddress } from '@polkadot/util-crypto'
 import { SiDef } from '@polkadot/util/types'
 import styled from 'styled-components'
@@ -165,7 +165,6 @@ class Send extends React.Component<ISendProps, ISendState> {
     const balancesAll = await this.api.derive.balances.all(currentAddress) as DeriveBalancesAll
     const currentNonce = balancesAll.accountNonce
     this.setState({ nonce: currentNonce })
-    console.log('currentNonce: ', currentNonce.toNumber())
     let signerPayload: SignerPayloadJSON = {
       address: currentAddress,
       blockHash: currentBlockHash.toHex(),
@@ -197,7 +196,7 @@ class Send extends React.Component<ISendProps, ISendState> {
     })
   }
 
-  confirm = async (done) => {
+  confirm = async () => {
 
     if (!this.state.extrinsic || !this.props.settings.selectedAccount) {
       this.props.setError('Error occurred when processing your transaction.')
@@ -231,69 +230,39 @@ class Send extends React.Component<ISendProps, ISendState> {
     this.updateList(address, this.props.settings.network, txItem)
 
     const submittable = this.state.extrinsic as SubmittableExtrinsic
-    const sendTimer = this.startSendTimer()
-    submittable.send(({ events, status }: SubmittableResult) => {
-      const { history } = this.props
-      console.log('Transaction status:', status.type)
-      if (status.isFinalized) {
-        this.setState({ isLoading: false })
+    submittable.send((result: SubmittableResult) => {
+      if (result.isFinalized) {
+        console.log(`Transaction finalized at blockHash ${result.status.asFinalized}`)
         txItem.updateTime = new Date().getTime()
-        console.log('Completed at block hash', status.value.toHex())
-        console.log('Events:')
-        events.forEach(({ phase, event: { data, method, section } }: EventRecord) => {
-          console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString())
-          if (method === 'ExtrinsicSuccess') {
-            txItem.status = 'Success'
-            this.updateList(address, this.props.settings.network, txItem)
-          } else if (method === 'ExtrinsicFailed') {
-            txItem.status = 'Failure'
-            this.updateList(address, this.props.settings.network, txItem)
-          }
-        })
-        done && done()
-        if (!this.state.isTimeout) {
-          clearTimeout(sendTimer)
-          history.push(HOME_ROUTE)
-        }
-      } else if (status.isInvalid || status.isDropped || status.isUsurped) {
+        txItem.status = 'Success'
+        this.updateList(address, this.props.settings.network, txItem)
         this.setState({ isLoading: false })
+        this.props.history.push(HOME_ROUTE)
+      } else if (result.isError) {
+        txItem.updateTime = new Date().getTime()
         txItem.status = 'Failure'
-        txItem.updateTime = new Date().getTime()
         this.updateList(address, this.props.settings.network, txItem)
         this.props.setError('Failed to send the transaction')
-        if (!this.state.isTimeout) {
-          clearTimeout(sendTimer)
-        }
+        this.setState({ isLoading: false })
+      } else if (result.isWarning) {
+        console.warn(result.status)
       }
     }).catch((err) => {
       console.log('Error', err)
-      txItem.status = 'Failure'
-      this.setState({ isLoading: false })
       txItem.updateTime = new Date().getTime()
+      txItem.status = 'Failure'
       this.updateList(address, this.props.settings.network, txItem)
       this.props.setError('Failed to send the transaction')
-      if (!this.state.isTimeout) {
-        clearTimeout(sendTimer)
-      }
+      this.setState({ isLoading: false })
     })
   }
 
   updateList = (address, network, txItem) => {
     this.props.getTransactions(address, network).then((getTxs) => {
-      console.log(getTxs)
       const txs = getTxs.value
-      console.log('list input: ', txs)
       this.props.upsertTransaction(address, network,
         txItem, txs)
     })
-  }
-
-  startSendTimer = () => {
-    const { history } = this.props
-    return setTimeout(() => {
-      this.setState({ isLoading: false, isTimeout: true })
-      history.push(HOME_ROUTE)
-    }, 6000)
   }
 
   readyToSubmit = (): boolean => {
