@@ -14,12 +14,12 @@ const mapStateToProps = (state: IAppState) => {
 type P = ReturnType<typeof mapStateToProps>
 
 export const LayoutContainer = styled('div')`
-    width: 375px
-    height: 600px
-    border-radius: 4px
-    box-shadow: 0 6px 30px 0 ${props => props.theme['shadowColor']}
-    border: 0
-    background-color: ${props => props.theme['backgroundColor']}
+  width: 375px
+  height: 600px
+  border-radius: 4px
+  border-width: 0
+  box-shadow: 0 6px 30px 0 ${props => props.theme['shadowColor']};
+  background-color: ${props => props.theme['backgroundColor']};
 `
 
 const StyledButton = styled(SemanticButton).attrs({ fluid: true })` && {
