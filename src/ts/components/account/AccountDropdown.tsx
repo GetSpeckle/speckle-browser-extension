@@ -41,7 +41,7 @@ interface Option {
   text: string,
   value: string,
   content: object,
-  disable?: boolean,
+  disabled?: boolean,
   as?: object,
   to?: string
 }
@@ -139,7 +139,7 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
           text: account.name,
           value: account.address,
           content: this.generateDropdownItem(account, identiconTheme),
-          disable: false
+          disabled: false
         }))
 
         this.setState({
@@ -272,9 +272,7 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
     if (!this.props.qrDestination) return null
     return (
       <QrIcon
-        compact={true}
         inverted={true}
-        basic={true}
         name='qrcode'
         onClick={this.handleClickQR}
       />
