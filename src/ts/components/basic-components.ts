@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { colorSchemes } from './styles/themes'
 import { IAppState } from '../background/store/all'
 import { connect } from 'react-redux'
-import { Dropdown, Input } from 'semantic-ui-react'
+import { Input } from 'semantic-ui-react'
 
 const mapStateToProps = (state: IAppState) => {
   return {
@@ -99,14 +99,6 @@ export const AccountAddress = styled.span`
   text-align: center
   color: #fff
 `
-
-export const StyledChainDropdown = styled(Dropdown)`
-    & .menu {
-      background-color: ${(p: P) => colorSchemes[p.settings.color].backgroundColor} !important
-    }
-`
-
-export const ChainDropdown = connect(mapStateToProps)(StyledChainDropdown)
 
 export const LoginFooter = styled.div`
   position: absolute

@@ -31,7 +31,7 @@ export const blueColorScheme: ColorScheme = {
   stopColorOne: '#44C5EE',
   stopColorTwo: '#4AABE0',
   headerShadow: '0 0 0 0 0.223431156 0 0 0 0 0.734036715 0 0 0 0 0.974888393 0 0 0 0.601704031 0',
-  backgroundColor: '#24b6e8',
+  backgroundColor: '#4AABE0',
   shadowColor: 'rgba(72, 178, 228, 0.21)'
 }
 
@@ -39,7 +39,7 @@ export const greenColorScheme: ColorScheme = {
   stopColorOne: '#51DFB0',
   stopColorTwo: '#52C48D',
   headerShadow: '0 0 0 0 0.317647059 0 0 0 0 0.847058824 0 0 0 0 0.654901961 0 0 0 0.597599638 0',
-  backgroundColor: '#51d8a7',
+  backgroundColor: '#52C48D',
   shadowColor: 'rgba(81, 216, 167, 0.1)'
 }
 

@@ -68,6 +68,10 @@
   z-index: 2;
 }
 
+.top-menu .ui.selection.dropdown.chain .menu {
+  background-color: inherit;
+}
+
 .top-menu .ui.selection.dropdown.chain .visible.transition {
   border-bottom-left-radius: 12px!important;
   border-bottom-right-radius: 12px!important;

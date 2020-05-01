@@ -1,14 +1,14 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { withRouter, RouteComponentProps } from 'react-router'
-import { Image, Grid } from 'semantic-ui-react'
+import { Dropdown, Image, Grid, DropdownProps } from 'semantic-ui-react'
 import { networks } from '../../constants/networks'
 import { IAppState } from '../../background/store/all'
 import { saveSettings } from '../../background/store/settings'
-import { ChainDropdown } from '../basic-components'
 import styled from 'styled-components'
 import SettingsMenu from './SettingsMenu'
 import { destroyApi } from '../../background/store/api-context'
+import { colorSchemes } from '../styles/themes'
 
 interface ITopMenuProps extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -24,15 +24,18 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
     profileIconClicked: false
   }
 
-  changeNetwork = (_e: any, data: { value: string; }) => {
-    this.setState({
-      chainIconUrl: networks[data.value].chain.iconUrl
-    })
+  changeNetwork = (_e: any, { value }: DropdownProps) => {
+    if (value) {
+      const network = value.toString()
+      this.setState({
+        chainIconUrl: networks[network].chain.iconUrl
+      })
 
-    const { provider } = this.props.apiContext
-    provider && provider.isConnected() && provider.disconnect()
-    this.props.destroyApi()
-    this.props.saveSettings({ ...this.props.settings, network: data.value })
+      const { provider } = this.props.apiContext
+      provider && provider.isConnected() && provider.disconnect()
+      this.props.destroyApi()
+      this.props.saveSettings({ ...this.props.settings, network })
+    }
   }
 
   handleProfileIconClick = () => {
@@ -69,6 +72,10 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
       }
     })
 
+    const dropdownMenuStyle = {
+      backgroundColor: colorSchemes[this.props.settings.color].backgroundColor
+    }
+
     return (
       <div>
         <div className='top-menu'>
@@ -78,8 +85,9 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
             </Grid.Column>
 
             <Grid.Column width={8} >
-              <ChainDropdown
-                className='chain'
+              <Dropdown
+                style={dropdownMenuStyle}
+                className='selection chain'
                 fluid={true}
                 value={this.props.settings.network}
                 onChange={this.changeNetwork}
