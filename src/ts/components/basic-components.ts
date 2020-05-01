@@ -104,11 +104,6 @@ export const StyledChainDropdown = styled(Dropdown)`
     & .menu {
       background-color: ${(p: P) => colorSchemes[p.settings.color].backgroundColor} !important
     }
-    .visible.transition {
-      border-bottom-left-radius: 12px!important;
-      border-bottom-right-radius: 12px!important;
-      border-color: white!important;
-    }
 `
 
 export const ChainDropdown = connect(mapStateToProps)(StyledChainDropdown)
