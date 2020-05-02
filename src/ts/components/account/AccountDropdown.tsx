@@ -17,7 +17,7 @@ import Identicon from '@polkadot/react-identicon'
 import { saveSettings } from '../../background/store/settings'
 import 'react-tippy/dist/tippy.css'
 import { Tooltip } from 'react-tippy'
-import { Dropdown, Icon, Popup } from 'semantic-ui-react'
+import { Dropdown, Icon } from 'semantic-ui-react'
 import { colorSchemes } from '../styles/themes'
 import styled from 'styled-components'
 import { getTransactions } from '../../background/store/transaction'
@@ -31,8 +31,8 @@ interface IAccountDropdownProps extends StateProps, RouteComponentProps, Dispatc
 
 interface IAccountDropdownState {
   options: Array<Option>,
-  message?: string,
-  msgTimeout?: any,
+  addressCopied: boolean,
+  copiedTimeout?: any,
   network: string
 }
 
@@ -46,12 +46,15 @@ interface Option {
   to?: string
 }
 
+const delay = 1500
+
 class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDropdownState> {
 
   constructor (props) {
     super(props)
 
     this.state = {
+      addressCopied: false,
       options: [],
       network: props.settings.network
     }
@@ -94,12 +97,11 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
     el.select()
     document.execCommand('copy')
     document.body.removeChild(el)
-
-    this.setState({ message: t('copyAddressMessage') })
+    this.setState({ addressCopied: true })
     const timeout = setTimeout(() => {
-      this.setState({ message: '' })
-    }, 2000)
-    this.setState({ msgTimeout: timeout })
+      this.setState({ addressCopied: false })
+    }, delay)
+    this.setState({ copiedTimeout: timeout })
   }
 
   loadAccounts = () => {
@@ -169,8 +171,8 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
   }
 
   componentWillUnmount () {
-    if (this.state.msgTimeout) {
-      clearTimeout(this.state.msgTimeout)
+    if (this.state.copiedTimeout) {
+      clearTimeout(this.state.copiedTimeout)
     }
   }
 
@@ -240,7 +242,9 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
         </AccountSection>
         <AccountSection>
           <Tooltip
-            title={!this.state.message ? t('copyToClipboard') : t('copiedExclam')}
+            title={!this.state.addressCopied ? t('copyToClipboard') : t('copiedExclam')}
+            duration={delay}
+            animation='fade'
             position='bottom'
             trigger='mouseenter'
             arrow={true}
@@ -248,12 +252,6 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
             <AccountAddress onClick={this.copyToClipboard}>
               {displayAddress(this.props.settings.selectedAccount.address, false)}
             </AccountAddress>
-
-            <Popup
-              open={!!this.state.message}
-              content={t('copyAddressMessage')}
-              basic={true}
-            />
           </Tooltip>
           <Tooltip
             title={t('clickToQRCode')}

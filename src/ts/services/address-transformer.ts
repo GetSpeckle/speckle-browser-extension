@@ -16,3 +16,11 @@ export const displayAddress = (address: string, showFullAddress: boolean): strin
   const startOfEnd = address.length - 10
   return address.substring(0, 8) + '...' + address.substring(startOfEnd)
 }
+
+export const isAddressValid = (address: string): boolean => {
+  try {
+    return decodeAddress(address).length === 32
+  } catch (e) {
+    return false
+  }
+}

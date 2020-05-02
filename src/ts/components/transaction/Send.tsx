@@ -32,10 +32,10 @@ import {
 import { SubmittableResult } from '@polkadot/api'
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types'
 import { HOME_ROUTE, QR_ROUTE } from '../../constants/routes'
-import { Index, BlockNumber } from '@polkadot/types/interfaces'
-import { decodeAddress } from '@polkadot/util-crypto'
+import { Index } from '@polkadot/types/interfaces'
 import { SiDef } from '@polkadot/util/types'
 import styled from 'styled-components'
+import { isAddressValid } from '../../services/address-transformer'
 
 interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {}
 
@@ -52,11 +52,8 @@ interface ISendState {
   isLoading: boolean
   fee: BN
   extrinsic?: IExtrinsic | null
-  creationFee: BN
-  existentialDeposit: BN
-  recipientAvailable: BN
-  modalOpen: boolean,
-  isTimeout: boolean
+  senderAvailable: BN
+  modalOpen: boolean
 }
 
 const TEN = new BN(10)
@@ -88,11 +85,8 @@ class Send extends React.Component<ISendProps, ISendState> {
       isLoading: false,
       fee: new BN(0),
       extrinsic: undefined,
-      creationFee: new BN(0),
-      existentialDeposit: new BN(0),
-      recipientAvailable: new BN(0),
-      modalOpen: false,
-      isTimeout: false
+      senderAvailable: new BN(0),
+      modalOpen: false
     }
   }
 
@@ -127,12 +121,8 @@ class Send extends React.Component<ISendProps, ISendState> {
     this.setState({ tip: event.target.value })
   }
 
-  changeFee = (fee, creationFee, existentialDeposit) => {
-    this.setState({
-      fee: fee,
-      creationFee: creationFee,
-      existentialDeposit: existentialDeposit
-    })
+  changeFee = (fee) => {
+    this.setState({ fee: fee })
   }
 
   changeAmountSi = (_event, data) => {
@@ -157,12 +147,11 @@ class Send extends React.Component<ISendProps, ISendState> {
     const amountBn = this.inputValueToBn(this.state.amount, this.state.amountSi)
     const tipBn = this.inputValueToBn(this.state.tip, this.state.tipSi)
     const currentAddress = this.props.account.address
-    const extrinsic: IExtrinsic = await this.api.tx.balances
-      .transfer(this.state.toAddress, amountBn)
-
-    const currentBlockNumber = await this.api.query.system.number() as unknown as BlockNumber
+    const extrinsic = this.api.tx.balances.transfer(this.state.toAddress, amountBn)
+    const currentBlockNumber = await this.api.query.system.number()
     const currentBlockHash = await this.api.rpc.chain.getBlockHash(currentBlockNumber)
     const balancesAll = await this.api.derive.balances.all(currentAddress) as DeriveBalancesAll
+    this.setState({ senderAvailable: balancesAll.availableBalance })
     const currentNonce = balancesAll.accountNonce
     this.setState({ nonce: currentNonce })
     let signerPayload: SignerPayloadJSON = {
@@ -266,19 +255,11 @@ class Send extends React.Component<ISendProps, ISendState> {
   }
 
   readyToSubmit = (): boolean => {
-    return this.isToAddressValid()
+    return isAddressValid(this.state.toAddress)
       && !!this.state.amount
       && this.state.hasAvailable
       && this.isAmountValid() === ''
       && this.isTipValid() === ''
-  }
-
-  isToAddressValid = (): boolean => {
-    try {
-      return decodeAddress(this.state.toAddress).length === 32
-    } catch (e) {
-      return false
-    }
   }
 
   validateAmount (str: String): string {
@@ -331,43 +312,44 @@ class Send extends React.Component<ISendProps, ISendState> {
         <div style={{ height: 27 }} />
         <DividerSection />
         <Form>
-          <Amount
-            handleAmountChange={this.changeAmount}
-            handleAmountSiChange={this.changeAmountSi}
-            handleTipChange={this.changeTip}
-            handleTipSiChange={this.changeTipSi}
-            amountValid={this.isAmountValid()}
-            tipValid={this.isTipValid()}
-          />
-          <ToAddress handleAddressChange={this.changeAddress}/>
-          {this.isToAddressValid() || <ErrorMessage>{t('invalidAddress')}</ErrorMessage>}
-          <div style={{ height: 17 }} />
-          <FeeSection>
-            <Fee
-              address={this.props.account.address}
-              toAddress={this.state.toAddress}
-              handleFeeChange={this.changeFee}
+          <div>
+            <Amount
+              handleAmountChange={this.changeAmount}
+              handleAmountSiChange={this.changeAmountSi}
+              handleTipChange={this.changeTip}
+              handleTipSiChange={this.changeTipSi}
+              amountValid={this.isAmountValid()}
+              tipValid={this.isTipValid()}
             />
-          </FeeSection>
-          <Section>
-            <Confirm
-              network={this.props.settings.network}
-              color={this.props.settings.color}
-              extrinsic={this.state.extrinsic}
-              trigger={submitButton}
-              fromAddress={this.props.account.address}
-              amount={this.inputValueToBn(this.state.amount, this.state.amountSi)}
-              tip={this.inputValueToBn(this.state.tip, this.state.tipSi)}
-              toAddress={this.state.toAddress}
-              fee={this.state.fee!}
-              creationFee={this.state.creationFee}
-              existentialDeposit={this.state.existentialDeposit}
-              recipientAvailable={this.state.recipientAvailable}
-              confirm={this.confirm}
-              open={this.state.modalOpen}
-              handleModal={this.changeModal}
-            />
-          </Section>
+            <ToAddress handleAddressChange={this.changeAddress}/>
+            {/* tslint:disable-next-line:max-line-length */}
+            {isAddressValid(this.state.toAddress) || <ErrorMessage>{t('invalidAddress')}</ErrorMessage>}
+            <div style={{ height: 17 }} />
+            <FeeSection>
+              <Fee
+                address={this.props.account.address}
+                toAddress={this.state.toAddress}
+                handleFeeChange={this.changeFee}
+              />
+            </FeeSection>
+            <Section>
+              <Confirm
+                network={this.props.settings.network}
+                color={this.props.settings.color}
+                extrinsic={this.state.extrinsic}
+                trigger={submitButton}
+                fromAddress={this.props.account.address}
+                amount={this.inputValueToBn(this.state.amount, this.state.amountSi)}
+                tip={this.inputValueToBn(this.state.tip, this.state.tipSi)}
+                toAddress={this.state.toAddress}
+                fee={this.state.fee!}
+                senderAvailable={this.state.senderAvailable}
+                confirm={this.confirm}
+                open={this.state.modalOpen}
+                handleModal={this.changeModal}
+              />
+            </Section>
+          </div>
         </Form>
 
       </ContentContainer>
@@ -375,13 +357,13 @@ class Send extends React.Component<ISendProps, ISendState> {
   }
 }
 
-export const DividerSection = styled.div`
+const DividerSection = styled.div`
   width: 100%
   margin: 8px 0 9px
   text-align: center
 `
 
-export const FeeSection = styled.div`
+const FeeSection = styled.div`
   width: 100%
   margin: -5px 0 -4px
   text-align: center

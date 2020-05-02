@@ -3,34 +3,14 @@ import t from '../../services/i18n'
 import { connect } from 'react-redux'
 import { IAppState } from '../../background/store/all'
 import ApiPromise from '@polkadot/api/promise'
-import { compactToU8a, formatBalance } from '@polkadot/util'
+import { formatBalance } from '@polkadot/util'
 import styled from 'styled-components'
-import { IExtrinsic } from '@polkadot/types/types'
-import { DeriveFees, DeriveBalancesAll } from '@polkadot/api-derive/types'
 import BN from 'bn.js'
-import { ChainProperties, Index } from '@polkadot/types/interfaces'
-import U32 from '@polkadot/types/primitive/U32'
-import { networks } from '../../constants/networks'
-import { decodeAddress } from '@polkadot/util-crypto'
-
-const LENGTH_PUBLICKEY = 32 + 1 // publicKey + prefix
-const LENGTH_SIGNATURE = 64
-const LENGTH_ERA = 1
-const SIGNATURE_SIZE = LENGTH_PUBLICKEY + LENGTH_SIGNATURE + LENGTH_ERA
-const ADDRESS_LENGTH = 47
-
-const calcSignatureLength = (extrinsic?: IExtrinsic | null, accountNonce?: Index): number => {
-  return SIGNATURE_SIZE +
-    (accountNonce ? compactToU8a(accountNonce).length : 0) +
-    (extrinsic ? extrinsic.encodedLength : 0)
-}
+import { isAddressValid } from '../../services/address-transformer'
 
 class Fee extends React.Component<IFeeProps, IFeeState> {
 
-  state: IFeeState = {
-    fee: undefined,
-    tries: 1
-  }
+  state: IFeeState = {}
 
   get api (): ApiPromise {
     const api = this.props.apiContext.api
@@ -45,75 +25,17 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
   }
 
   updateFee = () => {
-    const isToAddressValid = (addr: string): boolean => {
-      try {
-        return decodeAddress(addr).length === 32
-      } catch (e) {
-        return false
-      }
-    }
-    if (this.props.toAddress.length < ADDRESS_LENGTH || !isToAddressValid(this.props.toAddress)) {
+    if (!isAddressValid(this.props.toAddress)) {
       this.setState({ fee: undefined })
       return
     }
-    if (this.props.apiContext.apiReady) {
-      this.setState({ ...this.state, tries: 1 })
-      const { tokenDecimals, tokenSymbol, registry } = this.props.network
-      if (tokenDecimals !== undefined && tokenSymbol !== undefined) {
-        formatBalance.setDefaults({
-          decimals: tokenDecimals,
-          unit: tokenSymbol
-        })
-        this.doUpdate()
-      } else {
-        this.api.rpc.system.properties().then(properties => {
-          const chainProperties = (properties as ChainProperties)
-          formatBalance.setDefaults({
-            decimals: chainProperties.tokenDecimals.unwrapOr(new U32(registry, 15)).toNumber(),
-            unit: chainProperties.tokenSymbol.unwrapOr('DEV').toString()
-          })
-          this.doUpdate()
-        })
-      }
-    } else if (this.state.tries <= 10) {
-      const nextTry = setTimeout(this.updateFee, 1000)
-      this.setState({ ...this.state, tries: this.state.tries + 1, nextTry: nextTry })
-    } else {
-      this.setState({ ...this.state, fee: t('balanceNA') })
-    }
-  }
-
-  private doUpdate = () => {
-    const address = this.props.address
-    const toAddress = this.props.toAddress
-    console.log(toAddress)
-    Promise.all([
-      this.api.derive.balances.fees() as unknown as DeriveFees,
-      this.api.tx.balances.transfer(address, 1) as unknown as IExtrinsic,
-      this.api.derive.balances.all(toAddress) as unknown as DeriveBalancesAll
-    ]).then(([fees, ext, balancesAll]) => {
-      const nonce = balancesAll.accountNonce
-      console.log('fee infos', fees, nonce, ext, balancesAll)
-      const extLength = calcSignatureLength(ext, nonce)
-      const baseFee = new BN(fees.transactionBaseFee)
-      const byteFee = new BN(fees.transactionByteFee).muln(extLength)
-      const transferFee = new BN(fees.transferFee)
-      const hasAvailable = balancesAll.availableBalance.gtn(0)
-      const totalFee = hasAvailable ?
-        baseFee.add(byteFee).add(transferFee) :
-        baseFee.add(byteFee).add(transferFee).add(fees.creationFee)
-      const formattedFee = formatBalance(totalFee, {
-        forceUnit: '-',
-        withSi: true
-      })
+    const { address, toAddress } = this.props
+    const ext = this.api.tx.balances.transfer(toAddress, 1)
+    ext.paymentInfo(address).then((dispatchInfo) => {
+      const formattedFee = formatBalance(dispatchInfo.partialFee, { forceUnit: '-', withSi: true })
       if (formattedFee !== this.state.fee) {
         this.setState({ ...this.state, fee: formattedFee })
-        this.props.handleFeeChange(
-          totalFee,
-          fees.creationFee,
-          fees.existentialDeposit,
-          balancesAll.availableBalance
-        )
+        this.props.handleFeeChange(new BN(dispatchInfo.partialFee))
       }
     })
   }
@@ -122,26 +44,10 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
     this.updateFee()
   }
 
-  componentWillUnmount (): void {
-    this.state.nextTry && clearTimeout(this.state.nextTry)
-  }
-
   render () {
-    return this.state.fee !== undefined ? this.renderFee() : this.renderPlaceHolder()
-  }
-
-  renderPlaceHolder () {
     return (
       <TxFee>{t('transferFee')}
-        <span/>
-      </TxFee>
-    )
-  }
-
-  renderFee () {
-    return (
-      <TxFee>{t('transferFee')}
-        <span>&nbsp;{this.state.fee}</span>
+        <span>&nbsp;{this.state.fee ? this.state.fee : ''}</span>
       </TxFee>
     )
   }
@@ -168,8 +74,7 @@ const TxFee = styled.p`
 
 const mapStateToProps = (state: IAppState) => {
   return {
-    apiContext: state.apiContext,
-    network: networks[state.settings.network]
+    apiContext: state.apiContext
   }
 }
 
@@ -183,8 +88,6 @@ interface IFeeProps extends StateProps {
 
 interface IFeeState {
   fee?: string
-  tries: number
-  nextTry?: any
 }
 
 export default connect(mapStateToProps)(Fee)
