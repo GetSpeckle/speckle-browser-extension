@@ -274,5 +274,20 @@
   },
   "networkError": {
     "message": "网络连接异常"
+  },
+  "approve": {
+    "message": "同意"
+  },
+  "reject": {
+    "message": "拒绝"
+  },
+  "authDesc": {
+    "message": "请求访问你的账户"
+  },
+  "accessAlert": {
+    "message": "该请求来自"
+  },
+  "approveAlert": {
+    "message": "点击同意会让该应用访问你的账户地址"
   }
 }

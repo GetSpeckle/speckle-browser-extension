@@ -277,5 +277,20 @@
   },
   "networkError": {
     "message": "There is a network error occurred"
+  },
+  "approve": {
+    "message": "Approve"
+  },
+  "reject": {
+    "message": "Reject"
+  },
+  "authDesc": {
+    "message": "is requesting access to your account"
+  },
+  "accessAlert": {
+    "message": "The request is made from "
+  },
+  "approveAlert": {
+    "message": "Approving gives access to the address of your accounts"
   }
 }
