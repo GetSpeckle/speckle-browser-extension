@@ -15,7 +15,6 @@ const pkgJson = require('./package.json');
 module.exports = {
   entry: {
     background: path.join(sourceRootPath, 'ts', 'background', 'index.ts'),
-    options: path.join(sourceRootPath, 'ts', 'options', 'index.tsx'),
     popup: path.join(sourceRootPath, 'ts', 'popup', 'index.tsx'),
     speckle: path.join(sourceRootPath, 'ts', 'page', 'index.ts'),
     content: path.join(sourceRootPath, 'ts', 'content', 'index.tsx')
@@ -36,13 +35,6 @@ module.exports = {
   },
   plugins: [
     new CheckerPlugin(),
-    new HtmlWebpackPlugin({
-      template: path.join(sourceRootPath, 'html', 'options.html'),
-      inject: 'body',
-      filename: 'options.html',
-      title: 'Speckle- Options Page',
-      chunks: ['options'],
-    }),
     new HtmlWebpackPlugin({
       template: path.join(sourceRootPath, 'html', 'popup.html'),
       inject: 'body',
@@ -85,7 +77,6 @@ if (nodeEnv === 'watch') {
       reloadPage: true,
       entries: {
         background: 'background',
-        options: 'options',
         popup: 'popup',
         contentScript: ['content'],
       }

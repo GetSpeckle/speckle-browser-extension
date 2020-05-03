@@ -31,10 +31,6 @@
     "default_icon": "assets/icon-48.png",
     "default_popup": "popup.html"
   },
-  "options_ui": {
-    "page": "options.html",
-    "open_in_tab": true
-  },
   "content_scripts": [
     {
       "js": [
