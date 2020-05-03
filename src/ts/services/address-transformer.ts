@@ -14,7 +14,7 @@ export const getPubkeyHex = (address: string): string => {
 export const displayAddress = (address: string, showFullAddress: boolean): string => {
   if (showFullAddress) return address
   const startOfEnd = address.length - 10
-  return address.substring(0, 8) + '...' + address.substring(startOfEnd)
+  return address.substring(0, 8) + '......' + address.substring(startOfEnd)
 }
 
 export const isAddressValid = (address: string): boolean => {
