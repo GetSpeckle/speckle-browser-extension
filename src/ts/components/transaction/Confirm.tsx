@@ -1,7 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { Overlay } from './Overlay'
-import { Button as BasicButton, Icon, Modal } from 'semantic-ui-react'
+import {Button as BasicButton, Icon, Image, Modal} from 'semantic-ui-react'
 import { Button } from '../basic-components'
 import Identicon from '@polkadot/react-identicon'
 import 'react-tippy/dist/tippy.css'
@@ -117,7 +116,10 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
           <Subheading>Review your extrinsic details</Subheading>
         </UpperSection>
         <OverlaySection>
-          <Overlay/>
+          <Image
+            src='/assets/overlay.svg'
+            centered={true}
+          />
         </OverlaySection>
         <Section>
           <FromTo color={colorSchemes[this.props.color].backgroundColor}>
