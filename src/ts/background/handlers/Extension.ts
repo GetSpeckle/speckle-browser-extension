@@ -96,6 +96,8 @@ export default class Extension {
         id,
         ...result
       })
+    }).catch(error => {
+      reject(error)
     })
     return true
   }
