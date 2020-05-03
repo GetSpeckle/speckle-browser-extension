@@ -212,7 +212,7 @@ const MenuOptionsContainer = styled.div`
   align-items: center;
   position: absolute;
   top: 13px;
-  left: 320px;
+  left: 313px;
 `
 const MenuOption = styled.div`
   font-size: 11px;

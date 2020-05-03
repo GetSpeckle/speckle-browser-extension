@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { withRouter, RouteComponentProps } from 'react-router'
-import { Dropdown, Image, Grid, DropdownProps } from 'semantic-ui-react'
+import { Dropdown, Image, DropdownProps } from 'semantic-ui-react'
 import { networks } from '../../constants/networks'
 import { IAppState } from '../../background/store/all'
 import { saveSettings } from '../../background/store/settings'
@@ -79,12 +79,12 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
     return (
       <div>
         <div className='top-menu'>
-          <Grid centered={true} textAlign='center'>
-            <Grid.Column width={4} verticalAlign='middle'>
+          <Grid>
+            <div style={{ width: 70 }}>
               <Image src='/assets/logo-s.svg' centered={true} />
-            </Grid.Column>
+            </div>
 
-            <Grid.Column width={8} >
+            <div style={{ width: 190 }}>
               <Dropdown
                 style={dropdownMenuStyle}
                 className='selection chain'
@@ -94,13 +94,9 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
                 icon={<img src={this.state.chainIconUrl} alt='Chain logo'/>}
                 options={networkOptions}
               />
-            </Grid.Column>
+            </div>
 
-            <Grid.Column width={1} verticalAlign='middle'>
-              <Image src='/assets/icon-dots-s.svg' centered={true} />
-            </Grid.Column>
-
-            <Grid.Column width={2} verticalAlign='middle'>
+            <div style={{ width: 50 }}>
               <MenuOption
                 onClick={this.handleProfileIconClick}
                 data-click={this.state.profileIconClicked}
@@ -111,7 +107,7 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
                     hidden={this.state.profileIconClicked}
                 />
               </MenuOption>
-            </Grid.Column>
+            </div>
           </Grid>
         </div>
         {this.renderSettingsMenu()}
@@ -135,6 +131,13 @@ const MenuOption = styled.div`
   line-height: 21px;
   margin-left: 2px;
   cursor: pointer;
+`
+
+const Grid = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%
 `
 
 type StateProps = ReturnType<typeof mapStateToProps>
