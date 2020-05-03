@@ -124,7 +124,7 @@ class KeyringVault {
   }
 
   async unlock (password: string): Promise<KeyringPair$Json[]> {
-    if (this .isUnlocked()) {
+    if (this.isUnlocked()) {
       return new Promise<Array<KeyringPair$Json>>(
         resolve => {
           resolve(this.keyring.getPairs().map(pair => pair.toJson(this._password)))
