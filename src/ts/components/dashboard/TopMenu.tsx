@@ -1,14 +1,16 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { withRouter, RouteComponentProps } from 'react-router'
-import { Dropdown, Image, DropdownProps } from 'semantic-ui-react'
+import { Dropdown, Image, DropdownProps, Dimmer, Loader } from 'semantic-ui-react'
 import { networks } from '../../constants/networks'
 import { IAppState } from '../../background/store/all'
 import { saveSettings } from '../../background/store/settings'
 import styled from 'styled-components'
 import SettingsMenu from './SettingsMenu'
-import { destroyApi } from '../../background/store/api-context'
+import { createApi, destroyApi } from '../../background/store/api-context'
 import { colorSchemes } from '../styles/themes'
+import { ApiOptions } from '@polkadot/api/types'
+import { WsProvider } from '@polkadot/rpc-provider'
 
 interface ITopMenuProps extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -24,6 +26,33 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
     profileIconClicked: false
   }
 
+  componentDidMount () {
+    const { apiContext } = this.props
+    if (!apiContext || !apiContext.apiReady) {
+      this.createApi()
+    }
+  }
+
+  componentDidUpdate (prevProps: Readonly<ITopMenuProps>) {
+    if (this.props.settings.network !== prevProps.settings.network) {
+      this.createApi()
+    }
+  }
+
+  createApi = () => {
+    const { settings } = this.props
+    const network = networks[settings.network]
+    const provider = new WsProvider(network.rpcServer)
+    let apiOptions: ApiOptions = { provider, types: network.types }
+    this.props.createApi(apiOptions)
+  }
+
+  destroyApi = () => {
+    const { provider } = this.props.apiContext
+    provider && provider.isConnected() && provider.disconnect()
+    this.props.destroyApi()
+  }
+
   changeNetwork = (_e: any, { value }: DropdownProps) => {
     if (value) {
       const network = value.toString()
@@ -31,9 +60,7 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
         chainIconUrl: networks[network].chain.iconUrl
       })
 
-      const { provider } = this.props.apiContext
-      provider && provider.isConnected() && provider.disconnect()
-      this.props.destroyApi()
+      this.destroyApi()
       this.props.saveSettings({ ...this.props.settings, network })
     }
   }
@@ -76,8 +103,13 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
       backgroundColor: colorSchemes[this.props.settings.color].backgroundColor
     }
 
+    const { apiContext } = this.props
+
     return (
       <div>
+        <Dimmer active={!apiContext.apiReady && !apiContext.failed}>
+          <Loader indeterminate={true}> Connecting to network, please wait ...</Loader>
+        </Dimmer>
         <div className='top-menu'>
           <Grid>
             <div style={{ width: 70 }}>
@@ -142,7 +174,7 @@ const Grid = styled.div`
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
-const mapDispatchToProps = { saveSettings, destroyApi }
+const mapDispatchToProps = { saveSettings, createApi, destroyApi }
 
 type DispatchProps = typeof mapDispatchToProps
 

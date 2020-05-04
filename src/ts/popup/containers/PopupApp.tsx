@@ -25,16 +25,12 @@ import {
   setNewPassword,
   setNewPhrase
 } from '../../background/store/wallet'
-import { createApi, destroyApi } from '../../background/store/api-context'
-import { networks } from '../../constants/networks'
-import { WsProvider } from '@polkadot/rpc-provider'
+import { destroyApi } from '../../background/store/api-context'
 import Initializing from '../../components/Initializing'
 import { AuthorizeRequest, SigningRequest } from '../../background/types'
 import { subscribeAuthorize, subscribeSigning } from '../../services/messaging'
 import Authorizing from '../../components/page/Authorizing'
 import Signing from '../../components/page/Signing'
-import { ApiOptions } from '@polkadot/api/types'
-import { Dimmer, Loader } from 'semantic-ui-react'
 
 interface IPopupProps extends StateProps, DispatchProps { }
 
@@ -62,14 +58,6 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
 
   setSignRequests = (signRequests: Array<SigningRequest>) => {
     this.setState({ signRequests: signRequests })
-  }
-
-  tryCreateApi = () => {
-    const { settings } = this.props
-    const network = networks[settings.network]
-    const provider = new WsProvider(network.rpcServer)
-    let apiOptions: ApiOptions = { provider, types: network.types }
-    this.props.createApi(apiOptions)
   }
 
   initializeApp = () => {
@@ -115,7 +103,6 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
       subscribeAuthorize(this.setAuthRequests),
       subscribeSigning(this.setSignRequests)
     ]).then(() => {
-      this.tryCreateApi()
       this.setState({
         accountSetupTimeoutId,
         initializing: false
@@ -137,12 +124,6 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
     this.initializeApp()
   }
 
-  componentDidUpdate (_prevProps, prevState) {
-    if (this.props.settings.network !== prevState.network) {
-      this.tryCreateApi()
-    }
-  }
-
   static getDerivedStateFromProps (nextProps, prevState) {
     if (nextProps.settings.network !== prevState.network) {
       return { network: nextProps.settings.network }
@@ -158,15 +139,11 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
   }
 
   renderExtensionPopup () {
-    const { apiContext, wallet } = this.props
     return (
       <ThemeProvider theme={themes[this.props.settings.theme]}>
         <React.Fragment>
           <GlobalStyle/>
           <PopupAppContainer>
-            <Dimmer active={!wallet.locked && !apiContext.apiReady && !apiContext.failed}>
-              <Loader indeterminate={true}> Connecting to network, please wait ...</Loader>
-            </Dimmer>
             <Router>
               <Routes/>
             </Router>
@@ -207,7 +184,6 @@ const mapDispatchToProps = {
   getSettings,
   setLocked,
   setCreated,
-  createApi,
   destroyApi,
   setAccountSetupTimeout,
   setAccountName,

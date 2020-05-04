@@ -91,6 +91,9 @@ export default class Extension {
         const network = findNetwork(signerPayload.genesisHash)
         registry = network.registry
       }
+      if (pair.isLocked) {
+        pair.decodePkcs8(password)
+      }
       const result = request.sign(registry, pair)
       resolve({
         id,
