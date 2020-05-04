@@ -79,7 +79,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
    * @param {Array} a items An array containing the items.
    */
   private shuffle = (a: Array<string>): Array<string> => {
-    let i = 0
+    let i
     for (i = a.length - 1; i > 0; i--) {
       let j = Math.floor(Math.random() * (i + 1))
       let x = a[i]
@@ -255,10 +255,15 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
   }
 
   renderBackupScreen () {
+    const { color } = this.props.settings
+    const proceedButtonStyle = {
+      backgroundColor: colorSchemes[color].backgroundColor,
+      color: 'white'
+    }
     return(
       <ContentContainer>
         <Section>
-          <Message info={true}>
+          <Message info={true} color={color}>
             {t('backupKeypairMessage')}
           </Message>
         </Section>
@@ -271,7 +276,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
         </Section>
 
         <Section>
-          <Button onClick={this.handleClick} primary={true} fluid={true}>
+          <Button onClick={this.handleClick} style={proceedButtonStyle} fluid={true}>
             <Icon name='play' />
             {t('proceedButton')}
           </Button>
