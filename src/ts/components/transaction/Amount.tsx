@@ -11,8 +11,8 @@ interface IAmountProps {
   handleAmountSiChange: any,
   handleTipChange: any,
   handleTipSiChange: any,
-  amountValid: String,
-  tipValid: String
+  amountError: string,
+  tipError: string
 }
 
 const MIN_P = -3
@@ -22,8 +22,8 @@ const siOptions: SiDef[] = SI.filter(({ power }) => power >= MIN_P && power <= M
 export default class Amount extends React.Component<IAmountProps> {
 
   componentDidUpdate (prevProps) {
-    if (this.props.amountValid !== prevProps.amountValid ||
-      this.props.tipValid !== prevProps.tipValid) {
+    if (this.props.amountError !== prevProps.amountError ||
+      this.props.tipError !== prevProps.tipError) {
       this.render()
     }
   }
@@ -35,10 +35,10 @@ export default class Amount extends React.Component<IAmountProps> {
       <AmountDiv>
         <InputDiv>
           <Label>{t('amount')}</Label>
-          <div style={{ display: 'flex', width: '311px' }}>
+          <Row>
             <Input>
-              <TruncatedInput type='text' onChange={this.props.handleAmountChange} size={20} />
-              <ErrorMessage>{this.props.amountValid}</ErrorMessage>
+              <TruncatedInput type='text' onChange={this.props.handleAmountChange} size={21} />
+              <ErrorMessage>{this.props.amountError}</ErrorMessage>
             </Input>
             <SiDropdown
               selection={true}
@@ -47,14 +47,14 @@ export default class Amount extends React.Component<IAmountProps> {
               scrolling={true}
               onChange={this.props.handleAmountSiChange}
             />
-          </div>
+          </Row>
         </InputDiv>
         <InputDiv>
           <Label>{t('tip')}</Label>
-          <div style={{ display: 'flex', width: '311px' }}>
+          <Row>
             <Input>
-              <TruncatedInput type='text' onChange={this.props.handleTipChange} size={20}/>
-              <ErrorMessage>{this.props.tipValid}</ErrorMessage>
+              <TruncatedInput type='text' onChange={this.props.handleTipChange} size={21}/>
+              <ErrorMessage>{this.props.tipError}</ErrorMessage>
             </Input>
             <SiDropdown
               selection={true}
@@ -63,12 +63,18 @@ export default class Amount extends React.Component<IAmountProps> {
               scrolling={true}
               onChange={this.props.handleTipSiChange}
             />
-          </div>
+          </Row>
         </InputDiv>
       </AmountDiv>
     )
   }
 }
+
+const Row = styled.div`
+  display: flex
+  justify-content: space-between
+  width: 311px
+`
 
 const Label = styled.label`
   {
@@ -105,7 +111,7 @@ const SiDropdown = styled(Dropdown)`
 {
   margin-left: 11px;
   height: 32px;
-  min-width: 100px;
+  min-width: 80px !important;
 }
 `
 
@@ -119,5 +125,5 @@ const AmountDiv = styled.div`
   height: 123px;
 `
 const InputDiv = styled.div`
-  margin-top: 7.5px;
+  margin-top: 10px;
 `

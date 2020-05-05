@@ -100,13 +100,10 @@ class Send extends React.Component<ISendProps, ISendState> {
     const bigPart = new BN(parts[0]).mul(TEN.pow(new BN(decimals + selectedSi.power)))
     if (parts.length === 1) {
       return bigPart
-    } else if (parts.length === 2) {
-      const bn = new BN(decimals + selectedSi.power - parts[1].length)
-      const smallPart = new BN(parts[1]).mul(TEN.pow(bn))
-      return bigPart.add(smallPart)
-    } else { // invalid number
-      return new BN(0)
     }
+    const bn = new BN(decimals + selectedSi.power - parts[1].length)
+    const smallPart = new BN(parts[1]).mul(TEN.pow(bn))
+    return bigPart.add(smallPart)
   }
 
   changeAddress = event => {
@@ -258,28 +255,21 @@ class Send extends React.Component<ISendProps, ISendState> {
     return isAddressValid(this.state.toAddress)
       && !!this.state.amount
       && this.state.hasAvailable
-      && this.isAmountValid() === ''
-      && this.isTipValid() === ''
+      && this.isAmountValid()
+      && this.isTipValid()
   }
 
-  validateAmount (str: String): string {
-    let result = ''
-    str.split('').map((ch) => {
-      if ('a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch === '_') {
-        result = 'Letters not allowed'
-      } else if (ch === '-') {
-        result = 'Negatives or hyphens not allowed'
-      }
-    })
-    return result
+  isAmountValid = (): boolean => {
+    const n = Number(this.state.amount)
+    return !isNaN(n) && n > 0
   }
 
-  isAmountValid = (): string => {
-    return this.validateAmount(this.state.amount)
-  }
-
-  isTipValid = (): string => {
-    return this.validateAmount(this.state.tip)
+  isTipValid = (): boolean => {
+    if (this.state.tip) {
+      const n = Number(this.state.tip)
+      return !isNaN(n) && n >= 0
+    }
+    return true
   }
 
   render () {
@@ -318,8 +308,8 @@ class Send extends React.Component<ISendProps, ISendState> {
               handleAmountSiChange={this.changeAmountSi}
               handleTipChange={this.changeTip}
               handleTipSiChange={this.changeTipSi}
-              amountValid={this.isAmountValid()}
-              tipValid={this.isTipValid()}
+              amountError={this.isAmountValid() ? '' : t('positiveNumber')}
+              tipError={this.isTipValid() ? '' : t('notNegative')}
             />
             <ToAddress handleAddressChange={this.changeAddress}/>
             {/* tslint:disable-next-line:max-line-length */}

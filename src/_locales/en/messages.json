@@ -292,5 +292,11 @@
   },
   "approveAlert": {
     "message": "Approving gives access to the address of your accounts"
+  },
+  "positiveNumber": {
+    "message": "not a positive number"
+  },
+  "notNegative": {
+    "message": "cannot be negative number"
   }
 }

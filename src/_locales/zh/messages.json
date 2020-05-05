@@ -289,5 +289,11 @@
   },
   "approveAlert": {
     "message": "点击同意会让该应用访问你的账户地址"
+  },
+  "positiveNumber": {
+    "message": "必须大于0"
+  },
+  "notNegative": {
+    "message": "不能是负数"
   }
 }
