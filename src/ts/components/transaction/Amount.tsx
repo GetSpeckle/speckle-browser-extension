@@ -3,8 +3,8 @@ import styled from 'styled-components'
 import { Dropdown } from 'semantic-ui-react'
 import t from '../../services/i18n'
 import { SiDef } from '@polkadot/util/types'
+import { SI } from '@polkadot/util/format/si'
 import { ErrorMessage } from '../basic-components'
-import formatBalance from '@polkadot/util/format/formatBalance'
 
 interface IAmountProps {
   handleAmountChange: any,
@@ -15,7 +15,9 @@ interface IAmountProps {
   tipValid: String
 }
 
-const siOptions: SiDef[] = formatBalance.getOptions()
+const MIN_P = -3
+const MAX_P = 6
+const siOptions: SiDef[] = SI.filter(({ power }) => power >= MIN_P && power <= MAX_P)
 
 export default class Amount extends React.Component<IAmountProps> {
 
