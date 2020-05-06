@@ -33,7 +33,7 @@ interface IConfirmState {
   copiedTimeout?: any
 }
 
-const formatOptions = { forceUnit: '-', withSi: true }
+const formatOptions = { withSi: true }
 
 const delay = 1500
 
