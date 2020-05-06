@@ -14,7 +14,7 @@ class LoginLayout extends Component<ILoginLayoutProps> {
     return (
       <LayoutContainer>
         <Header color={this.props.settings.color} />
-        <ErrorMessage message={this.props.error} style={alignMiddle}/>
+        <ErrorMessage message={this.props.error}/>
         {this.props.children}
         <LoginFooter/>
       </LayoutContainer>
@@ -32,10 +32,5 @@ const mapStateToProps = (state: IAppState) => {
 const mapDispatchToProps = {}
 type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps
-
-const alignMiddle = {
-  width: 311,
-  margin: 'auto'
-}
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginLayout)

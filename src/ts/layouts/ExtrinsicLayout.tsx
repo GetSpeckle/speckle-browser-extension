@@ -21,7 +21,7 @@ class ExtrinsicLayout extends Component<IExtrinsicProps> {
     return (
       <LayoutContainer style={layoutStyle}>
         <TopMenu />
-        <ErrorMessage message={this.props.error} style={alignMiddle}/>
+        <ErrorMessage message={this.props.error}/>
         {this.props.children}
         <BottomMenu />
       </LayoutContainer>
@@ -34,11 +34,6 @@ const mapStateToProps = (state: IAppState) => {
     settings: state.settings,
     error: state.error.message
   }
-}
-
-const alignMiddle = {
-  width: 311,
-  margin: 'auto'
 }
 
 type StateProps = ReturnType<typeof mapStateToProps>

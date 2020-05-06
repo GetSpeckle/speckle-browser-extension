@@ -136,6 +136,12 @@ class Send extends React.Component<ISendProps, ISendState> {
     this.setState({ modalOpen: open })
   }
 
+  getTotal = () => {
+    const amountBn = this.inputValueToBn(this.state.amount, this.state.amountSi)
+    const tipBn = this.inputValueToBn(this.state.tip, this.state.tipSi)
+    return amountBn.add(tipBn).add(this.state.fee)
+  }
+
   saveExtrinsic = async () => {
     if (!this.props.account) {
       return
@@ -143,11 +149,18 @@ class Send extends React.Component<ISendProps, ISendState> {
 
     const amountBn = this.inputValueToBn(this.state.amount, this.state.amountSi)
     const tipBn = this.inputValueToBn(this.state.tip, this.state.tipSi)
+    const total = amountBn.add(tipBn).add(this.state.fee)
     const currentAddress = this.props.account.address
+    const balancesAll = await this.api.derive.balances.all(currentAddress) as DeriveBalancesAll
+    const available = balancesAll.availableBalance
+    if (available.lt(total)) {
+      this.props.setError('not enough balance available')
+      return
+    }
     const extrinsic = this.api.tx.balances.transfer(this.state.toAddress, amountBn)
     const currentBlockNumber = await this.api.query.system.number()
     const currentBlockHash = await this.api.rpc.chain.getBlockHash(currentBlockNumber)
-    const balancesAll = await this.api.derive.balances.all(currentAddress) as DeriveBalancesAll
+
     this.setState({ senderAvailable: balancesAll.availableBalance })
     const currentNonce = balancesAll.accountNonce
     this.setState({ nonce: currentNonce })
@@ -192,10 +205,9 @@ class Send extends React.Component<ISendProps, ISendState> {
     const { address } = this.props.settings.selectedAccount
 
     const balancesAll = await this.api.derive.balances.all(address) as DeriveBalancesAll
-    const available = balancesAll.freeBalance
-
-    if (available.isZero()) {
-      this.props.setError('You account has 0 balance.')
+    const available = balancesAll.availableBalance
+    if (available.lt(this.getTotal())) {
+      this.props.setError('not enough balance available')
       return
     }
 

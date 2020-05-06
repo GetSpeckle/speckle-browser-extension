@@ -169,6 +169,12 @@
   color: white;
 }
 
+.ui.negative.floating.message {
+  width: 311px;
+  margin: auto;
+  padding: 0.5em 1.5em;
+  text-align: center;
+}
 /*
  This css caused the white screen issue on firefox
 .ui.active.dropdown.account-dropdown:hover {
