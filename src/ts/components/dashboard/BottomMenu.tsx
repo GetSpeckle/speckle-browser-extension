@@ -47,6 +47,7 @@ class BottomMenu extends React.Component<IBottomMenuProps> {
           </Menu.Item>
 
           <Menu.Item
+            disabled={true}
             color={color as SemanticCOLORS}
             name='stake'
             active={pathname === NAME_MAP.stake}
@@ -57,6 +58,7 @@ class BottomMenu extends React.Component<IBottomMenuProps> {
           </Menu.Item>
 
           <Menu.Item
+            disabled={true}
             color={color as SemanticCOLORS}
             name='democracy'
             active={pathname === NAME_MAP.democracy}

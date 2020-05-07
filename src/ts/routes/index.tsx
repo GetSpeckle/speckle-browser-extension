@@ -31,7 +31,6 @@ import Dashboard from '../components/dashboard/Dashboard'
 import Welcome from '../components/Welcome'
 import ActionLayout from '../layouts/ActionLayout'
 import ExtrinsicLayout from '../layouts/ExtrinsicLayout'
-import Missing from '../components/Missing'
 import Send from '../components/transaction/Send'
 import SelectNetwork from '../components/account/SelectNetwork'
 import QR from '../components/account/QR'
@@ -116,9 +115,6 @@ export class Routes extends React.Component {
           path={INITIALIZE_ROUTE}
           component={Welcome}
           exact={true}
-        />
-        <Route
-          component={Missing}
         />
       </Switch>
     )
