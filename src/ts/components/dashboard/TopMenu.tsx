@@ -11,6 +11,7 @@ import { createApi, destroyApi } from '../../background/store/api-context'
 import { colorSchemes } from '../styles/themes'
 import { ApiOptions } from '@polkadot/api/types'
 import { WsProvider } from '@polkadot/rpc-provider'
+import t from '../../services/i18n'
 
 interface ITopMenuProps extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -108,7 +109,7 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
     return (
       <div>
         <Dimmer active={!apiContext.apiReady && !apiContext.failed}>
-          <Loader indeterminate={true}> Connecting to network, please wait ...</Loader>
+          <Loader indeterminate={true}>{t('connecting')}</Loader>
         </Dimmer>
         <div className='top-menu'>
           <Grid>

@@ -337,5 +337,8 @@
   },
   "processingTx": {
     "message": "Processing transaction, please wait ..."
+  },
+  "connecting": {
+    "message": "Connecting to network, please wait ..."
   }
 }

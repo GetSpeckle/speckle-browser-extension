@@ -325,5 +325,17 @@
   },
   "selectChainDesc": {
     "message": "请选择你要用的链"
+  },
+  "notEnoughBalance": {
+    "message": "余额不足"
+  },
+  "transactionError": {
+    "message": "交易出现错误"
+  },
+  "processingTx": {
+    "message": "正在处理交易，请稍候..."
+  },
+  "connecting": {
+    "message": "正在连接网络，请稍候..."
   }
 }
