@@ -15,6 +15,7 @@ import { SignerPayloadJSON, SignerPayloadRaw } from '@polkadot/types/types'
 import RequestBytesSign from '../RequestBytesSign'
 import { KeyringPair } from '@polkadot/keyring/types'
 import RequestExtrinsicSign from '../RequestExtrinsicSign'
+import t from '../../services/i18n'
 
 export default class Tabs {
 
@@ -46,7 +47,7 @@ export default class Tabs {
 
   private getSigningPair (address: string): KeyringPair {
     const accountExists = keyringVault.accountExists(address)
-    assert(accountExists, 'Unable to find account')
+    assert(accountExists, t('accountNotFound'))
     return keyringVault.getPair(address)
   }
 
@@ -87,7 +88,7 @@ export default class Tabs {
         return this.extrinsicSign(url, request as SignerPayloadJSON)
 
       default:
-        throw new Error(`Unable to handle message of type ${type}`)
+        throw new Error(t('unableHandleMessage') + type)
     }
   }
 }
