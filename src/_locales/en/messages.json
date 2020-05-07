@@ -298,5 +298,11 @@
   },
   "notNegative": {
     "message": "cannot be negative number"
+  },
+  "requestNotFound": {
+    "message": "Unable to find request"
+  },
+  "unableHandleMessage": {
+    "message": "Unable to handle message of type "
   }
 }

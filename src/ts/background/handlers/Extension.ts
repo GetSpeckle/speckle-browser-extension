@@ -20,6 +20,7 @@ import { Runtime } from 'webextension-polyfill-ts'
 import { TypeRegistry } from '@polkadot/types'
 import { SignerPayloadJSON, SignerPayloadRaw } from '@polkadot/types/types'
 import { findNetwork } from '../../constants/networks'
+import t from '../../services/i18n'
 
 export default class Extension {
 
@@ -58,7 +59,7 @@ export default class Extension {
 
   private authorizeApprove ({ id }: RequestAuthorizeApprove): boolean {
     const queued = this.state.getAuthRequest(id)
-    assert(queued, 'Unable to find request')
+    assert(queued, t('requestNotFound'))
     const { resolve } = queued
     resolve(true)
     return true
@@ -66,7 +67,7 @@ export default class Extension {
 
   private authorizeReject ({ id }: RequestAuthorizeReject): boolean {
     const queued = this.state.getAuthRequest(id)
-    assert(queued, 'Unable to find request')
+    assert(queued, t('requestNotFound'))
     const { reject } = queued
     reject(new Error('Rejected'))
     return true
@@ -74,10 +75,10 @@ export default class Extension {
 
   private signingApprovePassword ({ id, password }: RequestSigningApprovePassword): boolean {
     const queued = this.state.getSignRequest(id)
-    assert(queued, 'Unable to find request')
+    assert(queued, t('requestNotFound'))
     const { request, resolve, reject } = queued
     if (!keyringVault.accountExists(request.inner.address)) {
-      reject(new Error('Unable to find account'))
+      reject(new Error(t('accountNotFound')))
       return false
     }
     keyringVault.unlock(password).then(() => {
@@ -107,7 +108,7 @@ export default class Extension {
 
   private signingApproveSignature ({ id, signature }: RequestSigningApproveSignature): boolean {
     const queued = this.state.getSignRequest(id)
-    assert(queued, 'Unable to find request')
+    assert(queued, t('requestNotFound'))
     const { resolve } = queued
     resolve({ id, signature })
     return true
@@ -115,7 +116,7 @@ export default class Extension {
 
   private signingCancel ({ id }: RequestSigningCancel): boolean {
     const queued = this.state.getSignRequest(id)
-    assert(queued, 'Unable to find request')
+    assert(queued, t('requestNotFound'))
     const { reject } = queued
     reject(new Error('Cancelled'))
     return true
@@ -147,7 +148,7 @@ export default class Extension {
         return this.signingSubscribe(id, port)
 
       default:
-        throw new Error(`Unable to handle message of type ${type}`)
+        throw new Error(t('unableHandleMessage') + type)
     }
   }
 }

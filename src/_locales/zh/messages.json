@@ -295,5 +295,11 @@
   },
   "notNegative": {
     "message": "不能是负数"
+  },
+  "requestNotFound": {
+    "message": "无法找到请求"
+  },
+  "unableHandleMessage": {
+    "message": "无法处理消息类型"
   }
 }
