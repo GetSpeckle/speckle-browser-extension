@@ -72,10 +72,10 @@ class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
       }
       try {
         const decodedAddress = decodeAddress(json.address, true)
-        if (this.isFileValid(decodedAddress, json)) {
+        if (ImportJson.isFileValid(decodedAddress, json)) {
           this.setState({ ...this.state, json: json, errorMessage: '' })
         } else {
-          this.setState({ ...this.state, errorMessage: t('error.keystore.invalid') })
+          this.setState({ ...this.state, errorMessage: t('keystoreInvalid') })
         }
       } catch (err) { // decodeAddress throw error
         this.setState({ ...this.state, errorMessage: err.message })
@@ -84,7 +84,7 @@ class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
     reader.readAsArrayBuffer(file)
   }
 
-  private isFileValid (decodedAddress, json) {
+  private static isFileValid (decodedAddress, json) {
     return decodedAddress.length === 32
       && isHex(json.encoded) && isObject(json.meta)
       && (Array.isArray(json.encoding.content)
