@@ -40,12 +40,12 @@ class SelectNetwork extends React.Component<ISelectNetworkProps, ISelectNetworkS
           <Progress step={3}/>
         </TopSection>
         <Form>
-          <ChainInput placeholder={'Chain Search'} onChange={this.handleChange}/>
+          <ChainInput placeholder={t('chainSearch')} onChange={this.handleChange}/>
         </Form>
         <NetworkSection>
           <NetworkList search={this.state.search}/>
         </NetworkSection>
-        <ChainQuote>Start by selecting <span>3 chains</span></ChainQuote>
+        <ChainQuote>{t('selectChainDesc')}</ChainQuote>
         <Divider />
         <StyledButton type='button' onClick={this.gotoDashboard}>
           {t('selectNetwork')}

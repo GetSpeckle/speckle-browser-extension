@@ -319,5 +319,11 @@
   },
   "repeatPassword": {
     "message": "重复新密码"
+  },
+  "chainSearch": {
+    "message": "搜索链"
+  },
+  "selectChainDesc": {
+    "message": "请选择你要用的链"
   }
 }

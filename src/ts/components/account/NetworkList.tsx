@@ -44,7 +44,7 @@ class NetworkList extends React.Component<INetworkListProps> {
     )
   }
 
-  renderWithFilter = (/*type: NetworkType | ''*/ type) => {
+  renderWithFilter = (type) => {
 
     // TODO: filter network with the network type and search from SelectNetwork
     console.log('preparing to render Networks ... ', type)

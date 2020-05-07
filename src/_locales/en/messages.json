@@ -322,5 +322,11 @@
   },
   "repeatPassword": {
     "message": "Repeat password"
+  },
+  "chainSearch": {
+    "message": "Chain Search"
+  },
+  "selectChainDesc": {
+    "message": "Start by selecting your chain(s)"
   }
 }
