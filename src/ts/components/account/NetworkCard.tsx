@@ -72,10 +72,10 @@ export default class NetworkCard extends React.Component<INetworkCardProps, INet
 }
 
 const NetworkDetail = styled.div`
-flex-direction: column
-justify-content: space-around
-text-align: center
-align-self: center
+  flex-direction: column
+  justify-content: space-around
+  text-align: center
+  align-self: center
 `
 const NetworkImage = styled.img`
   width: 48px
@@ -84,51 +84,45 @@ const NetworkImage = styled.img`
 `
 
 const Card = styled.div`
-{
-min-width: 100px
-height: 100px
-border-radius: 4px;
-display: flex
-align-items: center
-justify-content: center
-box-shadow: 0 2px 8px 0 rgba(62, 88, 96, 0.1);
-background-color: #ffffff
-}
-:hover {
-box-shadow: 0 0 11px rgba(33,33,33,.2)
-}
+  min-width: 100px
+  height: 100px
+  border-radius: 4px;
+  display: flex
+  align-items: center
+  justify-content: center
+  box-shadow: 0 2px 8px 0 rgba(62, 88, 96, 0.1);
+  background-color: #ffffff
+  :hover {
+    box-shadow: 0 0 11px rgba(33,33,33,.2)
+  }
 `
 
 const SelectedCard = styled.div`
-{
-min-width: 100px
-height: 100px
-border-radius: 4px;
-display: flex
-align-items: center
-justify-content: center
-border: solid 1px ${props => props.color}
-background-color: #ffffff
-}
+  min-width: 100px
+  height: 100px
+  border-radius: 4px;
+  display: flex
+  align-items: center
+  justify-content: center
+  border: solid 1px ${props => props.color}
+  background-color: #ffffff
 `
 
 const NetworkName = styled.p`
-{
-width: 70px
-margin-top: 6px
-font-size: 12px
-color: #3e5860
-font-weight: bold
-font-family: Nunito
-}
-> span {
-font-size: 8px
-}
+  width: 70px
+  margin-top: 6px
+  font-size: 12px
+  color: #3e5860
+  font-weight: bold
+  font-family: Nunito
+  > span {
+    font-size: 8px
+  }
 `
 
 const Check = styled(Selected)`
-position: absolute
-top: 5px
-left: 5px
-z-index: 3000
+  position: absolute
+  top: 5px
+  left: 5px
+  z-index: 3000
 `

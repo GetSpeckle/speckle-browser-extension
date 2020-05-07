@@ -1,6 +1,6 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import {Button as BasicButton, Icon, Image, Modal} from 'semantic-ui-react'
+import { Button as BasicButton, Icon, Image, Modal } from 'semantic-ui-react'
 import { Button } from '../basic-components'
 import Identicon from '@polkadot/react-identicon'
 import 'react-tippy/dist/tippy.css'
@@ -190,14 +190,13 @@ const UpperSection = styled.div`
   text-align: center
 `
 const Offset = styled.div`
-width: 100%
-margin-top:-34px;
-display: flex;
-justify-content: center;
-margin-bottom: 8px;
+  width: 100%
+  margin-top:-34px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
 `
 const Heading = styled.h3`
-{
   margin-top: 8px;
   margin-bottom: 4px;
   font-family: Nunito;
@@ -208,11 +207,9 @@ const Heading = styled.h3`
   line-height: normal;
   letter-spacing: normal;
   color: #30383b;
-}
 `
 
 const Subheading = styled.p`
-{
   font-family: Nunito;
   font-size: 11px;
   font-weight: normal;
@@ -221,7 +218,6 @@ const Subheading = styled.p`
   line-height: normal;
   letter-spacing: normal;
   color: #a0aeb4;
-}
 `
 
 const OverlaySection = styled.div`
@@ -231,15 +227,13 @@ const OverlaySection = styled.div`
 `
 
 const Status = styled.div`
-  {
-    width: 50px;
-    height: 50px;
-    border-radius: 100%;
-    background-color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 
 const Key = styled.p`
@@ -284,11 +278,11 @@ const FromTo = styled.div`
  `
 
 const Info = styled.div`
-   width: 80%;
-   display: flex;
-   flex-direction: row;
-   align-items: center;
-   justify-content: space-between;
+  width: 80%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 `
 
 const To = styled.div`

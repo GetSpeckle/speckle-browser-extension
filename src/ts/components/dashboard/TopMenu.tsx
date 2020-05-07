@@ -156,7 +156,7 @@ const mapStateToProps = (state: IAppState) => {
 }
 
 const MenuOption = styled.div`
-  border:  ${props => props['data-click'] ? '0px' : '2px solid #FFFFFF'};
+  border: ${props => props['data-click'] ? '0px' : '2px solid #FFFFFF'};
   border-radius: 7px;
   width: 50px;
   height: 25px;

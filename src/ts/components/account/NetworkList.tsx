@@ -85,10 +85,8 @@ const mapDispatchToProps = { /* getNetworks */ }
 export default (connect(mapStateToProps, mapDispatchToProps)(NetworkList))
 
 const CardTabPane = styled(Tab.Pane)`
-{
-width: 319px !important
-overflow-x: hidden
-}
+  width: 319px !important
+  overflow-x: hidden
 `
 
 const PrevButton = styled(ScrollButton)`
@@ -104,18 +102,16 @@ const NextButton = styled(ScrollButton)`
   right: 3%
 `
 const Networks = styled.div`
-{
-min-width: 320px !important
-height: 120px
-overflow-x: scroll
-display: flex !important
-flex-direction: row
-align-items: center
-}
-&::-webkit-scrollbar {
-display: none
-}
->* {
-margin: 0 6px
-}
+  min-width: 320px !important
+  height: 120px
+  overflow-x: scroll
+  display: flex !important
+  flex-direction: row
+  align-items: center
+  &::-webkit-scrollbar {
+    display: none
+  }
+  >* {
+    margin: 0 6px
+  }
 `

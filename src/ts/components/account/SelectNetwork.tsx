@@ -74,17 +74,15 @@ export const NetworkSection = styled.div`
 `
 
 export const ChainQuote = styled.h3`
-{
-margin-top: 0px
-opacity: 0.6
-color: #3e5860
-font-size: 14px
-font-family: Nunito
-text-align: center
-}
-> span {
-  opacity: 1;
-  font-weight: bold;
-  color: #000000
-}
+  margin-top: 0px
+  opacity: 0.6
+  color: #3e5860
+  font-size: 14px
+  font-family: Nunito
+  text-align: center
+  > span {
+    opacity: 1;
+    font-weight: bold;
+    color: #000000
+  }
 `
