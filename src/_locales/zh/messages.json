@@ -304,5 +304,20 @@
   },
   "timerElapsed": {
     "message": "账号创建超时了"
+  },
+  "passwordMismatch": {
+    "message": "密码不匹配"
+  },
+  "passwordLength": {
+    "message": "密码最小长度是8"
+  },
+  "create": {
+    "message": "创建"
+  },
+  "newPassword": {
+    "message": "新密码"
+  },
+  "repeatPassword": {
+    "message": "重复新密码"
   }
 }

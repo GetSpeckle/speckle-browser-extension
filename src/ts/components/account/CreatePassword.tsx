@@ -67,11 +67,11 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
     this.props.setError(null)
 
     if (this.state.newPassword !== this.state.confirmPassword) {
-      this.props.setError(t('Password mismatch'))
+      this.props.setError(t('passwordMismatch'))
       return
     }
     if (this.state.newPassword.length < 8) {
-      this.props.setError(t('Password minimum length is 8'))
+      this.props.setError(t('passwordLength'))
       return
     }
 
@@ -109,7 +109,7 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
           <StyledPassword
             type={showNewPassword ? 'text' : 'password'}
             icon={<i className={`eye ${showNewPassword ? '' : 'slash'} link icon`} onClick={this.handleShowPassword}/>}
-            placeholder={t('Create new password')}
+            placeholder={t('newPassword')}
             value={this.state.newPassword}
             onChange={this.setNewPassword}
           />
@@ -119,7 +119,7 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
           <StyledPassword
             type={showConfirmNewPassword ? 'text' : 'password'}
             icon={<i className={`eye ${showConfirmNewPassword ? '' : 'slash'} link icon`} onClick={this.handleShowConfirmPassword}/>}
-            placeholder={t('Repeat password')}
+            placeholder={t('repeatPassword')}
             value={this.state.confirmPassword}
             onChange={this.setConfirmPassword}
           />
@@ -133,7 +133,7 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
 
         <Section>
           <Button onClick={this.handleClick}>
-            {t('Create Account')}
+            {t('createAccount')}
           </Button>
         </Section>
         {accountSetupTimeout > 0 && <TimerText>{parseTimeLeft(accountSetupTimeout)}</TimerText>}

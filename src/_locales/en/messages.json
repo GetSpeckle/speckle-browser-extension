@@ -84,7 +84,7 @@
     "message": "Download"
   },
   "createAccount": {
-    "message": "Create"
+    "message": "Create Account"
   },
   "phraseConfirmTitle": {
     "message": "Enter your backup phrase"
@@ -307,5 +307,20 @@
   },
   "timerElapsed": {
     "message": "Account creation timer has elapsed"
+  },
+  "passwordMismatch": {
+    "message": "Password mismatch"
+  },
+  "passwordLength": {
+    "message": "Password minimum length is 8"
+  },
+  "create": {
+    "message": "Create"
+  },
+  "newPassword": {
+    "message": "New password"
+  },
+  "repeatPassword": {
+    "message": "Repeat password"
   }
 }

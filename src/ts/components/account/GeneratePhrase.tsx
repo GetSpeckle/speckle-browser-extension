@@ -91,7 +91,7 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
       } else {
         this.props.history.push({
           pathname: CREATE_PASSWORD_ROUTE,
-          state: { error: this.state.isCancelled ? null : 'Account creation timer has elapsed' }
+          state: { error: this.state.isCancelled ? null : t('timerElapsed') }
         })
       }
     }
@@ -203,7 +203,7 @@ class GeneratePhrase extends React.Component<IGeneratePhraseProps, IGeneratePhra
             </Grid.Column>
             <Grid.Column>
               <StyledButton type='button' onClick={this.handleClick}>
-                {t('createAccount')}
+                {t('create')}
               </StyledButton>
             </Grid.Column>
           </Grid>
