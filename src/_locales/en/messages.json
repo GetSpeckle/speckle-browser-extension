@@ -328,5 +328,14 @@
   },
   "selectChainDesc": {
     "message": "Start by selecting your chain(s)"
+  },
+  "notEnoughBalance": {
+    "message": "not enough balance available"
+  },
+  "transactionError": {
+    "message": "Error occurred when processing your transaction"
+  },
+  "processingTx": {
+    "message": "Processing transaction, please wait ..."
   }
 }

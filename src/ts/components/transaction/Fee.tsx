@@ -54,7 +54,6 @@ class Fee extends React.Component<IFeeProps, IFeeState> {
 }
 
 const TxFee = styled.p`
-{
   opacity: 0.6;
   color: #556267;
   font-family: Nunito;
@@ -64,11 +63,10 @@ const TxFee = styled.p`
   font-stretch: normal;
   line-height: 1.5;
   letter-spacing: normal;
-}
-> span {
-  opacity: 1;
-  font-weight: bold;
-  color: #30383b;
+  > span {
+    opacity: 1;
+    font-weight: bold;
+    color: #30383b;
   }
 `
 

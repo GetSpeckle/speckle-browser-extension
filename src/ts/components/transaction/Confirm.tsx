@@ -128,6 +128,7 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
               value={this.props.toAddress}
               size={28}
               style={{ 'marginRight': '5px' }}
+              theme={identiconTheme}
             />
             <To>
               <Tooltip

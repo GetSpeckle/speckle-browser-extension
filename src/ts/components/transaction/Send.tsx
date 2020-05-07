@@ -154,7 +154,7 @@ class Send extends React.Component<ISendProps, ISendState> {
     const balancesAll = await this.api.derive.balances.all(currentAddress) as DeriveBalancesAll
     const available = balancesAll.availableBalance
     if (available.lt(total)) {
-      this.props.setError('not enough balance available')
+      this.props.setError(t('notEnoughBalance'))
       return
     }
     const extrinsic = this.api.tx.balances.transfer(this.state.toAddress, amountBn)
@@ -198,7 +198,7 @@ class Send extends React.Component<ISendProps, ISendState> {
   confirm = async () => {
 
     if (!this.state.extrinsic || !this.props.settings.selectedAccount) {
-      this.props.setError('Error occurred when processing your transaction.')
+      this.props.setError(t('transactionError'))
       return
     }
 
@@ -207,7 +207,7 @@ class Send extends React.Component<ISendProps, ISendState> {
     const balancesAll = await this.api.derive.balances.all(address) as DeriveBalancesAll
     const available = balancesAll.availableBalance
     if (available.lt(this.getTotal())) {
-      this.props.setError('not enough balance available')
+      this.props.setError(t('notEnoughBalance'))
       return
     }
 
@@ -240,7 +240,7 @@ class Send extends React.Component<ISendProps, ISendState> {
         txItem.updateTime = new Date().getTime()
         txItem.status = 'Failure'
         this.updateList(address, this.props.settings.network, txItem)
-        this.props.setError('Failed to send the transaction')
+        this.props.setError(t('transactionError'))
         this.setState({ isLoading: false })
       } else if (result.isWarning) {
         console.warn(result.status)
@@ -250,7 +250,7 @@ class Send extends React.Component<ISendProps, ISendState> {
       txItem.updateTime = new Date().getTime()
       txItem.status = 'Failure'
       this.updateList(address, this.props.settings.network, txItem)
-      this.props.setError('Failed to send the transaction')
+      this.props.setError(t('transactionError'))
       this.setState({ isLoading: false })
     })
   }
@@ -305,7 +305,7 @@ class Send extends React.Component<ISendProps, ISendState> {
     return (
       <ContentContainer>
         <Dimmer active={this.state.isLoading}>
-          <Loader indeterminate={true}> Processing transaction, please wait ...</Loader>
+          <Loader indeterminate={true}>{t('processingTx')}</Loader>
         </Dimmer>
         <AccountDropdown qrDestination={QR_ROUTE} />
         <DividerSection>
