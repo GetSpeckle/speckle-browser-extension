@@ -304,5 +304,8 @@
   },
   "unableHandleMessage": {
     "message": "Unable to handle message of type "
+  },
+  "timerElapsed": {
+    "message": "Account creation timer has elapsed"
   }
 }

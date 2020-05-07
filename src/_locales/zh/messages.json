@@ -301,5 +301,8 @@
   },
   "unableHandleMessage": {
     "message": "无法处理消息类型"
+  },
+  "timerElapsed": {
+    "message": "账号创建超时了"
   }
 }
