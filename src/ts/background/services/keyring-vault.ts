@@ -291,7 +291,7 @@ class KeyringVault {
     const { address } = signerPayload
     const pair = this.keyring.getPair(address)
     if (!pair) {
-      return Promise.reject(new Error('Unable to find pair'))
+      return Promise.reject(new Error(t('accountNotFound')))
     }
     let params = { version: signerPayload.version }
     const payload = createType(registry, 'ExtrinsicPayload', signerPayload, params)
