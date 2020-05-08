@@ -159,9 +159,7 @@ export default class State {
   }
 
   private updateIconAuth (shouldClose?: boolean): void {
-    const requests = this.allAuthRequests
-    console.log('requests', requests)
-    this.authSubject.next(requests)
+    this.authSubject.next(this.allAuthRequests)
     this.updateIcon(shouldClose)
   }
 
