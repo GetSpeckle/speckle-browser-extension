@@ -1,10 +1,10 @@
-import extension from 'extensionizer'
+import { browser } from 'webextension-polyfill-ts'
 import { PORT_CONTENT } from '../constants/ports'
 import { ORIGIN_CONTENT, ORIGIN_PAGE } from '../constants/origins'
 
 export const setupPort = () => {
   // connect to the extension
-  const port = extension.runtime.connect({ name: PORT_CONTENT })
+  const port = browser.runtime.connect(undefined,{ name: PORT_CONTENT })
 
   // send any messages from the extension back to the page
   port.onMessage.addListener((data) => {
