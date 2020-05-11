@@ -6,7 +6,7 @@ import {
   SubscriptionMessageTypes
 } from '../background/types'
 
-import extension from 'extensionizer'
+import { browser } from 'webextension-polyfill-ts'
 import { PORT_POPUP } from '../constants/ports'
 
 type Handler = {
@@ -17,7 +17,7 @@ type Handler = {
 
 type Handlers = Record<string, Handler>
 
-const port = extension.runtime.connect({ name: PORT_POPUP })
+const port = browser.runtime.connect(undefined,{ name: PORT_POPUP })
 const handlers: Handlers = {}
 let idCounter = 0
 

@@ -6,8 +6,7 @@ import {
   SigningRequest,
   RequestSign
 } from '../types'
-import { Windows } from 'webextension-polyfill-ts'
-import extension from 'extensionizer'
+import { Windows, browser } from 'webextension-polyfill-ts'
 import { BehaviorSubject } from 'rxjs'
 import { assert } from '@polkadot/util'
 
@@ -39,6 +38,9 @@ interface SignRequest {
 
 let idCounter = 0
 
+// tslint:disable-next-line:no-empty
+const NOOP = () => {}
+
 function getId (): string {
   return `${Date.now()}.${++idCounter}`
 }
@@ -53,14 +55,6 @@ export default class State {
     new BehaviorSubject([] as AuthorizeRequest[])
   public readonly signSubject: BehaviorSubject<SigningRequest[]> =
     new BehaviorSubject([] as SigningRequest[])
-
-  public get hasAuthRequests (): boolean {
-    return this.numAuthRequests === 0
-  }
-
-  public get hasSignRequests (): boolean {
-    return this.numSignRequests === 0
-  }
 
   get numAuthRequests (): number {
     return Object.keys(this._authRequests).length
@@ -83,26 +77,21 @@ export default class State {
   }
 
   private popupClose (): void {
-    this._windows.forEach((id: number): void =>
-      extension.windows.remove(id)
+    this._windows.forEach((id: number) =>
+      browser.windows.remove(id).then(NOOP)
     )
     this._windows = []
   }
 
   private popupOpen (height, width): void {
-    extension.windows.create({
-      focused: true,
+    browser.windows.create({
       height: height,
       width: width,
       left: Math.floor((window.screen.availWidth - width) / 2),
       top: Math.floor((window.screen.availHeight - height) / 2),
       type: 'popup',
-      url: extension.extension.getURL('popup.html')
-    }, (window?: Windows.Window) => {
-      if (window) {
-        this._windows.push(window.id!!)
-      }
-    })
+      url: browser.extension.getURL('popup.html')
+    }).then((window: Windows.Window) => this._windows.push(window.id!!))
   }
 
   private authComplete = (id: string, fn: Function): (result: boolean | Error) => void => {
@@ -110,7 +99,7 @@ export default class State {
       const isAllowed = result === true
       const { idStr, request: { origin }, url } = this._authRequests[id]
 
-      this._authUrls[this.stripUrl(url)] = {
+      this._authUrls[State.stripUrl(url)] = {
         count: 0,
         id: idStr,
         isAllowed,
@@ -135,7 +124,7 @@ export default class State {
     }
   }
 
-  private stripUrl (url: string): string {
+  private static stripUrl (url: string): string {
     assert(url && (url.startsWith('http:') || url.startsWith('https:')),
       `Invalid url ${url}, expected to start with http: or https:`)
     const parts = url.split('/')
@@ -151,7 +140,7 @@ export default class State {
         : (signCount ? `${signCount}` : '')
     )
 
-    extension.browserAction.setBadgeText({ text })
+    browser.browserAction.setBadgeText({ text }).then(NOOP)
 
     if (shouldClose && text === '') {
       this.popupClose()
@@ -169,7 +158,7 @@ export default class State {
   }
 
   public async authorizeUrl (url: string, request: RequestAuthorizeTab): Promise<boolean> {
-    const idStr = this.stripUrl(url)
+    const idStr = State.stripUrl(url)
 
     if (this._authUrls[idStr]) {
       assert(this._authUrls[idStr].isAllowed,
@@ -196,7 +185,7 @@ export default class State {
   }
 
   public ensureUrlAuthorized (url: string): boolean {
-    const entry = this._authUrls[this.stripUrl(url)]
+    const entry = this._authUrls[State.stripUrl(url)]
 
     assert(entry, `The source ${url} has not been enabled yet`)
     assert(entry.isAllowed, `The source ${url} is not allowed to interact with this extension`)
