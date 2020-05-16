@@ -36,6 +36,7 @@ import { Index } from '@polkadot/types/interfaces'
 import { SiDef } from '@polkadot/util/types'
 import styled from 'styled-components'
 import { isAddressValid } from '../../services/address-transformer'
+import { defaultExtensions } from '@polkadot/types/extrinsic/signedExtensions'
 
 interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {}
 
@@ -173,8 +174,10 @@ class Send extends React.Component<ISendProps, ISendState> {
       method: extrinsic.method.toHex(),
       nonce: (this.state.nonce! as Index).toHex(),
       specVersion: this.api.runtimeVersion.specVersion.toHex(),
+      transactionVersion: this.api.runtimeVersion.transactionVersion.toHex(),
       tip: tipBn.toString(),
-      version: extrinsic.version
+      version: extrinsic.version,
+      signedExtensions: defaultExtensions
     }
     const payloadValue: ExtrinsicPayloadValue = {
       era: extrinsic.era,
@@ -183,7 +186,8 @@ class Send extends React.Component<ISendProps, ISendState> {
       genesisHash: this.api.genesisHash,
       nonce: this.state.nonce!.toNumber(),
       tip: tipBn.toNumber(),
-      specVersion: this.api.runtimeVersion.specVersion.toNumber()
+      specVersion: this.api.runtimeVersion.specVersion.toNumber(),
+      transactionVersion: this.api.runtimeVersion.transactionVersion.toNumber()
     }
     signExtrinsic(signerPayload).then(signature => {
       const signedExtrinsic = extrinsic.addSignature(
