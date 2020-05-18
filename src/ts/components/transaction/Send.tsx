@@ -233,13 +233,15 @@ class Send extends React.Component<ISendProps, ISendState> {
 
     const submittable = this.state.extrinsic as SubmittableExtrinsic
     submittable.send((result: SubmittableResult) => {
-      if (result.isFinalized) {
+      if (result.isInBlock) {
+        console.log(`Transaction in block at blockHash ${result.status.asInBlock}`)
+        this.setState({ isLoading: false })
+        this.props.history.push(HOME_ROUTE)
+      } else if (result.isFinalized) {
         console.log(`Transaction finalized at blockHash ${result.status.asFinalized}`)
         txItem.updateTime = new Date().getTime()
         txItem.status = 'Success'
         this.updateList(address, this.props.settings.network, txItem)
-        this.setState({ isLoading: false })
-        this.props.history.push(HOME_ROUTE)
       } else if (result.isError) {
         txItem.updateTime = new Date().getTime()
         txItem.status = 'Failure'
