@@ -7,10 +7,9 @@ import { findNetwork, Network } from '../../constants/networks'
 import { Grid } from 'semantic-ui-react'
 import { formatBalance } from '@polkadot/util'
 import { SignerPayloadJSON } from '@polkadot/types/types'
-import { GenericCall } from '@polkadot/types'
 import recodeAddress, { displayAddress } from '../../services/address-transformer'
 import { Color, colorSchemes } from '../styles/themes'
-import { ExtrinsicPayload } from '@polkadot/types/interfaces'
+import { Call, ExtrinsicPayload } from '@polkadot/types/interfaces'
 
 type P = {
   color: Color
@@ -18,7 +17,7 @@ type P = {
 
 interface Decoded {
   json: MethodJson | null
-  method: GenericCall | null
+  method: Call | null
 }
 
 interface MethodJson {
@@ -42,15 +41,11 @@ interface ISignMessageProps extends StateProps {
 const decodeMethod = (data: string, isDecoded: boolean, network: Network)
   : Decoded => {
   let json: MethodJson | null = null
-  let method: GenericCall | null = null
+  let method: Call | null = null
 
-  formatBalance.setDefaults({
-    decimals: network.tokenDecimals,
-    unit: network.tokenSymbol
-  })
   try {
     if (isDecoded && network.hasMetadata) {
-      method = new GenericCall(network.registry, data)
+      method = network.registry.createType('Call', data)
       json = method.toJSON() as unknown as MethodJson
     }
   } catch (error) {
@@ -64,42 +59,54 @@ const renderMethod = (
   data: string,
   { json, method }: Decoded,
   network: Network): React.ReactNode => {
-  if (!json || !method) {
-    return (
-      <SignMessageGridRow>
-        <Message>{data}</Message>
-      </SignMessageGridRow>
-    )
-  }
 
-  const address = recodeAddress(json.args.dest, network.ss58Format)
+  if (method && method.sectionName === 'balances' && json) {
+    return renderBalanceTransfer(method, json.args, network)
+  }
+  return renderRawData(data)
+}
+
+const renderRawData = (data) => {
+  return (
+    <SignMessageGridRow>
+      <Message>{data}</Message>
+    </SignMessageGridRow>
+  )
+}
+
+const renderBalanceTransfer = (method, args, network) => {
+  formatBalance.setDefaults({
+    decimals: network.tokenDecimals,
+    unit: network.tokenSymbol
+  })
+  const address = recodeAddress(args.dest, network.ss58Format)
   return (
     <table>
       <tbody>
-        <tr>
-          <td align={'right'}>
-            <Message>{t('action')}</Message>
-          </td>
-          <td align={'left'}>
-            <Message>{method.sectionName}.{method.methodName}</Message>
-          </td>
-        </tr>
-        <tr>
-          <td align={'right'}>
-            <Message>{t('dest')}</Message>
-          </td>
-          <td align={'left'}>
-            <Message>{displayAddress(address, false)}</Message>
-          </td>
-        </tr>
-        <tr>
-          <td align={'right'}>
-            <Message>{t('value')}</Message>
-          </td>
-          <td align={'left'}>
-            <Message>{formatBalance(json.args.value)}</Message>
-          </td>
-        </tr>
+      <tr>
+        <td align={'right'}>
+          <Message>{t('action')}</Message>
+        </td>
+        <td align={'left'}>
+          <Message>{method.sectionName}.{method.methodName}</Message>
+        </td>
+      </tr>
+      <tr>
+        <td align={'right'}>
+          <Message>{t('dest')}</Message>
+        </td>
+        <td align={'left'}>
+          <Message>{displayAddress(address, false)}</Message>
+        </td>
+      </tr>
+      <tr>
+        <td align={'right'}>
+          <Message>{t('value')}</Message>
+        </td>
+        <td align={'left'}>
+          <Message>{formatBalance(args.value)}</Message>
+        </td>
+      </tr>
       </tbody>
     </table>
   )
