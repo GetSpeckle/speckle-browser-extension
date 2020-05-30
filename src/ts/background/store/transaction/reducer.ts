@@ -1,10 +1,10 @@
-import { AnyAction, Reducer } from 'redux'
+import { Reducer } from 'redux'
 import { SUCCESS } from '../util'
 import { ACTION_TYPES, ITransaction } from './actions'
 
 const initialState: ITransaction[] = []
 
-const transactions: Reducer<ITransaction[], AnyAction> = (state = initialState, action) => {
+const transactions: Reducer<ITransaction[]> = (state = initialState, action) => {
   switch (action.type) {
 
     case SUCCESS(ACTION_TYPES.UPSERT_TRANSACTION):
