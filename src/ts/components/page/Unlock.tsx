@@ -30,7 +30,7 @@ export default function Unlock ({ onSign, onCancel }: Props) {
   return (
     <Form>
       <Form.Input
-        isError={!password || !!error}
+        error={!password || !!error}
         focus={true}
         onChange={changePassword}
         placeholder={t('password')}
