@@ -60,8 +60,10 @@ const renderMethod = (
   { json, method }: Decoded,
   network: Network): React.ReactNode => {
 
-  if (method && method.sectionName === 'balances' && json) {
+  if (method && method.sectionName === 'balances' && method.methodName === 'transfer' && json) {
     return renderBalanceTransfer(method, json.args, network)
+  } else if (method && method.sectionName && method.methodName) {
+    return renderGeneralExtrinsic(method, data)
   }
   return renderRawData(data)
 }
@@ -71,6 +73,19 @@ const renderRawData = (data) => {
     <SignMessageGridRow>
       <Message>{data}</Message>
     </SignMessageGridRow>
+  )
+}
+
+const renderGeneralExtrinsic = (method, data) => {
+  return (
+    <>
+      <SignMessageGridRow>
+        <ExtrinsicMessage>{method.sectionName}.{method.methodName}</ExtrinsicMessage>
+      </SignMessageGridRow>
+      <SignMessageGridRow>
+        <ExtrinsicMessage>{data}</ExtrinsicMessage>
+      </SignMessageGridRow>
+    </>
   )
 }
 
@@ -160,6 +175,18 @@ const NetworkName = styled.span`
 const Message = styled.span`
   width: 301px;
   height: 36px;
+  font-family: Nunito;
+  font-size: 13px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #556267;
+`
+
+const ExtrinsicMessage = styled.span`
+  width: 301px;
   font-family: Nunito;
   font-size: 13px;
   font-weight: normal;
