@@ -60,6 +60,7 @@ class Login extends React.Component<ILoginProps, ILoginState> {
           <StyledPassword
             type='password'
             value={this.state.password}
+            placeholder={t('password')}
             onChange={this.setPassword}
           />
         </Section>
