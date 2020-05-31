@@ -7,7 +7,7 @@ export default () => {
   return (
     <LoginFooter>
         <span>
-          <FooterLink href='https://speckleos.github.io/speckle-docs/' target='_blank'>
+          <FooterLink href='https://getspeckle.github.io/speckle-docs/' target='_blank'>
             {t('help')}
           </FooterLink>
         </span>
