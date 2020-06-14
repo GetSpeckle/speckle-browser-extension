@@ -402,7 +402,7 @@
     "@nodelib/fs.scandir" "2.1.3"
     fastq "^1.6.0"
 
-"@polkadot/api-contract@^1.14.1":
+"@polkadot/api-contract@^1.18.1":
   version "1.18.1"
   resolved "https://registry.yarnpkg.com/@polkadot/api-contract/-/api-contract-1.18.1.tgz#8f99cdcb6956daafcf93ce7df1c3a78cc393b142"
   integrity sha512-SlS2TiUUw5L+bc3Wv4BCDKCYGxxPFJhYfIoZEjbYcE/Mu8D1A7LzlySHEfxewCWQW8wzejKpoaRTPVxM9RFZFw==
@@ -431,7 +431,7 @@
     memoizee "^0.4.14"
     rxjs "^6.5.5"
 
-"@polkadot/api@1.18.1", "@polkadot/api@^1.14.1":
+"@polkadot/api@1.18.1", "@polkadot/api@^1.18.1":
   version "1.18.1"
   resolved "https://registry.yarnpkg.com/@polkadot/api/-/api-1.18.1.tgz#3d8d3f3d2e692ab5e0fa5ca0e92f7980b6533cf4"
   integrity sha512-3UqY3MYthDvHBT+UWxGJeb5XRX1QOnheez2TJatXwENOh4V6PsE2GtdI+ckXkYh9p61978uNtWhZ5WxDupiW/A==
@@ -465,7 +465,7 @@
   dependencies:
     "@babel/runtime" "^7.9.6"
 
-"@polkadot/keyring@^2.10.1", "@polkadot/keyring@^2.13.1":
+"@polkadot/keyring@^2.13.1":
   version "2.13.1"
   resolved "https://registry.yarnpkg.com/@polkadot/keyring/-/keyring-2.13.1.tgz#2607d790ac1df0ee1d3508aa47588f425331189f"
   integrity sha512-Vm3ohFyvPAKYFJsUtphYQ0zYgD6VlOV2e6yaHqq8e6q7opLdHcpkE11OSeEnaYs7kUdzs873VH5GTYP2pTKJFQ==
@@ -548,7 +548,7 @@
     "@polkadot/util" "^2.13.1"
     bn.js "^5.1.2"
 
-"@polkadot/types@1.18.1", "@polkadot/types@^1.14.1":
+"@polkadot/types@1.18.1", "@polkadot/types@^1.18.1":
   version "1.18.1"
   resolved "https://registry.yarnpkg.com/@polkadot/types/-/types-1.18.1.tgz#d6018f72ba54685b3afc797693418959bfce981f"
   integrity sha512-j+KhEQpeGDOLIoTGs5hi47PA+4sZPoOdOV1aaqUqt95T5OXO4O8M1qr1GrTv41hkZ23QGDcRCGIMq6aYdKmRHg==
@@ -580,7 +580,7 @@
     "@types/color" "^3.0.1"
     color "^3.1.2"
 
-"@polkadot/util-crypto@2.13.1", "@polkadot/util-crypto@^2.10.1", "@polkadot/util-crypto@^2.13.1":
+"@polkadot/util-crypto@2.13.1", "@polkadot/util-crypto@^2.13.1":
   version "2.13.1"
   resolved "https://registry.yarnpkg.com/@polkadot/util-crypto/-/util-crypto-2.13.1.tgz#02ae12f02d5a636bb8ff5c8804d4696a1308624b"
   integrity sha512-AZZCwzW6EOql/KTKfDNgUUKpaGkKEk04cxMWdUzU52gmCLcGS8NXdl/YEs+R8JmQsF41q11gcSD/WzTFuv4ehQ==
@@ -599,7 +599,7 @@
     tweetnacl "^1.0.3"
     xxhashjs "^0.2.2"
 
-"@polkadot/util@2.13.1", "@polkadot/util@^2.10.1", "@polkadot/util@^2.13.1":
+"@polkadot/util@2.13.1", "@polkadot/util@^2.13.1":
   version "2.13.1"
   resolved "https://registry.yarnpkg.com/@polkadot/util/-/util-2.13.1.tgz#59cbe50822026a9849589a10c5ee15a5754dce62"
   integrity sha512-k1GrS3W5c57sLJJyKYF2bq7H5d8vn6jzTaK8rDM7hRp9Ai2Crl4SjyY+5Tdr0LWG+UTybfc8rIieJklB3amA3w==
