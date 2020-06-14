@@ -215,8 +215,8 @@ class KeyringVault {
         const keyringPairJson = (account as KeyringPair$Json)
         return {
           address: keyringPairJson.address,
-          genesisHash: keyringPairJson.meta.genesisHash,
-          name: keyringPairJson.meta.name
+          genesisHash: keyringPairJson.meta.genesisHash as string,
+          name: keyringPairJson.meta.name as string
         }
       })
       return this.simpleAccounts

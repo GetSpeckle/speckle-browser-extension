@@ -62,36 +62,36 @@ const mapStateToProps = (state: IAppState) => {
 type StateProps = ReturnType<typeof mapStateToProps>
 
 const PublicKey = styled.div`
-  font-size: 17px
-  width: 261px
-  font-weight: 800
-  padding-left: 20px
-  line-height: 1.05
+  font-size: 17px;
+  width: 261px;
+  font-weight: 800;
+  padding-left: 20px;
+  line-height: 1.05;
 `
 
 const SecondaryText = styled.div`
-  font-size: 17px
-  padding: 20px 20px 10px 20px
-  line-height: normal
-  color: #6F797C
+  font-size: 17px;
+  padding: 20px 20px 10px 20px;
+  line-height: normal;
+  color: #6F797C;
 `
 
 const QRContainer = styled.div`
-  display: flex
-  align-items: center
-  padding-bottom: 10px
+  display: flex;
+  align-items: center;
+  padding-bottom: 10px;
 `
 
 const QRCodeContainer = styled.div`
-  margin: 10px auto
-  width: 90px
+  margin: 10px auto;
+  width: 90px;
 `
 
 const QRSection = styled(Section)`
-  padding: 15px
-  margin-top: 25px
-  border-radius: 5px
-  box-shadow: 0 2px 8px 0 rgba(62, 88, 96, 0.1)
+  padding: 15px;
+  margin-top: 25px;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px 0 rgba(62, 88, 96, 0.1);
 `
 
 export default withRouter(connect(mapStateToProps)(QR))

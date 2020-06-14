@@ -115,7 +115,7 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
         const accounts: IAccount[] = result.map(
           (keyring: KeyringPair$Json) => {
             return {
-              name: keyring.meta.name,
+              name: keyring.meta.name as string,
               address: recodeAddress(keyring.address, network.ss58Format)
             }
           }
@@ -217,7 +217,7 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
           >
             <Dropdown.Menu style={backgroundStyle}>
               <Dropdown.Menu scrolling={true} style={backgroundStyle}>
-                {this.state.options.map(option => <Dropdown.Item key={option.key} {...option} />)}
+                {this.state.options.map(option => <Dropdown.Item {...option} key={option.key}/>)}
               </Dropdown.Menu>
 
               <Dropdown.Divider/>
@@ -279,15 +279,15 @@ class AccountDropdown extends React.Component<IAccountDropdownProps, IAccountDro
 }
 
 export const QrIcon = styled(Icon)`
-  color: white
-  padding: 2px
-  text-decoration: none
+  color: white;
+  padding: 2px;
+  text-decoration: none;
 `
 
 export const AccountSection = styled.div`
-  width: 100%
-  margin: 8px 0 9px
-  text-align: center
+  width: 100%;
+  margin: 8px 0 9px;
+  text-align: center;
 `
 export const Float = styled.div`
   z-index: 1;

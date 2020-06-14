@@ -63,7 +63,7 @@ const SignByContainer = styled.div`
   margin: 0 auto;
   background-color: white;
   border-radius: 4px;
-  box-shadow: 0 2px 8px 0 rgba(62, 88, 96, 0.1)
+  box-shadow: 0 2px 8px 0 rgba(62, 88, 96, 0.1);
 `
 
 type P = {

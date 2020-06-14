@@ -45,7 +45,7 @@ class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
       .then((json: KeyringPair$Json) => {
         this.props.saveSettings({ ...this.props.settings, selectedAccount: {
           address: json.address,
-          name: json.meta.name
+          name: json.meta.name as string
         } })
         this.props.history.push(HOME_ROUTE)
       }).catch(error => {
@@ -151,14 +151,14 @@ class ImportJson extends React.Component<IImportJsonProps, IImportJsonState> {
 }
 
 const UploadArea = styled.div`
-  width: 100%
-  height: 90px
-  border-radius: 5px
-  border: 1px dotted #ccc
-  padding: 20px
-  display: flex
-  justify-content: center
-  align-items: center
+  width: 100%;
+  height: 90px;
+  border-radius: 5px;
+  border: 1px dotted #ccc;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 
 const mapStateToProps = (state: IAppState) => {

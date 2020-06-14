@@ -50,9 +50,9 @@ class Dashboard extends React.Component<IDashboardProps> {
 }
 
 export const AccountSection = styled.div`
-  width: 100%
-  margin: 8px 0 9px
-  text-align: center
+  width: 100%;
+  margin: 8px 0 9px;
+  text-align: center;
 `
 
 const mapStateToProps = (state: IAppState) => {
