@@ -50,7 +50,7 @@
 		"semantic-ui-react": "^0.88.2",
 		"styled-components": "^5.1.1",
 		"webextension-polyfill-ts": "^0.8.9",
-    "@polkadot/extension-dapp": "^0.25.0-beta.4"
+    "@polkadot/extension-dapp": "^0.26.0-beta.26"
   },
 	"devDependencies": {
     "@babel/core": "^7.8.4",
