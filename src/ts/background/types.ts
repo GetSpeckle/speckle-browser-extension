@@ -123,6 +123,6 @@ export interface ResponseSigning {
 }
 
 export interface RequestSign {
-  inner: SignerPayloadJSON | SignerPayloadRaw
+  readonly payload: SignerPayloadJSON | SignerPayloadRaw
   sign (registry: TypeRegistry, pair: KeyringPair): { signature: string }
 }

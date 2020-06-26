@@ -12,12 +12,21 @@ import SignBy from './SignBy'
 import { SigningRequest } from '../../background/types'
 import { approveSignPassword, approveSignSignature, cancelSignRequest } from '../../services/messaging'
 import Unlock from './Unlock'
-import { createType, TypeRegistry } from '@polkadot/types'
-import { ExtrinsicPayload } from '@polkadot/types/interfaces'
+import { TypeRegistry } from '@polkadot/types'
 import Qr from './Qr'
 import { SignerPayloadJSON, SignerPayloadRaw } from '@polkadot/types/types'
+import { ExtrinsicPayload } from '@polkadot/types/interfaces'
+
+interface Data {
+  hexBytes: string | null
+  payload: ExtrinsicPayload | null
+}
 
 const registry = new TypeRegistry()
+
+function isRawPayload (payload: SignerPayloadJSON | SignerPayloadRaw): payload is SignerPayloadRaw {
+  return !!(payload as SignerPayloadRaw).data
+}
 
 const Signing = (props) => {
   const { requests } = props
@@ -25,17 +34,21 @@ const Signing = (props) => {
   const signingRequest: SigningRequest = requests[0]
   const { account, id, request } = signingRequest
   const { isExternal } = account
-  const [hexBytes, setHexBytes] = useState<string | null>(null)
-  const [extrinsic, setExtrinsic] = useState<ExtrinsicPayload | null>(null)
+  const [{ hexBytes, payload }, setData] = useState<Data>({ hexBytes: null, payload: null })
 
   useEffect((): void => {
-    const inner = request.inner
-    if ((inner as SignerPayloadRaw).data) {
-      setHexBytes((inner as SignerPayloadRaw).data)
+    const payload = request.payload
+    if (isRawPayload(payload)) {
+      setData({
+        hexBytes: payload.data,
+        payload: null
+      })
     } else {
-      const signerPayload = (inner as SignerPayloadJSON)
-      const params = { version: signerPayload.version }
-      setExtrinsic(createType(registry, 'ExtrinsicPayload', inner, params))
+      registry.setSignedExtensions(payload.signedExtensions)
+      setData({
+        hexBytes: null,
+        payload: registry.createType('ExtrinsicPayload', payload, { version: payload.version })
+      })
     }
   }, [request])
 
@@ -49,8 +62,8 @@ const Signing = (props) => {
     approveSignSignature(id, signature)
       .catch(console.error)
 
-  if (extrinsic != null) {
-    const signerPayload = request.inner as SignerPayloadJSON
+  if (payload != null) {
+    const signerPayload = request.payload as SignerPayloadJSON
     return (
       <ContentContainer>
         <Section>
@@ -59,15 +72,15 @@ const Signing = (props) => {
           </Title>
         </Section>
         {/* tslint:disable-next-line:max-line-length */}
-        {!isExternal && <Section><Extrinsic signerPayload={signerPayload} extrinsicPayload={extrinsic} isDecoded={true}/></Section>}
-        {!isExternal && <Section><SignBy address={request.inner.address} /></Section>}
+        {!isExternal && <Section><Extrinsic signerPayload={signerPayload} extrinsicPayload={payload} isDecoded={true}/></Section>}
+        {!isExternal && <Section><SignBy address={request.payload.address} /></Section>}
         {!isExternal && <Unlock onSign={onSign} onCancel={onCancel} />}
-        {isExternal && <Qr payload={extrinsic} request={signerPayload} onSignature={onSignature}/>}
+        {isExternal && <Qr payload={payload} request={signerPayload} onSignature={onSignature}/>}
         {isExternal && <Button onClick={onCancel}>{t('cancel')}</Button>}
       </ContentContainer>
     )
   } else if (hexBytes != null) {
-    const payload = request.inner as SignerPayloadRaw
+    const payload = request.payload as SignerPayloadRaw
     return (
       <ContentContainer>
         <Section>
@@ -76,7 +89,7 @@ const Signing = (props) => {
           </Title>
         </Section>
         {!isExternal && <Section>{payload.data}</Section>}
-        {!isExternal && <Section><SignBy address={request.inner.address} /></Section>}
+        {!isExternal && <Section><SignBy address={request.payload.address} /></Section>}
         {!isExternal && <Unlock onSign={onSign} onCancel={onCancel} />}
         {isExternal && <Button onClick={onCancel}>{t('cancel')}</Button>}
       </ContentContainer>
