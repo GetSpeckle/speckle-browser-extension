@@ -39,12 +39,6 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
     showConfirmNewPassword: false
   }
 
-  componentDidMount () {
-    if (this.props.location.state && this.props.location.state.error) {
-      this.props.setError(this.props.location.state.error)
-    }
-  }
-
   componentDidUpdate (prevProps) {
     if (prevProps.wallet.accountSetupTimeout !== 0 && this.props.wallet.accountSetupTimeout === 0) {
       this.props.setError(t('timerElapsed'))

@@ -77,18 +77,18 @@ export default class Extension {
     const queued = this.state.getSignRequest(id)
     assert(queued, t('requestNotFound'))
     const { request, resolve, reject } = queued
-    if (!keyringVault.accountExists(request.inner.address)) {
+    if (!keyringVault.accountExists(request.payload.address)) {
       reject(new Error(t('accountNotFound')))
       return false
     }
     keyringVault.unlock(password).then(() => {
-      const inner = request.inner
-      const pair = keyringVault.getPair(inner.address)
+      const payload = request.payload
+      const pair = keyringVault.getPair(payload.address)
       let registry
-      if ((inner as SignerPayloadRaw).data) {
+      if ((payload as SignerPayloadRaw).data) {
         registry = new TypeRegistry()
       } else {
-        const signerPayload = (inner as SignerPayloadJSON)
+        const signerPayload = (payload as SignerPayloadJSON)
         const network = findNetwork(signerPayload.genesisHash)
         registry = network.registry
       }

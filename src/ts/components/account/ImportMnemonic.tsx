@@ -46,7 +46,7 @@ class ImportMnemonic extends React.Component<IImportMnemonicProps, IImportMnemon
       .then((json: KeyringPair$Json) => {
         this.props.saveSettings({ ...this.props.settings, selectedAccount: {
           address: json.address,
-          name: json.meta.name
+          name: json.meta.name as string
         } })
         this.props.history.push(HOME_ROUTE)
       }).catch((reason) => {

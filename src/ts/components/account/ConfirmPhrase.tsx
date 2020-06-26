@@ -103,7 +103,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
       // use new created account as the selected account
       saveSettings(
         { ...settings, selectedAccount:
-            { name: keyringPair.meta.name, address: keyringPair.address }
+            { name: keyringPair.meta.name as string, address: keyringPair.address }
         }
       )
       setNewPhrase('')

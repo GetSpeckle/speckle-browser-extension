@@ -90,32 +90,32 @@ const mapStateToProps = (state: IAppState) => {
 type StateProps = ReturnType<typeof mapStateToProps>
 
 const Icon = connect(mapStateToProps)(styled.svg`
-  width: 24px
-  height: 24px
-  fill: ${(p: StateProps) => colorSchemes[p.settings.color].backgroundColor}
+  width: 24px;
+  height: 24px;
+  fill: ${(p: StateProps) => colorSchemes[p.settings.color].backgroundColor};
 `)
 
 const ImportOption = connect(mapStateToProps)(styled.div`
-  font-size: 20px
-  font-weight: 800
-  padding-left: 20px
-  line-height: 1.05
-  color: ${(p: StateProps) => colorSchemes[p.settings.color].backgroundColor}
+  font-size: 20px;
+  font-weight: 800;
+  padding-left: 20px;
+  line-height: 1.05;
+  color: ${(p: StateProps) => colorSchemes[p.settings.color].backgroundColor};
 `)
 
 const OptionContainer = styled.div`
-  display: flex
-  align-items: center
-  padding-bottom: 10px
+  display: flex;
+  align-items: center;
+  padding-bottom: 10px;
 `
 
 const OptionSection = styled(Section)`
-  padding: 15px
-  border-radius: 5px
-  cursor: pointer
+  padding: 15px;
+  border-radius: 5px;
+  cursor: pointer;
   :hover {
-    box-shadow: 0 2px 8px 0 rgba(62, 88, 96, 0.1)
-  }
+    box-shadow: 0 2px 8px 0 rgba(62, 88, 96, 0.1);
+  };
 `
 
 export default withRouter(connect(mapStateToProps)(ImportOptions))

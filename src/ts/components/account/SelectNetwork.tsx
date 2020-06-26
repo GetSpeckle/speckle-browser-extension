@@ -58,31 +58,31 @@ class SelectNetwork extends React.Component<ISelectNetworkProps, ISelectNetworkS
 export default withRouter(SelectNetwork)
 
 const ChainInput = styled(Input)`
-  width: 311px
-  height: 42px
-  border-color: #cad3d7
-  color: #cad3d7
-  line-height: 1.43
-  font-size: 14px
-  font-family: Nunito
+  width: 311px;
+  height: 42px;
+  border-color: #cad3d7;
+  color: #cad3d7;
+  line-height: 1.43;
+  font-size: 14px;
+  font-family: Nunito;
 `
 
 export const NetworkSection = styled.div`
-  width: 100%
-  margin: 8px 0 9px
-  text-align: center
+  width: 100%;
+  margin: 8px 0 9px;
+  text-align: center;
 `
 
 export const ChainQuote = styled.h3`
-  margin-top: 0px
-  opacity: 0.6
-  color: #3e5860
-  font-size: 14px
-  font-family: Nunito
-  text-align: center
+  margin-top: 0px;
+  opacity: 0.6;
+  color: #3e5860;
+  font-size: 14px;
+  font-family: Nunito;
+  text-align: center;
   > span {
     opacity: 1;
     font-weight: bold;
-    color: #000000
-  }
+    color: #000000;
+  };
 `

@@ -71,48 +71,42 @@ export default class Amount extends React.Component<IAmountProps> {
 }
 
 const Row = styled.div`
-  display: flex
-  justify-content: space-between
-  width: 311px
+  display: flex;
+  justify-content: space-between;
+  width: 311px;
 `
 
 const Label = styled.label`
-  {
-    width: 41px;
-    height: 15px;
-    font-size: 11px;
-    font-family: Nunito;
-    font-size: 11px;
-    font-weight: bold;
-    font-style: normal;
-    font-stretch: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    position: absolute;
-    margin-top:-7px;
-    margin-left:12px;
-    background:white;
-    border-left: 2px;
-    border-right: 2px;
-  }
+  width: 41px;
+  height: 15px;
+  font-size: 11px;
+  font-family: Nunito;
+  font-size: 11px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  position: absolute;
+  margin-top:-7px;
+  margin-left:12px;
+  background:white;
+  border-left: 2px;
+  border-right: 2px;
 `
 
 const Input = styled.div`
-{
   width: 200px;
   height: 54px;
   text-overflow: ellipsis;
   white-space:nowrap;
   overflow: hidden;
-}
 `
 
 const SiDropdown = styled(Dropdown)`
-{
   margin-left: 11px;
   height: 32px;
   min-width: 80px !important;
-}
 `
 
 const TruncatedInput = styled.input`

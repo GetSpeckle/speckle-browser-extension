@@ -141,7 +141,7 @@ type OvalProp = {
 const Oval = styled.div`
   width: 6px;
   height: 6px;
-  border-radius: 3px
+  border-radius: 3px;
   background-color: ${(p: OvalProp) => p.color};
 `
 
@@ -150,7 +150,7 @@ const OvalContainer = styled.div`
   display: flex;
   margin: auto;
   justify-content: space-around;
-  align-items: center
+  align-items: center;
 `
 
 const mapStateToProps = (state: IAppState) => {
