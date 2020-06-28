@@ -19,7 +19,7 @@ import keyringVault from '../services/keyring-vault'
 import { Runtime } from 'webextension-polyfill-ts'
 import { TypeRegistry } from '@polkadot/types'
 import { SignerPayloadJSON, SignerPayloadRaw } from '@polkadot/types/types'
-import { findNetwork } from '../../constants/networks'
+import { findChain } from '../../constants/chains'
 import t from '../../services/i18n'
 
 export default class Extension {
@@ -89,8 +89,8 @@ export default class Extension {
         registry = new TypeRegistry()
       } else {
         const signerPayload = (payload as SignerPayloadJSON)
-        const network = findNetwork(signerPayload.genesisHash)
-        registry = network.registry
+        const chain = findChain(signerPayload.genesisHash)
+        registry = chain.registry
       }
       if (pair.isLocked) {
         pair.decodePkcs8(password)

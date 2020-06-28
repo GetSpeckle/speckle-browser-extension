@@ -5,35 +5,35 @@ import { Tab, List, Grid, Icon } from 'semantic-ui-react'
 import { IAppState } from '../../background/store/all'
 import { getTransactions, TransactionType, ITransaction } from '../../background/store/transaction'
 import t from '../../services/i18n'
-import { networks } from '../../constants/networks'
+import { chains } from '../../constants/chains'
 import { displayAddress } from '../../services/address-transformer'
 
 interface ITransactionListProps extends StateProps, DispatchProps, RouteComponentProps {}
 
 interface ITransactionListState {
   currentAddress: string,
-  currentNetwork: string
+  currentChain: string
 }
 
 class TransactionList extends React.Component<ITransactionListProps, ITransactionListState> {
 
   state = {
     currentAddress: '',
-    currentNetwork: ''
+    currentChain: ''
   }
 
   static getDerivedStateFromProps (nextProps, prevState) {
     if (nextProps.account && nextProps.account.address !== prevState.currentAddress) {
       return { currentAddress: nextProps.account.address }
-    } else if (nextProps.network !== prevState.currentNetwork) {
-      return { currentNetwork: nextProps.network }
+    } else if (nextProps.chain !== prevState.currentChain) {
+      return { currentChain: nextProps.chain }
     } else {
       return null
     }
   }
 
   componentDidUpdate (_prevProps, prevState) {
-    if (prevState.currentNetwork !== this.state.currentNetwork
+    if (prevState.currentChain !== this.state.currentChain
         || prevState.currentAddress !== this.state.currentAddress) {
       this.loadTransactions()
     }
@@ -44,8 +44,8 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
   }
 
   private loadTransactions = () => {
-    if (this.state.currentAddress && this.state.currentNetwork) {
-      this.props.getTransactions(this.state.currentAddress, this.state.currentNetwork)
+    if (this.state.currentAddress && this.state.currentChain) {
+      this.props.getTransactions(this.state.currentAddress, this.state.currentChain)
     }
   }
 
@@ -119,8 +119,8 @@ class TransactionList extends React.Component<ITransactionListProps, ITransactio
       borderRadius: '2px'
     }
 
-    const txBaseUrl = networks[this.props.network].txExplorer
-    const symbol = networks[this.props.network].tokenSymbol
+    const txBaseUrl = chains[this.props.chain].txExplorer
+    const symbol = chains[this.props.chain].tokenSymbol
 
     return (
       <List.Item key={index} style={borderStyle}>
@@ -161,7 +161,7 @@ const mapStateToProps = (state: IAppState) => {
   return {
     transactions: state.transactions,
     account: state.settings.selectedAccount,
-    network: state.settings.network,
+    chain: state.settings.chain,
     color: state.settings.color
   }
 }

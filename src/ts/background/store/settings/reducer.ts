@@ -6,7 +6,7 @@ import {
   ThemeTypes
 } from '../../../components/styles/themes'
 import { IAccount } from '../wallet'
-import { DEFUALT_NETWORK } from '../../../constants/networks'
+import { DEFUALT_CHAIN } from '../../../constants/chains'
 
 export interface IAppSettings {
   updating: boolean,
@@ -14,7 +14,7 @@ export interface IAppSettings {
   color: Color,
   // welcome if first time user
   welcome: boolean,
-  network: string,
+  chain: string,
   selectedAccount?: IAccount
 }
 
@@ -23,7 +23,7 @@ const initialState: IAppSettings = {
   theme: 'light',
   color: 'blue',
   welcome: true,
-  network: DEFUALT_NETWORK
+  chain: DEFUALT_CHAIN
 }
 
 const settings: Reducer<IAppSettings, AnyAction> = (state = initialState, action) => {

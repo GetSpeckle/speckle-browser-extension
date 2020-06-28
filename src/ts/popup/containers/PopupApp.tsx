@@ -39,7 +39,7 @@ interface IPopupState {
   authRequests: Array<AuthorizeRequest>
   signRequests: Array<SigningRequest>,
   accountSetupTimeoutId: number
-  network: string | undefined
+  chain: string | undefined
 }
 
 class PopupApp extends React.Component<IPopupProps, IPopupState> {
@@ -49,7 +49,7 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
     authRequests: [],
     signRequests: [],
     accountSetupTimeoutId: 0,
-    network: undefined
+    chain: undefined
   }
 
   setAuthRequests = (authRequests: Array<AuthorizeRequest>) => {
@@ -125,8 +125,8 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
   }
 
   static getDerivedStateFromProps (nextProps, prevState) {
-    if (nextProps.settings.network !== prevState.network) {
-      return { network: nextProps.settings.network }
+    if (nextProps.settings.chain !== prevState.chain) {
+      return { chain: nextProps.settings.chain }
     }
     return {}
   }

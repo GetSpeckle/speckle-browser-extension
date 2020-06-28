@@ -13,7 +13,7 @@ import {
   BasicSection,
   TimerText
 } from '../basic-components'
-import { CREATE_PASSWORD_ROUTE, HOME_ROUTE, SELECT_NETWORK_ROUTE } from '../../constants/routes'
+import { CREATE_PASSWORD_ROUTE, HOME_ROUTE, SELECT_CHAIN_ROUTE } from '../../constants/routes'
 import { KeyringPair$Json } from '@polkadot/keyring/types'
 import { setLocked, setCreated, setNewPhrase, setAccountName, setNewPassword } from '../../background/store/wallet'
 import { setError } from '../../background/store/error'
@@ -168,7 +168,7 @@ class ConfirmPhrase extends React.Component<IConfirmPhraseProps, IConfirmPhraseS
   }
 
   handleClick = () => {
-    this.props.history.push(SELECT_NETWORK_ROUTE)
+    this.props.history.push(SELECT_CHAIN_ROUTE)
   }
 
   render () {

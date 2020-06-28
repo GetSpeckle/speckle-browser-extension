@@ -4,25 +4,25 @@ import { Tab } from 'semantic-ui-react'
 import { IAppState } from '../../background/store/all'
 import t from '../../services/i18n'
 import styled from 'styled-components'
-import NetworkCard from './NetworkCard'
+import ChainCard from './ChainCard'
 import { ScrollButton } from './ScrollButton'
 import { colorSchemes } from '../styles/themes'
-import { networks } from '../../constants/networks'
+import { chains } from '../../constants/chains'
 
-interface INetworkListProps extends StateProps {
+interface IChainListProps extends StateProps {
   search: string
 }
 
-class NetworkList extends React.Component<INetworkListProps> {
+class ChainList extends React.Component<IChainListProps> {
 
   next () {
-    let networkContainer = document.getElementById('scroll-menu')
-    networkContainer!.scrollLeft += 100
+    let chainContainer = document.getElementById('scroll-menu')
+    chainContainer!.scrollLeft += 100
   }
 
   prev () {
-    let networkContainer = document.getElementById('scroll-menu')
-    networkContainer!.scrollLeft -= 100
+    let chainContainer = document.getElementById('scroll-menu')
+    chainContainer!.scrollLeft -= 100
   }
 
   render () {
@@ -46,24 +46,24 @@ class NetworkList extends React.Component<INetworkListProps> {
 
   renderWithFilter = (type) => {
 
-    // TODO: filter network with the network type and search from SelectNetwork
-    console.log('preparing to render Networks ... ', type)
+    // TODO: filter chain with the chain type and search from SelectChain
+    console.log('preparing to render chains ... ', type)
 
     return (
       <CardTabPane>
-        <Networks id={'scroll-menu'}>
+        <Chains id={'scroll-menu'}>
           {/* tslint:disable-next-line:jsx-no-multiline-js */}
-          {Object.keys(networks).map((key, index) => (
-              <NetworkCard
+          {Object.keys(chains).map((key, index) => (
+              <ChainCard
                 key={index}
-                imgPath={networks[key].chain.iconUrl}
+                imgPath={chains[key].iconUrl}
                 colorScheme={colorSchemes[this.props.color]}
                 supported={true}
                 name={key}
               />
             )
           )}
-         </Networks>
+         </Chains>
         <PrevButton onMouseDown={this.prev} colorScheme={colorSchemes[this.props.color]}/>
         <NextButton onMouseDown={this.next} colorScheme={colorSchemes[this.props.color]}/>
       </CardTabPane>
@@ -79,10 +79,10 @@ const mapStateToProps = (state: IAppState) => {
 
 type StateProps = ReturnType<typeof mapStateToProps>
 
-// TODO: Get networks
-const mapDispatchToProps = { /* getNetworks */ }
+// TODO: Get chains
+const mapDispatchToProps = { /* getchains */ }
 
-export default (connect(mapStateToProps, mapDispatchToProps)(NetworkList))
+export default connect(mapStateToProps, mapDispatchToProps)(ChainList)
 
 const CardTabPane = styled(Tab.Pane)`
   width: 319px !important;
@@ -101,7 +101,7 @@ const NextButton = styled(ScrollButton)`
   top: 40%;
   right: 3%;
 `
-const Networks = styled.div`
+const Chains = styled.div`
   min-width: 320px !important;
   height: 120px;
   overflow-x: scroll;

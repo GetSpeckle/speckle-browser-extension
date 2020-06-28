@@ -5,7 +5,7 @@ import { Selected } from './Selected'
 
 type Selected = true | false
 
-interface INetworkCardProps {
+interface IChainCardProps {
   imgPath: string
   name: string
   supported: boolean
@@ -13,11 +13,11 @@ interface INetworkCardProps {
   selected: Selected
 }
 
-interface INetworkCardState {
+interface IChainCardState {
   selected: Selected
 }
 
-export default class NetworkCard extends React.Component<INetworkCardProps, INetworkCardState> {
+export default class ChainCard extends React.Component<IChainCardProps, IChainCardState> {
 
   static defaultProps = {
     selected: false
@@ -43,12 +43,12 @@ export default class NetworkCard extends React.Component<INetworkCardProps, INet
     return (
       <div style={{ 'position': 'relative' }}>
         <Card onClick={this.toggleSelected}>
-          <NetworkDetail>
-            <NetworkImage src={this.props.imgPath} alt={'chain-logo'}/>
-                <NetworkName>
+          <ChainDetail>
+            <ChainImage src={this.props.imgPath} alt={'chain-logo'}/>
+                <ChainName>
                 {this.props.name}<br/><span>{!this.props.supported ? '(coming soon)' : ''}</span>
-                </NetworkName>
-            </NetworkDetail>
+                </ChainName>
+            </ChainDetail>
           </Card>
       </div>
     )
@@ -58,12 +58,12 @@ export default class NetworkCard extends React.Component<INetworkCardProps, INet
     return (
       <div style={{ 'position': 'relative' }}>
         <SelectedCard color={this.props.colorScheme.stopColorOne} onClick={this.toggleSelected}>
-          <NetworkDetail>
-            <NetworkImage src={this.props.imgPath} alt={'chain-logo'}/>
-            <NetworkName>
+          <ChainDetail>
+            <ChainImage src={this.props.imgPath} alt={'chain-logo'}/>
+            <ChainName>
               {this.props.name}<br/><span>{!this.props.supported ? '(coming soon)' : ''}</span>
-            </NetworkName>
-          </NetworkDetail>
+            </ChainName>
+          </ChainDetail>
         </SelectedCard>
         <Check colorScheme={this.props.colorScheme}/>
       </div>
@@ -71,13 +71,13 @@ export default class NetworkCard extends React.Component<INetworkCardProps, INet
   }
 }
 
-const NetworkDetail = styled.div`
+const ChainDetail = styled.div`
   flex-direction: column;
   justify-content: space-around;
   text-align: center;
   align-self: center;
 `
-const NetworkImage = styled.img`
+const ChainImage = styled.img`
   width: 48px;
   height: 48px;
   object-fit: contain;
@@ -108,7 +108,7 @@ const SelectedCard = styled.div`
   background-color: #ffffff;
 `
 
-const NetworkName = styled.p`
+const ChainName = styled.p`
   width: 70px;
   margin-top: 6px;
   font-size: 12px;

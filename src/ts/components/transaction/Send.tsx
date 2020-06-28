@@ -229,7 +229,7 @@ class Send extends React.Component<ISendProps, ISendState> {
       fee: formatBalance(this.state.fee)
     }
 
-    this.updateList(address, this.props.settings.network, txItem)
+    this.updateList(address, this.props.settings.chain, txItem)
 
     const submittable = this.state.extrinsic as SubmittableExtrinsic
     submittable.send((result: SubmittableResult) => {
@@ -241,11 +241,11 @@ class Send extends React.Component<ISendProps, ISendState> {
         console.log(`Transaction finalized at blockHash ${result.status.asFinalized}`)
         txItem.updateTime = new Date().getTime()
         txItem.status = 'Success'
-        this.updateList(address, this.props.settings.network, txItem)
+        this.updateList(address, this.props.settings.chain, txItem)
       } else if (result.isError) {
         txItem.updateTime = new Date().getTime()
         txItem.status = 'Failure'
-        this.updateList(address, this.props.settings.network, txItem)
+        this.updateList(address, this.props.settings.chain, txItem)
         this.props.setError(t('transactionError'))
         this.setState({ isLoading: false })
       } else if (result.isWarning) {
@@ -255,17 +255,16 @@ class Send extends React.Component<ISendProps, ISendState> {
       console.log('Error', err)
       txItem.updateTime = new Date().getTime()
       txItem.status = 'Failure'
-      this.updateList(address, this.props.settings.network, txItem)
+      this.updateList(address, this.props.settings.chain, txItem)
       this.props.setError(t('transactionError'))
       this.setState({ isLoading: false })
     })
   }
 
-  updateList = (address, network, txItem) => {
-    this.props.getTransactions(address, network).then((getTxs) => {
+  updateList = (address, chain, txItem) => {
+    this.props.getTransactions(address, chain).then((getTxs) => {
       const txs = getTxs.value
-      this.props.upsertTransaction(address, network,
-        txItem, txs)
+      this.props.upsertTransaction(address, chain, txItem, txs)
     })
   }
 
@@ -342,7 +341,7 @@ class Send extends React.Component<ISendProps, ISendState> {
             </FeeSection>
             <Section>
               <Confirm
-                network={this.props.settings.network}
+                chain={this.props.settings.chain}
                 color={this.props.settings.color}
                 extrinsic={this.state.extrinsic}
                 trigger={submitButton}

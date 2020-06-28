@@ -10,15 +10,15 @@ import {
 import { HOME_ROUTE } from '../../constants/routes'
 import { Divider, Form, Input } from 'semantic-ui-react'
 import styled from 'styled-components'
-import NetworkList from './NetworkList'
+import ChainList from './ChainList'
 
-interface ISelectNetworkProps extends RouteComponentProps {}
+interface ISelectChainProps extends RouteComponentProps {}
 
-interface ISelectNetworkState {
+interface ISelectChainState {
   search: string
 }
 
-class SelectNetwork extends React.Component<ISelectNetworkProps, ISelectNetworkState> {
+class SelectChain extends React.Component<ISelectChainProps, ISelectChainState> {
 
   state = {
     search: ''
@@ -42,20 +42,20 @@ class SelectNetwork extends React.Component<ISelectNetworkProps, ISelectNetworkS
         <Form>
           <ChainInput placeholder={t('chainSearch')} onChange={this.handleChange}/>
         </Form>
-        <NetworkSection>
-          <NetworkList search={this.state.search}/>
-        </NetworkSection>
+        <ChainSection>
+          <ChainList search={this.state.search}/>
+        </ChainSection>
         <ChainQuote>{t('selectChainDesc')}</ChainQuote>
         <Divider />
         <StyledButton type='button' onClick={this.gotoDashboard}>
-          {t('selectNetwork')}
+          {t('selectChain')}
         </StyledButton>
       </ContentContainer>
     )
   }
 }
 
-export default withRouter(SelectNetwork)
+export default withRouter(SelectChain)
 
 const ChainInput = styled(Input)`
   width: 311px;
@@ -67,7 +67,7 @@ const ChainInput = styled(Input)`
   font-family: Nunito;
 `
 
-export const NetworkSection = styled.div`
+export const ChainSection = styled.div`
   width: 100%;
   margin: 8px 0 9px;
   text-align: center;

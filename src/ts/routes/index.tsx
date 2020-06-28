@@ -11,7 +11,7 @@ import {
   IMPORT_JSON_ROUTE,
   GENERATE_PHRASE_ROUTE,
   CONFIRM_PHRASE_ROUTE,
-  SELECT_NETWORK_ROUTE,
+  SELECT_CHAIN_ROUTE,
   LOGIN_ROUTE,
   INITIALIZE_ROUTE,
   SEND_ROUTE,
@@ -32,7 +32,7 @@ import Welcome from '../components/Welcome'
 import ActionLayout from '../layouts/ActionLayout'
 import ExtrinsicLayout from '../layouts/ExtrinsicLayout'
 import Send from '../components/transaction/Send'
-import SelectNetwork from '../components/account/SelectNetwork'
+import SelectChain from '../components/account/SelectChain'
 import QR from '../components/account/QR'
 
 export class Routes extends React.Component {
@@ -101,8 +101,8 @@ export class Routes extends React.Component {
         />
         <RouteWithLayout
           layout={LoginLayout}
-          path={SELECT_NETWORK_ROUTE}
-          component={SelectNetwork}
+          path={SELECT_CHAIN_ROUTE}
+          component={SelectChain}
           exact={true}
         />
         <RouteWithLayout

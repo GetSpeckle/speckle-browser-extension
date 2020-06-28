@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import t from '../../services/i18n'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
-import { findNetwork, Network } from '../../constants/networks'
+import { findChain, Chain } from '../../constants/chains'
 import { Grid } from 'semantic-ui-react'
 import { formatBalance } from '@polkadot/util'
 import { SignerPayloadJSON } from '@polkadot/types/types'
@@ -38,14 +38,14 @@ interface ISignMessageProps extends StateProps {
   signerPayload: SignerPayloadJSON
 }
 
-const decodeMethod = (data: string, isDecoded: boolean, network: Network)
+const decodeMethod = (data: string, isDecoded: boolean, chain: Chain)
   : Decoded => {
   let json: MethodJson | null = null
   let method: Call | null = null
 
   try {
-    if (isDecoded && network.hasMetadata) {
-      method = network.registry.createType('Call', data)
+    if (isDecoded && chain.hasMetadata) {
+      method = chain.registry.createType('Call', data)
       json = method.toJSON() as unknown as MethodJson
     }
   } catch (error) {
@@ -57,11 +57,10 @@ const decodeMethod = (data: string, isDecoded: boolean, network: Network)
 
 const renderMethod = (
   data: string,
-  { json, method }: Decoded,
-  network: Network): React.ReactNode => {
+  { json, method }: Decoded, chain: Chain): React.ReactNode => {
 
   if (method && method.sectionName === 'balances' && method.methodName === 'transfer' && json) {
-    return renderBalanceTransfer(method, json.args, network)
+    return renderBalanceTransfer(method, json.args, chain)
   } else if (method && method.sectionName && method.methodName) {
     return renderGeneralExtrinsic(method, data)
   }
@@ -89,12 +88,12 @@ const renderGeneralExtrinsic = (method, data) => {
   )
 }
 
-const renderBalanceTransfer = (method, args, network) => {
+const renderBalanceTransfer = (method, args, chain) => {
   formatBalance.setDefaults({
-    decimals: network.tokenDecimals,
-    unit: network.tokenSymbol
+    decimals: chain.tokenDecimals,
+    unit: chain.tokenSymbol
   })
-  const address = recodeAddress(args.dest, network.ss58Format)
+  const address = recodeAddress(args.dest, chain.ss58Format)
   return (
     <table>
       <tbody>
@@ -129,10 +128,10 @@ const renderBalanceTransfer = (method, args, network) => {
 
 const Extrinsic = ({ settings, isDecoded, signerPayload }: ISignMessageProps) => {
   const { genesisHash, method } = signerPayload
-  const network = useRef(findNetwork(genesisHash)).current
+  const chain = useRef(findChain(genesisHash)).current
   const [decoded, setDecoded] = useState<Decoded>({ json: null, method: null })
   useEffect((): void => {
-    setDecoded(decodeMethod(method, isDecoded, network))
+    setDecoded(decodeMethod(method, isDecoded, chain))
   }, [isDecoded])
 
   return (
@@ -142,24 +141,24 @@ const Extrinsic = ({ settings, isDecoded, signerPayload }: ISignMessageProps) =>
           <Icon color={settings.color}><Caption>{t('signingMessageIcon')}</Caption></Icon>
         </SignMessageGridColumn>
         <SignMessageGridColumn width='1'>
-          <NetworkIcon src={network.chain.iconUrl} alt='Chain logo'/>
+          <ChainIcon src={chain.iconUrl} alt='Chain logo'/>
         </SignMessageGridColumn>
         <SignMessageGridColumn width='3'>
-          <NetworkName>{network.name}</NetworkName>
+          <ChainName>{chain.name}</ChainName>
         </SignMessageGridColumn>
       </SignMessageGridRow>
-      {renderMethod(method, decoded, network)}
+      {renderMethod(method, decoded, chain)}
     </SignMessageGrid>
   )
 }
 
-const NetworkIcon = styled.img`
+const ChainIcon = styled.img`
   float: right;
   height: 20px;
   object-fit: contain;
 `
 
-const NetworkName = styled.span`
+const ChainName = styled.span`
   float: right;
   height: 18px;
   font-family: Nunito;

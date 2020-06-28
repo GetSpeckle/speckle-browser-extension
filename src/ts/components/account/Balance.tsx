@@ -8,7 +8,7 @@ import { formatBalance } from '@polkadot/util'
 import styled from 'styled-components'
 import { ChainProperties } from '@polkadot/types/interfaces'
 import U32 from '@polkadot/types/primitive/U32'
-import { networks } from '../../constants/networks'
+import { chains } from '../../constants/chains'
 
 class Balance extends React.Component<IBalanceProps, IBalanceState> {
 
@@ -26,7 +26,7 @@ class Balance extends React.Component<IBalanceProps, IBalanceState> {
 
   updateBalance = () => {
     if (this.props.apiContext.apiReady) {
-      const { tokenDecimals, tokenSymbol, registry } = this.props.network
+      const { tokenDecimals, tokenSymbol, registry } = this.props.chain
       if (tokenDecimals !== undefined && tokenSymbol !== undefined) {
         formatBalance.setDefaults({
           decimals: tokenDecimals,
@@ -147,7 +147,7 @@ const BalanceBox = styled.div`
 const mapStateToProps = (state: IAppState) => {
   return {
     apiContext: state.apiContext,
-    network: networks[state.settings.network]
+    chain: chains[state.settings.chain]
   }
 }
 

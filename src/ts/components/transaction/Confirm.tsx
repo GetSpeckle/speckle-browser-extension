@@ -10,10 +10,10 @@ import { colorSchemes } from '../styles/themes'
 import { IExtrinsic } from '@polkadot/types/types'
 import { formatBalance } from '@polkadot/util'
 import BN = require('bn.js')
-import { networks } from '../../constants/networks'
+import { chains } from '../../constants/chains'
 
 interface IConfirmProps {
-  network: string,
+  chain: string,
   trigger: any,
   fromAddress: string,
   amount: BN,
@@ -83,8 +83,8 @@ export default class Confirm extends React.Component<IConfirmProps, IConfirmStat
   copyToAddressToClipboard = () => this.copyToClipboard(this.props.toAddress)
 
   render () {
-    const network = networks[this.props.network]
-    const identiconTheme = network.identiconTheme
+    const chain = chains[this.props.chain]
+    const identiconTheme = chain.identiconTheme
     const totalFee = this.props.amount.add(this.props.fee).add(this.props.tip)
     return (
       <Modal

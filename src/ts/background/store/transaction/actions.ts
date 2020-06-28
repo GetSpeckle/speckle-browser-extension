@@ -25,14 +25,14 @@ export const ACTION_TYPES = {
 
 const PREFIX = 'transactions_'
 
-export function getTransactions (address: string, network: string): AnyAction {
+export function getTransactions (address: string, chain: string): AnyAction {
   return {
     type: ACTION_TYPES.GET_TRANSACTIONS,
-    payload: LocalStore.getValue(PREFIX + address + '_' + network)
+    payload: LocalStore.getValue(PREFIX + address + '_' + chain)
   }
 }
 
-export function upsertTransaction (address: string, network: string,
+export function upsertTransaction (address: string, chain: string,
                                    tran: ITransaction, list: ITransaction[]): AnyAction {
   if (list === null) { list = [] }
   const idx = list.findIndex(item => item.txHash === tran.txHash)
@@ -44,14 +44,14 @@ export function upsertTransaction (address: string, network: string,
   }
   return {
     type: ACTION_TYPES.UPSERT_TRANSACTION,
-    payload: LocalStore.setValue(PREFIX + address + '_' + network, updated)
+    payload: LocalStore.setValue(PREFIX + address + '_' + chain, updated)
   }
 }
 
-export function saveTransactions (address: string, network: string,
+export function saveTransactions (address: string, chain: string,
     list: ITransaction[]): AnyAction {
   return {
     type: ACTION_TYPES.SAVE_TRANSACTIONS,
-    payload: LocalStore.setValue(PREFIX + address + '_' + network, list)
+    payload: LocalStore.setValue(PREFIX + address + '_' + chain, list)
   }
 }

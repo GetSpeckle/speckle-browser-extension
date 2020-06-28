@@ -2,7 +2,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { Dropdown, Image, DropdownProps, Dimmer, Loader } from 'semantic-ui-react'
-import { networks } from '../../constants/networks'
+import { chains } from '../../constants/chains'
 import { IAppState } from '../../background/store/all'
 import { saveSettings } from '../../background/store/settings'
 import styled from 'styled-components'
@@ -23,7 +23,7 @@ interface ITopMenuState {
 class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
 
   state = {
-    chainIconUrl: networks[this.props.settings.network].chain.iconUrl,
+    chainIconUrl: chains[this.props.settings.chain].iconUrl,
     profileIconClicked: false
   }
 
@@ -35,16 +35,16 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
   }
 
   componentDidUpdate (prevProps: Readonly<ITopMenuProps>) {
-    if (this.props.settings.network !== prevProps.settings.network) {
+    if (this.props.settings.chain !== prevProps.settings.chain) {
       this.createApi()
     }
   }
 
   createApi = () => {
     const { settings } = this.props
-    const network = networks[settings.network]
-    const provider = new WsProvider(network.rpcServer)
-    let apiOptions: ApiOptions = { provider, types: network.types }
+    const chain = chains[settings.chain]
+    const provider = new WsProvider(chain.rpcServer)
+    let apiOptions: ApiOptions = { provider, types: chain.definition.types }
     this.props.createApi(apiOptions)
   }
 
@@ -54,15 +54,15 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
     this.props.destroyApi()
   }
 
-  changeNetwork = (_e: any, { value }: DropdownProps) => {
+  changeChain = (_e: any, { value }: DropdownProps) => {
     if (value) {
-      const network = value.toString()
+      const chain = value.toString()
       this.setState({
-        chainIconUrl: networks[network].chain.iconUrl
+        chainIconUrl: chains[chain].iconUrl
       })
 
       this.destroyApi()
-      this.props.saveSettings({ ...this.props.settings, network })
+      this.props.saveSettings({ ...this.props.settings, chain })
     }
   }
 
@@ -90,13 +90,13 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
   }
 
   render () {
-    const networkOptions = Object.keys(networks).map(n => {
-      const network = networks[n]
+    const chainOptions = Object.keys(chains).map(n => {
+      const chain = chains[n]
       return {
-        key: network.name,
-        text: network.name,
-        value: network.name,
-        image: { src: network.chain.iconUrl }
+        key: chain.name,
+        text: chain.name,
+        value: chain.name,
+        image: { src: chain.iconUrl }
       }
     })
 
@@ -122,10 +122,10 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
                 style={dropdownMenuStyle}
                 className='selection chain'
                 fluid={true}
-                value={this.props.settings.network}
-                onChange={this.changeNetwork}
+                value={this.props.settings.chain}
+                onChange={this.changeChain}
                 icon={<img src={this.state.chainIconUrl} alt='Chain logo'/>}
-                options={networkOptions}
+                options={chainOptions}
               />
             </div>
 
