@@ -119,7 +119,7 @@ const handle = (msg, port: Runtime.Port) => {
       break
     case FUNCS.SIGN_EXTRINSIC:
       try {
-        keyringVault.signExtrinsic(msg.signerPayload).then(signature => {
+        keyringVault.signExtrinsic(msg.chain, msg.signerPayload).then(signature => {
           port.postMessage({ method: FUNCS.SIGN_EXTRINSIC, result: signature })
         })
       } catch (err) {

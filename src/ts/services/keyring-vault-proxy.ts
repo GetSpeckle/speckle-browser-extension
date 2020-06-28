@@ -69,7 +69,7 @@ export function walletExists (): Promise<boolean> {
   })
 }
 
-export function signExtrinsic (signerPayload: SignerPayloadJSON) {
+export function signExtrinsic (chain: string, signerPayload: SignerPayloadJSON) {
   return new Promise<any>((resolve, reject) => {
     port.onMessage.addListener(msg => {
       if (msg.method !== FUNCS.SIGN_EXTRINSIC) return
@@ -80,7 +80,8 @@ export function signExtrinsic (signerPayload: SignerPayloadJSON) {
     })
     port.postMessage({
       method: FUNCS.SIGN_EXTRINSIC,
-      signerPayload: signerPayload
+      chain,
+      signerPayload
     })
   })
 }

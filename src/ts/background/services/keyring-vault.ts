@@ -4,14 +4,12 @@ import { LocalStore } from '../../services/local-store'
 import { mnemonicGenerate, cryptoWaitReady, mnemonicValidate } from '@polkadot/util-crypto'
 import t from '../../services/i18n'
 import { SimpleAccounts } from '../types'
-import { createType, TypeRegistry } from '@polkadot/types'
 import { SignerPayloadJSON } from '@polkadot/types/types'
 import { VALIDITY_INTERVAL } from '../../constants/config'
 import { getPubkeyHex } from '../../services/address-transformer'
+import { chains } from '../../constants/chains'
 
 const VAULT_KEY: string = 'speckle-vault'
-
-const registry = new TypeRegistry()
 
 class KeyringVault {
 
@@ -287,14 +285,16 @@ class KeyringVault {
     }
   }
 
-  signExtrinsic = async (signerPayload: SignerPayloadJSON): Promise<string> => {
+  signExtrinsic = async (chain: string, signerPayload: SignerPayloadJSON): Promise<string> => {
     const { address } = signerPayload
     const pair = this.keyring.getPair(address)
     if (!pair) {
       return Promise.reject(new Error(t('accountNotFound')))
     }
+    const registry = chains[chain].registry
+    registry.setSignedExtensions(signerPayload.signedExtensions)
     let params = { version: signerPayload.version }
-    const payload = createType(registry, 'ExtrinsicPayload', signerPayload, params)
+    const payload = registry.createType('ExtrinsicPayload', signerPayload, params)
     if (pair.isLocked) {
       pair.decodePkcs8(this._password)
     }

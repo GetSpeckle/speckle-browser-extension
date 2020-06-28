@@ -16,9 +16,9 @@ export default class RequestExtrinsicSign implements RequestSign {
 
   sign (registry: TypeRegistry, pair: KeyringPair): { signature: string } {
     // inject the current signed extensions for encoding
-    registry.setSignedExtensions(this.payload.signedExtensions);
+    registry.setSignedExtensions(this.payload.signedExtensions)
     return registry
       .createType('ExtrinsicPayload', this.payload, { version: this.payload.version })
-      .sign(pair);
+      .sign(pair)
   }
 }
