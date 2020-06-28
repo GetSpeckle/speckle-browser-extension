@@ -88,8 +88,8 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
   render () {
     const { showNewPassword, showConfirmNewPassword } = this.state
     const { accountSetupTimeout } = this.props.wallet
+    const iconClassName = `eye ${showNewPassword ? '' : 'slash'} link icon`
 
-    // @ts-ignore
     return (
       <ContentContainer>
         <TopSection>
@@ -102,7 +102,7 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
         <Section>
           <StyledPassword
             type={showNewPassword ? 'text' : 'password'}
-            icon={<i className={`eye ${showNewPassword ? '' : 'slash'} link icon`} onClick={this.handleShowPassword}/>}
+            icon={<i className={iconClassName} onClick={this.handleShowPassword}/>}
             placeholder={t('newPassword')}
             value={this.state.newPassword}
             onChange={this.setNewPassword}
@@ -112,7 +112,7 @@ class CreatePassword extends React.Component<ICreatePasswordProps, ICreatePasswo
         <Section>
           <StyledPassword
             type={showConfirmNewPassword ? 'text' : 'password'}
-            icon={<i className={`eye ${showConfirmNewPassword ? '' : 'slash'} link icon`} onClick={this.handleShowConfirmPassword}/>}
+            icon={<i className={iconClassName} onClick={this.handleShowConfirmPassword}/>}
             placeholder={t('repeatPassword')}
             value={this.state.confirmPassword}
             onChange={this.setConfirmPassword}
