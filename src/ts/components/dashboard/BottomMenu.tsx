@@ -2,7 +2,7 @@ import * as React from 'react'
 import { withRouter, RouteComponentProps } from 'react-router'
 import { Menu, Icon } from 'semantic-ui-react'
 import t from '../../services/i18n'
-import { HOME_ROUTE, SEND_ROUTE } from '../../constants/routes'
+import {GOVERNANCE_ROUTE, HOME_ROUTE, SEND_ROUTE} from '../../constants/routes'
 import { IAppState } from '../../background/store/all'
 import { connect } from 'react-redux'
 import { SemanticCOLORS } from 'semantic-ui-react/dist/commonjs/generic'
@@ -14,7 +14,7 @@ interface IBottomMenuProps extends StateProps, RouteComponentProps {}
 const NAME_MAP = {
   home: HOME_ROUTE,
   stake: '/stake',
-  democracy: '/democracy',
+  governance: GOVERNANCE_ROUTE,
   send: SEND_ROUTE
 }
 
@@ -58,11 +58,11 @@ class BottomMenu extends React.Component<IBottomMenuProps> {
           </Menu.Item>
 
           <Menu.Item
-            disabled={true}
+            disabled={false}
             color={color as SemanticCOLORS}
-            name='democracy'
-            active={pathname === NAME_MAP.democracy}
-            onClick={this.handleItemClick.bind(this, 'democracy')}
+            name='governance'
+            active={pathname === NAME_MAP.governance}
+            onClick={this.handleItemClick.bind(this, 'governance')}
           >
             <Icon name='thumbs up outline' />
             {t('menuDemocracy')}
