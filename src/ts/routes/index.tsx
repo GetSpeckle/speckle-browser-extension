@@ -16,7 +16,8 @@ import {
   INITIALIZE_ROUTE,
   SEND_ROUTE,
   QR_ROUTE,
-  GOVERNANCE_ROUTE
+  GOVERNANCE_ROUTE,
+  VOTE_ROUTE
 } from '../constants/routes'
 import { RouteWithLayout } from './RouteWithLayout'
 import LoginLayout from '../layouts/LoginLayout'
@@ -34,6 +35,7 @@ import Welcome from '../components/Welcome'
 import ActionLayout from '../layouts/ActionLayout'
 import ExtrinsicLayout from '../layouts/ExtrinsicLayout'
 import Send from '../components/transaction/Send'
+import Vote from '../components/governance/Vote'
 import SelectChain from '../components/account/SelectChain'
 import QR from '../components/account/QR'
 
@@ -51,6 +53,12 @@ export class Routes extends React.Component {
           layout={ExtrinsicLayout}
           path={SEND_ROUTE}
           component={Send}
+          exact={true}
+        />
+        <Authenticated
+          layout={ExtrinsicLayout}
+          path={VOTE_ROUTE}
+          component={Vote}
           exact={true}
         />
         <Authenticated

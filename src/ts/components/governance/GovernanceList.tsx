@@ -1,15 +1,12 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { withRouter, RouteComponentProps } from 'react-router'
-import { Tab, List, Grid, Icon } from 'semantic-ui-react'
+import { Tab, List } from 'semantic-ui-react'
 import { IAppState } from '../../background/store/all'
 import { getTransactions } from '../../background/store/transaction'
 import t from '../../services/i18n'
-import { chains } from '../../constants/chains'
-import {displayAddress, isAddressValid} from '../../services/address-transformer'
 import ApiPromise from '@polkadot/api/promise'
 import { DeriveReferendumExt } from '@polkadot/api-derive/types'
-import BN from 'bn.js'
 
 interface ITransactionListProps extends StateProps, DispatchProps, RouteComponentProps {}
 
@@ -52,7 +49,7 @@ class GovernanceList extends React.Component<ITransactionListProps, ITransaction
     }
 
     const panes = [
-      { menuItem: t('tabReferenda'), render:  () => this.renderWithFilter() }
+      { menuItem: t('Referenda'), render:  () => this.renderWithFilter() }
     ]
 
     const color = this.props.color
@@ -75,7 +72,6 @@ class GovernanceList extends React.Component<ITransactionListProps, ITransaction
     // get  referenda
     const refr = this.state.referenda
 
-
     return (
       <Tab.Pane>
         <List className='tran-list'>
@@ -93,11 +89,12 @@ class GovernanceList extends React.Component<ITransactionListProps, ITransaction
       borderLeftStyle: 'solid',
       borderRadius: '2px'
     }
-    //const statusBorderColor = tran.status === 'Pending' ? 'grey' :
+    // const statusBorderColor = tran.status === 'Pending' ? 'grey' :
     //  tran.status === 'Success' ? '#51d8a7' : '#f3536d'
 
     return (
-      <List.Item key={index} style={borderStyle}>
+      // tslint:disable-next-line:block-spacing jsx-no-lambda
+      <List.Item key={index} style={borderStyle} onClick={() => {this.props.history.push('vote', { id: index })}}>
         {JSON.stringify(refr)}
       </List.Item>
     )
