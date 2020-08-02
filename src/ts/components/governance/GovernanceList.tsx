@@ -81,7 +81,7 @@ class GovernanceList extends React.Component<ITransactionListProps, ITransaction
     )
   }
 
-  renderReferendum = (refr: DeriveReferendumExt, index: number) => {
+  renderReferendum = (ref: DeriveReferendumExt, index: number) => {
     const statusBorderColor = '#51d8a7'
     const borderStyle = {
       borderLeftColor: statusBorderColor,
@@ -94,8 +94,8 @@ class GovernanceList extends React.Component<ITransactionListProps, ITransaction
 
     return (
       // tslint:disable-next-line:block-spacing jsx-no-lambda
-      <List.Item key={index} style={borderStyle} onClick={() => {this.props.history.push('vote', { id: index })}}>
-        {JSON.stringify(refr)}
+      <List.Item key={index} style={borderStyle} onClick={() => {this.props.history.push('vote', { referendum: ref })}}>
+        {JSON.stringify(ref)}
       </List.Item>
     )
   }

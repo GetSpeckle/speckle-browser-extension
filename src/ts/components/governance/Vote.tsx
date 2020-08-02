@@ -31,6 +31,7 @@ import { SiDef } from '@polkadot/util/types'
 import { chains } from '../../constants/chains'
 
 interface IVoteProps extends StateProps, RouteComponentProps, DispatchProps {
+  referendum: DeriveReferendumExt
 }
 
 interface IBallot {
@@ -116,10 +117,15 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
   }
 
   doUpdate = async (id) => {
+    console.log('ballot', this.state.ballot)
     this.api.derive.democracy.referendums().then((results) => {
       const filtered = results.filter((result) => result.index.toNumber() === id)
+      if (this.props.referendum !== undefined) {
+        console.log('prop referendum', this.props.referendum)
+      }
       const referendum: DeriveReferendumExt | undefined = filtered[0]
-      console.log(referendum)
+      console.log('referendum', referendum)
+
       if (referendum !== undefined) {
         // Parse referendum info
         let header = ''
@@ -145,6 +151,7 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
           votedNay: referendum.votedNay,
           votedTotal: referendum.votedTotal
         }
+        console.log('newBallot', newBallot)
 
         if (newBallot !== this.state.ballot) {
           this.setState({
@@ -294,18 +301,20 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
       <ContentContainer>
         <AccountDropdown/>
         <VoteStatus
-          values={[
-            {
-              colors: chartColorAye,
-              label: `Aye`,
-              value: new BN(0)
-            },
-            {
-              colors: chartColorNay,
-              label: `Nay`,
-              value: new BN(0)
-            }
-          ]}
+          values={
+            [
+              {
+                colors: chartColorAye,
+                label: `Aye`,
+                value: new BN(0)
+              },
+              {
+                colors: chartColorNay,
+                label: `Nay`,
+                value: new BN(0)
+              }
+            ]
+          }
           votes={0}
           legendColor={backgroundColor}
         />
@@ -351,28 +360,30 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
       <ContentContainer>
         <AccountDropdown/>
         <VoteStatus
-          values={[
-            {
-              colors: chartColorAye,
-              label: `Aye, ${formatBalance(this.state.ballot.votedAye)} (${formatNumber(this.state.ballot.voteCountAye)})`,
-              value: this.state.ballot.voteCount === 0 ?
-                0 :
+          values={
+            [
+              {
+                colors: chartColorAye,
+                label: `Aye, ${formatBalance(this.state.ballot.votedAye)} (${formatNumber(this.state.ballot.voteCountAye)})`,
+                value: this.state.ballot.voteCount === 0 ?
+                  0 :
                 this.state.ballot.votedAye
                   .muln(10000)
                   .div(this.state.ballot.votedTotal)
                   .toNumber() / 100
-            },
-            {
-              colors: chartColorNay,
-              label: `Nay, ${formatBalance(this.state.ballot.votedNay)} (${formatNumber(this.state.ballot.voteCountNay)})`,
-              value: this.state.ballot.voteCount === 0 ?
-                0 :
+              },
+              {
+                colors: chartColorNay,
+                label: `Nay, ${formatBalance(this.state.ballot.votedNay)} (${formatNumber(this.state.ballot.voteCountNay)})`,
+                value: this.state.ballot.voteCount === 0 ?
+                  0 :
                 this.state.ballot.votedNay
                   .muln(10000)
                   .div(this.state.ballot.votedTotal)
                   .toNumber() / 100
-            }
-          ]}
+              }
+            ]
+          }
           votes={this.state.ballot.voteCount}
           legendColor={backgroundColor}
         />
