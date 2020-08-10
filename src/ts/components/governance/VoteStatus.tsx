@@ -11,7 +11,6 @@ interface IVoteStatusProps {
   legendColor: string
 }
 
-
 interface IVoteStatusState {
   votes: number
   legendColor: string
@@ -39,8 +38,6 @@ class VoteStatus extends React.Component<IVoteStatusProps, IVoteStatusState> {
 
   // tslint:disable-next-line:max-line-length
   shouldComponentUpdate (nextProps: Readonly<IVoteStatusProps>, nextState: Readonly<IVoteStatusState>, _nextContext: any): boolean {
-    console.log(nextProps.values)
-    console.log(this.props.values)
     return nextProps.values !== this.props.values && nextState.votes !== this.props.votes
   }
 

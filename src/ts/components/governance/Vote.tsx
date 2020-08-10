@@ -31,7 +31,6 @@ import { SiDef } from '@polkadot/util/types'
 import { chains } from '../../constants/chains'
 
 interface IVoteProps extends StateProps, RouteComponentProps, DispatchProps {
-  referendum: DeriveReferendumExt
 }
 
 interface IBallot {
@@ -102,12 +101,14 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
     isWalletLocked().then(result => {
       if (result) this.props.history.push(LOGIN_ROUTE)
     })
+    const locationState = this.props.location
+    console.log('locationState', locationState)
   }
 
   updateVote = () => {
     if (this.props.apiContext.apiReady) {
       this.setState({ ...this.state, tries: 1 })
-      this.doUpdate(this.state.id)
+      this.doUpdate(this.props.location.state)
     } else if (this.state.voteTries <= 10) {
       const nextTry = setTimeout(this.updateVote, 1000)
       this.setState({ ...this.state, voteTries: this.state.voteTries + 1, nextTry: nextTry })
@@ -116,12 +117,21 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
     }
   }
 
-  doUpdate = async (id) => {
+  doUpdate = async (propState: any) => {
+    if (propState.id === undefined) {
+      return
+    }
+    const id = propState.id
     console.log('ballot', this.state.ballot)
     this.api.derive.democracy.referendums().then((results) => {
+      console.log('results', results)
+      console.log('id', id)
       const filtered = results.filter((result) => result.index.toNumber() === id)
-      if (this.props.referendum !== undefined) {
-        console.log('prop referendum', this.props.referendum)
+      console.log('filtered', filtered)
+      // @ts-ignore
+      if (propState.referendum) {
+        // @ts-ignore
+        console.log('prop referendum', propState.referendum)
       }
       const referendum: DeriveReferendumExt | undefined = filtered[0]
       console.log('referendum', referendum)

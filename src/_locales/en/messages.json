@@ -176,8 +176,8 @@
   "menuStake": {
     "message": "Stake"
   },
-  "menuDemocracy": {
-    "message": "Democracy"
+  "menuGovernance": {
+    "message": "Governance"
   },
   "menuSend": {
     "message": "Send"
@@ -340,5 +340,11 @@
   },
   "connecting": {
     "message": "Connecting to network, please wait ..."
+  },
+  "referenda": {
+    "message": "Referenda"
+  },
+  "proposals": {
+    "message": "Proposals"
   }
 }

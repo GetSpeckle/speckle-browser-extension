@@ -65,7 +65,7 @@ class BottomMenu extends React.Component<IBottomMenuProps> {
             onClick={this.handleItemClick.bind(this, 'governance')}
           >
             <Icon name='thumbs up outline' />
-            {t('menuDemocracy')}
+            {t('menuGovernance')}
           </Menu.Item>
 
           <Menu.Item
