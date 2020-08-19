@@ -115,13 +115,20 @@ class GovernanceList extends React.Component<ITransactionListProps, ITransaction
       borderRadius: '2px'
     }
     if ('votes' in ref && ref.votes) {
+      const location = {
+        pathname: '/vote',
+        state: { referendum: ref }
+      }
       return (
         // tslint:disable-next-line:block-spacing jsx-no-lambda max-line-length
-        <List.Item key={index} style={borderStyle} onClick={() => {this.props.history.push('/vote', { referendum: ref, id: ref.index })}}>
+        <List.Item key={index} style={borderStyle} onClick={() => {this.props.history.push(location)}}>
           <ReferendumContainer>
             <RefrIndex>
               {`#${ref.index}`}
             </RefrIndex>
+            <Action>
+              {`${ref.image}`}
+            </Action>
             <RefrLink onClick={() => {
               browser.tabs.create({ url: `https://${this.state.currentChain}.polkassembly.io/referendum/${ref.index}`, active: true })
             }}
@@ -133,7 +140,7 @@ class GovernanceList extends React.Component<ITransactionListProps, ITransaction
     } else {
       return (
         // tslint:disable-next-line:block-spacing jsx-no-lambda max-line-length
-        <List.Item key={index} style={borderStyle}>
+        <List.Item key={index} style={borderStyle} onClick={() => {this.props.history.push(location)}}>
           <ReferendumContainer>
             <RefrIndex>
               {`#${ref.index}`}
@@ -196,4 +203,15 @@ const RefrLink = styled.div`
   height: 16px;
   object-fit: contain;
   background: url(assets/link.svg)
+`
+
+const Action = styled.h1`
+  font-family: Nunito;
+  font-size: 16px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.5;
+  letter-spacing: normal;
+  color: #30383b;
 `

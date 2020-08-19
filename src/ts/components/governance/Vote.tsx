@@ -1,7 +1,7 @@
 import * as React from 'react'
 import ApiPromise from '@polkadot/api/promise'
 import { DeriveReferendumExt } from '@polkadot/api-derive/types'
-import { TypeRegistry } from '@polkadot/types/create/registry'
+import { ExtrinsicPayloadValue, SignerPayloadJSON } from '@polkadot/types/types'
 import {
   Index,
   Balance as BalanceType,
@@ -23,14 +23,17 @@ import { formatBalance, formatNumber } from '@polkadot/util'
 import { INITIALIZE_ROUTE, LOGIN_ROUTE } from '../../constants/routes'
 import { colorSchemes } from '../styles/themes'
 import { isWalletLocked, signExtrinsic } from '../../services/keyring-vault-proxy'
-import { ExtrinsicPayloadValue, SignerPayloadJSON } from '@polkadot/types/types'
 import { setError } from '../../background/store/error'
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types'
 import { SubmittableResult } from '@polkadot/api'
 import { SiDef } from '@polkadot/util/types'
 import { chains } from '../../constants/chains'
 
-interface IVoteProps extends StateProps, RouteComponentProps, DispatchProps {
+interface IVoteProps extends StateProps, RouteComponentProps, DispatchProps, ILocationState {
+}
+
+interface ILocationState {
+  referendum: DeriveReferendumExt
 }
 
 interface IBallot {
@@ -76,8 +79,8 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
     tip: '',
     tipSi,
     tipUnit: '',
-    id: this.props.match.params['proposalId'] | 1,
-    ballot:  {
+    id: this.props.match.params['proposalId'],
+    ballot: {
       voteCount: 0,
       voteCountAye: 0,
       voteCountNay: 0,
@@ -101,79 +104,69 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
     isWalletLocked().then(result => {
       if (result) this.props.history.push(LOGIN_ROUTE)
     })
-    const locationState = this.props.location
-    console.log('locationState', locationState)
+    if (this.state.id) {
+      this.updateFromId(this.state.id)
+    } else if (this.props.location.state) {
+      this.updateFromProps(this.props.location.state)
+    }
   }
 
   updateVote = () => {
     if (this.props.apiContext.apiReady) {
-      this.setState({ ...this.state, tries: 1 })
-      this.doUpdate(this.props.location.state)
+      this.setState({...this.state, tries: 1})
     } else if (this.state.voteTries <= 10) {
       const nextTry = setTimeout(this.updateVote, 1000)
-      this.setState({ ...this.state, voteTries: this.state.voteTries + 1, nextTry: nextTry })
+      this.setState({...this.state, voteTries: this.state.voteTries + 1, nextTry: nextTry})
     } else {
-      this.setState({ ...this.state, referendum: undefined })
+      this.setState({...this.state, referendum: undefined})
     }
   }
 
-  doUpdate = async (propState: any) => {
-    if (propState.id === undefined) {
-      return
+  doUpdate = (referendum) => {
+    // Parse referendum info
+    const proposal = referendum.image!.proposal!
+    const registry = referendum.index.registry
+    const { header, documentation } = this.parseProposal(proposal, registry)
+
+    const newBallot = {
+      voteCount: referendum.voteCount,
+      voteCountAye: referendum.voteCountAye,
+      voteCountNay: referendum.voteCountNay,
+      votedAye: referendum.votedAye,
+      votedNay: referendum.votedNay,
+      votedTotal: referendum.votedTotal
     }
-    const id = propState.id
-    console.log('ballot', this.state.ballot)
+    console.log('newBallot', newBallot)
+
+    if (newBallot !== this.state.ballot) {
+      this.setState({
+        ...this.state,
+        referendum,
+        header,
+        documentation,
+        ballot: newBallot
+      })
+    }
+  }
+
+  parseProposal = (proposal, registry) => {
+    const { method, section } = registry.findMetaCall(proposal.callIndex)
+    const header = `${section}.${method}`
+    const documentation = proposal.meta.documentation.join(' ')
+    return { header, documentation }
+  }
+
+  updateFromId = (id) => {
     this.api.derive.democracy.referendums().then((results) => {
-      console.log('results', results)
-      console.log('id', id)
       const filtered = results.filter((result) => result.index.toNumber() === id)
-      console.log('filtered', filtered)
-      // @ts-ignore
-      if (propState.referendum) {
-        // @ts-ignore
-        console.log('prop referendum', propState.referendum)
-      }
-      const referendum: DeriveReferendumExt | undefined = filtered[0]
-      console.log('referendum', referendum)
-
-      if (referendum !== undefined) {
-        // Parse referendum info
-        let header = ''
-        let documentation = ''
-        if (referendum.image === undefined) {
-          const textHash = referendum.imageHash.toString()
-          header = `${textHash.slice(0, 8)}…${textHash.slice(-8)}`
-          documentation = 'image does not exist'
-
-        } else {
-          const proposal = referendum.image.proposal!
-          const registry = new TypeRegistry()
-          const { meta, method, section } = registry.findMetaCall(proposal.callIndex)
-          header = `${section}.${method}`
-          documentation = meta.documentation.toString()
-        }
-
-        const newBallot = {
-          voteCount: referendum.voteCount,
-          voteCountAye: referendum.voteCountAye,
-          voteCountNay: referendum.voteCountNay,
-          votedAye: referendum.votedAye,
-          votedNay: referendum.votedNay,
-          votedTotal: referendum.votedTotal
-        }
-        console.log('newBallot', newBallot)
-
-        if (newBallot !== this.state.ballot) {
-          this.setState({
-            ...this.state,
-            referendum,
-            header,
-            documentation,
-            ballot: newBallot
-          })
-        }
-      }
+      const referendum: DeriveReferendumExt = filtered[0]
+      this.doUpdate(referendum)
     })
+  }
+
+  updateFromProps = (locationState) => {
+    const referendum: DeriveReferendumExt = locationState.referendum
+    this.doUpdate(referendum)
   }
 
   inputValueToBn = (value: string): BN => {
