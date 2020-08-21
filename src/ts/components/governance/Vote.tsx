@@ -449,10 +449,10 @@ const ProposalSection = styled.div`
 `
 
 const ButtonSection = styled.div`
-  width: 90%
+  width: 100%
   margin: 8px 0 9px
   display: flex
-  justify-content: space-between
+  justify-content: space-around
 `
 
 const AyeButton = styled(Button)`
