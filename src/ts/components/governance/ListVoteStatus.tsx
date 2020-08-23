@@ -47,35 +47,35 @@ class VoteStatus extends React.Component<IVoteStatusProps, IVoteStatusState> {
   }
 
   componentWillMount (): void {
-    let votes = this.props.votes
     let doughnutDraw = Chart.controllers.doughnut.prototype.draw
     Chart.helpers.extend(Chart.controllers.doughnut.prototype, {
       draw: function () {
         doughnutDraw.apply(this, arguments)
-          // Get ctx from string
+        // Get ctx from string
         let chart = this.chart.chart
         let ctx = chart.ctx
 
-          // Get options from the center object in options
+        // Get options from the center object in options
         let fontStyle = 'Nunito'
         let txt = 'Total votes'
+        let votes: number = this.props.votes
         let color: string = '#000'
         let sidePadding = 20
         let sidePaddingCalculated = (sidePadding / 100) * (chart.innerRadius * 2)
-          // Start with a base font of 40px
+        // Start with a base font of 40px
         ctx.font = '40px ' + fontStyle
 
-          // tslint:disable-next-line:max-line-length
-          // Get the width of the string and also the width of the element minus 10 to give it 5px side padding
+        // tslint:disable-next-line:max-line-length
+        // Get the width of the string and also the width of the element minus 10 to give it 5px side padding
         let stringWidth = ctx.measureText(txt).width
         let elementWidth = (chart.innerRadius * 2) - sidePaddingCalculated
 
-          // Find out how much the font can grow in width.
+        // Find out how much the font can grow in width.
         let widthRatio = elementWidth / stringWidth
         let newFontSize = Math.floor(30 * widthRatio)
         let elementHeight = (chart.innerRadius)
 
-          // Pick a new font size so it will not be larger than the height of label.
+        // Pick a new font size so it will not be larger than the height of label.
         let fontSizeToUse = Math.min(newFontSize, elementHeight)
 
         // Set font settings to draw it correctly.
@@ -88,7 +88,7 @@ class VoteStatus extends React.Component<IVoteStatusProps, IVoteStatusState> {
         ctx.font = fontSizeToUse + 'px ' + fontStyle
         ctx.fillStyle = color
 
-          // Draw text in center
+        // Draw text in center
         ctx.fillText(txt, centerX, centerY)
         ctx.fillText(String(votes), voteCenterX, voteCenterY)
       }
@@ -105,25 +105,25 @@ class VoteStatus extends React.Component<IVoteStatusProps, IVoteStatusState> {
       options.labels.push(label)
     })
     return (
-        <Wrapper>
-          <Doughnut
-            data={{
-              labels: options.labels,
-              datasets: [{
-                data: options.data,
-                backgroundColor: options.colorNormal,
-                hoverBackgroundColor: options.colorHover
-              }]
-            }}
-            width={this.props.width}
-            height={this.props.height}
-            legend={{
-              display: false
-            }}
-            options={{
-              maintainAspectRatio: false
-            }}
-          />
+      <Wrapper>
+        <Doughnut
+          data={{
+            labels: options.labels,
+            datasets: [{
+              data: options.data,
+              backgroundColor: options.colorNormal,
+              hoverBackgroundColor: options.colorHover
+            }]
+          }}
+          width={this.props.width}
+          height={this.props.height}
+          legend={{
+            display: false
+          }}
+          options={{
+            maintainAspectRatio: false
+          }}
+        />
       </Wrapper>
     )
   }

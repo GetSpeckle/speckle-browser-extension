@@ -136,7 +136,6 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
       votedNay: referendum.votedNay,
       votedTotal: referendum.votedTotal
     }
-    console.log('newBallot', newBallot)
 
     if (newBallot !== this.state.ballot) {
       this.setState({
@@ -152,7 +151,7 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
   parseProposal = (proposal, registry) => {
     const { method, section } = registry.findMetaCall(proposal.callIndex)
     const header = `${section}.${method}`
-    const documentation = proposal.meta.documentation.join(' ')
+    const documentation = proposal.meta.documentation[0]
     return { header, documentation }
   }
 
@@ -198,7 +197,7 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
   voteExt = async (id: number, choice: string) => {
     const tipBn = this.inputValueToBn(this.state.tip)
     const currentAddress = this.props.settings.selectedAccount!.address
-    const extrinsic = this.api.tx.democracy.vote(id, 'aye')
+    const extrinsic = this.api.tx.democracy.vote(id, choice)
 
     const currentBlockNumber = await this.api.query.system.number() as unknown as BN
     const currentBlockHash = await this.api.rpc.chain.getBlockHash(currentBlockNumber.toNumber())
@@ -319,6 +318,8 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
             ]
           }
           votes={0}
+          width={300}
+          height={200}
           legendColor={backgroundColor}
         />
         <ProposalSection>
@@ -327,9 +328,9 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
         <ProposalSection>
           <ButtonSection>
             {/* tslint:disable-next-line:jsx-no-lambda */}
-            <Button onClick={() => this.vote('nay')}>Nay</Button>
+            <Button onClick={() => this.vote(false)}>Nay</Button>
             {/* tslint:disable-next-line:jsx-no-lambda */}
-            <AyeButton color={this.props.settings.color} onClick={() => this.vote('aye')}>
+            <AyeButton color={this.props.settings.color} onClick={() => this.vote('Aye')}>
               Aye
             </AyeButton>
           </ButtonSection>
@@ -388,6 +389,8 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
             ]
           }
           votes={this.state.ballot.voteCount}
+          width={300}
+          height={200}
           legendColor={backgroundColor}
         />
         <ProposalSection>
@@ -399,11 +402,11 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
         <ProposalSection>
           <ButtonSection>
             {/* tslint:disable-next-line:jsx-no-lambda */}
-            <Button onClick={() => this.vote('nay')}>{loadNay}</Button>
+            <Button onClick={() => this.vote('Vote Nay')}>{loadNay}</Button>
             {/* tslint:disable-next-line:jsx-no-lambda */}
             <AyeButton
               color={this.props.settings.color}
-              onClick={() => this.vote('aye')}
+              onClick={() => this.vote('Vote Aye')}
             >
               {loadAye}
             </AyeButton>
@@ -435,24 +438,20 @@ export default withRouter(
 )
 
 const ProposalDetail = styled.div`
-  overflow-y: scroll
-  height: 150px
-  width: 90%
-  border: 1px solid #DDD
 `
 
 const ProposalSection = styled.div`
-  width: 100%
-  margin: 8px 0 9px
-  display: flex
-  justify-content: center
+  width: 100%;
+  margin: 8px 0 9px;
+  display: flex;
+  justify-content: center;
 `
 
 const ButtonSection = styled.div`
-  width: 100%
-  margin: 8px 0 9px
-  display: flex
-  justify-content: space-around
+  width: 100%;
+  margin: 8px 0 9px;
+  display: flex;
+  justify-content: space-around;
 `
 
 const AyeButton = styled(Button)`
