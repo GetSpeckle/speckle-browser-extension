@@ -9,7 +9,7 @@ import ApiPromise from '@polkadot/api/promise'
 import { DeriveReferendumExt, DeriveProposal } from '@polkadot/api-derive/types'
 import styled from 'styled-components'
 import { browser } from 'webextension-polyfill-ts'
-import VoteStatus from './VoteStatus'
+import ListVoteStatus from './ListVoteStatus'
 import { colorSchemes } from '../styles/themes'
 import { formatBalance, formatNumber } from '@polkadot/util/index'
 
@@ -165,7 +165,7 @@ class GovernanceList extends React.Component<ITransactionListProps, ITransaction
             }}
             />
             <Status>
-              <VoteStatus
+              <ListVoteStatus
                 values={
                   [
                     {

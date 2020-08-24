@@ -31,7 +31,7 @@ interface Options {
   labels: string[]
 }
 
-class VoteStatus extends React.Component<IVoteStatusProps, IVoteStatusState> {
+class ListVoteStatus extends React.Component<IVoteStatusProps, IVoteStatusState> {
   constructor (props) {
     super(props)
   }
@@ -47,6 +47,7 @@ class VoteStatus extends React.Component<IVoteStatusProps, IVoteStatusState> {
   }
 
   componentWillMount (): void {
+    let votes: number = this.props.votes
     let doughnutDraw = Chart.controllers.doughnut.prototype.draw
     Chart.helpers.extend(Chart.controllers.doughnut.prototype, {
       draw: function () {
@@ -58,7 +59,6 @@ class VoteStatus extends React.Component<IVoteStatusProps, IVoteStatusState> {
         // Get options from the center object in options
         let fontStyle = 'Nunito'
         let txt = 'Total votes'
-        let votes: number = this.props.votes
         let color: string = '#000'
         let sidePadding = 20
         let sidePaddingCalculated = (sidePadding / 100) * (chart.innerRadius * 2)
@@ -89,6 +89,7 @@ class VoteStatus extends React.Component<IVoteStatusProps, IVoteStatusState> {
         ctx.fillStyle = color
 
         // Draw text in center
+        ctx.clearRect(0,0, this.props.width, this.props.height)
         ctx.fillText(txt, centerX, centerY)
         ctx.fillText(String(votes), voteCenterX, voteCenterY)
       }
@@ -135,4 +136,4 @@ display: inline-block;
 padding 1em 1em 0;
 `
 
-export default VoteStatus
+export default ListVoteStatus

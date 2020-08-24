@@ -28,6 +28,7 @@ import { SubmittableExtrinsic } from '@polkadot/api/promise/types'
 import { SubmittableResult } from '@polkadot/api'
 import { SiDef } from '@polkadot/util/types'
 import { chains } from '../../constants/chains'
+import {ReferendumIndex} from '@polkadot/types/interfaces/democracy/types'
 
 interface IVoteProps extends StateProps, RouteComponentProps, DispatchProps, ILocationState {
 }
@@ -184,21 +185,20 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
     }
   }
 
-  vote = (choice: string) => {
+  vote = (choice: boolean, balance: BN | undefined) => {
     if (this.props.apiContext.apiReady) {
       this.setState({ ...this.state, tries: 1 })
-      this.voteExt(this.state.id, choice)
+      this.voteExt(this.state.id, choice, balance)
     } else if (this.state.tries <= 10) {
       const nextTry = setTimeout(this.vote, 1000)
       this.setState({ ...this.state, voteTries: this.state.tries + 1, nextVoteTry: nextTry })
     }
   }
 
-  voteExt = async (id: number, choice: string) => {
+  voteExt = async (id: number, choice: boolean, balance: BN | undefined) => {
     const tipBn = this.inputValueToBn(this.state.tip)
     const currentAddress = this.props.settings.selectedAccount!.address
-    const extrinsic = this.api.tx.democracy.vote(id, choice)
-
+    const extrinsic = this.api.tx.democracy.vote(id, { Standard: { balance, vote: { aye: choice , conviction: 'None' } } })
     const currentBlockNumber = await this.api.query.system.number() as unknown as BN
     const currentBlockHash = await this.api.rpc.chain.getBlockHash(currentBlockNumber.toNumber())
     const currentNonce = await this.api.query.system.accountNonce(currentAddress) as Index
@@ -328,7 +328,7 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
         <ProposalSection>
           <ButtonSection>
             {/* tslint:disable-next-line:jsx-no-lambda */}
-            <Button onClick={() => this.vote(false)}>Nay</Button>
+            <Button onClick={() => this.vote("vote nay")}>Nay</Button>
             {/* tslint:disable-next-line:jsx-no-lambda */}
             <AyeButton color={this.props.settings.color} onClick={() => this.vote('Aye')}>
               Aye
@@ -402,11 +402,11 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
         <ProposalSection>
           <ButtonSection>
             {/* tslint:disable-next-line:jsx-no-lambda */}
-            <Button onClick={() => this.vote('Vote Nay')}>{loadNay}</Button>
+            <Button onClick={() => this.vote(false, new BN(0))}>{loadNay}</Button>
             {/* tslint:disable-next-line:jsx-no-lambda */}
             <AyeButton
               color={this.props.settings.color}
-              onClick={() => this.vote('Vote Aye')}
+              onClick={() => this.vote(true, new BN(0))}
             >
               {loadAye}
             </AyeButton>

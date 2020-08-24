@@ -89,6 +89,7 @@ class VoteStatus extends React.Component<IVoteStatusProps, IVoteStatusState> {
         ctx.fillStyle = color
 
           // Draw text in center
+        ctx.clearRect(0,0, this.props.width, this.props.height)
         ctx.fillText(txt, centerX, centerY)
         ctx.fillText(String(votes), voteCenterX, voteCenterY)
       }
