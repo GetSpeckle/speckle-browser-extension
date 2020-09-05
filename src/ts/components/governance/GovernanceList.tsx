@@ -9,7 +9,7 @@ import ApiPromise from '@polkadot/api/promise'
 import { DeriveReferendumExt, DeriveProposal } from '@polkadot/api-derive/types'
 import styled from 'styled-components'
 import { browser } from 'webextension-polyfill-ts'
-import ListVoteStatus from './ListVoteStatus'
+import VoteStatus from './VoteStatus'
 import { colorSchemes } from '../styles/themes'
 import { formatBalance, formatNumber } from '@polkadot/util/index'
 
@@ -19,7 +19,8 @@ interface ITransactionListState {
   currentAddress: string,
   currentChain: string,
   referenda: DeriveReferendumExt[],
-  proposals: DeriveProposal[]
+  proposals: DeriveProposal[],
+  loading: boolean
 }
 
 class GovernanceList extends React.Component<ITransactionListProps, ITransactionListState> {
@@ -43,18 +44,29 @@ class GovernanceList extends React.Component<ITransactionListProps, ITransaction
     currentAddress: '',
     currentChain: '',
     referenda: [],
-    proposals: []
+    proposals: [],
+    loading: true
   }
 
   componentDidUpdate (_prevProps, prevState) {
     if (prevState.currentChain !== this.state.currentChain
       || prevState.currentAddress !== this.state.currentAddress) {
-      this.loadGovernance()
+      this.setState({ ...this.state, referenda: [], proposals: [], loading: true })
+      this.loadGov()
     }
   }
 
   componentDidMount (): void {
-    this.loadGovernance()
+    this.loadGov()
+  }
+
+  loadGov = () => {
+    let callback = setInterval(() => {
+      if (this.props.apiContext.apiReady) {
+        this.loadGovernance()
+        clearInterval(callback)
+      }
+    }, 10)
   }
 
   loadGovernance = () => {
@@ -70,6 +82,7 @@ class GovernanceList extends React.Component<ITransactionListProps, ITransaction
           this.setState({ ...this.state, proposals: proposals })
         }
       })
+      this.setState({ ...this.state, loading: false })
     })
   }
 
@@ -104,7 +117,10 @@ class GovernanceList extends React.Component<ITransactionListProps, ITransaction
       <Tab.Pane>
         <List className='gov-list'>
           {
-            items.length !== 0 ? items.map((item, index) => this.renderItem(item, index)) : <Loader active={true} inline='centered' />
+            items.length !== 0 ? items.map((item, index) => this.renderItem(item, index)) :
+              <div style={{ 'height': '100px' }}>
+                <Loader active={this.state.loading} style={{ 'zIndex': 100 }} size='small' inline='centered' />
+              </div>
           }
         </List>
       </Tab.Pane>
@@ -119,12 +135,13 @@ class GovernanceList extends React.Component<ITransactionListProps, ITransaction
   }
 
   renderItem = (ref: DeriveReferendumExt | DeriveProposal, index: number) => {
-    const statusBorderColor = '#fff'
+    const statusBorderColor = '#ebeeef'
     const borderStyle = {
-      borderLeftColor: statusBorderColor,
-      borderLeftWidth: '2px',
-      borderLeftStyle: 'solid',
-      borderRadius: '2px'
+      borderBottomColor: statusBorderColor,
+      borderBottomWidth: '1px',
+      borderBottomStyle: 'solid',
+      borderRadius: '2px',
+      marginTop: '5px'
     }
     if ('votes' in ref && ref.votes) {
       const location = {
@@ -158,14 +175,14 @@ class GovernanceList extends React.Component<ITransactionListProps, ITransaction
               <Action>
                 {`${header}`}
               </Action>
+              <RefrLink onClick={() => {
+                browser.tabs.create({ url: `https://${this.state.currentChain}.polkassembly.io/referendum/${ref.index}`, active: true })
+              }}
+              />
             </RefrIndexContainer>
             <Documentation>{`${documentation}`}</Documentation>
-            <RefrLink onClick={() => {
-              browser.tabs.create({ url: `https://${this.state.currentChain}.polkassembly.io/referendum/${ref.index}`, active: true })
-            }}
-            />
             <Status>
-              <ListVoteStatus
+              <VoteStatus
                 values={
                   [
                     {
@@ -197,22 +214,30 @@ class GovernanceList extends React.Component<ITransactionListProps, ITransaction
               />
             </Status>
           </ReferendumContainer>
-
         </List.Item>
       )
     } else {
+      const image = ref.image!
+      const registry = ref.index.registry
+      const { header, documentation } = image !== undefined ?
+        this.parseProposal(image.proposal!, registry) : { header: `Title not edited`, documentation: `preimage ${ref.imageHash}` }
       return (
         // tslint:disable-next-line:block-spacing jsx-no-lambda max-line-length
-        <List.Item key={index} style={borderStyle} onClick={() => {this.props.history.push(location)}}>
+        <List.Item key={index} style={borderStyle}>
           <ReferendumContainer>
-            <RefrIndex>
-              {`#${ref.index}`}
-            </RefrIndex>
-            <RefrLink onClick={() => {
-              browser.tabs.create({ url: `https://${this.state.currentChain}.polkassembly.io/proposal/${ref.index}`, active: true })
-            }}
-            />
-
+            <RefrIndexContainer>
+              <PropIndex>
+                {`#${ref.index}`}
+              </PropIndex>
+              <Action>
+                {`${header}`}
+              </Action>
+              <RefrLink onClick={() => {
+                browser.tabs.create({ url: `https://${this.state.currentChain}.polkassembly.io/proposal/${ref.index}`, active: true })
+              }}
+              />
+            </RefrIndexContainer>
+            <Documentation>{`${documentation}`}</Documentation>
           </ReferendumContainer>
         </List.Item>
       )
@@ -240,6 +265,7 @@ type DispatchProps = typeof mapDispatchToProps
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(GovernanceList))
 
 const ReferendumContainer = styled.div`
+  top: 10px;
   width: 80%;
   min-height: 100px;
   overflow: visible;
@@ -261,10 +287,28 @@ const RefrIndex = styled.div`
   color: #ffffff;
 `
 
+const PropIndex = styled.div`
+  width: 38px;
+  height: 24px;
+  text-align: center;
+  vertical-align: middle;
+  border-radius: 4px;
+  background-image: radial-gradient(circle at 50% 2%,#d8d8d8,#808080 71%);
+  font-family: Nunito;
+  font-size: 14px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.8;
+  letter-spacing: normal;
+  color: #ffffff;
+`
+
 const RefrLink = styled.div`
-  position: absolute;
-  top: 4px;
-  right: 4px;
+  display: inline-block;
+  margin-top: 4px;
+  margin-left: auto;
+  margin-right: 6px;
   width: 16px;
   height: 16px;
   object-fit: contain;
@@ -283,8 +327,7 @@ const Action = styled.div`
   color: #30383b;
 `
 const RefrIndexContainer = styled.div`
-  position: absolute;
-  width: 400px;
+  width: 300px;
   left: 4px;
   top: 4px;
   display: flex;
@@ -293,7 +336,7 @@ const RefrIndexContainer = styled.div`
 const Status = styled.div`
   position: absolute;
   right: -20px;
-  top: 30px;
+  top: 20px;
 `
 
 const Documentation = styled.div`

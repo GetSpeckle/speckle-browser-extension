@@ -127,7 +127,7 @@ export class Routes extends React.Component {
           exact={true}
         />
         <RouteWithLayout
-          layout={DashboardLayout}
+          layout={ExtrinsicLayout}
           path={GOVERNANCE_ROUTE}
           component={Governance}
           exact={true}

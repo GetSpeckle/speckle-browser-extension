@@ -18,7 +18,7 @@ import AccountDropdown from '../account/AccountDropdown'
 import BN = require('bn.js')
 import VoteStatus from './VoteStatus'
 import styled from 'styled-components'
-import { Button, Icon } from 'semantic-ui-react'
+import {Button, Dimmer, Icon, Loader} from 'semantic-ui-react'
 import { formatBalance, formatNumber } from '@polkadot/util'
 import { INITIALIZE_ROUTE, LOGIN_ROUTE } from '../../constants/routes'
 import { colorSchemes } from '../styles/themes'
@@ -28,7 +28,7 @@ import { SubmittableExtrinsic } from '@polkadot/api/promise/types'
 import { SubmittableResult } from '@polkadot/api'
 import { SiDef } from '@polkadot/util/types'
 import { chains } from '../../constants/chains'
-import {ReferendumIndex} from '@polkadot/types/interfaces/democracy/types'
+import VoteAmount from './VoteAmount'
 
 interface IVoteProps extends StateProps, RouteComponentProps, DispatchProps, ILocationState {
 }
@@ -58,13 +58,20 @@ interface IVoteState {
   header: string
   documentation?: string | null
   loading: boolean
+  txLoading: boolean
   nonce: Index | null
   tip: string
+  fee: string
   tipSi: SiDef
   tipUnit: string
+  amount: string
+  amountSi: SiDef
+  amountUnit: string
+  conviction: string
 }
 
 const tipSi: SiDef = formatBalance.findSi('-')
+const amountSi: SiDef = formatBalance.findSi('-')
 
 const TEN = new BN(10)
 
@@ -80,6 +87,10 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
     tip: '',
     tipSi,
     tipUnit: '',
+    amount: '',
+    amountSi,
+    amountUnit: '',
+    conviction: '',
     id: this.props.match.params['proposalId'],
     ballot: {
       voteCount: 0,
@@ -94,8 +105,10 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
     referendum: undefined,
     header: '',
     documentation: '',
-    loading: false,
-    nonce: null
+    stusLoading: false,
+    txLoading: false,
+    nonce: null,
+    fee: '',
   }
 
   componentWillMount (): void {
@@ -249,12 +262,12 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
 
       const submittable = signedExtrinsic as SubmittableExtrinsic
 
-      this.setState({ loading: true })
+      this.setState({ txLoading: true })
 
       submittable.send(({ events, status }: SubmittableResult) => {
         console.log('Transaction status:', status.type)
         if (status.isFinalized) {
-          this.setState({ loading: false })
+          this.setState({ txLoading: false })
           console.log('Completed at block hash', status.value.toHex())
           console.log('Events:')
           events.forEach(({ phase, event: { data, method, section } }: EventRecord) => {
@@ -267,7 +280,7 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
             }
           })
         } else if (status.isInvalid || status.isDropped || status.isUsurped) {
-          this.setState({ loading: false })
+          this.setState({ txLoading: false })
           console.log('error')
         }
       }).catch((err) => {
@@ -277,7 +290,42 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
   }
 
   componentDidMount (): void {
-    setInterval(this.updateVote, 1000)
+    this.updateVote()
+  }
+
+  changeAmount = event => {
+    this.setState({ amount: event.target.value })
+  }
+
+  changeTip = event => {
+    this.setState({ tip: event.target.value })
+  }
+
+  changeFee = (fee) => {
+    this.setState({ fee: fee })
+  }
+
+  changeAmountSi = (_event, data) => {
+    const siDef = formatBalance.findSi(data.value)
+    this.setState({ amountSi: siDef, amountUnit: siDef.value })
+  }
+
+  changeConviction = (_event, data) => {
+    this.setState({ conviction: data.value })
+  }
+
+
+  isAmountValid = (): boolean => {
+    const n = Number(this.state.amount)
+    return !isNaN(n) && n > 0
+  }
+
+  isTipValid = (): boolean => {
+    if (this.state.tip) {
+      const n = Number(this.state.tip)
+      return !isNaN(n) && n >= 0
+    }
+    return true
   }
 
   componentWillUnmount (): void {
@@ -302,6 +350,7 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
     return (
       <ContentContainer>
         <AccountDropdown/>
+        <div style={{ 'marginLeft': '-10px' }}>
         <VoteStatus
           values={
             [
@@ -318,19 +367,20 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
             ]
           }
           votes={0}
-          width={300}
-          height={200}
+          width={150}
+          height={100}
           legendColor={backgroundColor}
         />
+        </div>
         <ProposalSection>
           <ProposalDetail/>
         </ProposalSection>
         <ProposalSection>
           <ButtonSection>
             {/* tslint:disable-next-line:jsx-no-lambda */}
-            <Button onClick={() => this.vote("vote nay")}>Nay</Button>
+            <Button onClick={() => this.vote(true ,new BN(0))}>Nay</Button>
             {/* tslint:disable-next-line:jsx-no-lambda */}
-            <AyeButton color={this.props.settings.color} onClick={() => this.vote('Aye')}>
+            <AyeButton color={this.props.settings.color} onClick={() => this.vote(true, new BN(0))}>
               Aye
             </AyeButton>
           </ButtonSection>
@@ -340,14 +390,14 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
   }
 
   renderProposal () {
-    const loadAye = this.state.loading ?
+    const loadAye = this.state.stusLoading ?
       (
         <div style={{ marginLeft: '6px', marginTop: '1px' }}>
           <Icon loading={true} name='asterisk'/>
         </div>
       )
       : 'Aye'
-    const loadNay = this.state.loading ?
+    const loadNay = this.state.stusLoading ?
       (
         <div style={{ marginLeft: '5px', marginTop: '1px' }}>
           <Icon loading={true} name='asterisk'/>
@@ -362,37 +412,42 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
     // @ts-ignore
     return (
       <ContentContainer>
+        <Dimmer active={this.state.txLoading}>
+          <Loader indeterminate={true}>{t('processingTx')}</Loader>
+        </Dimmer>
         <AccountDropdown/>
-        <VoteStatus
-          values={
-            [
-              {
-                colors: chartColorAye,
-                label: `Aye, ${formatBalance(this.state.ballot.votedAye)} (${formatNumber(this.state.ballot.voteCountAye)})`,
-                value: this.state.ballot.voteCount === 0 ?
-                  0 :
-                this.state.ballot.votedAye
-                  .muln(10000)
-                  .div(this.state.ballot.votedTotal)
-                  .toNumber() / 100
-              },
-              {
-                colors: chartColorNay,
-                label: `Nay, ${formatBalance(this.state.ballot.votedNay)} (${formatNumber(this.state.ballot.voteCountNay)})`,
-                value: this.state.ballot.voteCount === 0 ?
-                  0 :
-                this.state.ballot.votedNay
-                  .muln(10000)
-                  .div(this.state.ballot.votedTotal)
-                  .toNumber() / 100
-              }
-            ]
-          }
-          votes={this.state.ballot.voteCount}
-          width={300}
-          height={200}
-          legendColor={backgroundColor}
-        />
+        <div style={{ 'marginLeft': '25px', 'marginTop': '-10px' }}>
+          <VoteStatus
+            values={
+              [
+                {
+                  colors: chartColorAye,
+                  label: `Aye, ${formatBalance(this.state.ballot.votedAye)} (${formatNumber(this.state.ballot.voteCountAye)})`,
+                  value: this.state.ballot.voteCount === 0 ?
+                    0 :
+                    this.state.ballot.votedAye
+                      .muln(10000)
+                      .div(this.state.ballot.votedTotal)
+                      .toNumber() / 100
+                },
+                {
+                  colors: chartColorNay,
+                  label: `Nay, ${formatBalance(this.state.ballot.votedNay)} (${formatNumber(this.state.ballot.voteCountNay)})`,
+                  value: this.state.ballot.voteCount === 0 ?
+                    0 :
+                    this.state.ballot.votedNay
+                      .muln(10000)
+                      .div(this.state.ballot.votedTotal)
+                      .toNumber() / 100
+                }
+              ]
+            }
+            votes={this.state.ballot.voteCount}
+            width={225}
+            height={150}
+            legendColor={backgroundColor}
+          />
+        </div>
         <ProposalSection>
           <ProposalDetail>
             <h1>{this.state.header}</h1>
@@ -400,9 +455,15 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
           </ProposalDetail>
         </ProposalSection>
         <ProposalSection>
+          <VoteAmount
+            handleAmountChange={this.changeAmount}
+            handleAmountSiChange={this.changeAmountSi}
+            handleConvictionChange={this.changeConviction}
+            amountError={this.isAmountValid() ? '' : t('positiveNumber')}
+          />
+        </ProposalSection>
+        <ProposalSection>
           <ButtonSection>
-            {/* tslint:disable-next-line:jsx-no-lambda */}
-            <Button onClick={() => this.vote(false, new BN(0))}>{loadNay}</Button>
             {/* tslint:disable-next-line:jsx-no-lambda */}
             <AyeButton
               color={this.props.settings.color}
@@ -410,8 +471,11 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
             >
               {loadAye}
             </AyeButton>
+            {/* tslint:disable-next-line:jsx-no-lambda */}
+            <Button onClick={() => this.vote(false, new BN(0))}>{loadNay}</Button>
           </ButtonSection>
         </ProposalSection>
+
       </ContentContainer>
     )
   }
@@ -442,14 +506,14 @@ const ProposalDetail = styled.div`
 
 const ProposalSection = styled.div`
   width: 100%;
-  margin: 8px 0 9px;
+  margin: 1px 0 9px;
   display: flex;
   justify-content: center;
 `
 
 const ButtonSection = styled.div`
   width: 100%;
-  margin: 8px 0 9px;
+  margin: 5px 0 9px;
   display: flex;
   justify-content: space-around;
 `

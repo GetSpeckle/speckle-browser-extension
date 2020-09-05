@@ -88,8 +88,8 @@ class VoteStatus extends React.Component<IVoteStatusProps, IVoteStatusState> {
         ctx.font = fontSizeToUse + 'px ' + fontStyle
         ctx.fillStyle = color
 
-          // Draw text in center
-        ctx.clearRect(0,0, this.props.width, this.props.height)
+        // Draw text in center
+        ctx.restore()
         ctx.fillText(txt, centerX, centerY)
         ctx.fillText(String(votes), voteCenterX, voteCenterY)
       }
@@ -131,7 +131,6 @@ class VoteStatus extends React.Component<IVoteStatusProps, IVoteStatusState> {
 }
 
 const Wrapper = styled.div`
-margin-top: -13px;
 display: inline-block;
 padding 1em 1em 0;
 `
