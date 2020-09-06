@@ -1,12 +1,10 @@
 import * as React from 'react'
 import ApiPromise from '@polkadot/api/promise'
-import { DeriveReferendumExt } from '@polkadot/api-derive/types'
+import { DeriveBalancesAll, DeriveReferendumExt } from '@polkadot/api-derive/types'
 import { ExtrinsicPayloadValue, SignerPayloadJSON } from '@polkadot/types/types'
 import {
   Index,
-  Balance as BalanceType,
-  Extrinsic,
-  EventRecord
+  Extrinsic
 } from '@polkadot/types/interfaces'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { ContentContainer } from '../basic-components'
@@ -18,9 +16,9 @@ import AccountDropdown from '../account/AccountDropdown'
 import BN = require('bn.js')
 import VoteStatus from './VoteStatus'
 import styled from 'styled-components'
-import {Button, Dimmer, Icon, Loader} from 'semantic-ui-react'
+import { Button, Dimmer, Icon, Loader } from 'semantic-ui-react'
 import { formatBalance, formatNumber } from '@polkadot/util'
-import { INITIALIZE_ROUTE, LOGIN_ROUTE } from '../../constants/routes'
+import { HOME_ROUTE, INITIALIZE_ROUTE, LOGIN_ROUTE } from '../../constants/routes'
 import { colorSchemes } from '../styles/themes'
 import { isWalletLocked, signExtrinsic } from '../../services/keyring-vault-proxy'
 import { setError } from '../../background/store/error'
@@ -57,17 +55,19 @@ interface IVoteState {
   nextVoteTry?: any
   header: string
   documentation?: string | null
-  loading: boolean
+  stusLoading: boolean
   txLoading: boolean
   nonce: Index | null
   tip: string
-  fee: string
+  fee: BN
   tipSi: SiDef
   tipUnit: string
   amount: string
   amountSi: SiDef
   amountUnit: string
   conviction: string
+  senderAvailable: BN
+  modalOpen: boolean
 }
 
 const tipSi: SiDef = formatBalance.findSi('-')
@@ -84,12 +84,17 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
   }
 
   public state: IVoteState = {
-    tip: '',
-    tipSi,
-    tipUnit: '',
     amount: '',
     amountSi,
-    amountUnit: '',
+    amountUnit: amountSi.value,
+    tip: '',
+    tipSi,
+    tipUnit: tipSi.value,
+    nonce: null,
+    fee: new BN(0),
+    extrinsic: undefined,
+    senderAvailable: new BN(0),
+    modalOpen: false,
     conviction: '',
     id: this.props.match.params['proposalId'],
     ballot: {
@@ -106,9 +111,7 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
     header: '',
     documentation: '',
     stusLoading: false,
-    txLoading: false,
-    nonce: null,
-    fee: '',
+    txLoading: false
   }
 
   componentWillMount (): void {
@@ -182,46 +185,51 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
     this.doUpdate(referendum)
   }
 
-  inputValueToBn = (value: string): BN => {
+  inputValueToBn = (value: string, selectedSi: SiDef): BN => {
     const parts: string[] = value.split('.')
-    const selectedSi: SiDef = this.state.tipSi
     const decimals = formatBalance.getDefaults().decimals
     const bigPart = new BN(parts[0]).mul(TEN.pow(new BN(decimals + selectedSi.power)))
     if (parts.length === 1) {
       return bigPart
-    } else if (parts.length === 2) {
-      const bn = new BN(decimals + selectedSi.power - parts[1].length)
-      const smallPart = new BN(parts[1]).mul(TEN.pow(bn))
-      return bigPart.add(smallPart)
-    } else { // invalid number
-      return new BN(0)
     }
+    const bn = new BN(decimals + selectedSi.power - parts[1].length)
+    const smallPart = new BN(parts[1]).mul(TEN.pow(bn))
+    return bigPart.add(smallPart)
   }
 
-  vote = (choice: boolean, balance: BN | undefined) => {
+  vote = (choice: boolean) => {
     if (this.props.apiContext.apiReady) {
       this.setState({ ...this.state, tries: 1 })
-      this.voteExt(this.state.id, choice, balance)
+      this.saveExtrinsic(choice).then(() => { confirm() })
     } else if (this.state.tries <= 10) {
       const nextTry = setTimeout(this.vote, 1000)
       this.setState({ ...this.state, voteTries: this.state.tries + 1, nextVoteTry: nextTry })
     }
   }
 
-  voteExt = async (id: number, choice: boolean, balance: BN | undefined) => {
-    const tipBn = this.inputValueToBn(this.state.tip)
-    const currentAddress = this.props.settings.selectedAccount!.address
-    const extrinsic = this.api.tx.democracy.vote(id, { Standard: { balance, vote: { aye: choice , conviction: 'None' } } })
-    const currentBlockNumber = await this.api.query.system.number() as unknown as BN
-    const currentBlockHash = await this.api.rpc.chain.getBlockHash(currentBlockNumber.toNumber())
-    const currentNonce = await this.api.query.system.accountNonce(currentAddress) as Index
-    console.log('currentNonce: ', currentNonce)
-    if (this.state.nonce != null && currentNonce[0] > this.state.nonce[0]) {
-      this.setState({ nonce: currentNonce })
-    } else {
-      this.setState({ nonce: currentNonce })
+  saveExtrinsic = async (choice: boolean) => {
+    if (!this.props.account) {
+      return
     }
 
+    const amountBn = this.inputValueToBn(this.state.amount, this.state.amountSi)
+    const tipBn = this.inputValueToBn(this.state.tip, this.state.tipSi)
+    const total = amountBn.add(tipBn).add(this.state.fee)
+    const currentAddress = this.props.account.address
+    const balancesAll = await this.api.derive.balances.all(currentAddress) as DeriveBalancesAll
+    const available = balancesAll.availableBalance
+    if (available.lt(total)) {
+      this.props.setError(t('notEnoughBalance'))
+      return
+    }
+    const extrinsic = this.api.tx.democracy.vote(this.state.id,
+      { Standard: { amountBn, vote: { aye: choice , conviction: this.state.conviction } } })
+    const currentBlockNumber = await this.api.query.system.number()
+    const currentBlockHash = await this.api.rpc.chain.getBlockHash(currentBlockNumber)
+
+    this.setState({ senderAvailable: balancesAll.availableBalance })
+    const currentNonce = balancesAll.accountNonce
+    this.setState({ nonce: currentNonce })
     let signerPayload: SignerPayloadJSON = {
       address: currentAddress,
       blockHash: currentBlockHash.toHex(),
@@ -246,46 +254,59 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
       specVersion: this.api.runtimeVersion.specVersion.toNumber(),
       transactionVersion: this.api.runtimeVersion.transactionVersion.toNumber()
     }
-
-    signExtrinsic(this.props.settings.chain, signerPayload).then(async (signature) => {
+    signExtrinsic(this.props.settings.chain, signerPayload).then(signature => {
       const signedExtrinsic = extrinsic.addSignature(
         currentAddress,
         signature,
         payloadValue
       )
-      const available = await this.api.query.balances.freeBalance(currentAddress) as BalanceType
+      this.setState({ extrinsic: signedExtrinsic, modalOpen: true })
+    })
+  }
 
-      if (available.isZero()) {
-        this.props.setError('You account has 0 balance.')
-        return
+  getTotal = () => {
+    const amountBn = this.inputValueToBn(this.state.amount, this.state.amountSi)
+    const tipBn = this.inputValueToBn(this.state.tip, this.state.tipSi)
+    return amountBn.add(tipBn).add(this.state.fee)
+  }
+
+
+  confirm = async () => {
+
+    if (!this.state.extrinsic || !this.props.settings.selectedAccount) {
+      this.props.setError(t('transactionError'))
+      return
+    }
+
+    const { address } = this.props.settings.selectedAccount
+
+    const balancesAll = await this.api.derive.balances.all(address) as DeriveBalancesAll
+    const available = balancesAll.availableBalance
+    if (available.lt(this.getTotal())) {
+      this.props.setError(t('notEnoughBalance'))
+      return
+    }
+
+    this.setState({ txLoading: true })
+
+    const submittable = this.state.extrinsic as SubmittableExtrinsic
+    submittable.send((result: SubmittableResult) => {
+      if (result.isInBlock) {
+        console.log(`Transaction in block at blockHash ${result.status.asInBlock}`)
+        this.setState({ txLoading: false })
+        this.props.history.push(HOME_ROUTE)
+      } else if (result.isFinalized) {
+        console.log(`Transaction finalized at blockHash ${result.status.asFinalized}`)
+      } else if (result.isError) {
+        this.props.setError(t('transactionError'))
+        this.setState({ txLoading: false })
+      } else if (result.isWarning) {
+        console.warn(result.status)
       }
-
-      const submittable = signedExtrinsic as SubmittableExtrinsic
-
-      this.setState({ txLoading: true })
-
-      submittable.send(({ events, status }: SubmittableResult) => {
-        console.log('Transaction status:', status.type)
-        if (status.isFinalized) {
-          this.setState({ txLoading: false })
-          console.log('Completed at block hash', status.value.toHex())
-          console.log('Events:')
-          events.forEach(({ phase, event: { data, method, section } }: EventRecord) => {
-            console.log('\t', phase.toString(), `: ${section}.${method}`, data.toString())
-            if (method === 'ExtrinsicSuccess') {
-              console.log(`voted ${choice}`)
-              this.updateVote()
-            } else if (method === 'ExtrinsicFailed') {
-              console.log('extrinsic failed')
-            }
-          })
-        } else if (status.isInvalid || status.isDropped || status.isUsurped) {
-          this.setState({ txLoading: false })
-          console.log('error')
-        }
-      }).catch((err) => {
-        console.log(err)
-      })
+    }).catch((err) => {
+      console.log('Error', err)
+      this.props.setError(t('transactionError'))
+      this.setState({ txLoading: false })
     })
   }
 
@@ -313,7 +334,6 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
   changeConviction = (_event, data) => {
     this.setState({ conviction: data.value })
   }
-
 
   isAmountValid = (): boolean => {
     const n = Number(this.state.amount)
@@ -378,11 +398,11 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
         <ProposalSection>
           <ButtonSection>
             {/* tslint:disable-next-line:jsx-no-lambda */}
-            <Button onClick={() => this.vote(true ,new BN(0))}>Nay</Button>
-            {/* tslint:disable-next-line:jsx-no-lambda */}
-            <AyeButton color={this.props.settings.color} onClick={() => this.vote(true, new BN(0))}>
+            <AyeButton color={this.props.settings.color}>
               Aye
             </AyeButton>
+            {/* tslint:disable-next-line:jsx-no-lambda */}
+            <Button>Nay</Button>
           </ButtonSection>
         </ProposalSection>
       </ContentContainer>
@@ -467,12 +487,12 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
             {/* tslint:disable-next-line:jsx-no-lambda */}
             <AyeButton
               color={this.props.settings.color}
-              onClick={() => this.vote(true, new BN(0))}
+              onClick={() => this.vote(true)}
             >
               {loadAye}
             </AyeButton>
             {/* tslint:disable-next-line:jsx-no-lambda */}
-            <Button onClick={() => this.vote(false, new BN(0))}>{loadNay}</Button>
+            <Button onClick={() => this.vote(false)}>{loadNay}</Button>
           </ButtonSection>
         </ProposalSection>
 
@@ -485,7 +505,7 @@ const mapStateToProps = (state: IAppState) => {
   return {
     apiContext: state.apiContext,
     settings: state.settings,
-    transactions: state.transactions
+    account: state.settings.selectedAccount,
   }
 }
 

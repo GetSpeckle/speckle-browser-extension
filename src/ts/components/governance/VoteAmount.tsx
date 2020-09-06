@@ -7,9 +7,9 @@ import { SI } from '@polkadot/util/format/si'
 import { ErrorMessage } from '../basic-components'
 
 export interface ConvictionDef {
-  key: string;
-  text: string;
-  value: string;
+  key: string
+  text: string
+  value: string
 }
 
 interface IAmountProps {
