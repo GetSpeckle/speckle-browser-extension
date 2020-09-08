@@ -23,13 +23,13 @@ const MIN_P = -3
 const MAX_P = 6
 const siOptions: SiDef[] = SI.filter(({ power }) => power >= MIN_P && power <= MAX_P)
 const convictionOptions: ConvictionDef[] = [
-  { key: '0.1x', text: '0.1x voting balance, no lockup period', value: '0.1x' },
-  { key: '1x', text: '1x voting balance, locked for 1x enactment (28.00 days)', value: '1x' },
-  { key: '2x', text: '2x voting balance, locked for 2x enactment (56.00 days)', value: '2x' },
-  { key: '3x', text: '3x voting balance, locked for 3x enactment (112.00 days)', value: '3x' },
-  { key: '4x', text: '4x voting balance, locked for 4x enactment (224.00 days)', value: '4x' },
-  { key: '5x', text: '5x voting balance, locked for 5x enactment (448.00 days)', value: '5x' },
-  { key: '6x', text: '6x voting balance, locked for 6x enactment (896.00 days)', value: '6x' }]
+  { key: '0.1x', text: '0.1x voting balance, no lockup period', value: 'none' },
+  { key: '1x', text: '1x voting balance, locked for 1x enactment (28.00 days)', value: 'locked1x' },
+  { key: '2x', text: '2x voting balance, locked for 2x enactment (56.00 days)', value: 'locked2x' },
+  { key: '3x', text: '3x voting balance, locked for 3x enactment (112.00 days)', value: 'locked3x' },
+  { key: '4x', text: '4x voting balance, locked for 4x enactment (224.00 days)', value: 'locked4x' },
+  { key: '5x', text: '5x voting balance, locked for 5x enactment (448.00 days)', value: 'locked5x' },
+  { key: '6x', text: '6x voting balance, locked for 6x enactment (896.00 days)', value: 'locked6x' }]
 
 export default class VoteAmount extends React.Component<IAmountProps> {
 

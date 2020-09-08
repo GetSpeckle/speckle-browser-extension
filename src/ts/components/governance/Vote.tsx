@@ -200,7 +200,8 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
   vote = (choice: boolean) => {
     if (this.props.apiContext.apiReady) {
       this.setState({ ...this.state, tries: 1 })
-      this.saveExtrinsic(choice).then(() => { confirm() })
+      this.saveExtrinsic(choice)
+      this.confirm()
     } else if (this.state.tries <= 10) {
       const nextTry = setTimeout(this.vote, 1000)
       this.setState({ ...this.state, voteTries: this.state.tries + 1, nextVoteTry: nextTry })
@@ -218,6 +219,7 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
     const currentAddress = this.props.account.address
     const balancesAll = await this.api.derive.balances.all(currentAddress) as DeriveBalancesAll
     const available = balancesAll.availableBalance
+    console.log(available)
     if (available.lt(total)) {
       this.props.setError(t('notEnoughBalance'))
       return
@@ -269,7 +271,6 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
     const tipBn = this.inputValueToBn(this.state.tip, this.state.tipSi)
     return amountBn.add(tipBn).add(this.state.fee)
   }
-
 
   confirm = async () => {
 

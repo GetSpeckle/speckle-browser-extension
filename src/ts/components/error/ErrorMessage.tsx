@@ -16,7 +16,11 @@ class ErrorMessage extends Component<ErrorMessageProp> {
     }
 
     return (
-      <Message negative={true} floating={true}>
+      <Message
+        id='notif'
+        negative={true}
+        floating={true}
+        onClick={() => document.getElementById('notif')!.remove()}>
         <p>{message}</p>
       </Message>
     )
