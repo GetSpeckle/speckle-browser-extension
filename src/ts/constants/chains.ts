@@ -6,7 +6,7 @@ import kusama from './kusama.json'
 import polkadot from './polkadot.json'
 
 export type Chain = {
-  definition: MetadataDef,
+  definition: any,
   genesisHash?: string,
   hasMetadata: boolean,
   isUnknown?: boolean,
@@ -28,8 +28,8 @@ type ChainExternalInfo = {
   iconUrl: string
 }
 
-const definitions = new Map<string, MetadataDef>(
-  [kusama as MetadataDef, polkadot as MetadataDef].map((def) => [def.genesisHash, def])
+const definitions = new Map<string, any>(
+  [kusama, polkadot].map((def) => [def.genesisHash, def])
 )
 
 const otherChainInfoMap = new Map<string, ChainExternalInfo>(
@@ -37,7 +37,7 @@ const otherChainInfoMap = new Map<string, ChainExternalInfo>(
     [
       '0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3',
       {
-        rpcServer: 'wss://cc1-1.polkadot.network',
+        rpcServer: 'wss://rpc.polkadot.io',
         txExplorer: 'https://polkascan.io/polkadot/transaction/',
         iconUrl: '/assets/chain-logo/polkadot.png'
       }

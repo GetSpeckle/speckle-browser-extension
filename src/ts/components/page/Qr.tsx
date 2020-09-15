@@ -32,7 +32,7 @@ function Qr ({ onSignature, payload, request }: Props): React.ReactElement<Props
     <div>
       {isScanning && <QrScanSignature onScan={onSignature} />}
       {/* tslint:disable-next-line:max-line-length */}
-      {!isScanning && <QrDisplayPayload address={request.address} cmd={CMD_MORTAL} payload={payloadU8a}/>}
+      {!isScanning && <QrDisplayPayload address={request.address} cmd={CMD_MORTAL} payload={payloadU8a} genesisHash={request.genesisHash}/>}
       {!isScanning && (<Button onClick={_onShowQr}>{t('scan')}</Button>)}
     </div>
   )
