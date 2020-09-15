@@ -133,7 +133,7 @@ class PopupApp extends React.Component<IPopupProps, IPopupState> {
 
   componentWillUnmount () {
     const { provider } = this.props.apiContext
-    provider && provider.isConnected() && provider.disconnect()
+    provider && provider.isConnected && provider.disconnect()
     this.props.destroyApi()
     clearInterval(this.state.accountSetupTimeoutId)
   }

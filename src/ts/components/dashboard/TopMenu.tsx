@@ -50,7 +50,7 @@ class TopMenu extends React.Component<ITopMenuProps, ITopMenuState> {
 
   destroyApi = () => {
     const { provider } = this.props.apiContext
-    provider && provider.isConnected() && provider.disconnect()
+    provider && provider.isConnected && provider.disconnect()
     this.props.destroyApi()
   }
 
