@@ -40,6 +40,16 @@
         "*://*/*"
       ],
       "run_at": "document_start"
+    },
+    {
+      "js": [
+        "injection.js"
+      ],
+      "matches": [
+        "https://twitter.com/*",
+        "https://www.twitter.com/*"
+      ],
+      "run_at": "document_end"
     }
   ]
 }

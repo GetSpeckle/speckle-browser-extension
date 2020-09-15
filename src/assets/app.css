@@ -230,6 +230,15 @@
   overflow-y: auto;
   overflow-x: hidden;
 }
+
+.ui.list.gov-list {
+  font-size: 10px;
+  color: #556267;
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
 .ui.attached.segment {
   border: none;
   padding: 0;
@@ -245,6 +254,18 @@
 }
 
 .ui.list.tran-list>.item:last-child {
+  padding-bottom: .21428571em;
+}
+
+.ui.list.gov-list>.item {
+  margin-bottom: 10px;
+}
+
+.ui.list.gov-list>.item:first-child {
+  padding-top: .21428571em;
+}
+
+.ui.list.gov-list>.item:last-child {
   padding-bottom: .21428571em;
 }
 
