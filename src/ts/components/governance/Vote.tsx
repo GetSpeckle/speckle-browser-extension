@@ -130,12 +130,12 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
 
   updateVote = () => {
     if (this.props.apiContext.apiReady) {
-      this.setState({...this.state, tries: 1})
+      this.setState({ ...this.state, tries: 1 })
     } else if (this.state.voteTries <= 10) {
       const nextTry = setTimeout(this.updateVote, 1000)
-      this.setState({...this.state, voteTries: this.state.voteTries + 1, nextTry: nextTry})
+      this.setState({ ...this.state, voteTries: this.state.voteTries + 1, nextTry: nextTry })
     } else {
-      this.setState({...this.state, referendum: undefined})
+      this.setState({ ...this.state, referendum: undefined })
     }
   }
 
@@ -195,6 +195,10 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
     const bn = new BN(decimals + selectedSi.power - parts[1].length)
     const smallPart = new BN(parts[1]).mul(TEN.pow(bn))
     return bigPart.add(smallPart)
+  }
+
+  doVote = () => {
+    this.vote(true)
   }
 
   vote = (choice: boolean) => {
@@ -319,10 +323,6 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
     this.setState({ amount: event.target.value })
   }
 
-  changeTip = event => {
-    this.setState({ tip: event.target.value })
-  }
-
   changeFee = (fee) => {
     this.setState({ fee: fee })
   }
@@ -339,14 +339,6 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
   isAmountValid = (): boolean => {
     const n = Number(this.state.amount)
     return !isNaN(n) && n > 0
-  }
-
-  isTipValid = (): boolean => {
-    if (this.state.tip) {
-      const n = Number(this.state.tip)
-      return !isNaN(n) && n >= 0
-    }
-    return true
   }
 
   componentWillUnmount (): void {
@@ -368,25 +360,24 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
       backgroundColor
     } = colorSchemes[this.props.settings.color]
     // @ts-ignore
+    const options = [
+      {
+        colors: chartColorAye,
+        label: `Aye`,
+        value: new BN(0)
+      },
+      {
+        colors: chartColorNay,
+        label: `Nay`,
+        value: new BN(0)
+      }
+    ]
     return (
       <ContentContainer>
         <AccountDropdown/>
         <div style={{ 'marginLeft': '-10px' }}>
         <VoteStatus
-          values={
-            [
-              {
-                colors: chartColorAye,
-                label: `Aye`,
-                value: new BN(0)
-              },
-              {
-                colors: chartColorNay,
-                label: `Nay`,
-                value: new BN(0)
-              }
-            ]
-          }
+          values={options}
           votes={0}
           width={150}
           height={100}
@@ -398,11 +389,9 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
         </ProposalSection>
         <ProposalSection>
           <ButtonSection>
-            {/* tslint:disable-next-line:jsx-no-lambda */}
             <AyeButton color={this.props.settings.color}>
               Aye
             </AyeButton>
-            {/* tslint:disable-next-line:jsx-no-lambda */}
             <Button>Nay</Button>
           </ButtonSection>
         </ProposalSection>
@@ -430,7 +419,28 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
       chartColorNay,
       backgroundColor
     } = colorSchemes[this.props.settings.color]
-    // @ts-ignore
+    const options = [
+      {
+        colors: chartColorAye,
+        label: `Aye, ${formatBalance(this.state.ballot.votedAye)} (${formatNumber(this.state.ballot.voteCountAye)})`,
+        value: this.state.ballot.voteCount === 0 ?
+          0 :
+          this.state.ballot.votedAye
+            .muln(10000)
+            .div(this.state.ballot.votedTotal)
+            .toNumber() / 100
+      },
+      {
+        colors: chartColorNay,
+        label: `Nay, ${formatBalance(this.state.ballot.votedNay)} (${formatNumber(this.state.ballot.voteCountNay)})`,
+        value: this.state.ballot.voteCount === 0 ?
+          0 :
+          this.state.ballot.votedNay
+            .muln(10000)
+            .div(this.state.ballot.votedTotal)
+            .toNumber() / 100
+      }
+    ]
     return (
       <ContentContainer>
         <Dimmer active={this.state.txLoading}>
@@ -439,30 +449,7 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
         <AccountDropdown/>
         <div style={{ 'marginLeft': '25px', 'marginTop': '-10px' }}>
           <VoteStatus
-            values={
-              [
-                {
-                  colors: chartColorAye,
-                  label: `Aye, ${formatBalance(this.state.ballot.votedAye)} (${formatNumber(this.state.ballot.voteCountAye)})`,
-                  value: this.state.ballot.voteCount === 0 ?
-                    0 :
-                    this.state.ballot.votedAye
-                      .muln(10000)
-                      .div(this.state.ballot.votedTotal)
-                      .toNumber() / 100
-                },
-                {
-                  colors: chartColorNay,
-                  label: `Nay, ${formatBalance(this.state.ballot.votedNay)} (${formatNumber(this.state.ballot.voteCountNay)})`,
-                  value: this.state.ballot.voteCount === 0 ?
-                    0 :
-                    this.state.ballot.votedNay
-                      .muln(10000)
-                      .div(this.state.ballot.votedTotal)
-                      .toNumber() / 100
-                }
-              ]
-            }
+            values={options}
             votes={this.state.ballot.voteCount}
             width={225}
             height={150}
@@ -485,15 +472,13 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
         </ProposalSection>
         <ProposalSection>
           <ButtonSection>
-            {/* tslint:disable-next-line:jsx-no-lambda */}
             <AyeButton
               color={this.props.settings.color}
-              onClick={() => this.vote(true)}
+              onClick={this.doVote}
             >
               {loadAye}
             </AyeButton>
-            {/* tslint:disable-next-line:jsx-no-lambda */}
-            <Button onClick={() => this.vote(false)}>{loadNay}</Button>
+            <Button onClick={this.doVote}>{loadNay}</Button>
           </ButtonSection>
         </ProposalSection>
 
@@ -506,7 +491,7 @@ const mapStateToProps = (state: IAppState) => {
   return {
     apiContext: state.apiContext,
     settings: state.settings,
-    account: state.settings.selectedAccount,
+    account: state.settings.selectedAccount
   }
 }
 
@@ -545,7 +530,7 @@ cursor: pointer
 background-color: ${(props) => colorSchemes[props.color].stopColorOne} !important
 padding: .78571429em 1.5em .78571429em
 margin: 0 0 0 .25em
-font-family: nunito
+font-family: Nunito
 color: #ffffff
 border-radius: 5px
 border: none
