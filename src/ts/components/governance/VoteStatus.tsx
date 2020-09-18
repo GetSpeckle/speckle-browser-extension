@@ -2,8 +2,8 @@ import * as React from 'react'
 import { Chart } from 'chart.js'
 import { Doughnut } from 'react-chartjs-2'
 import { bnToBn } from '@polkadot/util'
-import BN = require('bn.js')
 import styled from 'styled-components'
+import BN = require('bn.js')
 
 interface IVoteStatusProps {
   values: Value[],
@@ -111,14 +111,14 @@ class VoteStatus extends React.Component<IVoteStatusProps, IVoteStatusState> {
       }]
     }
     return (
-        <Wrapper>
-          <Doughnut
-            data={data}
-            width={this.props.width}
-            height={this.props.height}
-            legend={{ display: false }}
-            options={{ maintainAspectRatio: false }}
-          />
+      <Wrapper>
+        <Doughnut
+          data={data}
+          width={this.props.width}
+          height={this.props.height}
+          legend={{ display: false }}
+          options={{ maintainAspectRatio: false }}
+        />
       </Wrapper>
     )
   }
