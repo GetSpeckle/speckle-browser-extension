@@ -626,7 +626,7 @@
     "@nodelib/fs.scandir" "2.1.3"
     fastq "^1.6.0"
 
-"@polkadot/api-contract@^1.34.0-beta.10":
+"@polkadot/api-contract@^1.34.0-beta.12":
   version "1.34.0-beta.12"
   resolved "https://registry.yarnpkg.com/@polkadot/api-contract/-/api-contract-1.34.0-beta.12.tgz#74bb519a2d122eba360ed10c7f9f3816b1e97c8b"
   integrity sha512-Hz4wsGxZ3pC/rQ7gXQFgtk8GtgfLIF5kGHzhtEI49BcD2PEDHGLcwOx811I4qXP+fyWAD6kCkZFFYqK8cQJXJQ==
@@ -655,7 +655,7 @@
     memoizee "^0.4.14"
     rxjs "^6.6.3"
 
-"@polkadot/api@1.34.0-beta.12", "@polkadot/api@^1.34.0-beta.10", "@polkadot/api@^1.4.1":
+"@polkadot/api@1.34.0-beta.12", "@polkadot/api@^1.34.0-beta.12", "@polkadot/api@^1.4.1":
   version "1.34.0-beta.12"
   resolved "https://registry.yarnpkg.com/@polkadot/api/-/api-1.34.0-beta.12.tgz#1a7e4ce5b321d3e2f9b72589fd926593c5cfcd93"
   integrity sha512-nQYfYFNBudWdKLMEv6AlzXbbt4s7pHXuc/7UHzJpePpI8Qxj+4k+Mun4B5t3Vsuv0D5eTcpA8x/cLWLHkY0JQw==
@@ -850,7 +850,7 @@
     "@polkadot/util" "^3.4.1"
     bn.js "^5.1.3"
 
-"@polkadot/types@1.34.0-beta.12", "@polkadot/types@^1.34.0-beta.10":
+"@polkadot/types@1.34.0-beta.12", "@polkadot/types@^1.34.0-beta.12":
   version "1.34.0-beta.12"
   resolved "https://registry.yarnpkg.com/@polkadot/types/-/types-1.34.0-beta.12.tgz#63c01bdb7e913e31c910142df66f27b9e14a734a"
   integrity sha512-vvL/RDsAuLzSjUvVKN1r2yvAnmv7puN/1zA9d9vN2jQ+X9PkJn5mWuf9l/zbps5PAI2ubr11KmCsmP9KKT08RA==
