@@ -2,8 +2,8 @@ import * as React from 'react'
 import { Chart } from 'chart.js'
 import { Doughnut } from 'react-chartjs-2'
 import { bnToBn } from '@polkadot/util'
-import styled from 'styled-components'
 import BN = require('bn.js')
+import styled from 'styled-components'
 
 interface IVoteStatusProps {
   values: Value[],
@@ -32,6 +32,9 @@ interface Options {
 }
 
 class VoteStatus extends React.Component<IVoteStatusProps, IVoteStatusState> {
+  constructor (props) {
+    super(props)
+  }
 
   state = {
     votes: 0,
@@ -43,7 +46,7 @@ class VoteStatus extends React.Component<IVoteStatusProps, IVoteStatusState> {
     return nextProps.values !== this.props.values && nextState.votes !== this.props.votes
   }
 
-  componentDidMount (): void {
+  componentWillMount (): void {
     let votes = this.props.votes
     let doughnutDraw = Chart.controllers.doughnut.prototype.draw
     Chart.helpers.extend(Chart.controllers.doughnut.prototype, {
@@ -102,23 +105,26 @@ class VoteStatus extends React.Component<IVoteStatusProps, IVoteStatusState> {
       options.data.push(bnToBn(value).toNumber())
       options.labels.push(label)
     })
-    const data = {
-      labels: options.labels,
-      datasets: [{
-        data: options.data,
-        backgroundColor: options.colorNormal,
-        hoverBackgroundColor: options.colorHover
-      }]
-    }
     return (
-      <Wrapper>
-        <Doughnut
-          data={data}
-          width={this.props.width}
-          height={this.props.height}
-          legend={{ display: false }}
-          options={{ maintainAspectRatio: false }}
-        />
+        <Wrapper>
+          <Doughnut
+            data={{
+              labels: options.labels,
+              datasets: [{
+                data: options.data,
+                backgroundColor: options.colorNormal,
+                hoverBackgroundColor: options.colorHover
+              }]
+            }}
+            width={this.props.width}
+            height={this.props.height}
+            legend={{
+              display: false
+            }}
+            options={{
+              maintainAspectRatio: false
+            }}
+          />
       </Wrapper>
     )
   }

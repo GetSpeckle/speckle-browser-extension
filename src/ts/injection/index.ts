@@ -10,7 +10,7 @@ const maxAttmpt = 100
 function modifyTweets () {
   let tweets = document.getElementsByClassName(CLASS_TWEET)
   console.log(tweets)
-  for (let i = 0; i < tweets.length; i++) {
+  for (let i = 0, len = tweets.length; i < len; i++) {
     let tweet: any = tweets[i]
     let matches = tweet.innerText.match(/#(\S+)proposal(\d+)/g)
     if (matches !== null) {
@@ -65,7 +65,9 @@ function addObserver () {
   }
 
   let tweetParent1 = possibleTweet.parentNode
-  target = tweetParent1!.parentNode
+  let tweetParent2 = tweetParent1!.parentNode
+
+  target = tweetParent2
 
   if (!target) {
     window.setTimeout(addObserver, 500)
@@ -92,7 +94,7 @@ document.onreadystatechange = function () {
 }
 
 // Add listener for url change
-extension.onMessage.addListener((msg, _sender) => {
+extension.onMessage.addListener((msg, _sender, _sendResponse) => {
   if (msg === 'url-update') {
     setTimeout(modifyTweets, 1000)
     addObserver()
