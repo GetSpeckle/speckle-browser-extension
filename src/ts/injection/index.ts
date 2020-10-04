@@ -13,7 +13,6 @@ function modifyTweets () {
     let tweet: any = tweets[i]
     let matches = tweet.innerText.match(/#(\S+)vote(\d+)/g)
     if (matches !== null) {
-      console.log("matches", matches)
       // Parse proposal id and network from hashtag
       let proposalId: number = parseInt(matches[matches.length - 1].match(/\d+/g)[0], 10)
       let network: string = matches[matches.length - 1].match(/(\w*)vote/g)[0].replace('vote', '')

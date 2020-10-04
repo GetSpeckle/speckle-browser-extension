@@ -72,13 +72,13 @@ class GovernanceList extends React.Component<ITransactionListProps, ITransaction
   loadGovernance = () => {
     this.api.derive.democracy.referendums().then((referenda) => {
       if (referenda !== this.state.referenda) {
-        console.log('refr', referenda)
+        // console.log('refr', referenda)
         this.setState({ ...this.state, referenda: referenda })
       }
     }).then(() => {
       this.api.derive.democracy.proposals().then((proposals) => {
         if (proposals !== this.state.proposals) {
-          console.log('proposals', proposals)
+          // console.log('proposals', proposals)
           this.setState({ ...this.state, proposals: proposals })
         }
       })
@@ -145,7 +145,7 @@ class GovernanceList extends React.Component<ITransactionListProps, ITransaction
     }
     if ('votes' in ref && ref.votes) {
       const location = {
-        pathname: '/vote',
+        pathname: '/vote/:network/:proposalId',
         state: { referendum: ref }
       }
       const {

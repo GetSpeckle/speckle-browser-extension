@@ -45,7 +45,8 @@ interface IBallot {
 }
 
 interface IVoteState {
-  id: number
+  id: number | string
+  network: string
   ballot: IBallot
   referendum?: DeriveReferendumExt | undefined
   extrinsic?: Extrinsic | null
@@ -97,6 +98,7 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
     modalOpen: false,
     conviction: '',
     id: this.props.match.params['proposalId'],
+    network: this.props.match.params['network'],
     ballot: {
       voteCount: 0,
       voteCountAye: 0,
@@ -115,14 +117,22 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
   }
 
   componentWillMount (): void {
+    // console.log(this.state.network)
+    // console.log(this.state.id)
     if (this.props.settings.selectedAccount == null) {
       this.props.history.push(INITIALIZE_ROUTE)
+
     }
     isWalletLocked().then(result => {
       if (result) this.props.history.push(LOGIN_ROUTE)
     })
-    if (this.state.id) {
-      this.updateFromId(this.state.id)
+    if (this.state.id !== ':proposalId') {
+      let callback = setInterval(() => {
+        if (this.props.apiContext.apiReady) {
+          this.updateFromId()
+          clearInterval(callback)
+        }
+      }, 1000)
     } else if (this.props.location.state) {
       this.updateFromProps(this.props.location.state)
     }
@@ -130,12 +140,14 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
 
   updateVote = () => {
     if (this.props.apiContext.apiReady) {
-      this.setState({...this.state, tries: 1})
+      this.setState({ ...this.state, tries: 1 })
     } else if (this.state.voteTries <= 10) {
       const nextTry = setTimeout(this.updateVote, 1000)
-      this.setState({...this.state, voteTries: this.state.voteTries + 1, nextTry: nextTry})
+      this.setState({ ...this.state, voteTries: this.state.voteTries + 1, nextTry: nextTry })
     } else {
-      this.setState({...this.state, referendum: undefined})
+      if (this.props.location.state) {
+        this.setState({ ...this.state, referendum: this.props.location.state['referendum'] })
+      }
     }
   }
 
@@ -172,15 +184,17 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
     return { header, documentation }
   }
 
-  updateFromId = (id) => {
+  updateFromId = () => {
+    const id = this.state.id
     this.api.derive.democracy.referendums().then((results) => {
-      const filtered = results.filter((result) => result.index.toNumber() === id)
+      const filtered = results.filter((result) => result.index.toString() === id.toString())
       const referendum: DeriveReferendumExt = filtered[0]
       this.doUpdate(referendum)
     })
   }
 
   updateFromProps = (locationState) => {
+    console.log('updateFromProps', locationState['referendum'])
     const referendum: DeriveReferendumExt = locationState.referendum
     this.doUpdate(referendum)
   }
@@ -357,7 +371,7 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
     if (!this.props.settings.selectedAccount) {
       return null
     }
-    return this.state.referendum !== undefined ?
+    return this.props.location.state || this.state.id !== ':proposalId' ?
       this.renderProposal() : this.renderPlaceHolder()
   }
 
@@ -371,7 +385,7 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
     return (
       <ContentContainer>
         <AccountDropdown/>
-        <div style={{ 'marginLeft': '-10px' }}>
+        <div style={{ 'marginLeft': '25px', 'marginTop': '-10px' }}>
         <VoteStatus
           values={
             [
@@ -388,8 +402,8 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
             ]
           }
           votes={0}
-          width={150}
-          height={100}
+          width={225}
+          height={150}
           legendColor={backgroundColor}
         />
         </div>

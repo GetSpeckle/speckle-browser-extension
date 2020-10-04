@@ -41,9 +41,8 @@ class VoteStatus extends React.Component<IVoteStatusProps, IVoteStatusState> {
     legendColor: '#000'
   }
 
-  // tslint:disable-next-line:max-line-length
-  shouldComponentUpdate (nextProps: Readonly<IVoteStatusProps>, nextState: Readonly<IVoteStatusState>, _nextContext: any): boolean {
-    return nextProps.values !== this.props.values && nextState.votes !== this.props.votes
+  shouldComponentUpdate (nextProps: Readonly<IVoteStatusProps>, _nextState: Readonly<{}>, _nextContext: any): boolean {
+    return nextProps.values !== this.props.values
   }
 
   componentWillMount (): void {
