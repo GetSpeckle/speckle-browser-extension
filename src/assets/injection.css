@@ -6,7 +6,7 @@
 
 
 .speckle-button-vote:hover {
-  cursor: alias;
+  cursor: pointer;
   background:  url('./icon-128.png');
   background-repeat: no-repeat;
   background-position: center!important;
