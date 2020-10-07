@@ -9,21 +9,22 @@ const maxAttmpt = 100
 
 function modifyTweets () {
   let tweets = document.getElementsByClassName(CLASS_TWEET)
-  console.log(tweets)
   for (let i = 0, len = tweets.length; i < len; i++) {
     let tweet: any = tweets[i]
-    let matches = tweet.innerText.match(/#(\S+)proposal(\d+)/g)
+    let matches = tweet.innerText.match(/#(\S+)vote(\d+)/g)
     if (matches !== null) {
-      console.log(matches)
+      // Parse proposal id and network from hashtag
       let proposalId: number = parseInt(matches[matches.length - 1].match(/\d+/g)[0], 10)
-      let network: string = matches[matches.length - 1].match(/(\w*)proposal/g)[0].replace('proposal', '')
+      let network: string = matches[matches.length - 1].match(/(\w*)vote/g)[0].replace('vote', '')
+
+      // Add user action button on hashtagged tweet
       let userActionButtons = tweet.getElementsByClassName(CLASS_BTNCONTAINER)[0]
       if (userActionButtons !== undefined && !userActionButtons.classList.contains('speckle-button-added')) {
         userActionButtons.classList.add('speckle-button-added')
         const classButtton = 'speckle-button-vote'
 
         let buttonDiv = document.createElement('div')
-        buttonDiv.className = 'css-1dbjc4n r-1niwhzg r-sdzlij r-1p0dtai r-xoduu5 r-1d2f490 r-xf4iuw r-u8s1d r-zchlnj r-ipm5af r-o7ynqc r-6416eg'
+        buttonDiv.className = 'css-1dbjc4n r-18u37iz r-1h0z5md'
         let button = document.createElement('button')
         button.className = classButtton
 

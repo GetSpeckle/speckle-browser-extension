@@ -4,20 +4,6 @@
   to {opacity: 1;}
 }
 
-.speckle-button-vote {
-  background: url('./icon-128.png');
-  background-repeat: no-repeat;
-  background-position: center!important;
-  background-size: 18px 18px;
-  width: 18px;
-  height:18px;
-  padding-bottom: 6px;
-  font-size:9px;
-  border-radius: 5px;
-  border: none;
-  animation-name: fadeIn;
-  animation-duration: 0.5s;
-}
 
 .speckle-button-vote:hover {
   cursor: pointer;
@@ -32,3 +18,19 @@
   border: none;
   border-radius: 5px;
 }
+
+.speckle-button-vote {
+  background: url('./icon-128.png');
+  background-repeat: no-repeat;
+  background-position: center!important;
+  background-size: 18px 18px;
+  width: 18px;
+  height:18px;
+  padding-bottom: 6px;
+  font-size:9px;
+  border-radius: 5px;
+  border: none;
+  animation-name: fadeIn;
+  animation-duration: 1s;
+}
+
