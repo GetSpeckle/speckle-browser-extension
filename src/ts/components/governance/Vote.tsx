@@ -460,20 +460,18 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
                   label: `Aye, ${formatBalance(this.state.ballot.votedAye)} (${formatNumber(this.state.ballot.voteCountAye)})`,
                   value: this.state.ballot.voteCount === 0 ?
                     0 :
-                    this.state.ballot.votedAye
-                      .muln(10000)
-                      .div(this.state.ballot.votedTotal)
-                      .toNumber() / 100
+                    this.state.ballot.votedAye.toNumber()
+                    / this.state.ballot.votedTotal.toNumber()  
+                    * 100 
                 },
                 {
                   colors: chartColorNay,
                   label: `Nay, ${formatBalance(this.state.ballot.votedNay)} (${formatNumber(this.state.ballot.voteCountNay)})`,
                   value: this.state.ballot.voteCount === 0 ?
                     0 :
-                    this.state.ballot.votedNay
-                      .muln(10000)
-                      .div(this.state.ballot.votedTotal)
-                      .toNumber() / 100
+                    this.state.ballot.votedNay.toNumber()
+                    / this.state.ballot.votedTotal.toNumber()
+                    * 100
                 }
               ]
             }
@@ -486,7 +484,6 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
         <ProposalSection>
           <ProposalDetail>
             <h1>{this.state.header}</h1>
-            <summary>{this.state.documentation}</summary>
           </ProposalDetail>
         </ProposalSection>
         <ProposalSection>
