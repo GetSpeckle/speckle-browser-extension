@@ -159,6 +159,7 @@ class Send extends React.Component<ISendProps, ISendState> {
       return
     }
     const extrinsic = this.api.tx.balances.transfer(this.state.toAddress, amountBn)
+    console.log(extrinsic)
     const currentBlockNumber = await this.api.query.system.number()
     const currentBlockHash = await this.api.rpc.chain.getBlockHash(currentBlockNumber)
 
@@ -177,7 +178,7 @@ class Send extends React.Component<ISendProps, ISendState> {
       transactionVersion: this.api.runtimeVersion.transactionVersion.toHex(),
       tip: tipBn.toString(),
       version: extrinsic.version,
-      signedExtensions: chains[this.props.settings.chain].registry.signedExtensions
+      signedExtensions: extrinsic.registry.signedExtensions
     }
     const payloadValue: ExtrinsicPayloadValue = {
       era: extrinsic.era,

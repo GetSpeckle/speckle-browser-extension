@@ -141,7 +141,8 @@ class GovernanceList extends React.Component<ITransactionListProps, ITransaction
       borderBottomWidth: '1px',
       borderBottomStyle: 'solid',
       borderRadius: '2px',
-      marginTop: '5px'
+      marginTop: '5px',
+      minHeight: '130px'
     }
     if ('votes' in ref && ref.votes) {
       const location = {
@@ -237,7 +238,7 @@ class GovernanceList extends React.Component<ITransactionListProps, ITransaction
               }}
               />
             </RefrIndexContainer>
-            <Documentation>{`${documentation}`}</Documentation>
+            <Documentation><span>{`${documentation}`}</span></Documentation>
           </ReferendumContainer>
         </List.Item>
       )
@@ -340,10 +341,10 @@ const Status = styled.div`
 `
 
 const Documentation = styled.div`
-  width: 215px;
-  height: 60px;
+  width: 180px;
+  min-height: 60px;
   margin-left: 4px;
-  margin-top: 40px;
+  margin-top: 10px;
   font-family: Nunito;
   font-size: 14px;
   font-weight: normal;
@@ -352,4 +353,10 @@ const Documentation = styled.div`
   line-height: normal;
   letter-spacing: normal;
   color: #3e5860;
+
+  span {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+  }
 `
