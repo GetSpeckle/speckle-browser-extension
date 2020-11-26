@@ -258,7 +258,7 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
       transactionVersion: this.api.runtimeVersion.transactionVersion.toHex(),
       tip: tipBn.toString(),
       version: extrinsic.version,
-      signedExtensions: chains[this.props.settings.chain].registry.signedExtensions
+      signedExtensions: extrinsic.registry.signedExtensions
     }
     const payloadValue: ExtrinsicPayloadValue = {
       era: extrinsic.era,
@@ -461,8 +461,8 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
                   value: this.state.ballot.voteCount === 0 ?
                     0 :
                     this.state.ballot.votedAye.toNumber()
-                    / this.state.ballot.votedTotal.toNumber()  
-                    * 100 
+                    / this.state.ballot.votedTotal.toNumber()
+                    * 100
                 },
                 {
                   colors: chartColorNay,
