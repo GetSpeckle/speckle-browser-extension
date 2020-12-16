@@ -36,7 +36,6 @@ import { Index } from '@polkadot/types/interfaces'
 import { SiDef } from '@polkadot/util/types'
 import styled from 'styled-components'
 import { isAddressValid } from '../../services/address-transformer'
-import { chains } from '../../constants/chains'
 
 interface ISendProps extends StateProps, RouteComponentProps, DispatchProps {}
 

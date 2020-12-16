@@ -25,7 +25,6 @@ import { setError } from '../../background/store/error'
 import { SubmittableExtrinsic } from '@polkadot/api/promise/types'
 import { SubmittableResult } from '@polkadot/api'
 import { SiDef } from '@polkadot/util/types'
-import { chains } from '../../constants/chains'
 import VoteAmount from './VoteAmount'
 
 interface IVoteProps extends StateProps, RouteComponentProps, DispatchProps, ILocationState {
