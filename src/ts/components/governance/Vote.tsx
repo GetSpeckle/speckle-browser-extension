@@ -459,8 +459,7 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
                   label: `Aye, ${formatBalance(this.state.ballot.votedAye)} (${formatNumber(this.state.ballot.voteCountAye)})`,
                   value: this.state.ballot.voteCount === 0 ?
                     0 :
-                    this.state.ballot.votedAye.toNumber()
-                    / this.state.ballot.votedTotal.toNumber()
+                    this.state.ballot.votedAye.div(this.state.ballot.votedTotal).toNumber()
                     * 100
                 },
                 {
@@ -468,8 +467,7 @@ class Vote extends React.Component<IVoteProps, IVoteState> {
                   label: `Nay, ${formatBalance(this.state.ballot.votedNay)} (${formatNumber(this.state.ballot.voteCountNay)})`,
                   value: this.state.ballot.voteCount === 0 ?
                     0 :
-                    this.state.ballot.votedNay.toNumber()
-                    / this.state.ballot.votedTotal.toNumber()
+                    this.state.ballot.votedNay.div(this.state.ballot.votedTotal).toNumber()
                     * 100
                 }
               ]
